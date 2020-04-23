@@ -1,0 +1,16 @@
+Package: wkbheaders
+Title: C++ Headers for Well-Known Binary Conversion
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Dewey",
+           family = "Dunnington",
+           role = c("aut", "cre"),
+           email = "dewey@fishandwhistle.net",
+           comment = c(ORCID = "0000-0002-9415-4582"))
+Description: Provides a small header-only library for reading and writing
+  well-known binary (WKB) to and from any R-based format.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
