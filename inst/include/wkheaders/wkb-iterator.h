@@ -59,7 +59,7 @@ public:
 
     if (geometryType.hasSRID) {
       this->srid = this->readUint32();
-      this->nextSRID(this->srid);
+      this->nextSRID(this->geometryType, this->srid);
     }
 
     switch (geometryType.simpleGeometryType) {
@@ -148,7 +148,7 @@ public:
       
   }
 
-  virtual void nextSRID(uint32_t srid) {
+  virtual void nextSRID(GeometryType geometryType, uint32_t srid) {
 
   }
 

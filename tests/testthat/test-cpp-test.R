@@ -43,8 +43,15 @@ test_that("test_basic_reader() works with ND points", {
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, # z
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f)) # m
 
+  point_s <- as.raw(c(0x01,
+                       0x01, 0x00, 0x00, 0x20, # type
+                       0xc7, 0x00, 0x00, 0x00, # srid
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
+
   expect_output(test_basic_reader(point_xy), "POINT \\(30 10\\)")
   expect_output(test_basic_reader(point_z), "POINT Z \\(30 10 2\\)")
   expect_output(test_basic_reader(point_m), "POINT M \\(30 10 2\\)")
   expect_output(test_basic_reader(point_zm), "POINT ZM \\(30 10 2 1\\)")
+  expect_output(test_basic_reader(point_s), "SRID=199;POINT \\(30 10\\)")
 })

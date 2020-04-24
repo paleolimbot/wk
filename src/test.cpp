@@ -65,7 +65,13 @@ public:
   }
 
   void nextGeometryType(GeometryType geometryType) {
-    this->out << geometryType.wktType();
+    if (!geometryType.hasSRID) {
+      this->out << geometryType.wktType();
+    }
+  }
+
+  void nextSRID(GeometryType geometryType, uint32_t srid) {
+    this->out << "SRID=" << srid << ";" << geometryType.wktType();
   }
 
   void nextEmpty(GeometryType geometryType) {
