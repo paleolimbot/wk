@@ -1,5 +1,5 @@
 
-test_that("test() works", {
+test_that("test_basic_reader() works", {
 
   point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x24, 0x00, 0x00, 0x00,
@@ -9,7 +9,8 @@ test_that("test() works", {
                        0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                        0x00, 0x24, 0x40))
 
-  test(point_le)
-
+  expect_output(test_basic_reader(point_be), "POINT \\(30 10\\)")
+  expect_output(test_basic_reader(point_le), "POINT \\(30 10\\)")
+  expect_error(test_basic_reader(point_le[1:5]), "Reached end of RawVector input")
 
 })

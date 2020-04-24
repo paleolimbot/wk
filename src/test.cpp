@@ -16,31 +16,21 @@ public:
 
 protected:
   unsigned char readChar() {
-    return read<unsigned char>();
+    return readBinary<unsigned char>();
   }
 
   double readDouble() {
-    return read<double>();
+    return readBinary<double>();
   }
 
   uint32_t readUint32() {
-    return read<uint32_t>();
+    return readBinary<uint32_t>();
   }
 
 private:
-  template <typename T>
-  T read() {
-    T value = readBinary<T>();
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<T>(value);
-    } else {
-      return value;
-    }
-  }
-
   template<typename T>
   T readBinary() {
-    std::cout << "Reading " << sizeof(T) << " starting at " << this->offset << ": ";
+    // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
     if ((this->offset + sizeof(T)) > this->data.size()) {
       stop("Reached end of RawVector input (corrupt data)");
     }
@@ -48,16 +38,14 @@ private:
     T dst;
     memcpy(&dst, &(this->data[this->offset]), sizeof(T));
     this->offset += sizeof(T);
-    std::cout << dst << "\n";
     return dst;
   }
 };
 
 // [[Rcpp::export]]
-void test(RawVector data) {
-
+void test_basic_reader(RawVector data) {
   RawVectorWKBinaryReader reader(data);
-  reader.readGeometry();
-
-  Rcout << "finished!\n";
+  std::unique_ptr<WKGeometry> geom = reader.readGeometry();
+  WKPoint* pt = dynamic_cast<WKPoint*>(geom.get());
+  Rcout << "POINT (" << pt->coord.ordinates[0] << " " << pt->coord.ordinates[1] << ")\n";
 }

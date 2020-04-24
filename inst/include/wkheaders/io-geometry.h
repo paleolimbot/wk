@@ -41,32 +41,61 @@ public:
     this->swapEndian = false;
   }
 
-  WKPoint readGeometry() {
-    char endian = this->readChar();
+  std::unique_ptr<WKGeometry> readGeometry() {
+    char endian = this->doReadChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    uint32_t wkbType = this->readUint32();
+    uint32_t wkbType = this->doReadUint32();
+
+    WKGeometry* out;
 
     switch (wkbType) {
     case 1:
-      return this->readPoint();
+      out = this->readPoint();
+      break;
+    default:
+      std::cout << "Bad wkb type: " << wkbType << "\n";
+      throw std::exception();
     }
 
-    std::cout << "Bad wkb type: " << wkbType << "\n";
-    throw std::exception();
+    return std::unique_ptr<WKGeometry>(out);
   }
 
 protected:
-  bool swapEndian;
   virtual unsigned char readChar() = 0;
   virtual double readDouble() = 0;
   virtual uint32_t readUint32() = 0;
 
 private:
+  WKPoint* readPoint() {
+    Coord<2> point = this->readCoord<2>();
+    return new WKPoint(point);
+  }
+
+  bool swapEndian;
+
+  unsigned char doReadChar() {
+    return this->readChar();
+  }
+
+  double doReadDouble() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<double>(this->readDouble());
+    } else
+      return this->readDouble();
+  }
+
+  double doReadUint32() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<uint32_t>(this->readUint32());
+    } else
+      return this->readUint32();
+  }
+
   template<int nOrdinates>
   Coord<nOrdinates> readCoord() {
     Coord<nOrdinates> out;
     for (int i=0; i< nOrdinates; i++) {
-      out.ordinates[i] = this->readDouble();
+      out.ordinates[i] = this->doReadDouble();
     }
 
     return out;
@@ -82,11 +111,6 @@ private:
     }
 
     return out;
-  }
-
-  WKPoint readPoint() {
-    Coord<2> point = this->readCoord<2>();
-    return WKPoint(point);
   }
 };
 

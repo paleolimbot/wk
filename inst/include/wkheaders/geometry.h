@@ -39,6 +39,9 @@ public:
 class WKGeometry {
 public:
   virtual WKGeometryType getGeometryType() = 0;
+  virtual ~WKGeometry() {
+
+  }
 };
 
 template <int nOrdinates>

@@ -5,19 +5,19 @@
 
 using namespace Rcpp;
 
-// test
-void test(RawVector data);
-RcppExport SEXP _wkheaders_test(SEXP dataSEXP) {
+// test_basic_reader
+void test_basic_reader(RawVector data);
+RcppExport SEXP _wkheaders_test_basic_reader(SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< RawVector >::type data(dataSEXP);
-    test(data);
+    test_basic_reader(data);
     return R_NilValue;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wkheaders_test", (DL_FUNC) &_wkheaders_test, 1},
+    {"_wkheaders_test_basic_reader", (DL_FUNC) &_wkheaders_test_basic_reader, 1},
     {NULL, NULL, 0}
 };
 
