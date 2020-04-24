@@ -12,12 +12,14 @@ class WKBIterator {
 public:
   const static int RECURSION_LEVEL_INVALID = -1;
   const static uint32_t PART_ID_INVALID = UINT32_MAX;
+  const static uint32_t RING_ID_INVALID = UINT32_MAX;
   const static uint32_t COORD_ID_INVALID = UINT32_MAX;
   const static uint32_t SRID_INVALID = UINT32_MAX;
   const static unsigned char ENDIAN_INVALID = 0xff;
 
   int recursionLevel;
   uint32_t partId;
+  uint32_t ringId;
   uint32_t coordId;
 
   bool swapEndian;
@@ -34,6 +36,7 @@ public:
     this->swapEndian = false;
     this->recursionLevel = RECURSION_LEVEL_INVALID;
     this->partId = PART_ID_INVALID;
+    this->ringId = RING_ID_INVALID;
     this->coordId = COORD_ID_INVALID;
     this->srid = SRID_INVALID;
     this->endian = ENDIAN_INVALID;
@@ -43,13 +46,14 @@ public:
     this->reader->seekNextFeature();
     this->recursionLevel = 0;
     this->partId = PART_ID_INVALID;
+    this->ringId = RING_ID_INVALID;
     this->coordId = COORD_ID_INVALID;
     this->endian = ENDIAN_INVALID;
     this->srid = SRID_INVALID;
     this->readGeometry();
   }
 
-  virtual void readGeometry() {
+  void readGeometry() {
     this->endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
     this->nextEndian(this->endian);
@@ -96,11 +100,17 @@ public:
     case SimpleGeometryType::Point:
       this->nextPoint(geometryType);
       break;
+    case SimpleGeometryType::LineString:
+      this->nextLinestring(geometryType, size);
+      break;
+    case SimpleGeometryType::Polygon:
+      this->nextPolygon(geometryType, size);
+      break;
 
     default:
       throw std::runtime_error(
           Formatter() << 
-            "Unrecognized geometry type: " << 
+            "Unrecognized geometry type in WKBIterator::nextGeometry(): " << 
             geometryType.simpleGeometryType
       );
     }
@@ -118,7 +128,19 @@ public:
     this->readPoint(geometryType);
   }
 
-  virtual void readPoint(GeometryType geometryType) {
+  virtual void nextLinestring(GeometryType geometryType, uint32_t size) {
+    this->readLineString(geometryType, size);
+  }
+
+  virtual void nextPolygon(GeometryType geometryType, uint32_t size) {
+    this->readPolygon(geometryType, size);
+  }
+
+  virtual void nextLinearRing(GeometryType geometryType, uint32_t size) {
+    this->readLinearRing(geometryType, size);
+  }
+
+  void readPoint(GeometryType geometryType) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
@@ -137,6 +159,26 @@ public:
 
     } else {
       this->nextXY(this->x, this->y);
+    }
+  }
+
+  void readLineString(GeometryType geometryType, uint32_t size) {
+    for (uint32_t i=0; i < size; i++) {
+      this->coordId = i;
+      this->readPoint(geometryType);
+    }
+  }
+
+  void readLinearRing(GeometryType geometryType, uint32_t size) {
+    this->readLineString(geometryType, size);
+  }
+
+  void readPolygon(GeometryType geometryType, uint32_t size) {
+    uint32_t ringSize;
+    for (uint32_t i=0; i<size; i++) {
+      this->ringId = i;
+      ringSize = this->readUint32();
+      this->nextLinearRing(geometryType, ringSize);
     }
   }
 

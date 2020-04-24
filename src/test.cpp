@@ -66,12 +66,12 @@ public:
 
   void nextGeometryType(GeometryType geometryType) {
     if (!geometryType.hasSRID) {
-      this->out << geometryType.wktType();
+      this->out << geometryType.wktType() << " ";
     }
   }
 
   void nextSRID(GeometryType geometryType, uint32_t srid) {
-    this->out << "SRID=" << srid << ";" << geometryType.wktType();
+    this->out << "SRID=" << srid << ";" << geometryType.wktType() << " ";
   }
 
   void nextEmpty(GeometryType geometryType) {
@@ -79,25 +79,48 @@ public:
   }
 
   void nextGeometry(GeometryType geometryType, uint32_t size) {
-    this->out << " (";
+    this->out << "(";
     WKBIterator::nextGeometry(geometryType, size);
     this->out << ")";
   }
 
+  void nextLinearRing(GeometryType geometryType, uint32_t size) {
+    this->writeRingSep();
+    this->out << "(";
+    WKBIterator::nextLinearRing(geometryType, size);
+    this->out << ")";
+  }
+
   void nextXY(double x, double y) {
+    this->writeCoordSep();
     this->out << x << " " << y;
   }
 
   void nextXYZ(double x, double y, double z) {
+    this->writeCoordSep();
     this->out << x << " " << y << " " << z;
   }
 
   void nextXYM(double x, double y, double m) {
+    this->writeCoordSep();
     this->out << x << " " << y << " " << m;
   }
 
   void nextXYZM(double x, double y, double z, double m) {
+    this->writeCoordSep();
     this->out << x << " " << y << " " << z << " " << m;
+  }
+
+  void writeRingSep() {
+    if (this->ringId > 0) {
+      this->out << ", ";
+    }
+  }
+
+  void writeCoordSep() {
+    if (this->coordId > 0 && this->geometryType.simpleGeometryType != SimpleGeometryType::Point) {
+      this->out << ", ";
+    }
   }
 
 private:
