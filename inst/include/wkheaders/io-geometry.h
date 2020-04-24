@@ -42,7 +42,7 @@ public:
 class WKBinaryReader {
 
 public:
-  unique_ptr<WKGeometry> readGeometry() {
+  std::unique_ptr<WKGeometry> readGeometry() {
     char endian = this->readChar();
     uint32_t wkbType = this->readUint32(endian);
 
@@ -80,9 +80,9 @@ private:
     return out;
   }
 
-  unique_ptr<WKGeometry> readPoint(char endian) {
+  std::unique_ptr<WKGeometry> readPoint(char endian) {
     Coord<2> point = this->readCoord<2>(endian);
-    unique_ptr<WKPoint> out = unique_ptr<WKPoint>(new WKPoint(point));
+    std::unique_ptr<WKPoint> out = std::unique_ptr<WKPoint>(new WKPoint(point));
     return out;
   }
 };
