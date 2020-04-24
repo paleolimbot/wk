@@ -9,7 +9,7 @@
 
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
 
-enum GeometryType {
+enum SimpleGeometryType {
   Invalid = 0,
   Point = 1,
   LineString = 2,
@@ -20,68 +20,107 @@ enum GeometryType {
   GeometryCollection = 7
 };
 
-class EWKBGeometryType {
+class GeometryType {
 public:
-  uint32_t geometryType;
+  int simpleGeometryType;
   bool hasZ;
   bool hasM;
   bool hasSRID;
 
-  EWKBGeometryType() {
-    this->geometryType = GeometryType::Invalid;
+  GeometryType() {
+    this->simpleGeometryType = SimpleGeometryType::Invalid;
     this->hasZ = false;
     this->hasM = false;
     this->hasSRID = false;
   }
 
-  EWKBGeometryType(uint32_t geometryType, bool hasZ, bool hasM, bool hasSRID) {
-    this->geometryType = geometryType;
+  GeometryType(uint32_t simpleGeometryType, bool hasZ, bool hasM, bool hasSRID) {
+    this->simpleGeometryType = simpleGeometryType;
     this->hasZ = hasZ;
     this->hasM = hasM;
     this->hasSRID = hasSRID;
   }
 
   uint32_t wkbType() {
-    uint32_t out = this->geometryType;
+    uint32_t out = this->simpleGeometryType;
     if (this->hasZ) out += 0x80000000;
     if (this->hasM) out += 0x40000000;
     if (this->hasSRID) out += 0x20000000;
     return out;
   }
 
-  static EWKBGeometryType get(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, false, false, false);
+  std::string wktType() {
+    Formatter f;
+    f << wktSimpleGeometryType(this->simpleGeometryType);
+
+    if (this->hasZ || this->hasM) {
+      f << " ";
+    }
+    if (this->hasZ) {
+      f << "Z";
+    }
+
+    if (this->hasM) {
+      f << "M";
+    }
+
+    return f;
   }
 
-  static EWKBGeometryType getZ(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, true, false, false);
+  static const char* wktSimpleGeometryType(int simpleGeometryType) {
+    switch (simpleGeometryType) {
+    case SimpleGeometryType::Point:
+      return "POINT";
+    case SimpleGeometryType::LineString:
+      return "LINESTRING";
+    case SimpleGeometryType::Polygon:
+      return "POLYGON";
+    case SimpleGeometryType::MultiPoint:
+      return "MULTIPOINT";
+    case SimpleGeometryType::MultiLineString:
+      return "MULTILINESTRING";
+    case SimpleGeometryType::MultiPolygon:
+      return "MULTIPOLYGON";
+    case SimpleGeometryType::GeometryCollection:
+      return "GEOMETRYCOLLECTION";
+    default:
+      throw std::runtime_error("GeometryType::wktType(): invalid type");
+    }
   }
 
-  static EWKBGeometryType getZM(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, true, true, false);
+  static GeometryType getXY(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, false, false, false);
   }
 
-  static EWKBGeometryType getZMS(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, true, true, true);
+  static GeometryType getZ(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, true, false, false);
   }
 
-  static EWKBGeometryType getZS(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, true, false, true);
+  static GeometryType getZM(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, true, true, false);
   }
 
-  static EWKBGeometryType getM(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, false, true, false);
+  static GeometryType getZMS(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, true, true, true);
   }
 
-  static EWKBGeometryType getMS(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, false, true, true);
+  static GeometryType getZS(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, true, false, true);
   }
 
-  static EWKBGeometryType getS(GeometryType geometryType) {
-    return EWKBGeometryType(geometryType, false, false, true);
+  static GeometryType getM(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, false, true, false);
   }
 
-  static EWKBGeometryType get(uint32_t wkbType) {
+  static GeometryType getMS(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, false, true, true);
+  }
+
+  static GeometryType getS(int simpleGeometryType) {
+    return GeometryType(simpleGeometryType, false, false, true);
+  }
+
+  static GeometryType get(uint32_t wkbType) {
     switch (wkbType) {
     // basic geometries
     case 1:
@@ -91,7 +130,7 @@ public:
     case 5:
     case 6:
     case 7:
-      return EWKBGeometryType(wkbType, false, false, false);
+      return GeometryType(wkbType, false, false, false);
 
     // Z
     case 0x80000001:
@@ -101,7 +140,7 @@ public:
     case 0x80000005:
     case 0x80000006:
     case 0x80000007:
-      return EWKBGeometryType(wkbType - 0x80000000, true, false, false);
+      return GeometryType(wkbType - 0x80000000, true, false, false);
 
     // | 0x40000000 M
     case 0x40000001:
@@ -111,7 +150,7 @@ public:
     case 0x40000005:
     case 0x40000006:
     case 0x40000007:
-      return EWKBGeometryType(wkbType - 0x40000000, false, true, false);
+      return GeometryType(wkbType - 0x40000000, false, true, false);
 
     // | 0x40000000 | 0x80000000 ZM
     case 0xC0000001:
@@ -121,7 +160,7 @@ public:
     case 0xC0000005:
     case 0xC0000006:
     case 0xC0000007:
-      return EWKBGeometryType(wkbType - 0xC0000000, true, true, false);
+      return GeometryType(wkbType - 0xC0000000, true, true, false);
 
     // | 0x20000000 S
     case 0x20000001:
@@ -131,7 +170,7 @@ public:
     case 0x20000005:
     case 0x20000006:
     case 0x20000007:
-      return EWKBGeometryType(wkbType - 0x20000000, false, false, true);
+      return GeometryType(wkbType - 0x20000000, false, false, true);
 
     // | 0x20000000 | 0x80000000 ZS
     case 0xA0000001:
@@ -141,7 +180,7 @@ public:
     case 0xA0000005:
     case 0xA0000006:
     case 0xA0000007:
-      return EWKBGeometryType(wkbType - 0xA0000000, true, false, true);
+      return GeometryType(wkbType - 0xA0000000, true, false, true);
 
     // | 0x20000000 | 0x40000000 MS
     case 0x60000001:
@@ -151,7 +190,7 @@ public:
     case 0x60000005:
     case 0x60000006:
     case 0x60000007:
-      return EWKBGeometryType(wkbType - 0x60000000, false, true, true);
+      return GeometryType(wkbType - 0x60000000, false, true, true);
 
     // | 0x20000000 | 0x40000000 | 0x80000000 ZMS
     case 0xE0000001:
@@ -161,7 +200,7 @@ public:
     case 0xE0000005:
     case 0xE0000006:
     case 0xE0000007:
-      return EWKBGeometryType(wkbType - 0xE0000000, true, true, true);
+      return GeometryType(wkbType - 0xE0000000, true, true, true);
 
     default:
       throw std::runtime_error(Formatter() << "Unrecognized EWKB geometry type: " << wkbType);

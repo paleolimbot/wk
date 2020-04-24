@@ -42,7 +42,7 @@ private:
   T readBinary() {
     // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
     if ((this->offset + sizeof(T)) > this->data.size()) {
-      stop("Reached end of RawVector input (corrupt data)");
+      stop("Reached end of RawVector input");
     }
 
     T dst;
@@ -56,12 +56,30 @@ class WKTTranslateIterator: public WKBIterator {
 public:
 
   WKTTranslateIterator(BinaryReader* reader, std::ostream& out): WKBIterator(reader), out(out) {
-   
+
   }
 
-  bool nextFeature() {
-    this->out << "Feature!";
-    return WKBIterator::nextFeature();
+  void nextFeature() {
+    WKBIterator::nextFeature();
+    this->out << "\n";
+  }
+
+  void nextGeometryType(GeometryType geometryType) {
+    this->out << geometryType.wktType();
+  }
+
+  void nextEmpty(GeometryType geometryType) {
+    this->out << " EMPTY";
+  }
+
+  void nextGeometry(GeometryType geometryType, uint32_t size) {
+    this->out << " (";
+    WKBIterator::nextGeometry(geometryType, size);
+    this->out << ")";
+  }
+
+  void nextXY(double x, double y) {
+    this->out << x << " " << y;
   }
 
 private:

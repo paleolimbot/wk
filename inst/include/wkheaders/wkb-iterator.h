@@ -3,6 +3,7 @@
 #define WKHEADERS_WKB_ITERATOR_H
 
 #include <memory>
+#include <cmath>
 #include "wkheaders/geometry-type.h"
 #include "wkheaders/io-utils.h"
 
@@ -21,7 +22,7 @@ public:
 
   bool swapEndian;
   unsigned char endian;
-  EWKBGeometryType ewkbType;
+  GeometryType geometryType;
   uint32_t srid;
   double x;
   double y;
@@ -38,60 +39,117 @@ public:
     this->endian = ENDIAN_INVALID;
   }
 
-  virtual bool nextFeature() {
-    if (this->reader->seekNextFeature()) {
-      this->recursionLevel = 0;
-      this->partId = PART_ID_INVALID;
-      this->coordId = COORD_ID_INVALID;
-      this->endian = ENDIAN_INVALID;
-      this->srid = SRID_INVALID;
-      this->nextGeometry();
-      return true;
-    } else {
-      return false;
-    }
+  virtual void nextFeature() {
+    this->reader->seekNextFeature();
+    this->recursionLevel = 0;
+    this->partId = PART_ID_INVALID;
+    this->coordId = COORD_ID_INVALID;
+    this->endian = ENDIAN_INVALID;
+    this->srid = SRID_INVALID;
+    this->readGeometry();
   }
 
-  virtual void nextGeometry() {
+  virtual void readGeometry() {
     this->endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    this->ewkbType = EWKBGeometryType::get(this->readUint32());
-    if (ewkbType.hasSRID) {
+    this->nextEndian(this->endian);
+
+    this->geometryType = GeometryType::get(this->readUint32());
+    this->nextGeometryType(this->geometryType);
+
+    if (geometryType.hasSRID) {
       this->srid = this->readUint32();
+      this->nextSRID(this->srid);
     }
 
-    switch (ewkbType.geometryType) {
-    case GeometryType::Point:
-      this->nextPoint(ewkbType);
+    switch (geometryType.simpleGeometryType) {
+    case SimpleGeometryType::Point:
+      this->nextGeometry(this->geometryType, 1);
       break;
-    
+    case SimpleGeometryType::LineString:
+    case SimpleGeometryType::Polygon:
+      this->nextGeometry(this->geometryType, this->readUint32());
+      break;
+    case SimpleGeometryType::MultiPoint:
+    case SimpleGeometryType::MultiLineString:
+    case SimpleGeometryType::MultiPolygon:
+      this->nextMultiGeometry(this->geometryType, this->readUint32());
+      break;
+    case SimpleGeometryType::GeometryCollection:
+      this->nextCollection(this->geometryType, this->readUint32());
+      break;
     default:
-      throw std::runtime_error(Formatter() << "Unrecognized geometry type: " << ewkbType.geometryType);
+      throw std::runtime_error(
+          Formatter() << 
+            "Unrecognized geometry type in WKBIterator::readGeometry(): " << 
+            geometryType.simpleGeometryType
+      );
     }
   }
 
-  virtual void nextPoint(EWKBGeometryType ewkbType) {
+  virtual void nextEmpty(GeometryType geometryType) {
+
+  }
+
+  virtual void nextGeometry(GeometryType geometryType, uint32_t size) {
+    switch (geometryType.simpleGeometryType) {
+    case SimpleGeometryType::Point:
+      this->nextPoint(geometryType);
+      break;
+
+    default:
+      throw std::runtime_error(
+          Formatter() << 
+            "Unrecognized geometry type: " << 
+            geometryType.simpleGeometryType
+      );
+    }
+  }
+
+  virtual void nextMultiGeometry(GeometryType geometryType, uint32_t size) {
+
+  }
+
+  virtual void nextCollection(GeometryType geometryType, uint32_t size) {
+
+  }
+
+  virtual void nextPoint(GeometryType geometryType) {
+    this->readPoint(geometryType);
+  }
+
+  virtual void readPoint(GeometryType geometryType) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
-    if (ewkbType.hasZ || ewkbType.hasM) {
+    if (geometryType.hasZ && geometryType.hasM) {
       this->z = this->readDouble();
       this->m = this->readDouble();
       this->nextXYZM(this->x, this->y, this->z, this->m);
-    } else if (ewkbType.hasZ) {
+
+    } else if (geometryType.hasZ) {
       this->z = this->readDouble();
       this->nextXYZ(this->x, this->y, this->z);
-    } else if (ewkbType.hasM) {
+
+    } else if (geometryType.hasM) {
       this->m = this->readDouble();
       this->nextXYM(this->x, this->y, this->m);
+
     } else {
       this->nextXY(this->x, this->y);
     }
+  }
 
-    if (ewkbType.hasZ) {
+  virtual void nextEndian(unsigned char endian) {
 
-    }
-    nextXY(x, y);
+  }
+
+  virtual void nextGeometryType(GeometryType geometryType) {
+      
+  }
+
+  virtual void nextSRID(uint32_t srid) {
+
   }
 
   virtual void nextXY(double x, double y) {
@@ -99,15 +157,15 @@ public:
   }
 
   virtual void nextXYZ(double x, double y, double z) {
-
+    this->nextXY(x, y);
   }
 
   virtual void nextXYM(double x, double y, double m) {
-
+    this->nextXY(x, y);
   }
 
   virtual void nextXYZM(double x, double y, double z, double m) {
-
+    this->nextXYZ(x, y, z);
   }
 
   // these are not virtual, shouldn't be overridden

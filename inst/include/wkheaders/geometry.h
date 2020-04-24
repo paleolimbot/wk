@@ -26,7 +26,7 @@ public:
 class WKGeometry {
 public:
   virtual GeometryType geometryType() = 0;
-  virtual EWKBGeometryType ewkbGeometryType() = 0;
+  virtual GeometryType GeometryType() = 0;
   virtual ~WKGeometry() {}
 };
 
@@ -75,8 +75,8 @@ public:
     this->coord = coord;
   }
 
-  EWKBGeometryType ewkbGeometryType() {
-    return EWKBGeometryType::get(this->getGeometryType);
+  GeometryType GeometryType() {
+    return GeometryType::get(this->getGeometryType);
   }
 
 };
@@ -87,8 +87,8 @@ public:
     this->coord = coord;
   }
 
-  EWKBGeometryType ewkbGeometryType() {
-    return EWKBGeometryType::getZ(this->getGeometryType);
+  GeometryType GeometryType() {
+    return GeometryType::getZ(this->getGeometryType);
   }
 };
 
