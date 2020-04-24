@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include "wkheaders/io-geometry.h"
+#include "wkheaders/io-utils.h"
 
 class InputStreamReader {
 public:
@@ -28,7 +29,7 @@ private:
     if (endian == WKB_PLATFORM_ENDIAN) {
       return value;
     } else {
-      return swapEndian<T>(value);
+      return IOUtils::swapEndian<T>(value);
     }
   }
 
@@ -39,20 +40,6 @@ private:
     T dst;
     memcpy(&dst, buf, sizeof(T));
     return dst;
-  }
-
-  // https://github.com/r-spatial/sf/blob/master/src/wkb.cpp
-  // https://stackoverflow.com/questions/105252/how-do-i-convert-between-big-endian-and-little-endian-values-in-c
-  template <typename T>
-  static T swapEndian(T u) {
-    union {
-    T u;
-    unsigned char u8[sizeof(T)];
-  } source, dest;
-    source.u = u;
-    for (size_t k = 0; k < sizeof(T); k++)
-      dest.u8[k] = source.u8[sizeof(T) - k - 1];
-    return dest.u;
   }
 };
 

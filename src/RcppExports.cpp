@@ -6,17 +6,18 @@
 using namespace Rcpp;
 
 // test
-void test();
-RcppExport SEXP _wkheaders_test() {
+void test(RawVector data);
+RcppExport SEXP _wkheaders_test(SEXP dataSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    test();
+    Rcpp::traits::input_parameter< RawVector >::type data(dataSEXP);
+    test(data);
     return R_NilValue;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wkheaders_test", (DL_FUNC) &_wkheaders_test, 0},
+    {"_wkheaders_test", (DL_FUNC) &_wkheaders_test, 1},
     {NULL, NULL, 0}
 };
 

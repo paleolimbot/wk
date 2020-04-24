@@ -1,4 +1,7 @@
 
+#ifndef WKHEADERS_GEOMETRY_H
+#define WKHEADERS_GEOMETRY_H
+
 #include <cstdint>
 #include <vector>
 
@@ -41,7 +44,7 @@ public:
 template <int nOrdinates>
 class WKNDPoint: public WKGeometry {
 public:
-  Coord<nOrdinates> point;
+  Coord<nOrdinates> coord;
 
   WKGeometryType getGeometryType() {
     return WKGeometryType::Point;
@@ -79,8 +82,8 @@ public:
 
 class WKPoint: public WKNDPoint<2> {
 public:
-  WKPoint(Coord<2> point) {
-    this->point = point;
+  WKPoint(Coord<2> coord) {
+    this->coord = coord;
   }
 
   virtual uint32_t getWKBType() {
@@ -99,3 +102,5 @@ class WKPolygon: public WKNDPolygon<2> {
     return WKGeometryType::Polygon;
   }
 };
+
+#endif
