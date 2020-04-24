@@ -25,4 +25,14 @@ public:
   }
 };
 
+class BinaryReader {
+public:
+  virtual unsigned char readCharRaw() = 0;
+  virtual double readDoubleRaw() = 0;
+  virtual uint32_t readUint32Raw() = 0;
+  virtual bool seekNextFeature() = 0;
+
+  virtual ~BinaryReader() {}
+};
+
 #endif

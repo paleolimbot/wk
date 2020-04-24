@@ -1,17 +1,19 @@
 #include <Rcpp.h>
-#include "wkheaders/geometry.h"
-#include "wkheaders/io-geometry.h"
+#include "wkheaders/wkb-iterator.h"
 #include "wkheaders/io-utils.h"
+#include <iostream>
 using namespace Rcpp;
 
-class RawVectorWKBinaryReader: public WKBinaryReader {
+class RawVectorBinaryReader: public BinaryReader {
 public:
+  bool hasNext;
   RawVector data;
   R_xlen_t offset;
 
-  RawVectorWKBinaryReader(RawVector data) {
+  RawVectorBinaryReader(RawVector data) {
     this->data = data;
     this->offset = 0;
+    this->hasNext = true;
   }
 
 protected:
@@ -25,6 +27,14 @@ protected:
 
   uint32_t readUint32Raw() {
     return readBinary<uint32_t>();
+  }
+
+  bool seekNextFeature() {
+    if (this->hasNext) {
+      this->hasNext = false;
+    }
+
+    return this->hasNext;
   }
 
 private:
@@ -42,10 +52,26 @@ private:
   }
 };
 
+class WKTTranslateIterator: public WKBIterator {
+public:
+
+  WKTTranslateIterator(BinaryReader* reader, std::ostream& out): WKBIterator(reader), out(out) {
+   
+  }
+
+  bool nextFeature() {
+    this->out << "Feature!";
+    return WKBIterator::nextFeature();
+  }
+
+private:
+  std::ostream& out;
+};
+
+
+
 // [[Rcpp::export]]
 void test_basic_reader(RawVector data) {
-  RawVectorWKBinaryReader reader(data);
-  std::unique_ptr<WKGeometry> geom = std::unique_ptr<WKGeometry>(reader.readGeometry());
-  WKPoint* pt = dynamic_cast<WKPoint*>(geom.get());
-  Rcout << "POINT (" << pt->coord.ordinates[0] << " " << pt->coord.ordinates[1] << ")\n";
+  WKTTranslateIterator iter(new RawVectorBinaryReader(data), Rcout);
+  iter.nextFeature();
 }

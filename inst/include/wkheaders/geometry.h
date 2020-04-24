@@ -4,21 +4,7 @@
 
 #include <cstdint>
 #include <vector>
-
-enum WKGeometryType {
-  Point = 1,
-  Linestring = 2,
-  Polygon = 3,
-  MultiPoint = 4,
-  MultiLinestring = 5,
-  MultiPolygon = 6,
-  GeometryCollection = 7
-};
-
-enum WKBByteOrder {
-  BigEndian = 0,
-  LitleEndian = 1
-};
+#include "geometry-type.h"
 
 template <int nOrdinates>
 class Coord {
@@ -39,10 +25,9 @@ public:
 
 class WKGeometry {
 public:
-  virtual WKGeometryType getGeometryType() = 0;
-  virtual ~WKGeometry() {
-
-  }
+  virtual GeometryType geometryType() = 0;
+  virtual EWKBGeometryType ewkbGeometryType() = 0;
+  virtual ~WKGeometry() {}
 };
 
 template <int nOrdinates>
@@ -50,8 +35,8 @@ class WKNDPoint: public WKGeometry {
 public:
   Coord<nOrdinates> coord;
 
-  WKGeometryType getGeometryType() {
-    return WKGeometryType::Point;
+  GeometryType geometryType() {
+    return GeometryType::Point;
   }
 };
 
@@ -64,8 +49,8 @@ public:
     this->points = std::vector<Coord<nOrdinates>>(nPoints);
   }
 
-  WKGeometryType getGeometryType() {
-    return WKGeometryType::Linestring;
+  GeometryType geometryType() {
+    return GeometryType::Linestring;
   }
 };
 
@@ -78,8 +63,8 @@ public:
     this->rings = std::vector<LinearRing<nOrdinates>>(nRings);
   }
 
-  WKGeometryType getGeometryType() {
-    return WKGeometryType::Polygon;
+  GeometryType geometryType() {
+    return GeometryType::Polygon;
   }
 };
 
@@ -90,20 +75,20 @@ public:
     this->coord = coord;
   }
 
-  virtual uint32_t getWKBType() {
-    return WKGeometryType::Point;
+  EWKBGeometryType ewkbGeometryType() {
+    return EWKBGeometryType::get(this->getGeometryType);
   }
+
 };
 
-class WKLinestring: public WKNDLinestring<2> {
-  virtual uint32_t getWKBType() {
-    return WKGeometryType::Linestring;
+class WKPointZ: public WKNDPoint<3> {
+public:
+  WKPointZ(Coord<3> coord) {
+    this->coord = coord;
   }
-};
 
-class WKPolygon: public WKNDPolygon<2> {
-  virtual uint32_t getWKBType() {
-    return WKGeometryType::Polygon;
+  EWKBGeometryType ewkbGeometryType() {
+    return EWKBGeometryType::getZ(this->getGeometryType);
   }
 };
 
