@@ -37,65 +37,62 @@ public:
 class WKBinaryReader {
 
 public:
+  bool swapEndian;
+
   WKBinaryReader() {
     this->swapEndian = false;
   }
 
-  std::unique_ptr<WKGeometry> readGeometry() {
-    char endian = this->doReadChar();
+  void nextGeometry() {
+    unsigned char endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    uint32_t wkbType = this->doReadUint32();
-
-    WKGeometry* out;
+    uint32_t wkbType = this->readUint32();
 
     switch (wkbType) {
     case 1:
-      out = this->readPoint();
+      this->nextPoint();
       break;
+    
     default:
       std::cout << "Bad wkb type: " << wkbType << "\n";
       throw std::exception();
     }
-
-    return std::unique_ptr<WKGeometry>(out);
   }
 
-protected:
-  virtual unsigned char readChar() = 0;
-  virtual double readDouble() = 0;
-  virtual uint32_t readUint32() = 0;
+  void nextPoint() {
+    double x = this->readDouble();
+    double y = this->readDouble();
+    nextXY(x, y, 0);
+  }
 
-private:
+  void nextXY(double x, double y, uint32_t i) {
+
+  }
+
+  WKGeometry* readGeometry() {
+    unsigned char endian = this->readChar();
+    this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
+    uint32_t wkbType = this->readUint32();
+
+    switch (wkbType) {
+    case 1:
+      return this->readPoint();
+    
+    default:
+      std::cout << "Bad wkb type: " << wkbType << "\n";
+      throw std::exception();
+    }
+  }
+
   WKPoint* readPoint() {
-    Coord<2> point = this->readCoord<2>();
-    return new WKPoint(point);
-  }
-
-  bool swapEndian;
-
-  unsigned char doReadChar() {
-    return this->readChar();
-  }
-
-  double doReadDouble() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<double>(this->readDouble());
-    } else
-      return this->readDouble();
-  }
-
-  double doReadUint32() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<uint32_t>(this->readUint32());
-    } else
-      return this->readUint32();
+    return new WKPoint(this->readCoord<2>());
   }
 
   template<int nOrdinates>
   Coord<nOrdinates> readCoord() {
     Coord<nOrdinates> out;
-    for (int i=0; i< nOrdinates; i++) {
-      out.ordinates[i] = this->doReadDouble();
+    for (int i=0; i < nOrdinates; i++) {
+      out.ordinates[i] = this->readDouble();
     }
 
     return out;
@@ -112,6 +109,31 @@ private:
 
     return out;
   }
+
+  // these are not virtual, shouldn't be overridden
+  unsigned char readChar() {
+    return this->readCharRaw();
+  }
+
+  double readDouble() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<double>(this->readDoubleRaw());
+    } else
+      return this->readDoubleRaw();
+  }
+
+  double readUint32() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
+    } else
+      return this->readUint32Raw();
+  }
+
+// must be overwritten
+protected:
+  virtual unsigned char readCharRaw() = 0;
+  virtual double readDoubleRaw() = 0;
+  virtual uint32_t readUint32Raw() = 0;
 };
 
 #endif

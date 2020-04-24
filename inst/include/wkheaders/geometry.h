@@ -23,6 +23,7 @@ enum WKBByteOrder {
 template <int nOrdinates>
 class Coord {
 public:
+  int nDimensions = nOrdinates;
   double ordinates[nOrdinates];
 };
 

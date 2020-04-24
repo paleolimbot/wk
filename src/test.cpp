@@ -15,15 +15,15 @@ public:
   }
 
 protected:
-  unsigned char readChar() {
+  unsigned char readCharRaw() {
     return readBinary<unsigned char>();
   }
 
-  double readDouble() {
+  double readDoubleRaw() {
     return readBinary<double>();
   }
 
-  uint32_t readUint32() {
+  uint32_t readUint32Raw() {
     return readBinary<uint32_t>();
   }
 
@@ -45,7 +45,7 @@ private:
 // [[Rcpp::export]]
 void test_basic_reader(RawVector data) {
   RawVectorWKBinaryReader reader(data);
-  std::unique_ptr<WKGeometry> geom = reader.readGeometry();
+  std::unique_ptr<WKGeometry> geom = std::unique_ptr<WKGeometry>(reader.readGeometry());
   WKPoint* pt = dynamic_cast<WKPoint*>(geom.get());
   Rcout << "POINT (" << pt->coord.ordinates[0] << " " << pt->coord.ordinates[1] << ")\n";
 }
