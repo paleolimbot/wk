@@ -54,7 +54,7 @@ public:
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
     this->nextEndian(this->endian);
 
-    this->geometryType = GeometryType::get(this->readUint32());
+    this->geometryType = GeometryType(this->readUint32());
     this->nextGeometryType(this->geometryType);
 
     if (geometryType.hasSRID) {

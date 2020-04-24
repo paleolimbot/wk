@@ -82,6 +82,18 @@ public:
     this->out << x << " " << y;
   }
 
+  void nextXYZ(double x, double y, double z) {
+    this->out << x << " " << y << " " << z;
+  }
+
+  void nextXYM(double x, double y, double m) {
+    this->out << x << " " << y << " " << m;
+  }
+
+  void nextXYZM(double x, double y, double z, double m) {
+    this->out << x << " " << y << " " << z << " " << m;
+  }
+
 private:
   std::ostream& out;
 };
