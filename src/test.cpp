@@ -137,32 +137,30 @@ public:
   }
 
   bool iteratingMulti() {
-    size_t stackSize = this->stack.size();
-    if (this->stack.size() <= 1) {
+    size_t stackSize = this->recursionLevel();
+    if (stackSize <= 1) {
       return false;
     }
 
-    GeometryType nester = this->stack[stackSize - 2];
+    GeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::MultiPoint ||
       nester.simpleGeometryType == SimpleGeometryType::MultiLineString ||
       nester.simpleGeometryType == SimpleGeometryType::MultiPolygon;
   }
 
   bool iteratingCollection() {
-    size_t stackSize = this->stack.size();
-    if (this->stack.size() <= 1) {
+    size_t stackSize = this->recursionLevel();
+    if (stackSize <= 1) {
       return false;
     }
 
-    GeometryType nester = this->stack[stackSize - 2];
+    GeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
   }
 
 private:
   std::ostream& out;
 };
-
-
 
 // [[Rcpp::export]]
 void test_basic_reader(RawVector data) {

@@ -68,26 +68,9 @@ public:
   const static uint32_t SRID_INVALID = UINT32_MAX;
   const static unsigned char ENDIAN_INVALID = 0xff;
 
-  int recursionLevel;
-  uint32_t partId;
-  uint32_t ringId;
-  uint32_t coordId;
-
-  std::vector<GeometryType> stack;
-
-  bool swapEndian;
-  unsigned char endian;
-  GeometryType geometryType;
-  uint32_t srid;
-  double x;
-  double y;
-  double z;
-  double m;
-
   WKBIterator(BinaryReader* reader) {
     this->reader = std::unique_ptr<BinaryReader>(reader);
     this->swapEndian = false;
-    this->recursionLevel = RECURSION_LEVEL_INVALID;
     this->partId = PART_ID_INVALID;
     this->ringId = RING_ID_INVALID;
     this->coordId = COORD_ID_INVALID;
@@ -96,9 +79,11 @@ public:
     this->stack = std::vector<GeometryType>();
   }
 
+  bool hasNextFeature() {
+    return this->reader->seekNextFeature();
+  }
+
   virtual void nextFeature() {
-    this->reader->seekNextFeature();
-    this->recursionLevel = 0;
     this->partId = PART_ID_INVALID;
     this->ringId = RING_ID_INVALID;
     this->coordId = COORD_ID_INVALID;
@@ -114,7 +99,7 @@ public:
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
     this->nextEndian(this->endian, partId);
 
-    this->geometryType = GeometryType(this->readUint32());
+    this->geometryType = this->resolveGeometryType(this->readUint32());
     this->stack.push_back(this->geometryType);
     this->nextGeometryType(this->geometryType, partId);
 
@@ -171,12 +156,88 @@ public:
   }
 
   virtual void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
-    this->readLinearRing(geometryType, size);
+    this->readLineString(geometryType, size);
   }
 
   virtual void nextCollection(GeometryType geometryType, uint32_t size) {
     this->readMultiGeometry(geometryType, size);
   }
+
+  virtual void nextCoordinate(const Coordinate coord, uint32_t coordId) {
+    
+  }
+
+  virtual void nextEndian(unsigned char endian, uint32_t partId) {
+
+  }
+
+  virtual void nextGeometryType(GeometryType geometryType, uint32_t partId) {
+      
+  }
+
+  virtual void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
+
+  }
+
+  // accessors (may need more, these are sufficient for WKT translator)
+  GeometryType lastGeometryType(int level) {
+    if (level >= 0) {
+      return this->stack[level];
+    } else {
+      return this->stack[this->stack.size() + level];
+    }
+  }
+
+  GeometryType lastGeometryType() {
+    return lastGeometryType(-1);
+  }
+
+  size_t recursionLevel() {
+    return this->stack.size();
+  }
+
+  // endian swapping is hard to replicate...these might be useful
+  // for subclasses that implement an extension of WKB
+protected:
+  GeometryType resolveGeometryType(uint32_t ewkbType) {
+    return GeometryType(ewkbType);
+  }
+
+  unsigned char readChar() {
+    return this->readCharRaw();
+  }
+
+  double readDouble() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<double>(this->readDoubleRaw());
+    } else
+      return this->readDoubleRaw();
+  }
+
+  double readUint32() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
+    } else
+      return this->readUint32Raw();
+  }
+
+private:
+  std::unique_ptr<BinaryReader> reader;
+
+  uint32_t partId;
+  uint32_t ringId;
+  uint32_t coordId;
+
+  std::vector<GeometryType> stack;
+
+  bool swapEndian;
+  unsigned char endian;
+  GeometryType geometryType;
+  uint32_t srid;
+  double x;
+  double y;
+  double z;
+  double m;
 
   void readPoint(GeometryType geometryType, uint32_t coordId) {
     this->x = this->readDouble();
@@ -200,34 +261,11 @@ public:
     }
   }
 
-  virtual void nextCoordinate(const Coordinate coord, uint32_t coordId) {
-    
-  }
-
-  virtual void nextEndian(unsigned char endian, uint32_t partId) {
-
-  }
-
-  virtual void nextGeometryType(GeometryType geometryType, uint32_t partId) {
-      
-  }
-
-  virtual void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
-
-  }
-
-private:
-  std::unique_ptr<BinaryReader> reader;
-
   void readLineString(GeometryType geometryType, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readPoint(geometryType, i);
     }
-  }
-
-  void readLinearRing(GeometryType geometryType, uint32_t size) {
-    this->readLineString(geometryType, size);
   }
 
   void readPolygon(GeometryType geometryType, uint32_t size) {
@@ -244,24 +282,6 @@ private:
       this->partId = i;
       this->readGeometry(i);
     }
-  }
-
-  unsigned char readChar() {
-    return this->readCharRaw();
-  }
-
-  double readDouble() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<double>(this->readDoubleRaw());
-    } else
-      return this->readDoubleRaw();
-  }
-
-  double readUint32() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
-    } else
-      return this->readUint32Raw();
   }
 
   unsigned char readCharRaw() {
