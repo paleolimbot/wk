@@ -72,52 +72,13 @@ public:
       this->nextSRID(this->geometryType, this->srid);
     }
 
-    uint32_t size;
-
-    switch (geometryType.simpleGeometryType) {
-    case SimpleGeometryType::Point:
+    if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
       this->nextGeometry(this->geometryType, 1);
-      break;
-    case SimpleGeometryType::LineString:
-    case SimpleGeometryType::Polygon:
-      size = this->readUint32();
-      if (size > 0) {
-        this->nextGeometry(this->geometryType, size);
-      } else {
-        this->nextEmpty(this->geometryType);
-      }
-      break;
-    case SimpleGeometryType::MultiPoint:
-    case SimpleGeometryType::MultiLineString:
-    case SimpleGeometryType::MultiPolygon:
-      size = this->readUint32();
-      if (size > 0) {
-        this->nextMultiGeometry(this->geometryType, size);
-      } else {
-        this->nextEmpty(this->geometryType);
-      }
-      break;
-    case SimpleGeometryType::GeometryCollection:
-      size = this->readUint32();
-      if (size > 0) {
-        this->nextCollection(this->geometryType, size);
-      } else {
-        this->nextEmpty(this->geometryType);
-      }
-      break;
-    default:
-      throw std::runtime_error(
-          Formatter() << 
-            "Unrecognized geometry type in WKBIterator::readGeometry(): " << 
-            geometryType.simpleGeometryType
-      );
+    } else {
+      this->nextGeometry(this->geometryType, this->readUint32());
     }
 
     this->stack.pop_back();
-  }
-
-  virtual void nextEmpty(GeometryType geometryType) {
-
   }
 
   virtual void nextGeometry(GeometryType geometryType, uint32_t size) {
@@ -131,22 +92,19 @@ public:
     case SimpleGeometryType::Polygon:
       this->nextPolygon(geometryType, size);
       break;
-
+    case SimpleGeometryType::MultiPoint:
+    case SimpleGeometryType::MultiLineString:
+    case SimpleGeometryType::MultiPolygon:
+    case SimpleGeometryType::GeometryCollection:
+      this->nextCollection(this->geometryType, size);
+      break;
     default:
       throw std::runtime_error(
           Formatter() << 
-            "Unrecognized geometry type in WKBIterator::nextGeometry(): " << 
+            "Unrecognized geometry type in WKBIterator::readGeometry(): " << 
             geometryType.simpleGeometryType
       );
     }
-  }
-
-  virtual void nextMultiGeometry(GeometryType geometryType, uint32_t size) {
-    this->readMultiGeometry(geometryType, size);
-  }
-
-  virtual void nextCollection(GeometryType geometryType, uint32_t size) {
-    this->readMultiGeometry(geometryType, size);
   }
 
   virtual void nextPoint(GeometryType geometryType) {
@@ -163,6 +121,10 @@ public:
 
   virtual void nextLinearRing(GeometryType geometryType, uint32_t size) {
     this->readLinearRing(geometryType, size);
+  }
+
+  virtual void nextCollection(GeometryType geometryType, uint32_t size) {
+    this->readMultiGeometry(geometryType, size);
   }
 
   void readPoint(GeometryType geometryType) {
@@ -184,33 +146,6 @@ public:
 
     } else {
       this->nextXY(this->x, this->y);
-    }
-  }
-
-  void readLineString(GeometryType geometryType, uint32_t size) {
-    for (uint32_t i=0; i < size; i++) {
-      this->coordId = i;
-      this->readPoint(geometryType);
-    }
-  }
-
-  void readLinearRing(GeometryType geometryType, uint32_t size) {
-    this->readLineString(geometryType, size);
-  }
-
-  void readPolygon(GeometryType geometryType, uint32_t size) {
-    uint32_t ringSize;
-    for (uint32_t i=0; i<size; i++) {
-      this->ringId = i;
-      ringSize = this->readUint32();
-      this->nextLinearRing(geometryType, ringSize);
-    }
-  }
-
-  void readMultiGeometry(GeometryType geometryType, uint32_t size) {
-    for (uint32_t i=0; i < size; i++) {
-      this->partId = i;
-      this->readGeometry();
     }
   }
 
@@ -242,7 +177,36 @@ public:
     this->nextXYZ(x, y, z);
   }
 
-  // these are not virtual, shouldn't be overridden
+private:
+  std::unique_ptr<BinaryReader> reader;
+
+  void readLineString(GeometryType geometryType, uint32_t size) {
+    for (uint32_t i=0; i < size; i++) {
+      this->coordId = i;
+      this->readPoint(geometryType);
+    }
+  }
+
+  void readLinearRing(GeometryType geometryType, uint32_t size) {
+    this->readLineString(geometryType, size);
+  }
+
+  void readPolygon(GeometryType geometryType, uint32_t size) {
+    uint32_t ringSize;
+    for (uint32_t i=0; i<size; i++) {
+      this->ringId = i;
+      ringSize = this->readUint32();
+      this->nextLinearRing(geometryType, ringSize);
+    }
+  }
+
+  void readMultiGeometry(GeometryType geometryType, uint32_t size) {
+    for (uint32_t i=0; i < size; i++) {
+      this->partId = i;
+      this->readGeometry();
+    }
+  }
+
   unsigned char readChar() {
     return this->readCharRaw();
   }
@@ -260,9 +224,6 @@ public:
     } else
       return this->readUint32Raw();
   }
-
-private:
-  std::unique_ptr<BinaryReader> reader;
 
   unsigned char readCharRaw() {
     return this->reader->readCharRaw();

@@ -76,26 +76,18 @@ public:
     this->writeGeometrySep(geometryType, srid);
   }
 
-  void nextEmpty(GeometryType geometryType) {
-    this->out << "EMPTY";
-  }
-
   void nextGeometry(GeometryType geometryType, uint32_t size) {
-    this->out << "(";
+    if (size > 0) {
+      this->out << "(";
+    } else {
+      this->out << "EMPTY";
+    }
+
     WKBIterator::nextGeometry(geometryType, size);
-    this->out << ")";
-  }
 
-  void nextMultiGeometry(GeometryType geometryType, uint32_t size) {
-    this->out << "(";
-    WKBIterator::nextMultiGeometry(geometryType, size);
-    this->out << ")";
-  }
-
-  void nextCollection(GeometryType geometryType, uint32_t size) {
-    this->out << "(";
-    WKBIterator::nextCollection(geometryType, size);
-    this->out << ")";
+    if (size > 0) {
+      this->out << ")";
+    }
   }
 
   void nextLinearRing(GeometryType geometryType, uint32_t size) {
