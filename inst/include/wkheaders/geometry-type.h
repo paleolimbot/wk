@@ -4,7 +4,7 @@
 
 #include <cstdint>
 #include <string>
-#include "exception.h"
+#include "formatter.h"
 
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
 // https://github.com/r-spatial/sf/blob/master/src/wkb.cpp

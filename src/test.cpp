@@ -4,16 +4,13 @@
 #include <iostream>
 using namespace Rcpp;
 
-class RawVectorBinaryReader: public BinaryReader {
+class RawVectorListReader: public BinaryReader {
 public:
-  bool hasNext;
-  RawVector data;
-  R_xlen_t offset;
 
-  RawVectorBinaryReader(RawVector data) {
-    this->data = data;
+  RawVectorListReader(List container) {
+    this->container = container;
+    this->index = -1;
     this->offset = 0;
-    this->hasNext = true;
   }
 
 protected:
@@ -30,14 +27,26 @@ protected:
   }
 
   bool seekNextFeature() {
-    if (this->hasNext) {
-      this->hasNext = false;
+    this->index += 1;
+    if (this->index >= this->container.size()) {
+      return false;
+    } else {
+      this->data = this->container[this->index];
+      this->offset = 0;
+      return true;
     }
+  }
 
-    return this->hasNext;
+  size_t nFeatures() {
+    return container.size();
   }
 
 private:
+  List container;
+  R_xlen_t index;
+  RawVector data;
+  R_xlen_t offset;
+
   template<typename T>
   T readBinary() {
     // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
@@ -164,6 +173,9 @@ private:
 
 // [[Rcpp::export]]
 void test_basic_reader(RawVector data) {
-  WKTTranslateIterator iter(new RawVectorBinaryReader(data), Rcout);
-  iter.nextFeature();
+  List container = List::create(data);
+  WKTTranslateIterator iter(new RawVectorListReader(container), Rcout);
+  while (iter.hasNextFeature()) {
+    iter.nextFeature();
+  }
 }
