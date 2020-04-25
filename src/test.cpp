@@ -2,6 +2,7 @@
 #include "wkheaders/wkb-iterator.h"
 #include "wkheaders/io-utils.h"
 #include <iostream>
+#include <sstream>
 using namespace Rcpp;
 
 class RawVectorListReader: public BinaryReader {
@@ -51,7 +52,6 @@ protected:
     return this->featureNull;
   }
 
-
   size_t nFeatures() {
     return container.size();
   }
@@ -77,11 +77,21 @@ private:
   }
 };
 
-class WKTTranslateIterator: public WKBIterator {
+class WKTTranslateIterator: WKBIterator {
 public:
 
-  WKTTranslateIterator(BinaryReader* reader, std::ostream& out): WKBIterator(reader), out(out) {
+  WKTTranslateIterator(BinaryReader* reader): WKBIterator(reader) {
 
+  }
+
+  bool hasNextFeature() {
+    return WKBIterator::hasNextFeature();
+  }
+
+  std::string translateFeature() {
+    this->out = std::stringstream();
+    this->iterate();
+    return this->out.str();
   }
 
   void nextFeature(size_t featureId) {
@@ -136,7 +146,7 @@ public:
 
     if ((iterCollection || iterMulti) && partId > 0) {
       this->out << ", ";
-    } 
+    }
     
     if(iterMulti) {
       return;
@@ -184,14 +194,14 @@ public:
   }
 
 private:
-  std::ostream& out;
+  std::stringstream out;
 };
 
 // [[Rcpp::export]]
 void test_basic_reader(RawVector data) {
   List container = List::create(data);
-  WKTTranslateIterator iter(new RawVectorListReader(container), Rcout);
+  WKTTranslateIterator iter(new RawVectorListReader(container));
   while (iter.hasNextFeature()) {
-    iter.iterate();
+    Rcout << iter.translateFeature();
   }
 }

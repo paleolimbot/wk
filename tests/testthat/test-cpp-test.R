@@ -11,10 +11,7 @@ test_that("test_basic_reader() works with multiple endians", {
 
   expect_output(test_basic_reader(point_be), "POINT \\(30 10\\)")
   expect_output(test_basic_reader(point_le), "POINT \\(30 10\\)")
-  expect_output(
-    expect_error(test_basic_reader(point_le[1:5]), "Reached end of RawVector input"),
-    "POINT"
-  )
+  expect_error(test_basic_reader(point_le[1:5]), "Reached end of RawVector input")
 })
 
 test_that("test_basic_reader() works with ND points and SRID", {
