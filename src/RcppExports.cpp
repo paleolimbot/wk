@@ -5,19 +5,20 @@
 
 using namespace Rcpp;
 
-// test_basic_reader
-void test_basic_reader(RawVector data);
-RcppExport SEXP _wkheaders_test_basic_reader(SEXP dataSEXP) {
+// translate_wkb_wkt
+CharacterVector translate_wkb_wkt(List container);
+RcppExport SEXP _wkheaders_translate_wkb_wkt(SEXP containerSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< RawVector >::type data(dataSEXP);
-    test_basic_reader(data);
-    return R_NilValue;
+    Rcpp::traits::input_parameter< List >::type container(containerSEXP);
+    rcpp_result_gen = Rcpp::wrap(translate_wkb_wkt(container));
+    return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wkheaders_test_basic_reader", (DL_FUNC) &_wkheaders_test_basic_reader, 1},
+    {"_wkheaders_translate_wkb_wkt", (DL_FUNC) &_wkheaders_translate_wkb_wkt, 1},
     {NULL, NULL, 0}
 };
 

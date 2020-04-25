@@ -1,5 +1,5 @@
 
-test_that("test_basic_reader() works with multiple endians", {
+test_that("translate_wkb_wkt() works with multiple endians", {
 
   point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x24, 0x00, 0x00, 0x00,
@@ -9,12 +9,12 @@ test_that("test_basic_reader() works with multiple endians", {
                        0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                        0x00, 0x24, 0x40))
 
-  expect_output(test_basic_reader(point_be), "POINT \\(30 10\\)")
-  expect_output(test_basic_reader(point_le), "POINT \\(30 10\\)")
-  expect_error(test_basic_reader(point_le[1:5]), "Reached end of RawVector input")
+  expect_identical(translate_wkb_wkt(list(point_be)), "POINT (30 10)")
+  expect_identical(translate_wkb_wkt(list(point_le)), "POINT (30 10)")
+  expect_error(translate_wkb_wkt(list(point_le[1:5])), "Reached end of RawVector input")
 })
 
-test_that("test_basic_reader() works with ND points and SRID", {
+test_that("translate_wkb_wkt() works with ND points and SRID", {
 
   point_xy <- as.raw(c(0x01, #
                        0x01, 0x00, 0x00, 0x00, # type
@@ -46,14 +46,14 @@ test_that("test_basic_reader() works with ND points and SRID", {
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
 
-  expect_output(test_basic_reader(point_xy), "POINT \\(30 10\\)")
-  expect_output(test_basic_reader(point_z), "POINT Z \\(30 10 2\\)")
-  expect_output(test_basic_reader(point_m), "POINT M \\(30 10 2\\)")
-  expect_output(test_basic_reader(point_zm), "POINT ZM \\(30 10 2 1\\)")
-  expect_output(test_basic_reader(point_s), "SRID=199;POINT \\(30 10\\)")
+  expect_identical(translate_wkb_wkt(list(point_xy)), "POINT (30 10)")
+  expect_identical(translate_wkb_wkt(list(point_z)), "POINT Z (30 10 2)")
+  expect_identical(translate_wkb_wkt(list(point_m)), "POINT M (30 10 2)")
+  expect_identical(translate_wkb_wkt(list(point_zm)), "POINT ZM (30 10 2 1)")
+  expect_identical(translate_wkb_wkt(list(point_s)), "SRID=199;POINT (30 10)")
 })
 
-test_that("test_basic_reader() works simple geometries", {
+test_that("translate_wkb_wkt() works simple geometries", {
 
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -84,18 +84,18 @@ test_that("test_basic_reader() works simple geometries", {
                       0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40))
 
-  expect_output(test_basic_reader(point), "POINT \\(30 10\\)")
-  expect_output(
-    test_basic_reader(linestring),
-    "LINESTRING \\(30 10, 12 42\\)"
+  expect_identical(translate_wkb_wkt(list(point)), "POINT (30 10)")
+  expect_identical(
+    translate_wkb_wkt(list(linestring)),
+    "LINESTRING (30 10, 12 42)"
   )
-  expect_output(
-    test_basic_reader(polygon),
-    "POLYGON \\(\\(35 10, 45 45, 15 40, 10 20, 35 10\\), \\(20 30, 35 35, 30 20, 20 30\\)\\)"
+  expect_identical(
+    translate_wkb_wkt(list(polygon)),
+    "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))"
   )
 })
 
-test_that("test_basic_reader() works with multi geometries", {
+test_that("translate_wkb_wkt() works with multi geometries", {
   # MULTIPOINT ((10 40), (40 30), (20 20), (30 10))
   multipoint <- as.raw(c(0x01, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00,
                          0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -106,13 +106,13 @@ test_that("test_basic_reader() works with multi geometries", {
                          0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x01,
                          0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e,
                          0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
-  expect_output(
-    test_basic_reader(multipoint),
-    "MULTIPOINT \\(\\(10 40\\), \\(40 30\\), \\(20 20\\), \\(30 10\\)\\)"
+  expect_identical(
+    translate_wkb_wkt(list(multipoint)),
+    "MULTIPOINT ((10 40), (40 30), (20 20), (30 10))"
   )
 })
 
-test_that("test_basic_reader() works with nested collections", {
+test_that("translate_wkb_wkt() works with nested collections", {
 
   wkt <-
   "GEOMETRYCOLLECTION (
@@ -162,16 +162,14 @@ test_that("test_basic_reader() works with nested collections", {
                          0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
 
-  expect_output(
-    test_basic_reader(collection),
+  expect_identical(
+    translate_wkb_wkt(list(collection)),
     paste0(
       "GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), ",
       "POLYGON ((40 40, 20 45, 45 30, 40 40)), GEOMETRYCOLLECTION ",
       "(POINT (40 10), LINESTRING (10 10, 20 20, 10 40), ",
       "POLYGON ((40 40, 20 45, 45 30, 40 40))), ",
       "GEOMETRYCOLLECTION EMPTY, POINT (30 10))"
-    ) %>%
-      gsub("\\(", "\\\\(", .) %>%
-      gsub("\\)", "\\\\)", .)
+    )
   )
 })

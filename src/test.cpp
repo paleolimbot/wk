@@ -94,11 +94,6 @@ public:
     return this->out.str();
   }
 
-  void nextFeature(size_t featureId) {
-    WKBIterator::nextFeature(featureId);
-    this->out << "\n";
-  }
-
   // wait until the SRID to print the geometry type
   // if there is one
   void nextGeometryType(GeometryType geometryType, uint32_t partId) {
@@ -198,10 +193,15 @@ private:
 };
 
 // [[Rcpp::export]]
-void test_basic_reader(RawVector data) {
-  List container = List::create(data);
+CharacterVector translate_wkb_wkt(List container) {
+  CharacterVector out(container.size());
   WKTTranslateIterator iter(new RawVectorListReader(container));
+
+  R_xlen_t i = 0;
   while (iter.hasNextFeature()) {
-    Rcout << iter.translateFeature();
+    out[i] = iter.translateFeature();
+    i++;
   }
+
+  return out;
 }
