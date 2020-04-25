@@ -105,7 +105,7 @@ public:
     }
   }
 
-  void writeGeometrySep(GeometryType geometryType, uint32_t partId, uint32_t srid) {
+  void writeGeometrySep(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
     bool iterCollection = iteratingCollection();
     bool iterMulti = iteratingMulti();
 
@@ -142,7 +142,7 @@ public:
       return false;
     }
 
-    GeometryType nester = this->lastGeometryType(-2);
+    const GeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::MultiPoint ||
       nester.simpleGeometryType == SimpleGeometryType::MultiLineString ||
       nester.simpleGeometryType == SimpleGeometryType::MultiPolygon;
@@ -154,7 +154,7 @@ public:
       return false;
     }
 
-    GeometryType nester = this->lastGeometryType(-2);
+    const GeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
   }
 

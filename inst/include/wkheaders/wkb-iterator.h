@@ -94,30 +94,31 @@ public:
     this->readGeometry(PART_ID_INVALID);
   }
 
+protected:
   void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
     this->nextEndian(this->endian, partId);
 
-    this->geometryType = this->resolveGeometryType(this->readUint32());
-    this->stack.push_back(this->geometryType);
-    this->nextGeometryType(this->geometryType, partId);
+    const GeometryType geometryType = GeometryType(this->readUint32());
+    this->stack.push_back(geometryType);
+    this->nextGeometryType(geometryType, partId);
 
     if (geometryType.hasSRID) {
       this->srid = this->readUint32();
-      this->nextSRID(this->geometryType, partId, this->srid);
+      this->nextSRID(geometryType, partId, this->srid);
     }
 
     if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
-      this->nextGeometry(this->geometryType, partId, 1);
+      this->nextGeometry(geometryType, partId, 1);
     } else {
-      this->nextGeometry(this->geometryType, partId, this->readUint32());
+      this->nextGeometry(geometryType, partId, this->readUint32());
     }
 
     this->stack.pop_back();
   }
 
-  virtual void nextGeometry(GeometryType geometryType, uint32_t partId, uint32_t size) {
+  virtual void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
     switch (geometryType.simpleGeometryType) {
     case SimpleGeometryType::Point:
       this->nextPoint(geometryType);
@@ -143,23 +144,23 @@ public:
     }
   }
 
-  virtual void nextPoint(GeometryType geometryType) {
+  virtual void nextPoint(const GeometryType geometryType) {
     this->readPoint(geometryType, 0);
   }
 
-  virtual void nextLinestring(GeometryType geometryType, uint32_t size) {
+  virtual void nextLinestring(const GeometryType geometryType, uint32_t size) {
     this->readLineString(geometryType, size);
   }
 
-  virtual void nextPolygon(GeometryType geometryType, uint32_t size) {
+  virtual void nextPolygon(const GeometryType geometryType, uint32_t size) {
     this->readPolygon(geometryType, size);
   }
 
-  virtual void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
+  virtual void nextLinearRing(const GeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->readLineString(geometryType, size);
   }
 
-  virtual void nextCollection(GeometryType geometryType, uint32_t size) {
+  virtual void nextCollection(const GeometryType geometryType, uint32_t size) {
     this->readMultiGeometry(geometryType, size);
   }
 
@@ -171,16 +172,16 @@ public:
 
   }
 
-  virtual void nextGeometryType(GeometryType geometryType, uint32_t partId) {
+  virtual void nextGeometryType(const GeometryType geometryType, uint32_t partId) {
       
   }
 
-  virtual void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
+  virtual void nextSRID(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
 
   }
 
   // accessors (may need more, these are sufficient for WKT translator)
-  GeometryType lastGeometryType(int level) {
+  const GeometryType lastGeometryType(int level) {
     if (level >= 0) {
       return this->stack[level];
     } else {
@@ -188,7 +189,7 @@ public:
     }
   }
 
-  GeometryType lastGeometryType() {
+  const GeometryType lastGeometryType() {
     return lastGeometryType(-1);
   }
 
@@ -198,11 +199,6 @@ public:
 
   // endian swapping is hard to replicate...these might be useful
   // for subclasses that implement an extension of WKB
-protected:
-  GeometryType resolveGeometryType(uint32_t ewkbType) {
-    return GeometryType(ewkbType);
-  }
-
   unsigned char readChar() {
     return this->readCharRaw();
   }

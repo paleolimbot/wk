@@ -26,43 +26,34 @@ enum SimpleGeometryType {
 
 class GeometryType {
 public:
-  uint32_t simpleGeometryType;
-  bool hasZ;
-  bool hasM;
-  bool hasSRID;
+  const uint32_t simpleGeometryType;
+  const bool hasZ;
+  const bool hasM;
+  const bool hasSRID;
+  const uint32_t ewkbType;
 
-  GeometryType() {
-    this->simpleGeometryType = SimpleGeometryType::Invalid;
-    this->hasZ = false;
-    this->hasM = false;
-    this->hasSRID = false;
-  }
+  GeometryType(): 
+    simpleGeometryType(SimpleGeometryType::Invalid), 
+    hasZ(false), 
+    hasM(false), 
+    hasSRID(false),
+    ewkbType(0) {}
 
-  GeometryType(uint32_t ewkbType) {
-    this->simpleGeometryType = ewkbType & 0x000000ff;
-    this->hasZ = ewkbType & EWKB_Z_BIT;
-		this->hasM = ewkbType & EWKB_M_BIT;
-		this->hasSRID = ewkbType & EWKB_SRID_BIT;
-    // checks the simple geometry type
-    this->wktType();
-  }
+  GeometryType(uint32_t ewkbType): 
+    simpleGeometryType(ewkbType & 0x000000ff), 
+    hasZ(ewkbType & EWKB_Z_BIT), 
+    hasM(ewkbType & EWKB_M_BIT), 
+    hasSRID(ewkbType & EWKB_SRID_BIT),
+    ewkbType(ewkbType) {}
 
-  GeometryType(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID) {
-    this->simpleGeometryType = simpleGeometryType;
-    this->hasZ = hasZ;
-    this->hasM = hasM;
-    this->hasSRID = hasSRID;
-  }
-
-  uint32_t wkbType() {
-    uint32_t out = this->simpleGeometryType;
-    if (this->hasZ) out |= EWKB_Z_BIT;
-    if (this->hasM) out |= EWKB_M_BIT;
-    if (this->hasSRID) out |= EWKB_SRID_BIT;
-    return out;
-  }
-
-  std::string wktType() {
+  GeometryType(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID):
+    simpleGeometryType(simpleGeometryType),
+    hasZ(hasZ),
+    hasM(hasM),
+    hasSRID(hasSRID),
+    ewkbType(calcEWKBType(simpleGeometryType, hasZ, hasM, hasSRID)) {}
+  
+  std::string wktType() const {
     Formatter f;
     f << wktSimpleGeometryType(this->simpleGeometryType);
 
@@ -78,6 +69,15 @@ public:
     }
 
     return f;
+  }
+
+private:
+  static uint32_t calcEWKBType(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID) {
+    uint32_t out = simpleGeometryType;
+    if (hasZ) out |= EWKB_Z_BIT;
+    if (hasM) out |= EWKB_M_BIT;
+    if (hasSRID) out |= EWKB_SRID_BIT;
+    return out;
   }
 
   static const char* wktSimpleGeometryType(uint32_t simpleGeometryType) {
@@ -98,7 +98,9 @@ public:
       return "GEOMETRYCOLLECTION";
     default:
       throw std::runtime_error(
-        Formatter() << "GeometryType::wktType(): invalid type: " << simpleGeometryType
+        Formatter() << 
+          "invalid type in GeometryType::wktSimpleGeometryType(): " << 
+          simpleGeometryType
       );
     }
   }
