@@ -3,7 +3,6 @@
 #define WKHEADERS_TRANSLATOR_H
 
 #include <iostream>
-#include <sstream>
 #include "wkheaders/wkb-iterator.h"
 
 class WKBWKTTranslator: WKBIterator {
@@ -16,8 +15,26 @@ public:
     return WKBIterator::hasNextFeature();
   }
 
-  virtual void iterate() {
-    WKBIterator::iterate();
+  virtual void iterateFeature() {
+    WKBIterator::iterateFeature();
+  }
+
+  // output stream manipulations I'd rather not remember
+  // how to do again
+  void ensureClassicLocale() {
+    this->out.imbue(std::locale::classic());
+  }
+
+  void setRoundingPrecision(int precision) {
+    this->out.precision(precision);
+  }
+
+  void setTrim(bool trim) {
+    if (trim) {
+      this->out.unsetf(out.fixed);
+    } else {
+      this->out.setf(out.fixed);
+    }
   }
 
 protected:

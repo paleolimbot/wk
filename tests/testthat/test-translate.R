@@ -173,3 +173,32 @@ test_that("translate_wkb_wkt() works with nested collections", {
     )
   )
 })
+
+test_that("translate_wkt_wkb() respects trim and rounding options", {
+  # POINT (30 10)
+  point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x24, 0x40))
+
+  # POINT (30.3333333 10.3333333)
+  point_repeating <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x55, 0x55,
+                              0x55, 0x55, 0x55, 0x55, 0x3e, 0x40, 0xab, 0xaa, 0xaa, 0xaa, 0xaa,
+                              0xaa, 0x24, 0x40))
+
+  expect_identical(
+    translate_wkb_wkt(list(point), precision = 5, trim = TRUE),
+    "POINT (30 10)"
+  )
+  expect_identical(
+    translate_wkb_wkt(list(point), precision = 5, trim = FALSE),
+    "POINT (30.00000 10.00000)"
+  )
+  expect_identical(
+    translate_wkb_wkt(list(point_repeating), precision = 5, trim = TRUE),
+    "POINT (30.333 10.333)"
+  )
+  expect_identical(
+    translate_wkb_wkt(list(point_repeating), precision = 5, trim = FALSE),
+    "POINT (30.33333 10.33333)"
+  )
+})

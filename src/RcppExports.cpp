@@ -6,19 +6,21 @@
 using namespace Rcpp;
 
 // cpp_translate_wkb_wkt
-CharacterVector cpp_translate_wkb_wkt(List x);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP xSEXP) {
+CharacterVector cpp_translate_wkb_wkt(List x, int precision, bool trim);
+RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP xSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkt(x));
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkt(x, precision, trim));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wkheaders_cpp_translate_wkb_wkt", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkt, 1},
+    {"_wkheaders_cpp_translate_wkb_wkt", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkt, 3},
     {NULL, NULL, 0}
 };
 

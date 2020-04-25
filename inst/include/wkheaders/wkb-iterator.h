@@ -33,7 +33,7 @@ public:
     return this->reader->seekNextFeature();
   }
 
-  void iterate() {
+  void iterateFeature() {
     this->readFeature();
   }
 

@@ -3,10 +3,13 @@
 #'
 #' @param x A `list()` of [raw()] vectors, such as that
 #'   returned by [sf::st_as_binary()].
+#' @param trim Trim unnecessary zeroes in the output?
+#' @param precision The rounding precision to use when writing
+#'   (number of decimal places).
 #'
 #' @return A character vector of well-known text.
 #' @export
 #'
-translate_wkb_wkt <- function(x) {
-  cpp_translate_wkb_wkt(x)
+translate_wkb_wkt <- function(x, precision = 16, trim = TRUE) {
+  cpp_translate_wkb_wkt(x, precision, trim)
 }
