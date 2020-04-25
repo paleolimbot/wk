@@ -10,6 +10,7 @@ public:
   RawVectorListReader(List container) {
     this->container = container;
     this->index = -1;
+    this->featureNull = true;
     this->offset = 0;
   }
 
@@ -30,12 +31,26 @@ protected:
     this->index += 1;
     if (this->index >= this->container.size()) {
       return false;
-    } else {
-      this->data = this->container[this->index];
-      this->offset = 0;
-      return true;
     }
+
+    SEXP item = this->container[this->index];
+    
+    if (item == R_NilValue) {
+      this->featureNull = true;
+      this->data = RawVector::create();
+    } else {
+      this->featureNull = false;
+      this->data = (RawVector)item;
+    }
+
+    this->offset = 0;
+    return true;
   }
+
+  bool featureIsNull() {
+    return this->featureNull;
+  }
+
 
   size_t nFeatures() {
     return container.size();
@@ -46,6 +61,7 @@ private:
   R_xlen_t index;
   RawVector data;
   R_xlen_t offset;
+  bool featureNull;
 
   template<typename T>
   T readBinary() {
@@ -68,8 +84,8 @@ public:
 
   }
 
-  void nextFeature() {
-    WKBIterator::nextFeature();
+  void nextFeature(size_t featureId) {
+    WKBIterator::nextFeature(featureId);
     this->out << "\n";
   }
 
@@ -176,6 +192,6 @@ void test_basic_reader(RawVector data) {
   List container = List::create(data);
   WKTTranslateIterator iter(new RawVectorListReader(container), Rcout);
   while (iter.hasNextFeature()) {
-    iter.nextFeature();
+    iter.iterate();
   }
 }

@@ -20,6 +20,7 @@ public:
   WKBIterator(BinaryReader* reader) {
     this->reader = std::unique_ptr<BinaryReader>(reader);
     this->swapEndian = false;
+    this->featureId = 0;
     this->partId = PART_ID_INVALID;
     this->ringId = RING_ID_INVALID;
     this->coordId = COORD_ID_INVALID;
@@ -32,11 +33,23 @@ public:
     return this->reader->seekNextFeature();
   }
 
-  virtual void nextFeature() {
-    this->readGeometry(PART_ID_INVALID);
+  void iterate() {
+    this->readFeature();
   }
 
 protected:
+
+  virtual void nextFeature(size_t featureId) {
+    if (this->reader->featureIsNull()) {
+      this->nextNull(featureId);
+    } else {
+      this->readGeometry(PART_ID_INVALID);
+    }
+  }
+
+  virtual void nextNull(size_t featureId) {
+
+  }
 
   virtual void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
     switch (geometryType.simpleGeometryType) {
@@ -140,6 +153,7 @@ protected:
 private:
   std::unique_ptr<BinaryReader> reader;
 
+  size_t featureId;
   uint32_t partId;
   uint32_t ringId;
   uint32_t coordId;
@@ -163,7 +177,8 @@ private:
     this->srid = SRID_INVALID;
     this->stack.clear();
 
-    this->nextFeature();
+    this->nextFeature(this->featureId);
+    this->featureId += 1;
   }
 
   void readGeometry(uint32_t partId) {

@@ -31,6 +31,7 @@ public:
   virtual double readDoubleRaw() = 0;
   virtual uint32_t readUint32Raw() = 0;
   virtual bool seekNextFeature() = 0;
+  virtual bool featureIsNull() = 0;
   virtual size_t nFeatures() = 0;
 
   virtual ~BinaryReader() {}
