@@ -1,81 +1,11 @@
 #include <Rcpp.h>
 #include "wkheaders/wkb-iterator.h"
-#include "wkheaders/io-utils.h"
+#include "wkheaders/io-rcpp.h"
 #include <iostream>
 #include <sstream>
 using namespace Rcpp;
 
-class RawVectorListReader: public BinaryReader {
-public:
 
-  RawVectorListReader(List container) {
-    this->container = container;
-    this->index = -1;
-    this->featureNull = true;
-    this->offset = 0;
-  }
-
-protected:
-  unsigned char readCharRaw() {
-    return readBinary<unsigned char>();
-  }
-
-  double readDoubleRaw() {
-    return readBinary<double>();
-  }
-
-  uint32_t readUint32Raw() {
-    return readBinary<uint32_t>();
-  }
-
-  bool seekNextFeature() {
-    this->index += 1;
-    if (this->index >= this->container.size()) {
-      return false;
-    }
-
-    SEXP item = this->container[this->index];
-    
-    if (item == R_NilValue) {
-      this->featureNull = true;
-      this->data = RawVector::create();
-    } else {
-      this->featureNull = false;
-      this->data = (RawVector)item;
-    }
-
-    this->offset = 0;
-    return true;
-  }
-
-  bool featureIsNull() {
-    return this->featureNull;
-  }
-
-  size_t nFeatures() {
-    return container.size();
-  }
-
-private:
-  List container;
-  R_xlen_t index;
-  RawVector data;
-  R_xlen_t offset;
-  bool featureNull;
-
-  template<typename T>
-  T readBinary() {
-    // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
-    if ((this->offset + sizeof(T)) > this->data.size()) {
-      stop("Reached end of RawVector input");
-    }
-
-    T dst;
-    memcpy(&dst, &(this->data[this->offset]), sizeof(T));
-    this->offset += sizeof(T);
-    return dst;
-  }
-};
 
 class WKTTranslateIterator: WKBIterator {
 public:
@@ -195,7 +125,7 @@ private:
 // [[Rcpp::export]]
 CharacterVector cpp_translate_wkb_wkt(List x) {
   CharacterVector out(x.size());
-  WKTTranslateIterator iter(new RawVectorListReader(x));
+  WKTTranslateIterator iter(new WKRawVectorListReader(x));
 
   R_xlen_t i = 0;
   while (iter.hasNextFeature()) {
