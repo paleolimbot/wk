@@ -7,6 +7,57 @@
 #include "wkheaders/geometry-type.h"
 #include "wkheaders/io-utils.h"
 
+class Coordinate {
+public:
+  const double x;
+  const double y;
+  const double z;
+  const double m;
+  const bool hasZ;
+  const bool hasM;
+
+  Coordinate(): x(NAN), y(NAN), z(NAN), m(NAN), hasZ(false), hasM(false) {}
+  Coordinate(double x, double y, double z, double m, bool hasZ, bool hasM):
+    x(x), y(y), z(z), m(m), hasZ(hasZ), hasM(hasM) {}
+
+  const double& operator[](std::size_t idx) const { 
+    switch (idx) {
+    case 0: return x;
+    case 1: return y;
+    case 2: 
+      if (hasZ) {
+        return z; 
+      } else if (hasM) {
+        return m;
+      }
+    case 3:
+      if (hasM) return m;
+    default:
+      throw std::runtime_error("Coordinate subscript out of range");
+    }
+  }
+
+  const size_t size() {
+    return 2 + hasZ + hasM;
+  }
+
+  static const Coordinate xy(double x, double y) {
+    return Coordinate(x, y, NAN, NAN, false, false);
+  }
+
+  static const Coordinate xyz(double x, double y, double z) {
+    return Coordinate(x, y, z, NAN, true, false);
+  }
+
+  static const Coordinate xym(double x, double y, double m) {
+    return Coordinate(x, y, NAN, m, false, true);
+  }
+
+  static const Coordinate xyzm(double x, double y, double z, double m) {
+    return Coordinate(x, y, z, m, true, true);
+  }
+};
+
 class WKBIterator {
 
 public:
@@ -55,33 +106,33 @@ public:
     this->srid = SRID_INVALID;
     this->stack.clear();
 
-    this->readGeometry();
+    this->readGeometry(PART_ID_INVALID);
   }
 
-  void readGeometry() {
+  void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    this->nextEndian(this->endian);
+    this->nextEndian(this->endian, partId);
 
     this->geometryType = GeometryType(this->readUint32());
     this->stack.push_back(this->geometryType);
-    this->nextGeometryType(this->geometryType);
+    this->nextGeometryType(this->geometryType, partId);
 
     if (geometryType.hasSRID) {
       this->srid = this->readUint32();
-      this->nextSRID(this->geometryType, this->srid);
+      this->nextSRID(this->geometryType, partId, this->srid);
     }
 
     if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
-      this->nextGeometry(this->geometryType, 1);
+      this->nextGeometry(this->geometryType, partId, 1);
     } else {
-      this->nextGeometry(this->geometryType, this->readUint32());
+      this->nextGeometry(this->geometryType, partId, this->readUint32());
     }
 
     this->stack.pop_back();
   }
 
-  virtual void nextGeometry(GeometryType geometryType, uint32_t size) {
+  virtual void nextGeometry(GeometryType geometryType, uint32_t partId, uint32_t size) {
     switch (geometryType.simpleGeometryType) {
     case SimpleGeometryType::Point:
       this->nextPoint(geometryType);
@@ -108,7 +159,7 @@ public:
   }
 
   virtual void nextPoint(GeometryType geometryType) {
-    this->readPoint(geometryType);
+    this->readPoint(geometryType, 0);
   }
 
   virtual void nextLinestring(GeometryType geometryType, uint32_t size) {
@@ -119,7 +170,7 @@ public:
     this->readPolygon(geometryType, size);
   }
 
-  virtual void nextLinearRing(GeometryType geometryType, uint32_t size) {
+  virtual void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->readLinearRing(geometryType, size);
   }
 
@@ -127,54 +178,42 @@ public:
     this->readMultiGeometry(geometryType, size);
   }
 
-  void readPoint(GeometryType geometryType) {
+  void readPoint(GeometryType geometryType, uint32_t coordId) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
     if (geometryType.hasZ && geometryType.hasM) {
       this->z = this->readDouble();
       this->m = this->readDouble();
-      this->nextXYZM(this->x, this->y, this->z, this->m);
+      this->nextCoordinate(Coordinate::xyzm(x, y, z, m), coordId);
 
     } else if (geometryType.hasZ) {
       this->z = this->readDouble();
-      this->nextXYZ(this->x, this->y, this->z);
+      this->nextCoordinate(Coordinate::xyz(x, y, z), coordId);
 
     } else if (geometryType.hasM) {
       this->m = this->readDouble();
-      this->nextXYM(this->x, this->y, this->m);
+      this->nextCoordinate(Coordinate::xyz(x, y, m), coordId);
 
     } else {
-      this->nextXY(this->x, this->y);
+      this->nextCoordinate(Coordinate::xy(x, y), coordId);
     }
   }
 
-  virtual void nextEndian(unsigned char endian) {
+  virtual void nextCoordinate(const Coordinate coord, uint32_t coordId) {
+    
+  }
+
+  virtual void nextEndian(unsigned char endian, uint32_t partId) {
 
   }
 
-  virtual void nextGeometryType(GeometryType geometryType) {
+  virtual void nextGeometryType(GeometryType geometryType, uint32_t partId) {
       
   }
 
-  virtual void nextSRID(GeometryType geometryType, uint32_t srid) {
+  virtual void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
 
-  }
-
-  virtual void nextXY(double x, double y) {
-
-  }
-
-  virtual void nextXYZ(double x, double y, double z) {
-    this->nextXY(x, y);
-  }
-
-  virtual void nextXYM(double x, double y, double m) {
-    this->nextXY(x, y);
-  }
-
-  virtual void nextXYZM(double x, double y, double z, double m) {
-    this->nextXYZ(x, y, z);
   }
 
 private:
@@ -183,7 +222,7 @@ private:
   void readLineString(GeometryType geometryType, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
-      this->readPoint(geometryType);
+      this->readPoint(geometryType, i);
     }
   }
 
@@ -196,14 +235,14 @@ private:
     for (uint32_t i=0; i<size; i++) {
       this->ringId = i;
       ringSize = this->readUint32();
-      this->nextLinearRing(geometryType, ringSize);
+      this->nextLinearRing(geometryType, i, ringSize);
     }
   }
 
   void readMultiGeometry(GeometryType geometryType, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->partId = i;
-      this->readGeometry();
+      this->readGeometry(i);
     }
   }
 

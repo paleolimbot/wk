@@ -66,62 +66,50 @@ public:
 
   // wait until the SRID to print the geometry type
   // if there is one
-  void nextGeometryType(GeometryType geometryType) {
+  void nextGeometryType(GeometryType geometryType, uint32_t partId) {
     if (!geometryType.hasSRID) {
-      this->writeGeometrySep(geometryType, 0);
+      this->writeGeometrySep(geometryType, partId, 0);
     }
   }
 
-  void nextSRID(GeometryType geometryType, uint32_t srid) {
-    this->writeGeometrySep(geometryType, srid);
+  void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
+    this->writeGeometrySep(geometryType, partId, srid);
   }
 
-  void nextGeometry(GeometryType geometryType, uint32_t size) {
+  void nextGeometry(GeometryType geometryType, uint32_t partId, uint32_t size) {
     if (size > 0) {
       this->out << "(";
     } else {
       this->out << "EMPTY";
     }
 
-    WKBIterator::nextGeometry(geometryType, size);
+    WKBIterator::nextGeometry(geometryType, partId, size);
 
     if (size > 0) {
       this->out << ")";
     }
   }
 
-  void nextLinearRing(GeometryType geometryType, uint32_t size) {
-    this->writeRingSep();
+  void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
+    this->writeRingSep(ringId);
     this->out << "(";
-    WKBIterator::nextLinearRing(geometryType, size);
+    WKBIterator::nextLinearRing(geometryType, ringId, size);
     this->out << ")";
   }
 
-  void nextXY(double x, double y) {
-    this->writeCoordSep();
-    this->out << x << " " << y;
+  void nextCoordinate(Coordinate coord, uint32_t coordId) {
+    this->writeCoordSep(coordId);
+    this->out << coord[0];
+    for (size_t i=1; i < coord.size(); i++) {
+      this->out << " " << coord[i];
+    }
   }
 
-  void nextXYZ(double x, double y, double z) {
-    this->writeCoordSep();
-    this->out << x << " " << y << " " << z;
-  }
-
-  void nextXYM(double x, double y, double m) {
-    this->writeCoordSep();
-    this->out << x << " " << y << " " << m;
-  }
-
-  void nextXYZM(double x, double y, double z, double m) {
-    this->writeCoordSep();
-    this->out << x << " " << y << " " << z << " " << m;
-  }
-
-  void writeGeometrySep(GeometryType geometryType, uint32_t srid) {
+  void writeGeometrySep(GeometryType geometryType, uint32_t partId, uint32_t srid) {
     bool iterCollection = iteratingCollection();
     bool iterMulti = iteratingMulti();
 
-    if ((iterCollection || iterMulti) && this->partId > 0) {
+    if ((iterCollection || iterMulti) && partId > 0) {
       this->out << ", ";
     } 
     
@@ -134,6 +122,18 @@ public:
     }
     
     this->out << geometryType.wktType() << " ";
+  }
+
+  void writeRingSep(uint32_t ringId) {
+    if (ringId > 0) {
+      this->out << ", ";
+    }
+  }
+
+  void writeCoordSep(uint32_t coordId) {
+    if (coordId > 0) {
+      this->out << ", ";
+    }
   }
 
   bool iteratingMulti() {
@@ -156,18 +156,6 @@ public:
 
     GeometryType nester = this->stack[stackSize - 2];
     return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
-  }
-
-  void writeRingSep() {
-    if (this->ringId > 0) {
-      this->out << ", ";
-    }
-  }
-
-  void writeCoordSep() {
-    if (this->coordId > 0 && this->geometryType.simpleGeometryType != SimpleGeometryType::Point) {
-      this->out << ", ";
-    }
   }
 
 private:
