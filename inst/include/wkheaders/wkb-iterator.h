@@ -84,39 +84,10 @@ public:
   }
 
   virtual void nextFeature() {
-    this->partId = PART_ID_INVALID;
-    this->ringId = RING_ID_INVALID;
-    this->coordId = COORD_ID_INVALID;
-    this->endian = ENDIAN_INVALID;
-    this->srid = SRID_INVALID;
-    this->stack.clear();
-
     this->readGeometry(PART_ID_INVALID);
   }
 
 protected:
-  void readGeometry(uint32_t partId) {
-    this->endian = this->readChar();
-    this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    this->nextEndian(this->endian, partId);
-
-    const GeometryType geometryType = GeometryType(this->readUint32());
-    this->stack.push_back(geometryType);
-    this->nextGeometryType(geometryType, partId);
-
-    if (geometryType.hasSRID) {
-      this->srid = this->readUint32();
-      this->nextSRID(geometryType, partId, this->srid);
-    }
-
-    if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
-      this->nextGeometry(geometryType, partId, 1);
-    } else {
-      this->nextGeometry(geometryType, partId, this->readUint32());
-    }
-
-    this->stack.pop_back();
-  }
 
   virtual void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
     switch (geometryType.simpleGeometryType) {
@@ -234,6 +205,40 @@ private:
   double y;
   double z;
   double m;
+
+  void readFeature() {
+    this->partId = PART_ID_INVALID;
+    this->ringId = RING_ID_INVALID;
+    this->coordId = COORD_ID_INVALID;
+    this->endian = ENDIAN_INVALID;
+    this->srid = SRID_INVALID;
+    this->stack.clear();
+
+    this->nextFeature();
+  }
+
+  void readGeometry(uint32_t partId) {
+    this->endian = this->readChar();
+    this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
+    this->nextEndian(this->endian, partId);
+
+    const GeometryType geometryType = GeometryType(this->readUint32());
+    this->stack.push_back(geometryType);
+    this->nextGeometryType(geometryType, partId);
+
+    if (geometryType.hasSRID) {
+      this->srid = this->readUint32();
+      this->nextSRID(geometryType, partId, this->srid);
+    }
+
+    if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
+      this->nextGeometry(geometryType, partId, 1);
+    } else {
+      this->nextGeometry(geometryType, partId, this->readUint32());
+    }
+
+    this->stack.pop_back();
+  }
 
   void readPoint(GeometryType geometryType, uint32_t coordId) {
     this->x = this->readDouble();
