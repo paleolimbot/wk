@@ -3,60 +3,9 @@
 #define WKHEADERS_WKB_ITERATOR_H
 
 #include <memory>
-#include <cmath>
 #include "wkheaders/geometry-type.h"
 #include "wkheaders/io-utils.h"
-
-class Coordinate {
-public:
-  const double x;
-  const double y;
-  const double z;
-  const double m;
-  const bool hasZ;
-  const bool hasM;
-
-  Coordinate(): x(NAN), y(NAN), z(NAN), m(NAN), hasZ(false), hasM(false) {}
-  Coordinate(double x, double y, double z, double m, bool hasZ, bool hasM):
-    x(x), y(y), z(z), m(m), hasZ(hasZ), hasM(hasM) {}
-
-  const double& operator[](std::size_t idx) const { 
-    switch (idx) {
-    case 0: return x;
-    case 1: return y;
-    case 2: 
-      if (hasZ) {
-        return z; 
-      } else if (hasM) {
-        return m;
-      }
-    case 3:
-      if (hasM) return m;
-    default:
-      throw std::runtime_error("Coordinate subscript out of range");
-    }
-  }
-
-  const size_t size() {
-    return 2 + hasZ + hasM;
-  }
-
-  static const Coordinate xy(double x, double y) {
-    return Coordinate(x, y, NAN, NAN, false, false);
-  }
-
-  static const Coordinate xyz(double x, double y, double z) {
-    return Coordinate(x, y, z, NAN, true, false);
-  }
-
-  static const Coordinate xym(double x, double y, double m) {
-    return Coordinate(x, y, NAN, m, false, true);
-  }
-
-  static const Coordinate xyzm(double x, double y, double z, double m) {
-    return Coordinate(x, y, z, m, true, true);
-  }
-};
+#include "wkheaders/wk-coord.h"
 
 class WKBIterator {
 
@@ -135,7 +84,7 @@ protected:
     this->readMultiGeometry(geometryType, size);
   }
 
-  virtual void nextCoordinate(const Coordinate coord, uint32_t coordId) {
+  virtual void nextCoordinate(const WKCoord coord, uint32_t coordId) {
     
   }
 
@@ -247,18 +196,18 @@ private:
     if (geometryType.hasZ && geometryType.hasM) {
       this->z = this->readDouble();
       this->m = this->readDouble();
-      this->nextCoordinate(Coordinate::xyzm(x, y, z, m), coordId);
+      this->nextCoordinate(WKCoord::xyzm(x, y, z, m), coordId);
 
     } else if (geometryType.hasZ) {
       this->z = this->readDouble();
-      this->nextCoordinate(Coordinate::xyz(x, y, z), coordId);
+      this->nextCoordinate(WKCoord::xyz(x, y, z), coordId);
 
     } else if (geometryType.hasM) {
       this->m = this->readDouble();
-      this->nextCoordinate(Coordinate::xyz(x, y, m), coordId);
+      this->nextCoordinate(WKCoord::xyz(x, y, m), coordId);
 
     } else {
-      this->nextCoordinate(Coordinate::xy(x, y), coordId);
+      this->nextCoordinate(WKCoord::xy(x, y), coordId);
     }
   }
 

@@ -97,7 +97,7 @@ public:
     this->out << ")";
   }
 
-  void nextCoordinate(Coordinate coord, uint32_t coordId) {
+  void nextCoordinate(const WKCoord coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
     this->out << coord[0];
     for (size_t i=1; i < coord.size(); i++) {
