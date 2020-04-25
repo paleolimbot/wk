@@ -64,23 +64,37 @@ public:
     this->out << "\n";
   }
 
+  // wait until the SRID to print the geometry type
+  // if there is one
   void nextGeometryType(GeometryType geometryType) {
     if (!geometryType.hasSRID) {
-      this->out << geometryType.wktType() << " ";
+      this->writeGeometrySep(geometryType, 0);
     }
   }
 
   void nextSRID(GeometryType geometryType, uint32_t srid) {
-    this->out << "SRID=" << srid << ";" << geometryType.wktType() << " ";
+    this->writeGeometrySep(geometryType, srid);
   }
 
   void nextEmpty(GeometryType geometryType) {
-    this->out << " EMPTY";
+    this->out << "EMPTY";
   }
 
   void nextGeometry(GeometryType geometryType, uint32_t size) {
     this->out << "(";
     WKBIterator::nextGeometry(geometryType, size);
+    this->out << ")";
+  }
+
+  void nextMultiGeometry(GeometryType geometryType, uint32_t size) {
+    this->out << "(";
+    WKBIterator::nextMultiGeometry(geometryType, size);
+    this->out << ")";
+  }
+
+  void nextCollection(GeometryType geometryType, uint32_t size) {
+    this->out << "(";
+    WKBIterator::nextCollection(geometryType, size);
     this->out << ")";
   }
 
@@ -109,6 +123,47 @@ public:
   void nextXYZM(double x, double y, double z, double m) {
     this->writeCoordSep();
     this->out << x << " " << y << " " << z << " " << m;
+  }
+
+  void writeGeometrySep(GeometryType geometryType, uint32_t srid) {
+    bool iterCollection = iteratingCollection();
+    bool iterMulti = iteratingMulti();
+
+    if ((iterCollection || iterMulti) && this->partId > 0) {
+      this->out << ", ";
+    } 
+    
+    if(iterMulti) {
+      return;
+    }
+    
+    if(!iterCollection && geometryType.hasSRID) {
+      this->out << "SRID=" << srid << ";";
+    }
+    
+    this->out << geometryType.wktType() << " ";
+  }
+
+  bool iteratingMulti() {
+    size_t stackSize = this->stack.size();
+    if (this->stack.size() <= 1) {
+      return false;
+    }
+
+    GeometryType nester = this->stack[stackSize - 2];
+    return nester.simpleGeometryType == SimpleGeometryType::MultiPoint ||
+      nester.simpleGeometryType == SimpleGeometryType::MultiLineString ||
+      nester.simpleGeometryType == SimpleGeometryType::MultiPolygon;
+  }
+
+  bool iteratingCollection() {
+    size_t stackSize = this->stack.size();
+    if (this->stack.size() <= 1) {
+      return false;
+    }
+
+    GeometryType nester = this->stack[stackSize - 2];
+    return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
   }
 
   void writeRingSep() {

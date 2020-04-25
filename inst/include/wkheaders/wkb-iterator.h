@@ -22,6 +22,8 @@ public:
   uint32_t ringId;
   uint32_t coordId;
 
+  std::vector<GeometryType> stack;
+
   bool swapEndian;
   unsigned char endian;
   GeometryType geometryType;
@@ -40,6 +42,7 @@ public:
     this->coordId = COORD_ID_INVALID;
     this->srid = SRID_INVALID;
     this->endian = ENDIAN_INVALID;
+    this->stack = std::vector<GeometryType>();
   }
 
   virtual void nextFeature() {
@@ -50,6 +53,8 @@ public:
     this->coordId = COORD_ID_INVALID;
     this->endian = ENDIAN_INVALID;
     this->srid = SRID_INVALID;
+    this->stack.clear();
+
     this->readGeometry();
   }
 
@@ -59,6 +64,7 @@ public:
     this->nextEndian(this->endian);
 
     this->geometryType = GeometryType(this->readUint32());
+    this->stack.push_back(this->geometryType);
     this->nextGeometryType(this->geometryType);
 
     if (geometryType.hasSRID) {
@@ -66,21 +72,38 @@ public:
       this->nextSRID(this->geometryType, this->srid);
     }
 
+    uint32_t size;
+
     switch (geometryType.simpleGeometryType) {
     case SimpleGeometryType::Point:
       this->nextGeometry(this->geometryType, 1);
       break;
     case SimpleGeometryType::LineString:
     case SimpleGeometryType::Polygon:
-      this->nextGeometry(this->geometryType, this->readUint32());
+      size = this->readUint32();
+      if (size > 0) {
+        this->nextGeometry(this->geometryType, size);
+      } else {
+        this->nextEmpty(this->geometryType);
+      }
       break;
     case SimpleGeometryType::MultiPoint:
     case SimpleGeometryType::MultiLineString:
     case SimpleGeometryType::MultiPolygon:
-      this->nextMultiGeometry(this->geometryType, this->readUint32());
+      size = this->readUint32();
+      if (size > 0) {
+        this->nextMultiGeometry(this->geometryType, size);
+      } else {
+        this->nextEmpty(this->geometryType);
+      }
       break;
     case SimpleGeometryType::GeometryCollection:
-      this->nextCollection(this->geometryType, this->readUint32());
+      size = this->readUint32();
+      if (size > 0) {
+        this->nextCollection(this->geometryType, size);
+      } else {
+        this->nextEmpty(this->geometryType);
+      }
       break;
     default:
       throw std::runtime_error(
@@ -89,6 +112,8 @@ public:
             geometryType.simpleGeometryType
       );
     }
+
+    this->stack.pop_back();
   }
 
   virtual void nextEmpty(GeometryType geometryType) {
@@ -117,11 +142,11 @@ public:
   }
 
   virtual void nextMultiGeometry(GeometryType geometryType, uint32_t size) {
-
+    this->readMultiGeometry(geometryType, size);
   }
 
   virtual void nextCollection(GeometryType geometryType, uint32_t size) {
-
+    this->readMultiGeometry(geometryType, size);
   }
 
   virtual void nextPoint(GeometryType geometryType) {
@@ -179,6 +204,13 @@ public:
       this->ringId = i;
       ringSize = this->readUint32();
       this->nextLinearRing(geometryType, ringSize);
+    }
+  }
+
+  void readMultiGeometry(GeometryType geometryType, uint32_t size) {
+    for (uint32_t i=0; i < size; i++) {
+      this->partId = i;
+      this->readGeometry();
     }
   }
 
