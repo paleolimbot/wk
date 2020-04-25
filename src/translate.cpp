@@ -1,18 +1,41 @@
+
+#include <sstream>
 #include <Rcpp.h>
 #include "wkheaders/translator.h"
 #include "wkheaders/io-rcpp.h"
+
 using namespace Rcpp;
+
+class RcppWKBWKTTranslator: public WKBWKTTranslator {
+public:
+  Rcpp::CharacterVector output;
+  std::stringstream& stream;
+
+  RcppWKBWKTTranslator(List input, std::stringstream& stream): 
+    WKBWKTTranslator(new WKRawVectorListReader(input), stream), 
+    output(input.size()), stream(stream) {}
+
+  void nextNull(size_t featureId) {
+    output[featureId] = NA_STRING;
+  }
+
+  void nextFeature(size_t featureId) {
+    stream.str("");
+    stream.clear();
+    WKBWKTTranslator::nextFeature(featureId);
+    output[featureId] = stream.str();
+  }
+};
+
 
 // [[Rcpp::export]]
 CharacterVector cpp_translate_wkb_wkt(List x) {
-  CharacterVector out(x.size());
-  WKBWKTTranslator iter(new WKRawVectorListReader(x));
+  std::stringstream stream;
+  RcppWKBWKTTranslator iter(x, stream);
 
-  R_xlen_t i = 0;
   while (iter.hasNextFeature()) {
-    out[i] = iter.translateFeature();
-    i++;
+    iter.iterate();
   }
 
-  return out;
+  return iter.output;
 }

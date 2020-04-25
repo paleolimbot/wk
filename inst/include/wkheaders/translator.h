@@ -9,32 +9,31 @@
 class WKBWKTTranslator: WKBIterator {
 public:
 
-  WKBWKTTranslator(BinaryReader* reader): WKBIterator(reader) {
+  WKBWKTTranslator(BinaryReader* reader, std::ostream& stream): WKBIterator(reader), out(stream) {}
 
-  }
-
+  // expose these as the public interface
   bool hasNextFeature() {
     return WKBIterator::hasNextFeature();
   }
 
-  std::string translateFeature() {
-    this->out = std::stringstream();
-    this->iterate();
-    return this->out.str();
+  virtual void iterate() {
+    WKBIterator::iterate();
   }
 
 protected:
-
-  // current null handling returns ""
-  void nextNull(size_t featureId) {
+  std::ostream& out;
+  
+  // default null handling returns ""
+  virtual void nextNull(size_t featureId) {
 
   }
 
   // theoretically, somebody might want to change this behaviour
-  void nextFeature(size_t featureId) {
+  virtual void nextFeature(size_t featureId) {
     WKBIterator::nextFeature(featureId);
   }
 
+private:
   // wait until the SRID to print the geometry type
   // if there is one
   void nextGeometryType(GeometryType geometryType, uint32_t partId) {
@@ -128,9 +127,6 @@ protected:
     const GeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
   }
-
-private:
-  std::stringstream out;
 };
 
 #endif
