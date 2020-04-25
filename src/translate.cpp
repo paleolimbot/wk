@@ -193,9 +193,9 @@ private:
 };
 
 // [[Rcpp::export]]
-CharacterVector translate_wkb_wkt(List container) {
-  CharacterVector out(container.size());
-  WKTTranslateIterator iter(new RawVectorListReader(container));
+CharacterVector cpp_translate_wkb_wkt(List x) {
+  CharacterVector out(x.size());
+  WKTTranslateIterator iter(new RawVectorListReader(x));
 
   R_xlen_t i = 0;
   while (iter.hasNextFeature()) {
