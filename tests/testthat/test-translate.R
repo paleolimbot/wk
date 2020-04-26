@@ -177,6 +177,10 @@ test_that("wkb_translate_wkt() works with multi geometries", {
                          0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x01,
                          0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e,
                          0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
+
+  # technically these could exist without the redundant parentheses, but
+  # that's pretty inconsistent with how the other multi* geoms are
+  # rendered
   expect_identical(
     wkb_translate_wkt(list(multipoint)),
     "MULTIPOINT ((10 40), (40 30), (20 20), (30 10))"

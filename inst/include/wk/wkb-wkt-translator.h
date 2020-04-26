@@ -67,17 +67,9 @@ private:
   }
 
   void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
-    if (size > 0) {
-      this->out << "(";
-    } else {
-      this->out << "EMPTY";
-    }
-
+    this->writeGeometryOpen(size);
     WKBReader::nextGeometry(geometryType, partId, size);
-
-    if (size > 0) {
-      this->out << ")";
-    }
+    this->writeGeometryClose(size);
   }
 
   void nextLinearRing(const GeometryType geometryType, uint32_t ringId, uint32_t size) {
@@ -95,6 +87,20 @@ private:
     }
     if (this->newGeometryType.hasM && coord.hasM) {
       this->out << " " << coord.m;
+    }
+  }
+
+  void writeGeometryOpen(uint32_t size) {
+    if (size == 0) {
+      this->out << "EMPTY";
+    } else {
+      this->out << "(";
+    }
+  }
+
+  void writeGeometryClose(uint32_t size) {
+    if (size > 0) {
+      this->out << ")";
     }
   }
 
