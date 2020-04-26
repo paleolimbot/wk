@@ -37,4 +37,23 @@ public:
   virtual ~BinaryReader() {}
 };
 
+class BinaryWriter {
+public:
+  size_t size;
+
+  BinaryWriter(size_t size): size(size) {}
+
+  virtual bool seekNextFeature() = 0;
+  virtual void writeNull() = 0;
+  virtual size_t writeCharRaw(unsigned char value) = 0;
+  virtual size_t writeDoubleRaw(double value) = 0;
+  virtual size_t writeUint32Raw(uint32_t value) = 0;
+
+  size_t nFeatures() {
+    return this->size;
+  }
+
+  virtual ~BinaryWriter() {}
+};
+
 #endif

@@ -2,6 +2,7 @@
 #include <sstream>
 #include <Rcpp.h>
 #include "wkheaders/translator.h"
+#include "wkheaders/wkb-wkb-translator.h"
 #include "wkheaders/io-rcpp.h"
 
 using namespace Rcpp;
