@@ -2,7 +2,6 @@
 #ifndef WKHEADERS_WKB_ITERATOR_H
 #define WKHEADERS_WKB_ITERATOR_H
 
-#include <memory>
 #include "wkheaders/geometry-type.h"
 #include "wkheaders/io-utils.h"
 #include "wkheaders/wk-coord.h"
@@ -17,8 +16,7 @@ public:
   const static uint32_t SRID_INVALID = UINT32_MAX;
   const static unsigned char ENDIAN_INVALID = 0xff;
 
-  WKBIterator(BinaryReader* reader) {
-    this->reader = std::unique_ptr<BinaryReader>(reader);
+  WKBIterator(BinaryReader& reader): reader(reader) {
     this->swapEndian = false;
     this->featureId = 0;
     this->partId = PART_ID_INVALID;
@@ -30,7 +28,7 @@ public:
   }
 
   bool hasNextFeature() {
-    return this->reader->seekNextFeature();
+    return this->reader.seekNextFeature();
   }
 
   void iterateFeature() {
@@ -40,7 +38,7 @@ public:
 protected:
 
   virtual void nextFeature(size_t featureId) {
-    if (this->reader->featureIsNull()) {
+    if (this->reader.featureIsNull()) {
       this->nextNull(featureId);
     } else {
       this->readGeometry(PART_ID_INVALID);
@@ -151,7 +149,7 @@ protected:
   }
 
 private:
-  std::unique_ptr<BinaryReader> reader;
+  BinaryReader& reader;
 
   size_t featureId;
   uint32_t partId;
@@ -250,19 +248,19 @@ private:
   }
 
   unsigned char readCharRaw() {
-    return this->reader->readCharRaw();
+    return this->reader.readCharRaw();
   }
 
   double readDoubleRaw() {
-    return this->reader->readDoubleRaw();
+    return this->reader.readDoubleRaw();
   }
 
   uint32_t readUint32Raw() {
-    return this->reader->readUint32Raw();
+    return this->reader.readUint32Raw();
   }
 
   bool seekNextFeature() {
-    return this->reader->seekNextFeature();
+    return this->reader.seekNextFeature();
   }
 };
 

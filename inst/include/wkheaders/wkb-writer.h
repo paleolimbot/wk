@@ -2,7 +2,6 @@
 #ifndef WKHEADERS_WKB_WRITER_H
 #define WKHEADERS_WKB_WRITER_H
 
-#include <memory>
 #include "wkheaders/geometry-type.h"
 #include "wkheaders/wk-coord.h"
 #include "wkheaders/io-utils.h"

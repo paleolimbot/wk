@@ -8,8 +8,8 @@ class RcppWKBValidator: WKBIterator {
 public:
   Rcpp::CharacterVector output;
 
-  RcppWKBValidator(Rcpp::List input): WKBIterator(new WKRawVectorListReader(input)) {
-    this->output = CharacterVector(input.size());
+  RcppWKBValidator(WKRawVectorListReader& reader): WKBIterator(reader) {
+    this->output = CharacterVector(reader.nFeatures());
   }
 
   // expose these as the public interface
@@ -33,7 +33,8 @@ public:
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
-  RcppWKBValidator validator(wkb);
+  WKRawVectorListReader reader(wkb);
+  RcppWKBValidator validator(reader);
 
   while (validator.hasNextFeature()) {
     validator.iterateFeature();

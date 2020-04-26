@@ -17,7 +17,6 @@ public:
     this->offset = 0;
   }
 
-protected:
   unsigned char readCharRaw() {
     return readBinary<unsigned char>();
   }

@@ -8,7 +8,7 @@
 class WKBWKTTranslator: WKBIterator {
 public:
 
-  WKBWKTTranslator(BinaryReader* reader, std::ostream& stream): WKBIterator(reader), out(stream) {}
+  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): WKBIterator(reader), out(stream) {}
 
   // expose these as the public interface
   bool hasNextFeature() {
