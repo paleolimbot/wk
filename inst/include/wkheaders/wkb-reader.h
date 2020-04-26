@@ -9,7 +9,6 @@
 class WKBReader {
 
 public:
-  const static int RECURSION_LEVEL_INVALID = -1;
   const static uint32_t PART_ID_INVALID = UINT32_MAX;
   const static uint32_t RING_ID_INVALID = UINT32_MAX;
   const static uint32_t COORD_ID_INVALID = UINT32_MAX;
