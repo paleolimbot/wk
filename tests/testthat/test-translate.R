@@ -200,9 +200,20 @@ test_that("RcppRawVectorListWriter automatically extends the buffer size", {
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x24, 0x40))
+  # this requires more than one buffer extension for a single read operation
+  expect_identical(translate_wkb_wkb(list(point), endian = 1, buffer_size = 1), list(point))
 
-  expect_identical(translate_wkb_wkb(list(point), endian = 1), list(point))
-  expect_identical(translate_wkb_wkb(list(point), endian = 1, buffer_size = 4), list(point))
+  # zero length buffers are a problem because doubling their size doesn't make them bigger!
+  expect_error(
+    translate_wkb_wkb(list(point), buffer_size  = 0),
+    "Attempt to set zero or negative", class = "C++Error"
+  )
+
+  # this would fail with a reasonable error message anyway, but this is slightly better
+  expect_error(
+    translate_wkb_wkb(list(point), buffer_size  = -1),
+    "Attempt to set zero or negative", class = "C++Error"
+  )
 })
 
 test_that("translate_wkt_wkb() respects trim and rounding options", {

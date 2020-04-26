@@ -97,6 +97,10 @@ public:
   }
 
   void setBufferSize(R_xlen_t bufferSize) {
+    if (bufferSize <= 0) {
+      throw std::runtime_error("Attempt to set zero or negative buffer size");
+    }
+
     RawVector newBuffer = RawVector(bufferSize);
     this->buffer = newBuffer;
   }
@@ -154,7 +158,7 @@ public:
   template<typename T>
   size_t writeBinary(T value) {
     // Rcout << "Writing " << sizeof(T) << "(" << value << ") starting at " << this->offset << "\n";
-    if ((this->offset + sizeof(T)) > this->buffer.size()) {
+    while ((this->offset + sizeof(T)) > this->buffer.size()) {
       // we're going to need a bigger boat
       this->extendBufferSize(this->buffer.size() * 2);
     }
