@@ -39,8 +39,11 @@ public:
 
 protected:
   WKBWriter writer;
+  size_t featureId;
+  GeometryType newGeometryType;
 
   virtual void nextFeature(size_t featureId) {
+    this->featureId = featureId;
     WKBReader::nextFeature(featureId);
   }
 
@@ -48,12 +51,23 @@ protected:
     this->writer.writeNull();
   }
 
-  void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
+  void nextGeometryType(GeometryType geometryType, uint32_t partId) {
+    // make a new geometry type based on the creation options
+    this->newGeometryType = this->getNewGeometryType(geometryType);
+
+    // write endian and new geometry type
     this->writer.writeEndian();
+    this->writer.writeUint32(this->newGeometryType.ewkbType);
+  }
 
-    uint32_t ewkbType = geometryType.ewkbType;
-    this->writer.writeUint32(ewkbType);
+  void nextSRID(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
+    if (this->newGeometryType.hasSRID) {
+      this->writer.writeUint32(srid);
+    }
+  }
 
+  void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
+    // only points aren't followed by a uint32 with the number of [rings, coords, geometries]
     if (geometryType.simpleGeometryType != SimpleGeometryType::Point) {
       this->writer.writeUint32(size);
     }
@@ -67,13 +81,53 @@ protected:
   }
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {
-    this->writer.writeCoord(coord);
+    this->writer.writeDouble(coord.x);
+    this->writer.writeDouble(coord.y);
+    if (this->newGeometryType.hasZ && coord.hasZ) {
+      this->writer.writeDouble(coord.z);
+    }
+    if (this->newGeometryType.hasM && coord.hasM) {
+      this->writer.writeDouble(coord.m);
+    }
   }
 
 private:
   int includeSRID;
   int includeZ;
   int includeM;
+
+  GeometryType getNewGeometryType(const GeometryType geometryType) {
+    return GeometryType(
+      geometryType.simpleGeometryType,
+      this->actuallyIncludeZ(geometryType),
+      this->actuallyIncludeM(geometryType),
+      this->actuallyIncludeSRID(geometryType)
+    );
+  }
+
+  bool actuallyIncludeSRID(const GeometryType geometryType) {
+    return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
+  }
+
+  bool actuallyIncludeZ(const GeometryType geometryType) {
+    return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
+  }
+
+  bool actuallyIncludeM(const GeometryType geometryType) {
+    return actuallyInclude(this->includeM, geometryType.hasM, "M");
+  }
+
+  bool actuallyInclude(int flag, bool hasValue, const char* label) {
+    if (flag == 1 && !hasValue) {
+      throw std::runtime_error(
+        Formatter() << "Can't include " <<  label <<
+          " values in a geometry for which" <<
+          label << " values are not defined [feature " << this->featureId << "]"
+      );
+    }
+
+    return flag && hasValue;
+  }
 };
 
 #endif

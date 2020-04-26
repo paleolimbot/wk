@@ -9,7 +9,7 @@ cpp_translate_wkb_wkt <- function(wkb, precision, trim) {
     .Call(`_wk_cpp_translate_wkb_wkt`, wkb, precision, trim)
 }
 
-cpp_translate_wkb_wkb <- function(wkb, endian, bufferSize) {
-    .Call(`_wk_cpp_translate_wkb_wkb`, wkb, endian, bufferSize)
+cpp_translate_wkb_wkb <- function(wkb, includeZ, includeM, includeSRID, endian, bufferSize) {
+    .Call(`_wk_cpp_translate_wkb_wkb`, wkb, includeZ, includeM, includeSRID, endian, bufferSize)
 }
 

@@ -57,11 +57,22 @@ test_that("wkb_translate_wkt() works with ND points and SRID", {
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
 
+  point_zms <- as.raw(c(0x01,
+                        0x01, 0x00, 0x00, 0xe0,
+                        0xe6, 0x10, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x40))
+
+
+
   expect_identical(wkb_translate_wkt(list(point_xy)), "POINT (30 10)")
   expect_identical(wkb_translate_wkt(list(point_z)), "POINT Z (30 10 2)")
   expect_identical(wkb_translate_wkt(list(point_m)), "POINT M (30 10 2)")
   expect_identical(wkb_translate_wkt(list(point_zm)), "POINT ZM (30 10 2 1)")
   expect_identical(wkb_translate_wkt(list(point_s)), "SRID=199;POINT (30 10)")
+  expect_identical(wkb_translate_wkt(list(point_zms)), "SRID=4326;POINT ZM (30 10 12 14)")
 })
 
 test_that("wkb_translate_wkt() works simple geometries", {
@@ -216,7 +227,7 @@ test_that("RcppRawVectorListWriter automatically extends the buffer size", {
   )
 })
 
-test_that("wk_translate_wkt_wkb() respects trim and rounding options", {
+test_that("wkb_translate_wkt() respects trim and rounding options", {
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -258,6 +269,35 @@ test_that("wkb--wkb translation works with multiple endians", {
   expect_identical(wkb_translate_wkb(list(point_be), endian = 1),  list(point_le))
   expect_identical(wkb_translate_wkb(list(point_le), endian = 0),  list(point_be))
   expect_identical(wkb_translate_wkb(list(point_le), endian = 1),  list(point_le))
+})
+
+test_that("wkb--wkb translation works with include SRID, include M, and include Z options", {
+  # SRID=4326;POINT ZM (30 10 12 14)
+  point_zms <- as.raw(c(0x01,
+                        0x01, 0x00, 0x00, 0xe0,
+                        0xe6, 0x10, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x40))
+
+  expect_identical(wkb_translate_wkb(list(point_zms)), list(point_zms))
+  expect_identical(
+    wkb_translate_wkt(wkb_translate_wkb(list(point_zms))),
+    "SRID=4326;POINT ZM (30 10 12 14)"
+  )
+  expect_identical(
+    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_z = FALSE)),
+    "SRID=4326;POINT M (30 10 14)"
+  )
+  expect_identical(
+    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_m = FALSE)),
+    "SRID=4326;POINT Z (30 10 12)"
+  )
+  expect_identical(
+    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_srid = FALSE)),
+    "POINT ZM (30 10 12 14)"
+  )
 })
 
 test_that("wkb--wkb translation works for nested collections", {

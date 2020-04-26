@@ -9,6 +9,11 @@
 #' @param endian For WKB writing, 0 for big endian, 1 for little endinan.
 #'   Defaults to [wkb_platform_endian()] (slightly faster, and any
 #'   WKB reader worth its salt will read either).
+#' @param include_z,include_m,include_srid Include the
+#'   values of the Z and M coordinates and/or SRID
+#'   in the output? Use `FALSE` to omit, `TRUE` to include, or `NA` to include
+#'   only if present. Note that using `TRUE` may result in an error if there
+#'   is no value present in the original.
 #' @param buffer_size For WKB writing, the initial buffer size to use for
 #'   each feature, in bytes. This will be extended when needed, but if you
 #'   are calling this repeatedly with huge geometries, setting this value
@@ -25,8 +30,16 @@ wkb_translate_wkt <- function(wkb, precision = 16, trim = TRUE) {
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wkb <- function(wkb, endian = wkb_platform_endian(), buffer_size = 2048) {
-  cpp_translate_wkb_wkb(wkb, endian = endian, bufferSize = buffer_size)
+wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
+                              endian = wkb_platform_endian(), buffer_size = 2048) {
+  cpp_translate_wkb_wkb(
+    wkb,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    endian = endian,
+    bufferSize = buffer_size
+  )
 }
 
 #' @rdname wkb_translate_wkt

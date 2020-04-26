@@ -30,15 +30,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_translate_wkb_wkb
-Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int endian, int bufferSize);
-RcppExport SEXP _wk_cpp_translate_wkb_wkb(SEXP wkbSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM, int includeSRID, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_translate_wkb_wkb(SEXP wkbSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
+    Rcpp::traits::input_parameter< int >::type includeZ(includeZSEXP);
+    Rcpp::traits::input_parameter< int >::type includeM(includeMSEXP);
+    Rcpp::traits::input_parameter< int >::type includeSRID(includeSRIDSEXP);
     Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
     Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(wkb, endian, bufferSize));
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(wkb, includeZ, includeM, includeSRID, endian, bufferSize));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -46,7 +49,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 3},
-    {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 3},
+    {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},
     {NULL, NULL, 0}
 };
 
