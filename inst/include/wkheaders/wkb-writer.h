@@ -10,9 +10,16 @@
 class WKBWriter {
 public:
 
-  WKBWriter(BinaryWriter* writer) {
-    this->swapEndian = false;
-    this->writer = std::unique_ptr<BinaryWriter>(writer);
+  WKBWriter(BinaryWriter& writer): writer(writer) {
+    this->setEndian(IOUtils::nativeEndian());
+  }
+
+  bool seekNextFeature() {
+    return this->writer.seekNextFeature();
+  }
+
+  void writeNull() {
+    this->writer.writeNull();
   }
 
   void setEndian(unsigned char endian) {
@@ -33,23 +40,23 @@ public:
   }
 
   size_t writeChar(unsigned char value) {
-    return this->writer->writeCharRaw(value);
+    return this->writer.writeCharRaw(value);
   }
 
   size_t writeDouble(double value) {
     if (this->swapEndian) {
-      this->writer->writeDoubleRaw(IOUtils::swapEndian<double>(value));
+      this->writer.writeDoubleRaw(IOUtils::swapEndian<double>(value));
     } else {
-      this->writer->writeDoubleRaw(value);
+      this->writer.writeDoubleRaw(value);
     }
     return sizeof(double);
   }
 
   size_t writeUint32(uint32_t value) {
     if (this->swapEndian) {
-      this->writer->writeDoubleRaw(IOUtils::swapEndian<uint32_t>(value));
+      this->writer.writeUint32Raw(IOUtils::swapEndian<uint32_t>(value));
     } else {
-      this->writer->writeDoubleRaw(value);
+      this->writer.writeUint32Raw(value);
     }
     return sizeof(uint32_t);
   }
@@ -57,7 +64,7 @@ public:
 private:
   bool swapEndian;
   unsigned char endian;
-  std::unique_ptr<BinaryWriter> writer;
+  BinaryWriter& writer;
 };
 
 #endif

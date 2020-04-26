@@ -5,3 +5,7 @@ cpp_translate_wkb_wkt <- function(x, precision, trim) {
     .Call(`_wkheaders_cpp_translate_wkb_wkt`, x, precision, trim)
 }
 
+cpp_translate_wkb_wkb <- function(x, endian) {
+    .Call(`_wkheaders_cpp_translate_wkb_wkb`, x, endian)
+}
+

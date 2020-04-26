@@ -12,7 +12,7 @@ public:
   Rcpp::CharacterVector output;
   std::stringstream stream;
 
-  RcppWKBWKTTranslator(List input): 
+  RcppWKBWKTTranslator(Rcpp::List input): 
     WKBWKTTranslator(new WKRawVectorListReader(input), stream), output(input.size()) {
     // set default formatting
     this->ensureClassicLocale();
@@ -32,9 +32,8 @@ public:
   }
 };
 
-
 // [[Rcpp::export]]
-CharacterVector cpp_translate_wkb_wkt(List x, int precision, bool trim) {
+Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List x, int precision, bool trim) {
   RcppWKBWKTTranslator iter(x);
   iter.setRoundingPrecision(precision);
   iter.setTrim(trim);
@@ -45,3 +44,27 @@ CharacterVector cpp_translate_wkb_wkt(List x, int precision, bool trim) {
 
   return iter.output;
 }
+
+
+
+class RcppWKBWKBTranslator: public WKBWKBTranslator {
+public:
+  RcppWKBWKBTranslator(Rcpp::List input, WKRawVectorListWriter& writer): 
+    WKBWKBTranslator(new WKRawVectorListReader(input), new WKBWriter(writer)) {
+
+  }
+};
+
+// [[Rcpp::export]]
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian) {
+  WKRawVectorListWriter writer(x.size());
+  RcppWKBWKBTranslator iter(x, writer);
+  iter.setEndian(endian);
+  
+  while (iter.hasNextFeature()) {
+    iter.iterateFeature();
+  }
+
+  return writer.output;
+}
+

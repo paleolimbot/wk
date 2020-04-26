@@ -13,3 +13,9 @@
 translate_wkb_wkt <- function(x, precision = 16, trim = TRUE) {
   cpp_translate_wkb_wkt(x, precision, trim)
 }
+
+#' @rdname translate_wkb_wkt
+#' @export
+translate_wkb_wkb <- function(x, endian = 1) {
+  cpp_translate_wkb_wkb(x, endian)
+}

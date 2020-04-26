@@ -2,13 +2,21 @@
 % Please edit documentation in R/translate.R
 \name{translate_wkb_wkt}
 \alias{translate_wkb_wkt}
+\alias{translate_wkb_wkb}
 \title{Translate between WKB and WKT}
 \usage{
-translate_wkb_wkt(x)
+translate_wkb_wkt(x, precision = 16, trim = TRUE)
+
+translate_wkb_wkb(x, endian = 1)
 }
 \arguments{
 \item{x}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
+
+\item{precision}{The rounding precision to use when writing
+(number of decimal places).}
+
+\item{trim}{Trim unnecessary zeroes in the output?}
 }
 \value{
 A character vector of well-known text.

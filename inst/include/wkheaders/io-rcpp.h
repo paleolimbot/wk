@@ -79,7 +79,7 @@ private:
   }
 };
 
-class WKRawVectorListWriter: BinaryWriter {
+class WKRawVectorListWriter: public BinaryWriter {
 public:
   List output;
   RawVector buffer;
@@ -90,18 +90,25 @@ public:
 
   WKRawVectorListWriter(size_t size): BinaryWriter(size) {
     this->prevIsNull = false;
-    this->index = 0;
+    this->index = -1;
     this->offset = 0;
     output = List(size);
     this->buffer = RawVector(2048);
   }
 
   bool seekNextFeature() {
+    if (this->index == -1) {
+      this->index += 1;
+      return true;
+    }
+
     if (this->prevIsNull) {
       this->output[this->index] = R_NilValue;
       this->prevIsNull = false;
+    } else if (this->offset == 0) {
+      this->output[this->index] = RawVector::create();
     } else {
-      this->output[this->index] = this->buffer[Range(0, this->offset)];
+      this->output[this->index] = this->buffer[Range(0, this->offset - 1)];
     }
 
     this->index += 1;
@@ -111,6 +118,7 @@ public:
   }
 
   void writeNull() {
+    Rcout << "writeNull()\n";
     this->prevIsNull = true;
   }
 
