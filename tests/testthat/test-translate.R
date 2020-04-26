@@ -1,16 +1,16 @@
 
-test_that("translate_wkb_wkt() works with missing values", {
+test_that("wk_translate_wkb_wkt() works with missing values", {
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x24, 0x40))
 
-  expect_identical(translate_wkb_wkt(list(NULL)), NA_character_)
-  expect_identical(translate_wkb_wkt(list(point, NULL)), c("POINT (30 10)", NA))
-  expect_identical(translate_wkb_wkt(list(NULL, point)), c(NA, "POINT (30 10)"))
+  expect_identical(wk_translate_wkb_wkt(list(NULL)), NA_character_)
+  expect_identical(wk_translate_wkb_wkt(list(point, NULL)), c("POINT (30 10)", NA))
+  expect_identical(wk_translate_wkb_wkt(list(NULL, point)), c(NA, "POINT (30 10)"))
 })
 
 
-test_that("translate_wkb_wkt() works with multiple endians", {
+test_that("wk_translate_wkb_wkt() works with multiple endians", {
 
   point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x24, 0x00, 0x00, 0x00,
@@ -20,12 +20,12 @@ test_that("translate_wkb_wkt() works with multiple endians", {
                        0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                        0x00, 0x24, 0x40))
 
-  expect_identical(translate_wkb_wkt(list(point_be)), "POINT (30 10)")
-  expect_identical(translate_wkb_wkt(list(point_le)), "POINT (30 10)")
-  expect_error(translate_wkb_wkt(list(point_le[1:5])), "Reached end of RawVector input")
+  expect_identical(wk_translate_wkb_wkt(list(point_be)), "POINT (30 10)")
+  expect_identical(wk_translate_wkb_wkt(list(point_le)), "POINT (30 10)")
+  expect_error(wk_translate_wkb_wkt(list(point_le[1:5])), "Reached end of RawVector input")
 })
 
-test_that("translate_wkb_wkt() works with ND points and SRID", {
+test_that("wk_translate_wkb_wkt() works with ND points and SRID", {
 
   point_xy <- as.raw(c(0x01, #
                        0x01, 0x00, 0x00, 0x00, # type
@@ -57,14 +57,14 @@ test_that("translate_wkb_wkt() works with ND points and SRID", {
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
 
-  expect_identical(translate_wkb_wkt(list(point_xy)), "POINT (30 10)")
-  expect_identical(translate_wkb_wkt(list(point_z)), "POINT Z (30 10 2)")
-  expect_identical(translate_wkb_wkt(list(point_m)), "POINT M (30 10 2)")
-  expect_identical(translate_wkb_wkt(list(point_zm)), "POINT ZM (30 10 2 1)")
-  expect_identical(translate_wkb_wkt(list(point_s)), "SRID=199;POINT (30 10)")
+  expect_identical(wk_translate_wkb_wkt(list(point_xy)), "POINT (30 10)")
+  expect_identical(wk_translate_wkb_wkt(list(point_z)), "POINT Z (30 10 2)")
+  expect_identical(wk_translate_wkb_wkt(list(point_m)), "POINT M (30 10 2)")
+  expect_identical(wk_translate_wkb_wkt(list(point_zm)), "POINT ZM (30 10 2 1)")
+  expect_identical(wk_translate_wkb_wkt(list(point_s)), "SRID=199;POINT (30 10)")
 })
 
-test_that("translate_wkb_wkt() works simple geometries", {
+test_that("wk_translate_wkb_wkt() works simple geometries", {
 
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -95,18 +95,18 @@ test_that("translate_wkb_wkt() works simple geometries", {
                       0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40))
 
-  expect_identical(translate_wkb_wkt(list(point)), "POINT (30 10)")
+  expect_identical(wk_translate_wkb_wkt(list(point)), "POINT (30 10)")
   expect_identical(
-    translate_wkb_wkt(list(linestring)),
+    wk_translate_wkb_wkt(list(linestring)),
     "LINESTRING (30 10, 12 42)"
   )
   expect_identical(
-    translate_wkb_wkt(list(polygon)),
+    wk_translate_wkb_wkt(list(polygon)),
     "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))"
   )
 })
 
-test_that("translate_wkb_wkt() works with multi geometries", {
+test_that("wk_translate_wkb_wkt() works with multi geometries", {
   # MULTIPOINT ((10 40), (40 30), (20 20), (30 10))
   multipoint <- as.raw(c(0x01, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00,
                          0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -118,12 +118,12 @@ test_that("translate_wkb_wkt() works with multi geometries", {
                          0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e,
                          0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
   expect_identical(
-    translate_wkb_wkt(list(multipoint)),
+    wk_translate_wkb_wkt(list(multipoint)),
     "MULTIPOINT ((10 40), (40 30), (20 20), (30 10))"
   )
 })
 
-test_that("translate_wkb_wkt() works with nested collections", {
+test_that("wk_translate_wkb_wkt() works with nested collections", {
 
   wkt <-
   "GEOMETRYCOLLECTION (
@@ -174,7 +174,7 @@ test_that("translate_wkb_wkt() works with nested collections", {
                          0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
 
   expect_identical(
-    translate_wkb_wkt(list(collection)),
+    wk_translate_wkb_wkt(list(collection)),
     paste0(
       "GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), ",
       "POLYGON ((40 40, 20 45, 45 30, 40 40)), GEOMETRYCOLLECTION ",
@@ -186,14 +186,14 @@ test_that("translate_wkb_wkt() works with nested collections", {
 })
 
 
-test_that("translate_wkb_wkb() works with missing values", {
+test_that("wk_translate_wkb_wkb() works with missing values", {
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x24, 0x40))
 
-  expect_identical(translate_wkb_wkb(list(NULL)), list(NULL))
-  expect_identical(translate_wkb_wkb(list(point, NULL), endian = 1), list(point, NULL))
-  expect_identical(translate_wkb_wkb(list(NULL, point), endian = 1), list(NULL, point))
+  expect_identical(wk_translate_wkb_wkb(list(NULL)), list(NULL))
+  expect_identical(wk_translate_wkb_wkb(list(point, NULL), endian = 1), list(point, NULL))
+  expect_identical(wk_translate_wkb_wkb(list(NULL, point), endian = 1), list(NULL, point))
 })
 
 test_that("RcppRawVectorListWriter automatically extends the buffer size", {
@@ -201,22 +201,22 @@ test_that("RcppRawVectorListWriter automatically extends the buffer size", {
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x24, 0x40))
   # this requires more than one buffer extension for a single read operation
-  expect_identical(translate_wkb_wkb(list(point), endian = 1, buffer_size = 1), list(point))
+  expect_identical(wk_translate_wkb_wkb(list(point), endian = 1, buffer_size = 1), list(point))
 
   # zero length buffers are a problem because doubling their size doesn't make them bigger!
   expect_error(
-    translate_wkb_wkb(list(point), buffer_size  = 0),
+    wk_translate_wkb_wkb(list(point), buffer_size  = 0),
     "Attempt to set zero or negative", class = "C++Error"
   )
 
   # this would fail with a reasonable error message anyway, but this is slightly better
   expect_error(
-    translate_wkb_wkb(list(point), buffer_size  = -1),
+    wk_translate_wkb_wkb(list(point), buffer_size  = -1),
     "Attempt to set zero or negative", class = "C++Error"
   )
 })
 
-test_that("translate_wkt_wkb() respects trim and rounding options", {
+test_that("wk_translate_wkt_wkb() respects trim and rounding options", {
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -228,19 +228,19 @@ test_that("translate_wkt_wkb() respects trim and rounding options", {
                               0xaa, 0x24, 0x40))
 
   expect_identical(
-    translate_wkb_wkt(list(point), precision = 5, trim = TRUE),
+    wk_translate_wkb_wkt(list(point), precision = 5, trim = TRUE),
     "POINT (30 10)"
   )
   expect_identical(
-    translate_wkb_wkt(list(point), precision = 5, trim = FALSE),
+    wk_translate_wkb_wkt(list(point), precision = 5, trim = FALSE),
     "POINT (30.00000 10.00000)"
   )
   expect_identical(
-    translate_wkb_wkt(list(point_repeating), precision = 5, trim = TRUE),
+    wk_translate_wkb_wkt(list(point_repeating), precision = 5, trim = TRUE),
     "POINT (30.333 10.333)"
   )
   expect_identical(
-    translate_wkb_wkt(list(point_repeating), precision = 5, trim = FALSE),
+    wk_translate_wkb_wkt(list(point_repeating), precision = 5, trim = FALSE),
     "POINT (30.33333 10.33333)"
   )
 })
@@ -254,10 +254,10 @@ test_that("wkb--wkb translation works with multiple endians", {
                        0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                        0x00, 0x24, 0x40))
 
-  expect_identical(translate_wkb_wkb(list(point_be), endian = 0),  list(point_be))
-  expect_identical(translate_wkb_wkb(list(point_be), endian = 1),  list(point_le))
-  expect_identical(translate_wkb_wkb(list(point_le), endian = 0),  list(point_be))
-  expect_identical(translate_wkb_wkb(list(point_le), endian = 1),  list(point_le))
+  expect_identical(wk_translate_wkb_wkb(list(point_be), endian = 0),  list(point_be))
+  expect_identical(wk_translate_wkb_wkb(list(point_be), endian = 1),  list(point_le))
+  expect_identical(wk_translate_wkb_wkb(list(point_le), endian = 0),  list(point_be))
+  expect_identical(wk_translate_wkb_wkb(list(point_le), endian = 1),  list(point_le))
 })
 
 test_that("wkb--wkb translation works for nested collections", {
@@ -295,5 +295,5 @@ test_that("wkb--wkb translation works for nested collections", {
                          0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
 
-  expect_identical(translate_wkb_wkb(list(collection), endian  = 1), list(collection))
+  expect_identical(wk_translate_wkb_wkb(list(collection), endian  = 1), list(collection))
 })

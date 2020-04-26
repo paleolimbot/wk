@@ -39,8 +39,8 @@ public:
 };
 
 // [[Rcpp::export]]
-Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List x, int precision, bool trim) {
-  RcppWKBWKTTranslator iter(x);
+Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int precision, bool trim) {
+  RcppWKBWKTTranslator iter(wkb);
   iter.setRoundingPrecision(precision);
   iter.setTrim(trim);
   
@@ -62,10 +62,10 @@ public:
 };
 
 // [[Rcpp::export]]
-Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian, int bufferSize) {
-  WKRawVectorListWriter writer(x.size());
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int endian, int bufferSize) {
+  WKRawVectorListWriter writer(wkb.size());
   writer.setBufferSize(bufferSize);
-  RcppWKBWKBTranslator iter(x, writer);
+  RcppWKBWKBTranslator iter(wkb, writer);
   iter.setEndian(endian);
 
   while (iter.hasNextFeature()) {

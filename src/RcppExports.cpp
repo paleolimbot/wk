@@ -6,28 +6,28 @@
 using namespace Rcpp;
 
 // cpp_translate_wkb_wkt
-Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List x, int precision, bool trim);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP xSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int precision, bool trim);
+RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
     Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
     Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkt(x, precision, trim));
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkt(wkb, precision, trim));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_translate_wkb_wkb
-Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian, int bufferSize);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkb(SEXP xSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int endian, int bufferSize);
+RcppExport SEXP _wkheaders_cpp_translate_wkb_wkb(SEXP wkbSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
     Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
     Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(x, endian, bufferSize));
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(wkb, endian, bufferSize));
     return rcpp_result_gen;
 END_RCPP
 }

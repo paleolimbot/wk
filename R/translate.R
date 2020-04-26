@@ -1,7 +1,7 @@
 
 #' Translate between WKB and WKT
 #'
-#' @param x A `list()` of [raw()] vectors, such as that
+#' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by [sf::st_as_binary()].
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
@@ -13,23 +13,23 @@
 #'   are calling this repeatedly with huge geometries, setting this value
 #'   to a larger number may result in less copying.
 #'
-#' @return A character vector of well-known text.
+#' @return [wk_translate_wkb_wkt()] returns a character vector of
+#'   well-known text; [wk_translate_wkb_wkb()] returns a list
+#'   of raw vectors.
 #' @export
 #'
-translate_wkb_wkt <- function(x, precision = 16, trim = TRUE) {
-  cpp_translate_wkb_wkt(x, precision = precision, trim = trim)
+wk_translate_wkb_wkt <- function(wkb, precision = 16, trim = TRUE) {
+  cpp_translate_wkb_wkt(wkb, precision = precision, trim = trim)
 }
 
-#' @rdname translate_wkb_wkt
+#' @rdname wk_translate_wkb_wkt
 #' @export
-translate_wkb_wkb <- function(x, endian = 1, buffer_size = 2048) {
-  cpp_translate_wkb_wkb(x, endian = endian, bufferSize = buffer_size)
+wk_translate_wkb_wkb <- function(wkb, endian = wk_platform_endian(), buffer_size = 2048) {
+  cpp_translate_wkb_wkb(wkb, endian = endian, bufferSize = buffer_size)
 }
 
-#' @rdname translate_wkb_wkt
+#' @rdname wk_translate_wkb_wkt
 #' @export
 wk_platform_endian <- function() {
   match(.Platform$endian, c("big", "little")) - 1L
 }
-
-
