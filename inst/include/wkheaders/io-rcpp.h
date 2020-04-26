@@ -93,7 +93,25 @@ public:
     this->index = -1;
     this->offset = 0;
     output = List(size);
-    this->buffer = RawVector(2048);
+    this->setBufferSize(2048);
+  }
+
+  void setBufferSize(R_xlen_t bufferSize) {
+    RawVector newBuffer = RawVector(bufferSize);
+    this->buffer = newBuffer;
+  }
+
+  void extendBufferSize(R_xlen_t bufferSize) {
+    if (bufferSize < this->buffer.size()) {
+      throw std::runtime_error("Attempt to shrink RawVector buffer size");
+    }
+
+    RawVector newBuffer = RawVector(bufferSize);
+    for (R_xlen_t i=0; i < this->offset; i++) {
+      newBuffer[i] = this->buffer[i];
+    }
+
+    this->buffer = newBuffer;
   }
 
   bool seekNextFeature() {
@@ -137,7 +155,8 @@ public:
   size_t writeBinary(T value) {
     // Rcout << "Writing " << sizeof(T) << "(" << value << ") starting at " << this->offset << "\n";
     if ((this->offset + sizeof(T)) > this->buffer.size()) {
-      stop("Reached end of RawVector buffer");
+      // we're going to need a bigger boat
+      this->extendBufferSize(this->buffer.size() * 2);
     }
 
     memcpy(&(this->buffer[this->offset]), &value, sizeof(T));

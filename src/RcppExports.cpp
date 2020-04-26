@@ -19,21 +19,22 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_translate_wkb_wkb
-Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkb(SEXP xSEXP, SEXP endianSEXP) {
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian, int bufferSize);
+RcppExport SEXP _wkheaders_cpp_translate_wkb_wkb(SEXP xSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(x, endian));
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_wkb(x, endian, bufferSize));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wkheaders_cpp_translate_wkb_wkt", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkt, 3},
-    {"_wkheaders_cpp_translate_wkb_wkb", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkb, 2},
+    {"_wkheaders_cpp_translate_wkb_wkb", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkb, 3},
     {NULL, NULL, 0}
 };
 

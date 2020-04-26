@@ -10,6 +10,14 @@ Provides a small header-only library for reading and writing
   well-known binary (WKB) and well-known text (WKT) to and from any R-based 
   format.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/paleolimbot/wkheaders}
+  \item Report bugs at \url{https://github.com/paleolimbot/wkheaders/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Dewey Dunnington \email{dewey@fishandwhistle.net} (\href{https://orcid.org/0000-0002-9415-4582}{ORCID})
 

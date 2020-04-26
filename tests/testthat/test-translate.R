@@ -196,6 +196,15 @@ test_that("translate_wkb_wkb() works with missing values", {
   expect_identical(translate_wkb_wkb(list(NULL, point), endian = 1), list(NULL, point))
 })
 
+test_that("RcppRawVectorListWriter automatically extends the buffer size", {
+  point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x24, 0x40))
+
+  expect_identical(translate_wkb_wkb(list(point), endian = 1), list(point))
+  expect_identical(translate_wkb_wkb(list(point), endian = 1, buffer_size = 4), list(point))
+})
+
 test_that("translate_wkt_wkb() respects trim and rounding options", {
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,

@@ -2,5 +2,6 @@
 
 export(translate_wkb_wkb)
 export(translate_wkb_wkt)
+export(wk_platform_endian)
 importFrom(Rcpp,sourceCpp)
 useDynLib(wkheaders, .registration = TRUE)

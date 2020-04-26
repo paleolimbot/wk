@@ -3,11 +3,14 @@
 \name{translate_wkb_wkt}
 \alias{translate_wkb_wkt}
 \alias{translate_wkb_wkb}
+\alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
 translate_wkb_wkt(x, precision = 16, trim = TRUE)
 
-translate_wkb_wkb(x, endian = 1)
+translate_wkb_wkb(x, endian = 1, buffer_size = 2048)
+
+wk_platform_endian()
 }
 \arguments{
 \item{x}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
@@ -17,6 +20,14 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 (number of decimal places).}
 
 \item{trim}{Trim unnecessary zeroes in the output?}
+
+\item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
+Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}}.}
+
+\item{buffer_size}{For WKB writing, the initial buffer size to use for
+each feature, in bytes. This will be extended when needed, but if you
+are calling this repeatedly with huge geometries, setting this value
+to a larger number may result in less copying.}
 }
 \value{
 A character vector of well-known text.

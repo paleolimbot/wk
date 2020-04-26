@@ -62,8 +62,9 @@ public:
 };
 
 // [[Rcpp::export]]
-Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian) {
+Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian, int bufferSize) {
   WKRawVectorListWriter writer(x.size());
+  writer.setBufferSize(bufferSize);
   RcppWKBWKBTranslator iter(x, writer);
   iter.setEndian(endian);
 
