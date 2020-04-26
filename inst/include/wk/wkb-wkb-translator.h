@@ -2,10 +2,11 @@
 #ifndef WK_WKB_WKB_TRANSLATOR
 #define WK_WKB_WKB_TRANSLATOR
 
+#include "wk/translator.h"
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKBTranslator: WKBReader {
+class WKBWKBTranslator: WKBReader, public WKTranslator {
 public:
   WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): WKBReader(reader), writer(writer) {
 
@@ -23,18 +24,6 @@ public:
 
   void setEndian(unsigned char endian) {
     this->writer.setEndian(endian);
-  }
-
-  void setIncludeSRID(int includeSRID) {
-    this->includeSRID = includeSRID;
-  }
-
-  void setIncludeZ(int includeZ) {
-    this->includeZ = includeZ;
-  }
-
-  void setIncludeM(int includeM) {
-    this->includeM = includeM;
   }
 
 protected:
@@ -89,44 +78,6 @@ protected:
     if (this->newGeometryType.hasM && coord.hasM) {
       this->writer.writeDouble(coord.m);
     }
-  }
-
-private:
-  int includeSRID;
-  int includeZ;
-  int includeM;
-
-  GeometryType getNewGeometryType(const GeometryType geometryType) {
-    return GeometryType(
-      geometryType.simpleGeometryType,
-      this->actuallyIncludeZ(geometryType),
-      this->actuallyIncludeM(geometryType),
-      this->actuallyIncludeSRID(geometryType)
-    );
-  }
-
-  bool actuallyIncludeSRID(const GeometryType geometryType) {
-    return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
-  }
-
-  bool actuallyIncludeZ(const GeometryType geometryType) {
-    return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
-  }
-
-  bool actuallyIncludeM(const GeometryType geometryType) {
-    return actuallyInclude(this->includeM, geometryType.hasM, "M");
-  }
-
-  bool actuallyInclude(int flag, bool hasValue, const char* label) {
-    if (flag == 1 && !hasValue) {
-      throw std::runtime_error(
-        Formatter() << "Can't include " <<  label <<
-          " values in a geometry for which" <<
-          label << " values are not defined [feature " << this->featureId << "]"
-      );
-    }
-
-    return flag && hasValue;
   }
 };
 
