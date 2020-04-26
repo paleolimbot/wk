@@ -1,5 +1,5 @@
 Package: wk
-Title: C++ Headers for Well-Known Geometry Conversion
+Title: Lightweight Well-Known Geometry Parsing
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Dewey",
@@ -7,9 +7,8 @@ Authors@R:
            role = c("aut", "cre"),
            email = "dewey@fishandwhistle.net",
            comment = c(ORCID = "0000-0002-9415-4582"))
-Description: Provides a small header-only library for reading and writing
-  well-known binary (WKB) and well-known text (WKT) to and from any R-based 
-  format.
+Description: Provides a minimal R and C++ API for parsing
+  well-known binary (WKB) and well-known text (WKT).
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -4,11 +4,10 @@
 \name{wk-package}
 \alias{wk}
 \alias{wk-package}
-\title{wk: C++ Headers for Well-Known Geometry Conversion}
+\title{wk: Lightweight Well-Known Geometry Parsing}
 \description{
-Provides a small header-only library for reading and writing
-  well-known binary (WKB) and well-known text (WKT) to and from any R-based 
-  format.
+Provides a minimal R and C++ API for parsing
+  well-known binary (WKB) and well-known text (WKT).
 }
 \seealso{
 Useful links:
