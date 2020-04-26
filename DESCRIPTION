@@ -1,4 +1,4 @@
-Package: wkheaders
+Package: wk
 Title: C++ Headers for Well-Known Geometry Conversion
 Version: 0.0.0.9000
 Authors@R: 
@@ -21,5 +21,5 @@ Imports:
     Rcpp
 Suggests: 
     testthat
-URL: https://github.com/paleolimbot/wkheaders
-BugReports: https://github.com/paleolimbot/wkheaders/issues
+URL: https://github.com/paleolimbot/wk
+BugReports: https://github.com/paleolimbot/wk/issues

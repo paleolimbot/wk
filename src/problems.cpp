@@ -1,7 +1,7 @@
 
 #include <Rcpp.h>
-#include "wkheaders/io-rcpp.h"
-#include "wkheaders/wkb-reader.h"
+#include "wk/io-rcpp.h"
+#include "wk/wkb-reader.h"
 using namespace Rcpp;
 
 class RcppWKBValidator: WKBReader {

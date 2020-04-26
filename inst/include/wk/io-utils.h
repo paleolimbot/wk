@@ -1,6 +1,6 @@
 
-#ifndef WKHEADERS_IO_UTILS_H
-#define WKHEADERS_IO_UTILS_H
+#ifndef WK_IO_UTILS_H
+#define WK_IO_UTILS_H
 
 class IOUtils {
 public:

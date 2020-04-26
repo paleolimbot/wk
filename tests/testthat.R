@@ -1,4 +1,4 @@
 library(testthat)
-library(wkheaders)
+library(wk)
 
-test_check("wkheaders")
+test_check("wk")

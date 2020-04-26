@@ -1,6 +1,6 @@
 
-#ifndef WKHEADERS_WKCOORD_H
-#define WKHEADERS_WKCOORD_H
+#ifndef WK_WKCOORD_H
+#define WK_WKCOORD_H
 
 #include <cmath>
 #include <vector>

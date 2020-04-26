@@ -1,10 +1,10 @@
 
-#ifndef WKHEADERS_WKB_READER_H
-#define WKHEADERS_WKB_READER_H
+#ifndef WK_WKB_READER_H
+#define WK_WKB_READER_H
 
-#include "wkheaders/geometry-type.h"
-#include "wkheaders/io-utils.h"
-#include "wkheaders/wk-coord.h"
+#include "wk/geometry-type.h"
+#include "wk/io-utils.h"
+#include "wk/wk-coord.h"
 
 class WKBReader {
 

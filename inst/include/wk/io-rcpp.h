@@ -1,9 +1,9 @@
 
-#ifndef WKHEADERS_IO_RCPP_H
-#define WKHEADERS_IO_RCPP_H
+#ifndef WK_IO_RCPP_H
+#define WK_IO_RCPP_H
 
 #include <Rcpp.h>
-#include "wkheaders/io-utils.h"
+#include "wk/io-utils.h"
 
 using namespace Rcpp;
 

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // cpp_problems_wkb
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb);
-RcppExport SEXP _wkheaders_cpp_problems_wkb(SEXP wkbSEXP) {
+RcppExport SEXP _wk_cpp_problems_wkb(SEXP wkbSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // cpp_translate_wkb_wkt
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int precision, bool trim);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+RcppExport SEXP _wk_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ END_RCPP
 }
 // cpp_translate_wkb_wkb
 Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int endian, int bufferSize);
-RcppExport SEXP _wkheaders_cpp_translate_wkb_wkb(SEXP wkbSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+RcppExport SEXP _wk_cpp_translate_wkb_wkb(SEXP wkbSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,13 +44,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wkheaders_cpp_problems_wkb", (DL_FUNC) &_wkheaders_cpp_problems_wkb, 1},
-    {"_wkheaders_cpp_translate_wkb_wkt", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkt, 3},
-    {"_wkheaders_cpp_translate_wkb_wkb", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkb, 3},
+    {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
+    {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 3},
+    {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_wkheaders(DllInfo *dll) {
+RcppExport void R_init_wk(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

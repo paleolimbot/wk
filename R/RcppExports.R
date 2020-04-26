@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cpp_problems_wkb <- function(wkb) {
-    .Call(`_wkheaders_cpp_problems_wkb`, wkb)
+    .Call(`_wk_cpp_problems_wkb`, wkb)
 }
 
 cpp_translate_wkb_wkt <- function(wkb, precision, trim) {
-    .Call(`_wkheaders_cpp_translate_wkb_wkt`, wkb, precision, trim)
+    .Call(`_wk_cpp_translate_wkb_wkt`, wkb, precision, trim)
 }
 
 cpp_translate_wkb_wkb <- function(wkb, endian, bufferSize) {
-    .Call(`_wkheaders_cpp_translate_wkb_wkb`, wkb, endian, bufferSize)
+    .Call(`_wk_cpp_translate_wkb_wkb`, wkb, endian, bufferSize)
 }
 

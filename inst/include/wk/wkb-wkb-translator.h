@@ -1,9 +1,9 @@
 
-#ifndef WKHEADERS_WKB_WKB_TRANSLATOR
-#define WKHEADERS_WKB_WKB_TRANSLATOR
+#ifndef WK_WKB_WKB_TRANSLATOR
+#define WK_WKB_WKB_TRANSLATOR
 
-#include "wkheaders/wkb-writer.h"
-#include "wkheaders/wkb-reader.h"
+#include "wk/wkb-writer.h"
+#include "wk/wkb-reader.h"
 
 class WKBWKBTranslator: WKBReader {
 public:

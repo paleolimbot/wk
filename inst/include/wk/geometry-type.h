@@ -1,6 +1,6 @@
 
-#ifndef WKHEADERS_GEOMETRY_TYPE_H
-#define WKHEADERS_GEOMETRY_TYPE_H
+#ifndef WK_GEOMETRY_TYPE_H
+#define WK_GEOMETRY_TYPE_H
 
 #include <cstdint>
 #include <string>

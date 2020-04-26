@@ -1,10 +1,10 @@
 
-#ifndef WKHEADERS_WKB_WRITER_H
-#define WKHEADERS_WKB_WRITER_H
+#ifndef WK_WKB_WRITER_H
+#define WK_WKB_WRITER_H
 
-#include "wkheaders/geometry-type.h"
-#include "wkheaders/wk-coord.h"
-#include "wkheaders/io-utils.h"
+#include "wk/geometry-type.h"
+#include "wk/wk-coord.h"
+#include "wk/io-utils.h"
 
 class WKBWriter {
 public:
