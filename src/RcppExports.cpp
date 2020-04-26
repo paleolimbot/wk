@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// cpp_problems_wkb
+Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb);
+RcppExport SEXP _wkheaders_cpp_problems_wkb(SEXP wkbSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_problems_wkb(wkb));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_translate_wkb_wkt
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int precision, bool trim);
 RcppExport SEXP _wkheaders_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
@@ -33,6 +44,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_wkheaders_cpp_problems_wkb", (DL_FUNC) &_wkheaders_cpp_problems_wkb, 1},
     {"_wkheaders_cpp_translate_wkb_wkt", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkt, 3},
     {"_wkheaders_cpp_translate_wkb_wkb", (DL_FUNC) &_wkheaders_cpp_translate_wkb_wkb, 3},
     {NULL, NULL, 0}
