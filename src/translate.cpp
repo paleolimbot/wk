@@ -11,6 +11,7 @@ class RcppWKBWKTTranslator: public WKBWKTTranslator {
 public:
   Rcpp::CharacterVector output;
   std::stringstream stream;
+  bool nextIsNull;
 
   RcppWKBWKTTranslator(Rcpp::List input): 
     WKBWKTTranslator(new WKRawVectorListReader(input), stream), output(input.size()) {
@@ -20,15 +21,20 @@ public:
     this->setTrim(true);
   }
 
-  void nextNull(size_t featureId) {
-    this->output[featureId] = NA_STRING;
-  }
-
   void nextFeature(size_t featureId) {
     this->stream.str("");
     this->stream.clear();
+    this->nextIsNull = false;
     WKBWKTTranslator::nextFeature(featureId);
-    this->output[featureId] = stream.str();
+    if (this->nextIsNull) {
+      this->output[featureId] = NA_STRING;
+    } else {
+      this->output[featureId] = stream.str();
+    }
+  }
+
+  void nextNull(size_t featureId) {
+    this->nextIsNull = true;
   }
 };
 
@@ -60,7 +66,7 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List x, int endian) {
   WKRawVectorListWriter writer(x.size());
   RcppWKBWKBTranslator iter(x, writer);
   iter.setEndian(endian);
-  
+
   while (iter.hasNextFeature()) {
     iter.iterateFeature();
   }

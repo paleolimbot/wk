@@ -1,4 +1,15 @@
 
+test_that("translate_wkb_wkt() works with missing values", {
+  point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x24, 0x40))
+
+  expect_identical(translate_wkb_wkt(list(NULL)), NA_character_)
+  expect_identical(translate_wkb_wkt(list(point, NULL)), c("POINT (30 10)", NA))
+  expect_identical(translate_wkb_wkt(list(NULL, point)), c(NA, "POINT (30 10)"))
+})
+
+
 test_that("translate_wkb_wkt() works with multiple endians", {
 
   point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,
@@ -172,6 +183,17 @@ test_that("translate_wkb_wkt() works with nested collections", {
       "GEOMETRYCOLLECTION EMPTY, POINT (30 10))"
     )
   )
+})
+
+
+test_that("translate_wkb_wkb() works with missing values", {
+  point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x24, 0x40))
+
+  expect_identical(translate_wkb_wkb(list(NULL)), list(NULL))
+  expect_identical(translate_wkb_wkb(list(point, NULL), endian = 1), list(point, NULL))
+  expect_identical(translate_wkb_wkb(list(NULL, point), endian = 1), list(NULL, point))
 })
 
 test_that("translate_wkt_wkb() respects trim and rounding options", {

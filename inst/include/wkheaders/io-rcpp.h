@@ -118,7 +118,6 @@ public:
   }
 
   void writeNull() {
-    Rcout << "writeNull()\n";
     this->prevIsNull = true;
   }
 
