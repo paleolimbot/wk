@@ -1,12 +1,12 @@
 
 #' Validate well-known binary
 #'
-#' @inheritParams wk_translate_wkb_wkt
+#' @inheritParams wkb_translate_wkt
 #'
 #' @return A character vector of parsing errors. `NA` signifies
 #'   that there was no parsing error.
 #' @export
 #'
-wk_problems_wkb <- function(wkb) {
+wkb_problems <- function(wkb) {
   cpp_problems_wkb(wkb)
 }
