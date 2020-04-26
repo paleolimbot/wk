@@ -6,6 +6,8 @@
 
 class WKTranslator {
 public:
+  // by default, leave everything as is!
+  WKTranslator(): includeZ(2), includeM(2), includeSRID(2) {}
 
   // expose these as the public interface
   virtual bool hasNextFeature() = 0;
@@ -25,10 +27,9 @@ public:
   }
 
 protected:
-  size_t featureId;
-  int includeSRID;
   int includeZ;
   int includeM;
+  int includeSRID;
 
   GeometryType getNewGeometryType(const GeometryType geometryType) {
     return GeometryType(
@@ -39,10 +40,6 @@ protected:
     );
   }
 
-  bool actuallyIncludeSRID(const GeometryType geometryType) {
-    return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
-  }
-
   bool actuallyIncludeZ(const GeometryType geometryType) {
     return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
   }
@@ -51,12 +48,16 @@ protected:
     return actuallyInclude(this->includeM, geometryType.hasM, "M");
   }
 
+  bool actuallyIncludeSRID(const GeometryType geometryType) {
+    return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
+  }
+
   bool actuallyInclude(int flag, bool hasValue, const char* label) {
     if (flag == 1 && !hasValue) {
       throw std::runtime_error(
         Formatter() << "Can't include " <<  label <<
           " values in a geometry for which" <<
-          label << " values are not defined [feature " << this->featureId << "]"
+          label << " values are not defined"
       );
     }
 

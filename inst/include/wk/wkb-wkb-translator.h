@@ -28,13 +28,7 @@ public:
 
 protected:
   WKBWriter writer;
-  size_t featureId;
   GeometryType newGeometryType;
-
-  virtual void nextFeature(size_t featureId) {
-    this->featureId = featureId;
-    WKBReader::nextFeature(featureId);
-  }
 
   virtual void nextNull(size_t featureId) {
     this->writer.writeNull();

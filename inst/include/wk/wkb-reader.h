@@ -216,7 +216,7 @@ private:
 
     } else if (geometryType.hasM) {
       this->m = this->readDouble();
-      this->nextCoordinate(WKCoord::xyz(x, y, m), coordId);
+      this->nextCoordinate(WKCoord::xym(x, y, m), coordId);
 
     } else {
       this->nextCoordinate(WKCoord::xy(x, y), coordId);

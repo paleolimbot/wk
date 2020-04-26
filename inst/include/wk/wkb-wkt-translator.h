@@ -3,9 +3,10 @@
 #define WK_TRANSLATOR_H
 
 #include <iostream>
+#include "wk/translator.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKTTranslator: WKBReader {
+class WKBWKTTranslator: WKBReader, public WKTranslator {
 public:
 
   WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): WKBReader(reader), out(stream) {}
@@ -39,7 +40,7 @@ public:
 
 protected:
   std::ostream& out;
-  
+
   // default null handling returns ""
   virtual void nextNull(size_t featureId) {
 
@@ -51,19 +52,21 @@ protected:
   }
 
 private:
-  // wait until the SRID to print the geometry type
-  // if there is one
-  void nextGeometryType(GeometryType geometryType, uint32_t partId) {
+  GeometryType newGeometryType;
+
+  // wait until the SRID to print the geometry type if there is one
+  void nextGeometryType(const GeometryType geometryType, uint32_t partId) {
+    this->newGeometryType = this->getNewGeometryType(geometryType);
     if (!geometryType.hasSRID) {
-      this->writeGeometrySep(geometryType, partId, 0);
+      this->writeGeometrySep(this->newGeometryType, partId, 0);
     }
   }
 
-  void nextSRID(GeometryType geometryType, uint32_t partId, uint32_t srid) {
-    this->writeGeometrySep(geometryType, partId, srid);
+  void nextSRID(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
+    this->writeGeometrySep(this->newGeometryType, partId, srid);
   }
 
-  void nextGeometry(GeometryType geometryType, uint32_t partId, uint32_t size) {
+  void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
     if (size > 0) {
       this->out << "(";
     } else {
@@ -77,7 +80,7 @@ private:
     }
   }
 
-  void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
+  void nextLinearRing(const GeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
     WKBReader::nextLinearRing(geometryType, ringId, size);
@@ -86,9 +89,12 @@ private:
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
-    this->out << coord[0];
-    for (size_t i=1; i < coord.size(); i++) {
-      this->out << " " << coord[i];
+    this->out << coord.x << " " << coord.y;
+    if (this->newGeometryType.hasZ && coord.hasZ) {
+      this->out << " " << coord.z;
+    }
+    if (this->newGeometryType.hasM && coord.hasM) {
+      this->out << " " << coord.m;
     }
   }
 
@@ -99,15 +105,15 @@ private:
     if ((iterCollection || iterMulti) && partId > 0) {
       this->out << ", ";
     }
-    
+
     if(iterMulti) {
       return;
     }
-    
+
     if(!iterCollection && geometryType.hasSRID) {
       this->out << "SRID=" << srid << ";";
     }
-    
+
     this->out << geometryType.wktType() << " ";
   }
 
