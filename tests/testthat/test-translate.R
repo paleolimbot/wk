@@ -75,6 +75,55 @@ test_that("wkb_translate_wkt() works with ND points and SRID", {
   expect_identical(wkb_translate_wkt(list(point_zms)), "SRID=4326;POINT ZM (30 10 12 14)")
 })
 
+test_that("wkb_translate_wkt() works with creation options", {
+  point_zms <- as.raw(c(0x01,
+                        0x01, 0x00, 0x00, 0xe0,
+                        0xe6, 0x10, 0x00, 0x00,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40,
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x40))
+  expect_identical(
+    wkb_translate_wkt(list(point_zms)),
+    "SRID=4326;POINT ZM (30 10 12 14)"
+  )
+
+  expect_identical(
+    wkb_translate_wkt(list(point_zms), include_z = FALSE),
+    "SRID=4326;POINT M (30 10 14)"
+  )
+
+  expect_identical(
+    wkb_translate_wkt(list(point_zms), include_m = FALSE),
+    "SRID=4326;POINT Z (30 10 12)"
+  )
+
+  expect_identical(
+    wkb_translate_wkt(list(point_zms), include_srid = FALSE),
+    "POINT ZM (30 10 12 14)"
+  )
+})
+
+test_that("wkb_translate_wkt() errors when inappropriate creation options are set", {
+  point_xy <- as.raw(c(0x01, #
+                       0x01, 0x00, 0x00, 0x00, # type
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
+                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
+
+  expect_error(
+    wkb_translate_wkt(list(point_xy), include_z = TRUE),
+    "Can't include Z values", class = "C++Error"
+  )
+  expect_error(
+    wkb_translate_wkt(list(point_xy), include_m = TRUE),
+    "Can't include M values", class = "C++Error"
+  )
+  expect_error(
+    wkb_translate_wkt(list(point_xy), include_srid = TRUE),
+    "Can't include SRID values", class = "C++Error"
+  )
+})
+
 test_that("wkb_translate_wkt() works simple geometries", {
 
   # POINT (30 10)

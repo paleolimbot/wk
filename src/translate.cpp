@@ -39,9 +39,14 @@ public:
 };
 
 // [[Rcpp::export]]
-Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int precision, bool trim) {
+Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
+                                            int includeSRID, int precision, bool trim) {
   WKRawVectorListReader reader(wkb);
   RcppWKBWKTTranslator translator(reader);
+
+  translator.setIncludeZ(includeZ);
+  translator.setIncludeM(includeM);
+  translator.setIncludeSRID(includeSRID);
   translator.setRoundingPrecision(precision);
   translator.setTrim(trim);
 
@@ -60,6 +65,7 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
   writer.setBufferSize(bufferSize);
 
   WKBWKBTranslator translator(reader, writer);
+
   translator.setIncludeZ(includeZ);
   translator.setIncludeM(includeM);
   translator.setIncludeSRID(includeSRID);

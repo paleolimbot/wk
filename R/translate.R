@@ -24,8 +24,16 @@
 #'   of raw vectors.
 #' @export
 #'
-wkb_translate_wkt <- function(wkb, precision = 16, trim = TRUE) {
-  cpp_translate_wkb_wkt(wkb, precision = precision, trim = trim)
+wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
+                              precision = 16, trim = TRUE) {
+  cpp_translate_wkb_wkt(
+    wkb,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    precision = precision,
+    trim = trim
+  )
 }
 
 #' @rdname wkb_translate_wkt

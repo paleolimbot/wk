@@ -5,8 +5,8 @@ cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
 
-cpp_translate_wkb_wkt <- function(wkb, precision, trim) {
-    .Call(`_wk_cpp_translate_wkb_wkt`, wkb, precision, trim)
+cpp_translate_wkb_wkt <- function(wkb, includeZ, includeM, includeSRID, precision, trim) {
+    .Call(`_wk_cpp_translate_wkb_wkt`, wkb, includeZ, includeM, includeSRID, precision, trim)
 }
 
 cpp_translate_wkb_wkb <- function(wkb, includeZ, includeM, includeSRID, endian, bufferSize) {

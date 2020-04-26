@@ -56,7 +56,7 @@ protected:
     if (flag == 1 && !hasValue) {
       throw std::runtime_error(
         Formatter() << "Can't include " <<  label <<
-          " values in a geometry for which" <<
+          " values in a geometry for which " <<
           label << " values are not defined"
       );
     }

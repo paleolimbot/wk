@@ -6,15 +6,35 @@
 \alias{wkb_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
-wkb_translate_wkt(wkb, precision = 16, trim = TRUE)
+wkb_translate_wkt(
+  wkb,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  precision = 16,
+  trim = TRUE
+)
 
-wkb_translate_wkb(wkb, endian = wkb_platform_endian(), buffer_size = 2048)
+wkb_translate_wkb(
+  wkb,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  endian = wkb_platform_endian(),
+  buffer_size = 2048
+)
 
 wkb_platform_endian()
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
+
+\item{include_z, include_m, include_srid}{Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
+only if present. Note that using \code{TRUE} may result in an error if there
+is no value present in the original.}
 
 \item{precision}{The rounding precision to use when writing
 (number of decimal places).}
