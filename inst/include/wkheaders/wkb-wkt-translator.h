@@ -3,20 +3,20 @@
 #define WKHEADERS_TRANSLATOR_H
 
 #include <iostream>
-#include "wkheaders/wkb-iterator.h"
+#include "wkheaders/wkb-reader.h"
 
-class WKBWKTTranslator: WKBIterator {
+class WKBWKTTranslator: WKBReader {
 public:
 
-  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): WKBIterator(reader), out(stream) {}
+  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): WKBReader(reader), out(stream) {}
 
   // expose these as the public interface
   bool hasNextFeature() {
-    return WKBIterator::hasNextFeature();
+    return WKBReader::hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBIterator::iterateFeature();
+    WKBReader::iterateFeature();
   }
 
   // output stream manipulations I'd rather not remember
@@ -47,7 +47,7 @@ protected:
 
   // theoretically, somebody might want to change this behaviour
   virtual void nextFeature(size_t featureId) {
-    WKBIterator::nextFeature(featureId);
+    WKBReader::nextFeature(featureId);
   }
 
 private:
@@ -70,7 +70,7 @@ private:
       this->out << "EMPTY";
     }
 
-    WKBIterator::nextGeometry(geometryType, partId, size);
+    WKBReader::nextGeometry(geometryType, partId, size);
 
     if (size > 0) {
       this->out << ")";
@@ -80,7 +80,7 @@ private:
   void nextLinearRing(GeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
-    WKBIterator::nextLinearRing(geometryType, ringId, size);
+    WKBReader::nextLinearRing(geometryType, ringId, size);
     this->out << ")";
   }
 

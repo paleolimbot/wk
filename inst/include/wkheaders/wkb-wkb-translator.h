@@ -3,22 +3,22 @@
 #define WKHEADERS_WKB_WKB_TRANSLATOR
 
 #include "wkheaders/wkb-writer.h"
-#include "wkheaders/wkb-iterator.h"
+#include "wkheaders/wkb-reader.h"
 
-class WKBWKBTranslator: WKBIterator {
+class WKBWKBTranslator: WKBReader {
 public:
-  WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): WKBIterator(reader), writer(writer) {
+  WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): WKBReader(reader), writer(writer) {
 
   }
 
   // expose these as the public interface
   virtual bool hasNextFeature() {
     this->writer.seekNextFeature();
-    return WKBIterator::hasNextFeature();
+    return WKBReader::hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBIterator::iterateFeature();
+    WKBReader::iterateFeature();
   }
 
   void setEndian(unsigned char endian) {
@@ -41,7 +41,7 @@ protected:
   WKBWriter writer;
 
   virtual void nextFeature(size_t featureId) {
-    WKBIterator::nextFeature(featureId);
+    WKBReader::nextFeature(featureId);
   }
 
   virtual void nextNull(size_t featureId) {
@@ -58,12 +58,12 @@ protected:
       this->writer.writeUint32(size);
     }
 
-    WKBIterator::nextGeometry(geometryType, partId, size);
+    WKBReader::nextGeometry(geometryType, partId, size);
   }
 
   void nextLinearRing(const GeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->writer.writeUint32(size);
-    WKBIterator::nextLinearRing(geometryType, ringId, size);
+    WKBReader::nextLinearRing(geometryType, ringId, size);
   }
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {

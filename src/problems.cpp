@@ -1,29 +1,29 @@
 
 #include <Rcpp.h>
 #include "wkheaders/io-rcpp.h"
-#include "wkheaders/wkb-iterator.h"
+#include "wkheaders/wkb-reader.h"
 using namespace Rcpp;
 
-class RcppWKBValidator: WKBIterator {
+class RcppWKBValidator: WKBReader {
 public:
   Rcpp::CharacterVector output;
 
-  RcppWKBValidator(WKRawVectorListReader& reader): WKBIterator(reader) {
+  RcppWKBValidator(WKRawVectorListReader& reader): WKBReader(reader) {
     this->output = CharacterVector(reader.nFeatures());
   }
 
   // expose these as the public interface
   virtual bool hasNextFeature() {
-    return WKBIterator::hasNextFeature();
+    return WKBReader::hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBIterator::iterateFeature();
+    WKBReader::iterateFeature();
   }
 
   virtual void nextFeature(size_t featureId) {
     try {
-      WKBIterator::nextFeature(featureId);
+      WKBReader::nextFeature(featureId);
       this->output[featureId] = NA_STRING;
     } catch(std::exception& e) {
       this->output[featureId] = e.what();
