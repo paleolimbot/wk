@@ -8,24 +8,24 @@
 
 class WKCoord {
 public:
-  const double x;
-  const double y;
-  const double z;
-  const double m;
-  const bool hasZ;
-  const bool hasM;
+  double x;
+  double y;
+  double z;
+  double m;
+  bool hasZ;
+  bool hasM;
 
   WKCoord(): x(NAN), y(NAN), z(NAN), m(NAN), hasZ(false), hasM(false) {}
   WKCoord(double x, double y, double z, double m, bool hasZ, bool hasM):
     x(x), y(y), z(z), m(m), hasZ(hasZ), hasM(hasM) {}
 
-  const double& operator[](std::size_t idx) const { 
+  const double& operator[](std::size_t idx) const {
     switch (idx) {
     case 0: return x;
     case 1: return y;
-    case 2: 
+    case 2:
       if (hasZ) {
-        return z; 
+        return z;
       } else if (hasM) {
         return m;
       }

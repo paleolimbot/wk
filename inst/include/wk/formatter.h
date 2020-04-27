@@ -1,4 +1,7 @@
 
+#ifndef WK_FORMATTER
+#define WK_FORMATTER
+
 // https://stackoverflow.com/questions/12261915/how-to-throw-stdexceptions-with-variable-messages
 #include <stdexcept>
 #include <sstream>
@@ -29,3 +32,5 @@ private:
     Formatter(const Formatter &);
     Formatter & operator = (Formatter &);
 };
+
+# endif
