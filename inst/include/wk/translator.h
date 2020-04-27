@@ -2,7 +2,7 @@
 #ifndef WK_TRANSLATOR
 #define WK_TRANSLATOR
 
-#include "wk/geometry-type.h"
+#include "wk/geometry-meta.h"
 
 class WKTranslator {
 public:
@@ -31,8 +31,8 @@ protected:
   int includeM;
   int includeSRID;
 
-  WKGeometryType getNewGeometryType(const WKGeometryType geometryType) {
-    return WKGeometryType(
+  WKGeometryMeta getNewGeometryType(const WKGeometryMeta geometryType) {
+    return WKGeometryMeta(
       geometryType.simpleGeometryType,
       this->actuallyIncludeZ(geometryType),
       this->actuallyIncludeM(geometryType),
@@ -40,15 +40,15 @@ protected:
     );
   }
 
-  bool actuallyIncludeZ(const WKGeometryType geometryType) {
+  bool actuallyIncludeZ(const WKGeometryMeta geometryType) {
     return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
   }
 
-  bool actuallyIncludeM(const WKGeometryType geometryType) {
+  bool actuallyIncludeM(const WKGeometryMeta geometryType) {
     return actuallyInclude(this->includeM, geometryType.hasM, "M");
   }
 
-  bool actuallyIncludeSRID(const WKGeometryType geometryType) {
+  bool actuallyIncludeSRID(const WKGeometryMeta geometryType) {
     return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
   }
 

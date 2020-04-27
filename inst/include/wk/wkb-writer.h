@@ -2,7 +2,7 @@
 #ifndef WK_WKB_WRITER_H
 #define WK_WKB_WRITER_H
 
-#include "wk/geometry-type.h"
+#include "wk/geometry-meta.h"
 #include "wk/coord.h"
 #include "wk/io-utils.h"
 

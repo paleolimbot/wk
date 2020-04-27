@@ -24,7 +24,7 @@ enum SimpleGeometryType {
 #define EWKB_M_BIT    0x40000000
 #define EWKB_SRID_BIT 0x20000000
 
-class WKGeometryType {
+class WKGeometryMeta {
 public:
   uint32_t simpleGeometryType;
   bool hasZ;
@@ -32,21 +32,21 @@ public:
   bool hasSRID;
   uint32_t ewkbType;
 
-  WKGeometryType():
+  WKGeometryMeta():
     simpleGeometryType(SimpleGeometryType::Invalid),
     hasZ(false),
     hasM(false),
     hasSRID(false),
     ewkbType(0) {}
 
-  WKGeometryType(uint32_t ewkbType):
+  WKGeometryMeta(uint32_t ewkbType):
     simpleGeometryType(ewkbType & 0x000000ff),
     hasZ(ewkbType & EWKB_Z_BIT),
     hasM(ewkbType & EWKB_M_BIT),
     hasSRID(ewkbType & EWKB_SRID_BIT),
     ewkbType(ewkbType) {}
 
-  WKGeometryType(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID):
+  WKGeometryMeta(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID):
     simpleGeometryType(simpleGeometryType),
     hasZ(hasZ),
     hasM(hasM),
@@ -99,7 +99,7 @@ private:
     default:
       throw std::runtime_error(
         Formatter() <<
-          "invalid type in WKGeometryType::wktSimpleGeometryType(): " <<
+          "invalid type in WKGeometryMeta::wktSimpleGeometryType(): " <<
           simpleGeometryType
       );
     }
