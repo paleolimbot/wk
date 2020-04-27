@@ -52,27 +52,27 @@ protected:
   }
 
 private:
-  GeometryType newGeometryType;
+  WKGeometryType newGeometryType;
 
   // wait until the SRID to print the geometry type if there is one
-  void nextGeometryType(const GeometryType geometryType, uint32_t partId) {
+  void nextGeometryType(const WKGeometryType geometryType, uint32_t partId) {
     this->newGeometryType = this->getNewGeometryType(geometryType);
     if (!geometryType.hasSRID) {
       this->writeGeometrySep(this->newGeometryType, partId, 0);
     }
   }
 
-  void nextSRID(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
+  void nextSRID(const WKGeometryType geometryType, uint32_t partId, uint32_t srid) {
     this->writeGeometrySep(this->newGeometryType, partId, srid);
   }
 
-  void nextGeometry(const GeometryType geometryType, uint32_t partId, uint32_t size) {
+  void nextGeometry(const WKGeometryType geometryType, uint32_t partId, uint32_t size) {
     this->writeGeometryOpen(size);
     WKBReader::nextGeometry(geometryType, partId, size);
     this->writeGeometryClose(size);
   }
 
-  void nextLinearRing(const GeometryType geometryType, uint32_t ringId, uint32_t size) {
+  void nextLinearRing(const WKGeometryType geometryType, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
     WKBReader::nextLinearRing(geometryType, ringId, size);
@@ -104,7 +104,7 @@ private:
     }
   }
 
-  void writeGeometrySep(const GeometryType geometryType, uint32_t partId, uint32_t srid) {
+  void writeGeometrySep(const WKGeometryType geometryType, uint32_t partId, uint32_t srid) {
     bool iterCollection = iteratingCollection();
     bool iterMulti = iteratingMulti();
 
@@ -141,7 +141,7 @@ private:
       return false;
     }
 
-    const GeometryType nester = this->lastGeometryType(-2);
+    const WKGeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::MultiPoint ||
       nester.simpleGeometryType == SimpleGeometryType::MultiLineString ||
       nester.simpleGeometryType == SimpleGeometryType::MultiPolygon;
@@ -153,7 +153,7 @@ private:
       return false;
     }
 
-    const GeometryType nester = this->lastGeometryType(-2);
+    const WKGeometryType nester = this->lastGeometryType(-2);
     return nester.simpleGeometryType == SimpleGeometryType::GeometryCollection;
   }
 };

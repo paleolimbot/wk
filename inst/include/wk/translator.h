@@ -31,8 +31,8 @@ protected:
   int includeM;
   int includeSRID;
 
-  GeometryType getNewGeometryType(const GeometryType geometryType) {
-    return GeometryType(
+  WKGeometryType getNewGeometryType(const WKGeometryType geometryType) {
+    return WKGeometryType(
       geometryType.simpleGeometryType,
       this->actuallyIncludeZ(geometryType),
       this->actuallyIncludeM(geometryType),
@@ -40,15 +40,15 @@ protected:
     );
   }
 
-  bool actuallyIncludeZ(const GeometryType geometryType) {
+  bool actuallyIncludeZ(const WKGeometryType geometryType) {
     return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
   }
 
-  bool actuallyIncludeM(const GeometryType geometryType) {
+  bool actuallyIncludeM(const WKGeometryType geometryType) {
     return actuallyInclude(this->includeM, geometryType.hasM, "M");
   }
 
-  bool actuallyIncludeSRID(const GeometryType geometryType) {
+  bool actuallyIncludeSRID(const WKGeometryType geometryType) {
     return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
   }
 
