@@ -3,7 +3,7 @@
 #define WK_WKB_WRITER_H
 
 #include "wk/geometry-type.h"
-#include "wk/wk-coord.h"
+#include "wk/coord.h"
 #include "wk/io-utils.h"
 
 class WKBWriter {
