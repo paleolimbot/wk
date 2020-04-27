@@ -1,6 +1,7 @@
 
 /**********************************************************************
  *
+ * {wk} for R borroed this code from...
  * GEOS - Geometry Engine Open Source
  * http://geos.osgeo.org
  *
@@ -15,6 +16,7 @@
  **********************************************************************
  *
  * Last port: ORIGINAL WORK
+ * Modifications for {wk}: make header-only, don't use namespace std
  *
  **********************************************************************/
 
@@ -23,31 +25,26 @@
 
 #include <string>
 
-using namespace std;
-
-
-
-
-class StringTokenizer {
+class WKStringTokenizer {
 public:
     enum {
-        TT_EOF,
-        TT_EOL,
-        TT_NUMBER,
-        TT_WORD
+      TT_EOF,
+      TT_EOL,
+      TT_NUMBER,
+      TT_WORD
     };
 
-    explicit StringTokenizer(const std::string& txt):
+    explicit WKStringTokenizer(const std::string& txt):
       str(txt), stok(""), ntok(0.0) {
       iter = str.begin();
     }
 
-    ~StringTokenizer() {}
+    ~WKStringTokenizer() {}
 
     int nextToken() {
-      string tok = "";
+      std::string tok = "";
       if(iter == str.end()) {
-        return StringTokenizer::TT_EOF;
+        return WKStringTokenizer::TT_EOF;
       }
       switch(*iter) {
       case '(':
@@ -58,25 +55,25 @@ public:
       case '\r':
       case '\t':
       case ' ':
-        string::size_type pos = str.find_first_not_of(" \n\r\t",
+        std::string::size_type pos = str.find_first_not_of(" \n\r\t",
                                                       iter - str.begin());
-        if(pos == string::npos) {
-          return StringTokenizer::TT_EOF;
+        if(pos == std::string::npos) {
+          return WKStringTokenizer::TT_EOF;
         }
         else {
           iter = str.begin() + pos;
           return nextToken();
         }
       }
-      string::size_type pos = str.find_first_of("\n\r\t() ,",
+      std::string::size_type pos = str.find_first_of("\n\r\t() ,",
                                                 iter - str.begin());
-      if(pos == string::npos) {
+      if(pos == std::string::npos) {
         if(iter != str.end()) {
           tok.assign(iter, str.end());
           iter = str.end();
         }
         else {
-          return StringTokenizer::TT_EOF;
+          return WKStringTokenizer::TT_EOF;
         }
       }
       else {
@@ -88,26 +85,26 @@ public:
       if(*stopstring == '\0') {
         ntok = dbl;
         stok = "";
-        return StringTokenizer::TT_NUMBER;
+        return WKStringTokenizer::TT_NUMBER;
       }
       else {
         ntok = 0.0;
         stok = tok;
-        return StringTokenizer::TT_WORD;
+        return WKStringTokenizer::TT_WORD;
       }
     }
 
     int peekNextToken() {
-      string::size_type pos;
-      string tok = "";
+      std::string::size_type pos;
+      std::string tok = "";
       if(iter == str.end()) {
-        return StringTokenizer::TT_EOF;
+        return WKStringTokenizer::TT_EOF;
       }
 
       pos = str.find_first_not_of(" \r\n\t", iter - str.begin());
 
-      if(pos == string::npos) {
-        return StringTokenizer::TT_EOF;
+      if(pos == std::string::npos) {
+        return WKStringTokenizer::TT_EOF;
       }
       switch(str[pos]) {
       case '(':
@@ -121,12 +118,12 @@ public:
 
       pos = str.find_first_of("\n\r\t() ,", iter - str.begin());
 
-      if(pos == string::npos) {
+      if(pos == std::string::npos) {
         if(iter != str.end()) {
           tok.assign(iter, str.end());
         }
         else {
-          return StringTokenizer::TT_EOF;
+          return WKStringTokenizer::TT_EOF;
         }
       }
       else {
@@ -138,12 +135,12 @@ public:
       if(*stopstring == '\0') {
         ntok = dbl;
         stok = "";
-        return StringTokenizer::TT_NUMBER;
+        return WKStringTokenizer::TT_NUMBER;
       }
       else {
         ntok = 0.0;
         stok = tok;
-        return StringTokenizer::TT_WORD;
+        return WKStringTokenizer::TT_WORD;
       }
     }
 
@@ -162,8 +159,8 @@ private:
     std::string::const_iterator iter;
 
     // Declare type as noncopyable
-    StringTokenizer(const StringTokenizer& other) = delete;
-    StringTokenizer& operator=(const StringTokenizer& rhs) = delete;
+    WKStringTokenizer(const WKStringTokenizer& other) = delete;
+    WKStringTokenizer& operator=(const WKStringTokenizer& rhs) = delete;
 
     static double
       strtod_with_vc_fix(const char* str, char** str_end) {
