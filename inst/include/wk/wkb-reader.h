@@ -50,19 +50,19 @@ protected:
 
   virtual void nextGeometry(const WKGeometryMeta geometryType, uint32_t partId, uint32_t size) {
     switch (geometryType.simpleGeometryType) {
-    case SimpleGeometryType::Point:
+    case WKGeometryType::Point:
       this->nextPoint(geometryType);
       break;
-    case SimpleGeometryType::LineString:
+    case WKGeometryType::LineString:
       this->nextLinestring(geometryType, size);
       break;
-    case SimpleGeometryType::Polygon:
+    case WKGeometryType::Polygon:
       this->nextPolygon(geometryType, size);
       break;
-    case SimpleGeometryType::MultiPoint:
-    case SimpleGeometryType::MultiLineString:
-    case SimpleGeometryType::MultiPolygon:
-    case SimpleGeometryType::GeometryCollection:
+    case WKGeometryType::MultiPoint:
+    case WKGeometryType::MultiLineString:
+    case WKGeometryType::MultiPolygon:
+    case WKGeometryType::GeometryCollection:
       this->nextCollection(this->geometryType, size);
       break;
     default:
@@ -192,7 +192,7 @@ private:
       this->nextSRID(geometryType, partId, this->srid);
     }
 
-    if (geometryType.simpleGeometryType == SimpleGeometryType::Point) {
+    if (geometryType.simpleGeometryType == WKGeometryType::Point) {
       this->nextGeometry(geometryType, partId, 1);
     } else {
       this->nextGeometry(geometryType, partId, this->readUint32());

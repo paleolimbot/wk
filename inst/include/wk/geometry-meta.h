@@ -9,7 +9,7 @@
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
 // https://github.com/r-spatial/sf/blob/master/src/wkb.cpp
 
-enum SimpleGeometryType {
+enum WKGeometryType {
   Invalid = 0,
   Point = 1,
   LineString = 2,
@@ -33,7 +33,7 @@ public:
   uint32_t ewkbType;
 
   WKGeometryMeta():
-    simpleGeometryType(SimpleGeometryType::Invalid),
+    simpleGeometryType(WKGeometryType::Invalid),
     hasZ(false),
     hasM(false),
     hasSRID(false),
@@ -82,19 +82,19 @@ private:
 
   static const char* wktSimpleGeometryType(uint32_t simpleGeometryType) {
     switch (simpleGeometryType) {
-    case SimpleGeometryType::Point:
+    case WKGeometryType::Point:
       return "POINT";
-    case SimpleGeometryType::LineString:
+    case WKGeometryType::LineString:
       return "LINESTRING";
-    case SimpleGeometryType::Polygon:
+    case WKGeometryType::Polygon:
       return "POLYGON";
-    case SimpleGeometryType::MultiPoint:
+    case WKGeometryType::MultiPoint:
       return "MULTIPOINT";
-    case SimpleGeometryType::MultiLineString:
+    case WKGeometryType::MultiLineString:
       return "MULTILINESTRING";
-    case SimpleGeometryType::MultiPolygon:
+    case WKGeometryType::MultiPolygon:
       return "MULTIPOLYGON";
-    case SimpleGeometryType::GeometryCollection:
+    case WKGeometryType::GeometryCollection:
       return "GEOMETRYCOLLECTION";
     default:
       throw std::runtime_error(

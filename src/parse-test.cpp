@@ -44,19 +44,19 @@ void parse_test(CharacterVector input) {
   // int simpleGeometryType;
   //
   // if (strcmp(ptr, "POINT") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::Point;
+  //   simpleGeometryType = WKGeometryType::Point;
   // } else if (strcmp(ptr, "LINESTRING") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::LineString;
+  //   simpleGeometryType = WKGeometryType::LineString;
   // } else if (strcmp(ptr, "POLYGON") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::Polygon;
+  //   simpleGeometryType = WKGeometryType::Polygon;
   // } else if (strcmp(ptr, "MULTIPOINT") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::MultiPoint;
+  //   simpleGeometryType = WKGeometryType::MultiPoint;
   // } else if (strcmp(ptr, "MULTILINESTRING") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::MultiLineString;
+  //   simpleGeometryType = WKGeometryType::MultiLineString;
   // } else if (strcmp(ptr, "MULTIPOLYGON") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::MultiPolygon;
+  //   simpleGeometryType = WKGeometryType::MultiPolygon;
   // } else if (strcmp(ptr, "GEOMETRYCOLLECTION") == 0) {
-  //   simpleGeometryType = SimpleGeometryType::GeometryCollection;
+  //   simpleGeometryType = WKGeometryType::GeometryCollection;
   // } else {
   //   throw ParseException("a simple geometry type", ptr);
   // }
