@@ -52,40 +52,40 @@ protected:
   }
 
 private:
-  WKGeometryMeta newGeometryType;
+  WKGeometryMeta newMeta;
 
   // wait until the SRID to print the geometry type if there is one
-  void nextGeometryType(const WKGeometryMeta geometryType, uint32_t partId) {
-    this->newGeometryType = this->getNewGeometryType(geometryType);
-    if (!geometryType.hasSRID) {
-      this->writeGeometrySep(this->newGeometryType, partId, 0);
+  void nextGeometryType(const WKGeometryMeta meta, uint32_t partId) {
+    this->newMeta = this->getNewMeta(meta);
+    if (!meta.hasSRID) {
+      this->writeGeometrySep(this->newMeta, partId, 0);
     }
   }
 
-  void nextSRID(const WKGeometryMeta geometryType, uint32_t partId, uint32_t srid) {
-    this->writeGeometrySep(this->newGeometryType, partId, srid);
+  void nextSRID(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
+    this->writeGeometrySep(this->newMeta, partId, srid);
   }
 
-  void nextGeometry(const WKGeometryMeta geometryType, uint32_t partId, uint32_t size) {
+  void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
     this->writeGeometryOpen(size);
-    WKBReader::nextGeometry(geometryType, partId, size);
+    WKBReader::nextGeometry(meta, partId, size);
     this->writeGeometryClose(size);
   }
 
-  void nextLinearRing(const WKGeometryMeta geometryType, uint32_t ringId, uint32_t size) {
+  void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
-    WKBReader::nextLinearRing(geometryType, ringId, size);
+    WKBReader::nextLinearRing(meta, ringId, size);
     this->out << ")";
   }
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
     this->out << coord.x << " " << coord.y;
-    if (this->newGeometryType.hasZ && coord.hasZ) {
+    if (this->newMeta.hasZ && coord.hasZ) {
       this->out << " " << coord.z;
     }
-    if (this->newGeometryType.hasM && coord.hasM) {
+    if (this->newMeta.hasM && coord.hasM) {
       this->out << " " << coord.m;
     }
   }
@@ -104,7 +104,7 @@ private:
     }
   }
 
-  void writeGeometrySep(const WKGeometryMeta geometryType, uint32_t partId, uint32_t srid) {
+  void writeGeometrySep(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
     bool iterCollection = iteratingCollection();
     bool iterMulti = iteratingMulti();
 
@@ -116,11 +116,11 @@ private:
       return;
     }
 
-    if(!iterCollection && geometryType.hasSRID) {
+    if(!iterCollection && meta.hasSRID) {
       this->out << "SRID=" << srid << ";";
     }
 
-    this->out << geometryType.wktType() << " ";
+    this->out << meta.wktType() << " ";
   }
 
   void writeRingSep(uint32_t ringId) {

@@ -28,48 +28,48 @@ public:
 
 protected:
   WKBWriter writer;
-  WKGeometryMeta newGeometryType;
+  WKGeometryMeta newMeta;
 
   virtual void nextNull(size_t featureId) {
     this->writer.writeNull();
   }
 
-  void nextGeometryType(const WKGeometryMeta geometryType, uint32_t partId) {
+  void nextGeometryType(const WKGeometryMeta meta, uint32_t partId) {
     // make a new geometry type based on the creation options
-    this->newGeometryType = this->getNewGeometryType(geometryType);
+    this->newMeta = this->getNewMeta(meta);
 
     // write endian and new geometry type
     this->writer.writeEndian();
-    this->writer.writeUint32(this->newGeometryType.ewkbType);
+    this->writer.writeUint32(this->newMeta.ewkbType);
   }
 
-  void nextSRID(const WKGeometryMeta geometryType, uint32_t partId, uint32_t srid) {
-    if (this->newGeometryType.hasSRID) {
+  void nextSRID(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
+    if (this->newMeta.hasSRID) {
       this->writer.writeUint32(srid);
     }
   }
 
-  void nextGeometry(const WKGeometryMeta geometryType, uint32_t partId, uint32_t size) {
+  void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
     // only points aren't followed by a uint32 with the number of [rings, coords, geometries]
-    if (geometryType.simpleGeometryType != WKGeometryType::Point) {
+    if (meta.simpleGeometryType != WKGeometryType::Point) {
       this->writer.writeUint32(size);
     }
 
-    WKBReader::nextGeometry(geometryType, partId, size);
+    WKBReader::nextGeometry(meta, partId, size);
   }
 
-  void nextLinearRing(const WKGeometryMeta geometryType, uint32_t ringId, uint32_t size) {
+  void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
     this->writer.writeUint32(size);
-    WKBReader::nextLinearRing(geometryType, ringId, size);
+    WKBReader::nextLinearRing(meta, ringId, size);
   }
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {
     this->writer.writeDouble(coord.x);
     this->writer.writeDouble(coord.y);
-    if (this->newGeometryType.hasZ && coord.hasZ) {
+    if (this->newMeta.hasZ && coord.hasZ) {
       this->writer.writeDouble(coord.z);
     }
-    if (this->newGeometryType.hasM && coord.hasM) {
+    if (this->newMeta.hasM && coord.hasM) {
       this->writer.writeDouble(coord.m);
     }
   }

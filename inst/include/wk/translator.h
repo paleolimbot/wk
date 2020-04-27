@@ -31,25 +31,25 @@ protected:
   int includeM;
   int includeSRID;
 
-  WKGeometryMeta getNewGeometryType(const WKGeometryMeta geometryType) {
+  WKGeometryMeta getNewMeta(const WKGeometryMeta meta) {
     return WKGeometryMeta(
-      geometryType.simpleGeometryType,
-      this->actuallyIncludeZ(geometryType),
-      this->actuallyIncludeM(geometryType),
-      this->actuallyIncludeSRID(geometryType)
+      meta.simpleGeometryType,
+      this->actuallyIncludeZ(meta),
+      this->actuallyIncludeM(meta),
+      this->actuallyIncludeSRID(meta)
     );
   }
 
-  bool actuallyIncludeZ(const WKGeometryMeta geometryType) {
-    return actuallyInclude(this->includeZ, geometryType.hasZ, "Z");
+  bool actuallyIncludeZ(const WKGeometryMeta meta) {
+    return actuallyInclude(this->includeZ, meta.hasZ, "Z");
   }
 
-  bool actuallyIncludeM(const WKGeometryMeta geometryType) {
-    return actuallyInclude(this->includeM, geometryType.hasM, "M");
+  bool actuallyIncludeM(const WKGeometryMeta meta) {
+    return actuallyInclude(this->includeM, meta.hasM, "M");
   }
 
-  bool actuallyIncludeSRID(const WKGeometryMeta geometryType) {
-    return actuallyInclude(this->includeSRID, geometryType.hasSRID, "SRID");
+  bool actuallyIncludeSRID(const WKGeometryMeta meta) {
+    return actuallyInclude(this->includeSRID, meta.hasSRID, "SRID");
   }
 
   bool actuallyInclude(int flag, bool hasValue, const char* label) {
