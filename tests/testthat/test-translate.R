@@ -22,7 +22,10 @@ test_that("wkb_translate_wkt() works with multiple endians", {
 
   expect_identical(wkb_translate_wkt(list(point_be)), "POINT (30 10)")
   expect_identical(wkb_translate_wkt(list(point_le)), "POINT (30 10)")
-  expect_error(wkb_translate_wkt(list(point_le[1:5])), "Reached end of RawVector input")
+  expect_error(
+    wkb_translate_wkt(list(point_le[1:5])),
+    "Reached end of RawVector input", class = "WKParseException"
+  )
 })
 
 test_that("wkb_translate_wkt() works with ND points and SRID", {

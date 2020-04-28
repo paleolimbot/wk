@@ -3,6 +3,7 @@
 #define WK_IO_RCPP_H
 
 #include <Rcpp.h>
+#include "wk/parse-exception.h"
 #include "wk/io-utils.h"
 
 using namespace Rcpp;
@@ -36,7 +37,7 @@ public:
     }
 
     SEXP item = this->container[this->index];
-    
+
     if (item == R_NilValue) {
       this->featureNull = true;
       this->data = RawVector::create();
@@ -68,7 +69,7 @@ private:
   T readBinary() {
     // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
     if ((this->offset + sizeof(T)) > this->data.size()) {
-      stop("Reached end of RawVector input");
+      throw WKParseException("Reached end of RawVector input");
     }
 
     T dst;

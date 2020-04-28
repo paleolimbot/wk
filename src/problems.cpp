@@ -21,13 +21,13 @@ public:
     WKBReader::iterateFeature();
   }
 
-  virtual void readFeature(size_t featureId) {
-    try {
-      WKBReader::readFeature(featureId);
-      this->output[featureId] = NA_STRING;
-    } catch(std::exception& e) {
-      this->output[featureId] = e.what();
-    }
+  virtual bool nextError(WKParseException& error, size_t featureId) {
+    this->output[featureId] = error.what();
+    return true;
+  }
+
+  virtual void nextFeatureEnd(size_t featureId) {
+    this->output[featureId] = NA_STRING;
   }
 };
 

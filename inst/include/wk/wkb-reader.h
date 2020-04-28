@@ -2,6 +2,7 @@
 #ifndef WK_WKB_READER_H
 #define WK_WKB_READER_H
 
+#include "wk/parse-exception.h"
 #include "wk/geometry-meta.h"
 #include "wk/io-utils.h"
 #include "wk/coord.h"
@@ -38,7 +39,14 @@ public:
     this->srid = SRID_INVALID;
     this->stack.clear();
 
-    this->readFeature(this->featureId);
+    try {
+      this->readFeature(this->featureId);
+    } catch (WKParseException& error) {
+      if (!this->nextError(error, this->featureId)) {
+        throw error;
+      }
+    }
+
     this->featureId += 1;
   }
 
@@ -74,6 +82,10 @@ public:
 
   }
 
+  virtual bool nextError(WKParseException& error, size_t featureId) {
+    return false;
+  }
+
 protected:
   BinaryReader& reader;
 
@@ -92,12 +104,33 @@ protected:
   double z;
   double m;
 
+  // accessors (may need more, these are sufficient for WKT translator)
+  const WKGeometryMeta lastGeometryType(int level) {
+    if (level >= 0) {
+      return this->stack[level];
+    } else {
+      return this->stack[this->stack.size() + level];
+    }
+  }
+
+  const WKGeometryMeta lastGeometryType() {
+    return lastGeometryType(-1);
+  }
+
+  size_t recursionLevel() {
+    return this->stack.size();
+  }
+
   virtual void readFeature(size_t featureId) {
+    this->nextFeatureStart(featureId);
+
     if (this->reader.featureIsNull()) {
       this->nextNull(featureId);
     } else {
       this->readGeometry(PART_ID_INVALID);
     }
+
+    this->nextFeatureEnd(featureId);
   }
 
   void readGeometry(uint32_t partId) {
@@ -139,7 +172,7 @@ protected:
       this->readCollection(meta);
       break;
     default:
-      throw std::runtime_error(
+      throw WKParseException(
           Formatter() <<
             "Unrecognized geometry type in WKBReader::readGeometry(): " <<
               meta.geometryType
@@ -148,28 +181,6 @@ protected:
 
     this->nextGeometryEnd(meta, partId);
     this->stack.pop_back();
-  }
-
-  void readCoordinate(WKGeometryMeta meta, uint32_t coordId) {
-    this->x = this->readDouble();
-    this->y = this->readDouble();
-
-    if (meta.hasZ && meta.hasM) {
-      this->z = this->readDouble();
-      this->m = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xyzm(x, y, z, m), coordId);
-
-    } else if (meta.hasZ) {
-      this->z = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xyz(x, y, z), coordId);
-
-    } else if (meta.hasM) {
-      this->m = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xym(x, y, m), coordId);
-
-    } else {
-      this->nextCoordinate(meta, WKCoord::xy(x, y), coordId);
-    }
   }
 
   void readLineString(WKGeometryMeta meta) {
@@ -204,21 +215,26 @@ protected:
     }
   }
 
-  // accessors (may need more, these are sufficient for WKT translator)
-  const WKGeometryMeta lastGeometryType(int level) {
-    if (level >= 0) {
-      return this->stack[level];
+  void readCoordinate(WKGeometryMeta meta, uint32_t coordId) {
+    this->x = this->readDouble();
+    this->y = this->readDouble();
+
+    if (meta.hasZ && meta.hasM) {
+      this->z = this->readDouble();
+      this->m = this->readDouble();
+      this->nextCoordinate(meta, WKCoord::xyzm(x, y, z, m), coordId);
+
+    } else if (meta.hasZ) {
+      this->z = this->readDouble();
+      this->nextCoordinate(meta, WKCoord::xyz(x, y, z), coordId);
+
+    } else if (meta.hasM) {
+      this->m = this->readDouble();
+      this->nextCoordinate(meta, WKCoord::xym(x, y, m), coordId);
+
     } else {
-      return this->stack[this->stack.size() + level];
+      this->nextCoordinate(meta, WKCoord::xy(x, y), coordId);
     }
-  }
-
-  const WKGeometryMeta lastGeometryType() {
-    return lastGeometryType(-1);
-  }
-
-  size_t recursionLevel() {
-    return this->stack.size();
   }
 
   // endian swapping is hard to replicate...these might be useful
