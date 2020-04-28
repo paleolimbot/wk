@@ -32,10 +32,6 @@ public:
   bool hasM;
   bool hasSRID;
   uint32_t ewkbType;
-
-  // meta associated with each feature
-  bool hasParent;
-  uint32_t parentType;
   bool hasSize;
   uint32_t size;
   uint32_t srid;
@@ -46,8 +42,6 @@ public:
     hasM(false),
     hasSRID(false),
     ewkbType(0),
-    hasParent(false),
-    parentType(WKGeometryType::Invalid),
     hasSize(false),
     size(0),
     srid(0) {}

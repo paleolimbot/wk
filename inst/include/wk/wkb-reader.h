@@ -48,7 +48,7 @@ protected:
 
   }
 
-  virtual void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
+  virtual void nextGeometry(WKGeometryMeta meta, uint32_t partId, uint32_t size) {
     switch (meta.geometryType) {
     case WKGeometryType::Point:
       this->nextPoint(meta);
@@ -74,23 +74,23 @@ protected:
     }
   }
 
-  virtual void nextPoint(const WKGeometryMeta meta) {
+  virtual void nextPoint(WKGeometryMeta meta) {
     this->readPoint(meta, 0);
   }
 
-  virtual void nextLinestring(const WKGeometryMeta meta, uint32_t size) {
+  virtual void nextLinestring(WKGeometryMeta meta, uint32_t size) {
     this->readLineString(meta, size);
   }
 
-  virtual void nextPolygon(const WKGeometryMeta meta, uint32_t size) {
+  virtual void nextPolygon(WKGeometryMeta meta, uint32_t size) {
     this->readPolygon(meta, size);
   }
 
-  virtual void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  virtual void nextLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
     this->readLineString(meta, size);
   }
 
-  virtual void nextCollection(const WKGeometryMeta meta, uint32_t size) {
+  virtual void nextCollection(WKGeometryMeta meta, uint32_t size) {
     this->readMultiGeometry(meta, size);
   }
 
@@ -102,11 +102,11 @@ protected:
 
   }
 
-  virtual void nextGeometryType(const WKGeometryMeta meta, uint32_t partId) {
+  virtual void nextGeometryType(WKGeometryMeta meta, uint32_t partId) {
 
   }
 
-  virtual void nextSRID(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
+  virtual void nextSRID(WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
 
   }
 
@@ -183,25 +183,30 @@ private:
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
     this->nextEndian(this->endian, partId);
 
-    const WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
+    WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
     this->stack.push_back(meta);
     this->nextGeometryType(meta, partId);
 
     if (meta.hasSRID) {
-      this->srid = this->readUint32();
+      meta.srid = this->readUint32();
+      this->srid = meta.srid;
       this->nextSRID(meta, partId, this->srid);
     }
 
     if (meta.geometryType == WKGeometryType::Point) {
       this->nextGeometry(meta, partId, 1);
+      meta.hasSize = true;
+      meta.size = 1;
     } else {
-      this->nextGeometry(meta, partId, this->readUint32());
+      meta.hasSize = true;
+      meta.size = this->readUint32();
+      this->nextGeometry(meta, partId, meta.size);
     }
 
     this->stack.pop_back();
   }
 
-  void readPoint(const WKGeometryMeta meta, uint32_t coordId) {
+  void readPoint(WKGeometryMeta meta, uint32_t coordId) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
@@ -223,14 +228,14 @@ private:
     }
   }
 
-  void readLineString(const WKGeometryMeta meta, uint32_t size) {
+  void readLineString(WKGeometryMeta meta, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readPoint(meta, i);
     }
   }
 
-  void readPolygon(const WKGeometryMeta meta, uint32_t size) {
+  void readPolygon(WKGeometryMeta meta, uint32_t size) {
     uint32_t ringSize;
     for (uint32_t i=0; i<size; i++) {
       this->ringId = i;
@@ -239,7 +244,7 @@ private:
     }
   }
 
-  void readMultiGeometry(const WKGeometryMeta meta, uint32_t size) {
+  void readMultiGeometry(WKGeometryMeta meta, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->partId = i;
       this->readGeometry(i);
