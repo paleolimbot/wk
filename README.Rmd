@@ -67,7 +67,7 @@ wkb_problems(list(point_bad_type))
 
 ## Using the C++ headers
 
-The wk package takes an event-based approach to parsing inspired by event-based XML parsers. This allows the package to avoid inventing an in-memory format, since it never has to store geometries in memory. This is class-based, so you will have to make your own subclass of `WKBReader` (and then use it) to do anything useful.
+The wk package takes an event-based approach to parsing inspired by the event-based SAX XML parser. This allows the package to avoid inventing an in-memory format, since it never has to store geometries in memory. This is class-based, so you will have to make your own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do anything useful.
 
 ```{Rcpp}
 // If you're writing code in a package, you'll also
@@ -79,14 +79,14 @@ The wk package takes an event-based approach to parsing inspired by event-based 
 #include "wk/wkb-reader.h"
 using namespace Rcpp;
 
-class CustomWKBOperator: public WKBReader {
+class CustomHandler: public WKGeometryHandler {
 public:
-
-  CustomWKBOperator(WKRawVectorListReader& reader): WKBReader(reader) {}
-
-  virtual void nextFeature(size_t featureId) {
+  
+  void nextFeatureStart(size_t featureId) {
     Rcout << "Do something before feature " << featureId << "\n";
-    WKBReader::nextFeature(featureId);
+  }
+  
+  void nextFeatureEnd(size_t featureId) {
     Rcout << "Do something after feature " << featureId << "\n";
   }
 };
@@ -94,18 +94,64 @@ public:
 // [[Rcpp::export]]
 void wkb_read_custom(List wkb) {
   WKRawVectorListReader reader(wkb);
-  CustomWKBOperator customReader(reader);
-
-  while (customReader.hasNextFeature()) {
-    customReader.iterateFeature();
+  CustomHandler handler;
+  WKBReader wkbReader(reader, handler);
+  
+  while (wkbReader.hasNextFeature()) {
+    wkbReader.iterateFeature();
   }
 }
 ```
 
-This API is a work in progress and may change at any time, but the idea will probably be the same: use a subclass that overrides methods that correspond to parsing events. The methods you may want to override are `nextFeature()`, `nextNull()`, `nextGeometry()`, and `nextCoord()` (but remember to call the super methods!).
+On our example point, this prints the following:
 
 ```{r}
 wkb_read_custom(list(point_wkb))
+```
+
+The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors.
+
+```cpp
+class WKGeometryHandler {
+public:
+
+  virtual void nextFeatureStart(size_t featureId) {
+
+  }
+
+  virtual void nextFeatureEnd(size_t featureId) {
+
+  }
+
+  virtual void nextNull(size_t featureId) {
+
+  }
+
+  virtual void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
+
+  }
+
+  virtual void nextGeometryEnd(const WKGeometryMeta meta, uint32_t partId) {
+
+  }
+
+  virtual void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+
+  }
+
+  virtual void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+
+  }
+
+  virtual void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
+
+  }
+
+  virtual bool nextError(WKParseException& error, size_t featureId) {
+    return false;
+  }
+
+};
 ```
 
 ## Work in progress
