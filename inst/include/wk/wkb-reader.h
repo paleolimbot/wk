@@ -56,6 +56,14 @@ protected:
 
   }
 
+  virtual void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+
+  }
+
+  virtual void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+
+  }
+
   virtual void nextPoint(WKGeometryMeta meta) {
     this->readCoordinate(meta, 0);
   }
@@ -66,10 +74,6 @@ protected:
 
   virtual void nextPolygon(WKGeometryMeta meta) {
     this->readPolygon(meta);
-  }
-
-  virtual void nextLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
-    this->readLinearRing(meta, size);
   }
 
   virtual void nextCollection(WKGeometryMeta meta) {
@@ -241,11 +245,13 @@ protected:
     }
   }
 
-  void readLinearRing(WKGeometryMeta meta, uint32_t size) {
+  void readLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+    this->nextLinearRingStart(meta, size, ringId);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
+    this->nextLinearRingEnd(meta, size, ringId);
   }
 
   void readPolygon(WKGeometryMeta meta) {
@@ -253,7 +259,7 @@ protected:
     for (uint32_t i=0; i < meta.size; i++) {
       this->ringId = i;
       ringSize = this->readUint32();
-      this->nextLinearRing(meta, i, ringSize);
+      this->readLinearRing(meta, i, ringSize);
     }
   }
 

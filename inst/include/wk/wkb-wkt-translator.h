@@ -64,10 +64,12 @@ private:
     this->writeGeometryClose(meta.size);
   }
 
-  void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
     this->writeRingSep(ringId);
     this->out << "(";
-    WKBReader::nextLinearRing(meta, ringId, size);
+  }
+
+  void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
     this->out << ")";
   }
 

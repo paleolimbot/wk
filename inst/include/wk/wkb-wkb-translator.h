@@ -45,9 +45,8 @@ protected:
     if (this->newMeta.geometryType != WKGeometryType::Point) this->writer.writeUint32(meta.size);
   }
 
-  void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
     this->writer.writeUint32(size);
-    WKBReader::nextLinearRing(meta, ringId, size);
   }
 
   void nextCoordinate(const WKCoord coord, uint32_t coordId) {
