@@ -42,17 +42,6 @@ public:
     this->featureId += 1;
   }
 
-
-protected:
-
-  virtual void readFeature(size_t featureId) {
-    if (this->reader.featureIsNull()) {
-      this->nextNull(featureId);
-    } else {
-      this->readGeometry(PART_ID_INVALID);
-    }
-  }
-
   virtual void nextFeatureStart(size_t featureId) {
 
   }
@@ -85,43 +74,7 @@ protected:
 
   }
 
-  // accessors (may need more, these are sufficient for WKT translator)
-  const WKGeometryMeta lastGeometryType(int level) {
-    if (level >= 0) {
-      return this->stack[level];
-    } else {
-      return this->stack[this->stack.size() + level];
-    }
-  }
-
-  const WKGeometryMeta lastGeometryType() {
-    return lastGeometryType(-1);
-  }
-
-  size_t recursionLevel() {
-    return this->stack.size();
-  }
-
-  // endian swapping is hard to replicate...these might be useful
-  // for subclasses that implement an extension of WKB
-  unsigned char readChar() {
-    return this->readCharRaw();
-  }
-
-  double readDouble() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<double>(this->readDoubleRaw());
-    } else
-      return this->readDoubleRaw();
-  }
-
-  double readUint32() {
-    if (this->swapEndian) {
-      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
-    } else
-      return this->readUint32Raw();
-  }
-
+protected:
   BinaryReader& reader;
 
   size_t featureId;
@@ -131,7 +84,6 @@ protected:
 
   std::vector<WKGeometryMeta> stack;
 
-  bool swapEndian;
   unsigned char endian;
   WKGeometryMeta meta;
   uint32_t srid;
@@ -140,7 +92,13 @@ protected:
   double z;
   double m;
 
-
+  virtual void readFeature(size_t featureId) {
+    if (this->reader.featureIsNull()) {
+      this->nextNull(featureId);
+    } else {
+      this->readGeometry(PART_ID_INVALID);
+    }
+  }
 
   void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
@@ -244,6 +202,46 @@ protected:
       this->partId = i;
       this->readGeometry(i);
     }
+  }
+
+  // accessors (may need more, these are sufficient for WKT translator)
+  const WKGeometryMeta lastGeometryType(int level) {
+    if (level >= 0) {
+      return this->stack[level];
+    } else {
+      return this->stack[this->stack.size() + level];
+    }
+  }
+
+  const WKGeometryMeta lastGeometryType() {
+    return lastGeometryType(-1);
+  }
+
+  size_t recursionLevel() {
+    return this->stack.size();
+  }
+
+  // endian swapping is hard to replicate...these might be useful
+  // for subclasses that implement an extension of WKB
+  unsigned char readChar() {
+    return this->readCharRaw();
+  }
+
+  double readDouble() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<double>(this->readDoubleRaw());
+    } else
+      return this->readDoubleRaw();
+  }
+
+private:
+  bool swapEndian;
+
+  double readUint32() {
+    if (this->swapEndian) {
+      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
+    } else
+      return this->readUint32Raw();
   }
 
   unsigned char readCharRaw() {
