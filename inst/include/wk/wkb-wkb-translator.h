@@ -34,28 +34,15 @@ protected:
     this->writer.writeNull();
   }
 
-  void nextGeometryType(const WKGeometryMeta meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
     // make a new geometry type based on the creation options
     this->newMeta = this->getNewMeta(meta);
 
-    // write endian and new geometry type
     this->writer.writeEndian();
     this->writer.writeUint32(this->newMeta.ewkbType);
-  }
 
-  void nextSRID(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
-    if (this->newMeta.hasSRID) {
-      this->writer.writeUint32(srid);
-    }
-  }
-
-  void nextGeometry(const WKGeometryMeta meta, uint32_t partId) {
-    // only points aren't followed by a uint32 with the number of [rings, coords, geometries]
-    if (meta.geometryType != WKGeometryType::Point) {
-      this->writer.writeUint32(meta.size);
-    }
-
-    WKBReader::nextGeometry(meta, partId);
+    if (this->newMeta.hasSRID) this->writer.writeUint32(srid);
+    if (this->newMeta.geometryType != WKGeometryType::Point) this->writer.writeUint32(meta.size);
   }
 
   void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {

@@ -54,21 +54,13 @@ protected:
 private:
   WKGeometryMeta newMeta;
 
-  // wait until the SRID to print the geometry type if there is one
-  void nextGeometryType(const WKGeometryMeta meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
     this->newMeta = this->getNewMeta(meta);
-    if (!meta.hasSRID) {
-      this->writeGeometrySep(this->newMeta, partId, 0);
-    }
-  }
-
-  void nextSRID(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
-    this->writeGeometrySep(this->newMeta, partId, srid);
-  }
-
-  void nextGeometry(const WKGeometryMeta meta, uint32_t partId) {
+    this->writeGeometrySep(this->newMeta, partId, this->newMeta.srid);
     this->writeGeometryOpen(meta.size);
-    WKBReader::nextGeometry(meta, partId);
+  }
+
+  void nextGeometryEnd(const WKGeometryMeta meta, uint32_t partId) {
     this->writeGeometryClose(meta.size);
   }
 

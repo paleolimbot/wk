@@ -48,34 +48,16 @@ protected:
 
   }
 
-  virtual void nextGeometry(WKGeometryMeta meta, uint32_t partId) {
-    switch (meta.geometryType) {
-    case WKGeometryType::Point:
-      this->nextPoint(meta);
-      break;
-    case WKGeometryType::LineString:
-      this->nextLinestring(meta);
-      break;
-    case WKGeometryType::Polygon:
-      this->nextPolygon(meta);
-      break;
-    case WKGeometryType::MultiPoint:
-    case WKGeometryType::MultiLineString:
-    case WKGeometryType::MultiPolygon:
-    case WKGeometryType::GeometryCollection:
-      this->nextCollection(meta);
-      break;
-    default:
-      throw std::runtime_error(
-          Formatter() <<
-            "Unrecognized geometry type in WKBReader::readGeometry(): " <<
-            meta.geometryType
-      );
-    }
+  virtual void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
+
+  }
+
+  virtual void nextGeometryEnd(const WKGeometryMeta meta, uint32_t partId) {
+
   }
 
   virtual void nextPoint(WKGeometryMeta meta) {
-    this->readPoint(meta, 0);
+    this->readCoordinate(meta, 0);
   }
 
   virtual void nextLinestring(WKGeometryMeta meta) {
@@ -147,7 +129,6 @@ protected:
       return this->readUint32Raw();
   }
 
-private:
   BinaryReader& reader;
 
   size_t featureId;
@@ -196,16 +177,42 @@ private:
     if (meta.geometryType == WKGeometryType::Point) {
       meta.hasSize = true;
       meta.size = 1;
-      this->nextGeometry(meta, partId);
     } else {
       meta.hasSize = true;
       meta.size = this->readUint32();
-      this->nextGeometry(meta, partId);
     }
+
+    this->nextGeometryStart(meta, partId);
+
+    switch (meta.geometryType) {
+    case WKGeometryType::Point:
+      this->nextPoint(meta);
+      break;
+    case WKGeometryType::LineString:
+      this->nextLinestring(meta);
+      break;
+    case WKGeometryType::Polygon:
+      this->nextPolygon(meta);
+      break;
+    case WKGeometryType::MultiPoint:
+    case WKGeometryType::MultiLineString:
+    case WKGeometryType::MultiPolygon:
+    case WKGeometryType::GeometryCollection:
+      this->nextCollection(meta);
+      break;
+    default:
+      throw std::runtime_error(
+          Formatter() <<
+            "Unrecognized geometry type in WKBReader::readGeometry(): " <<
+              meta.geometryType
+      );
+    }
+
+    this->nextGeometryEnd(meta, partId);
     this->stack.pop_back();
   }
 
-  void readPoint(WKGeometryMeta meta, uint32_t coordId) {
+  void readCoordinate(WKGeometryMeta meta, uint32_t coordId) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
@@ -230,14 +237,14 @@ private:
   void readLineString(WKGeometryMeta meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->coordId = i;
-      this->readPoint(meta, i);
+      this->readCoordinate(meta, i);
     }
   }
 
   void readLinearRing(WKGeometryMeta meta, uint32_t size) {
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
-      this->readPoint(meta, i);
+      this->readCoordinate(meta, i);
     }
   }
 

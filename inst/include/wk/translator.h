@@ -32,12 +32,18 @@ protected:
   int includeSRID;
 
   WKGeometryMeta getNewMeta(const WKGeometryMeta meta) {
-    return WKGeometryMeta(
+    WKGeometryMeta newMeta(
       meta.geometryType,
       this->actuallyIncludeZ(meta),
       this->actuallyIncludeM(meta),
       this->actuallyIncludeSRID(meta)
     );
+
+    newMeta.srid = meta.srid;
+    newMeta.hasSize = meta.hasSize;
+    newMeta.size = meta.size;
+
+    return newMeta;
   }
 
   bool actuallyIncludeZ(const WKGeometryMeta meta) {
