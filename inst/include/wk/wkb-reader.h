@@ -49,7 +49,7 @@ protected:
   }
 
   virtual void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
-    switch (meta.simpleGeometryType) {
+    switch (meta.geometryType) {
     case WKGeometryType::Point:
       this->nextPoint(meta);
       break;
@@ -69,7 +69,7 @@ protected:
       throw std::runtime_error(
           Formatter() <<
             "Unrecognized geometry type in WKBReader::readGeometry(): " <<
-            meta.simpleGeometryType
+            meta.geometryType
       );
     }
   }
@@ -192,7 +192,7 @@ private:
       this->nextSRID(meta, partId, this->srid);
     }
 
-    if (meta.simpleGeometryType == WKGeometryType::Point) {
+    if (meta.geometryType == WKGeometryType::Point) {
       this->nextGeometry(meta, partId, 1);
     } else {
       this->nextGeometry(meta, partId, this->readUint32());

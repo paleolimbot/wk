@@ -142,9 +142,9 @@ private:
     }
 
     const WKGeometryMeta nester = this->lastGeometryType(-2);
-    return nester.simpleGeometryType == WKGeometryType::MultiPoint ||
-      nester.simpleGeometryType == WKGeometryType::MultiLineString ||
-      nester.simpleGeometryType == WKGeometryType::MultiPolygon;
+    return nester.geometryType == WKGeometryType::MultiPoint ||
+      nester.geometryType == WKGeometryType::MultiLineString ||
+      nester.geometryType == WKGeometryType::MultiPolygon;
   }
 
   bool iteratingCollection() {
@@ -154,7 +154,7 @@ private:
     }
 
     const WKGeometryMeta nester = this->lastGeometryType(-2);
-    return nester.simpleGeometryType == WKGeometryType::GeometryCollection;
+    return nester.geometryType == WKGeometryType::GeometryCollection;
   }
 };
 

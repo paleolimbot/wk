@@ -26,36 +26,49 @@ enum WKGeometryType {
 
 class WKGeometryMeta {
 public:
-  uint32_t simpleGeometryType;
+  // type info
+  uint32_t geometryType;
   bool hasZ;
   bool hasM;
   bool hasSRID;
   uint32_t ewkbType;
 
+  // meta associated with each feature
+  bool hasParent;
+  uint32_t parentType;
+  bool hasSize;
+  uint32_t size;
+  uint32_t srid;
+
   WKGeometryMeta():
-    simpleGeometryType(WKGeometryType::Invalid),
+    geometryType(WKGeometryType::Invalid),
     hasZ(false),
     hasM(false),
     hasSRID(false),
-    ewkbType(0) {}
+    ewkbType(0),
+    hasParent(false),
+    parentType(WKGeometryType::Invalid),
+    hasSize(false),
+    size(0),
+    srid(0) {}
 
   WKGeometryMeta(uint32_t ewkbType):
-    simpleGeometryType(ewkbType & 0x000000ff),
+    geometryType(ewkbType & 0x000000ff),
     hasZ(ewkbType & EWKB_Z_BIT),
     hasM(ewkbType & EWKB_M_BIT),
     hasSRID(ewkbType & EWKB_SRID_BIT),
     ewkbType(ewkbType) {}
 
-  WKGeometryMeta(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID):
-    simpleGeometryType(simpleGeometryType),
+  WKGeometryMeta(int geometryType, bool hasZ, bool hasM, bool hasSRID):
+    geometryType(geometryType),
     hasZ(hasZ),
     hasM(hasM),
     hasSRID(hasSRID),
-    ewkbType(calcEWKBType(simpleGeometryType, hasZ, hasM, hasSRID)) {}
+    ewkbType(calcEWKBType(geometryType, hasZ, hasM, hasSRID)) {}
 
   std::string wktType() const {
     Formatter f;
-    f << wktSimpleGeometryType(this->simpleGeometryType);
+    f << wktSimpleGeometryType(this->geometryType);
 
     if (this->hasZ || this->hasM) {
       f << " ";

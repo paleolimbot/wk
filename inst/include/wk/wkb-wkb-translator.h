@@ -51,7 +51,7 @@ protected:
 
   void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
     // only points aren't followed by a uint32 with the number of [rings, coords, geometries]
-    if (meta.simpleGeometryType != WKGeometryType::Point) {
+    if (meta.geometryType != WKGeometryType::Point) {
       this->writer.writeUint32(size);
     }
 

@@ -33,7 +33,7 @@ protected:
 
   WKGeometryMeta getNewMeta(const WKGeometryMeta meta) {
     return WKGeometryMeta(
-      meta.simpleGeometryType,
+      meta.geometryType,
       this->actuallyIncludeZ(meta),
       this->actuallyIncludeM(meta),
       this->actuallyIncludeSRID(meta)
