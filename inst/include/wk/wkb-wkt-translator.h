@@ -47,8 +47,8 @@ protected:
   }
 
   // theoretically, somebody might want to change this behaviour
-  virtual void nextFeature(size_t featureId) {
-    WKBReader::nextFeature(featureId);
+  virtual void readFeature(size_t featureId) {
+    WKBReader::readFeature(featureId);
   }
 
 private:

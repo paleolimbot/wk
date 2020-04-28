@@ -21,9 +21,9 @@ public:
     WKBReader::iterateFeature();
   }
 
-  virtual void nextFeature(size_t featureId) {
+  virtual void readFeature(size_t featureId) {
     try {
-      WKBReader::nextFeature(featureId);
+      WKBReader::readFeature(featureId);
       this->output[featureId] = NA_STRING;
     } catch(std::exception& e) {
       this->output[featureId] = e.what();

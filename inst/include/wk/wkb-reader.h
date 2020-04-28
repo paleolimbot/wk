@@ -31,17 +31,34 @@ public:
   }
 
   void iterateFeature() {
-    this->readFeature();
+    this->partId = PART_ID_INVALID;
+    this->ringId = RING_ID_INVALID;
+    this->coordId = COORD_ID_INVALID;
+    this->endian = ENDIAN_INVALID;
+    this->srid = SRID_INVALID;
+    this->stack.clear();
+
+    this->readFeature(this->featureId);
+    this->featureId += 1;
   }
+
 
 protected:
 
-  virtual void nextFeature(size_t featureId) {
+  virtual void readFeature(size_t featureId) {
     if (this->reader.featureIsNull()) {
       this->nextNull(featureId);
     } else {
       this->readGeometry(PART_ID_INVALID);
     }
+  }
+
+  virtual void nextFeatureStart(size_t featureId) {
+
+  }
+
+  virtual void nextFeatureEnd(size_t featureId) {
+
   }
 
   virtual void nextNull(size_t featureId) {
@@ -123,17 +140,7 @@ protected:
   double z;
   double m;
 
-  void readFeature() {
-    this->partId = PART_ID_INVALID;
-    this->ringId = RING_ID_INVALID;
-    this->coordId = COORD_ID_INVALID;
-    this->endian = ENDIAN_INVALID;
-    this->srid = SRID_INVALID;
-    this->stack.clear();
 
-    this->nextFeature(this->featureId);
-    this->featureId += 1;
-  }
 
   void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
