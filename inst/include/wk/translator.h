@@ -31,7 +31,7 @@ protected:
   int includeM;
   int includeSRID;
 
-  WKGeometryMeta getNewMeta(const WKGeometryMeta meta) {
+  WKGeometryMeta getNewMeta(const WKGeometryMeta& meta) {
     WKGeometryMeta newMeta(
       meta.geometryType,
       this->actuallyIncludeZ(meta),
@@ -46,15 +46,15 @@ protected:
     return newMeta;
   }
 
-  bool actuallyIncludeZ(const WKGeometryMeta meta) {
+  bool actuallyIncludeZ(const WKGeometryMeta& meta) {
     return actuallyInclude(this->includeZ, meta.hasZ, "Z");
   }
 
-  bool actuallyIncludeM(const WKGeometryMeta meta) {
+  bool actuallyIncludeM(const WKGeometryMeta& meta) {
     return actuallyInclude(this->includeM, meta.hasM, "M");
   }
 
-  bool actuallyIncludeSRID(const WKGeometryMeta meta) {
+  bool actuallyIncludeSRID(const WKGeometryMeta& meta) {
     return actuallyInclude(this->includeSRID, meta.hasSRID, "SRID");
   }
 

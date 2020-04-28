@@ -35,7 +35,7 @@ protected:
     this->writer.writeNull();
   }
 
-  void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     // make a new geometry type based on the creation options
     this->newMeta = this->getNewMeta(meta);
 
@@ -46,11 +46,11 @@ protected:
     if (this->newMeta.geometryType != WKGeometryType::Point) this->writer.writeUint32(meta.size);
   }
 
-  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
     this->writer.writeUint32(size);
   }
 
-  void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writer.writeDouble(coord.x);
     this->writer.writeDouble(coord.y);
     if (this->newMeta.hasZ && coord.hasZ) {

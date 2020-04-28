@@ -51,26 +51,26 @@ protected:
 private:
   WKGeometryMeta newMeta;
 
-  void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->newMeta = this->getNewMeta(meta);
     this->writeGeometrySep(this->newMeta, partId, this->newMeta.srid);
     this->writeGeometryOpen(meta.size);
   }
 
-  void nextGeometryEnd(const WKGeometryMeta meta, uint32_t partId) {
+  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
     this->writeGeometryClose(meta.size);
   }
 
-  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
   }
 
-  void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
     this->out << ")";
   }
 
-  void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
     this->out << coord.x << " " << coord.y;
     if (this->newMeta.hasZ && coord.hasZ) {
@@ -95,7 +95,7 @@ private:
     }
   }
 
-  void writeGeometrySep(const WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
+  void writeGeometrySep(const WKGeometryMeta& meta, uint32_t partId, uint32_t srid) {
     bool iterCollection = iteratingCollection();
     bool iterMulti = iteratingMulti();
 
