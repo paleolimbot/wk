@@ -49,13 +49,13 @@ protected:
     }
   }
 
-  void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
+  void nextGeometry(const WKGeometryMeta meta, uint32_t partId) {
     // only points aren't followed by a uint32 with the number of [rings, coords, geometries]
     if (meta.geometryType != WKGeometryType::Point) {
-      this->writer.writeUint32(size);
+      this->writer.writeUint32(meta.size);
     }
 
-    WKBReader::nextGeometry(meta, partId, size);
+    WKBReader::nextGeometry(meta, partId);
   }
 
   void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {

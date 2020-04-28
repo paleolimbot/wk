@@ -66,10 +66,10 @@ private:
     this->writeGeometrySep(this->newMeta, partId, srid);
   }
 
-  void nextGeometry(const WKGeometryMeta meta, uint32_t partId, uint32_t size) {
-    this->writeGeometryOpen(size);
-    WKBReader::nextGeometry(meta, partId, size);
-    this->writeGeometryClose(size);
+  void nextGeometry(const WKGeometryMeta meta, uint32_t partId) {
+    this->writeGeometryOpen(meta.size);
+    WKBReader::nextGeometry(meta, partId);
+    this->writeGeometryClose(meta.size);
   }
 
   void nextLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
