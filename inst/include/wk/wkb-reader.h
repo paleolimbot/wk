@@ -5,6 +5,7 @@
 #include "wk/parse-exception.h"
 #include "wk/geometry-meta.h"
 #include "wk/io-utils.h"
+#include "wk/geometry-handler.h"
 #include "wk/coord.h"
 
 class WKBReader {
@@ -16,7 +17,7 @@ public:
   const static uint32_t SRID_INVALID = UINT32_MAX;
   const static unsigned char ENDIAN_INVALID = 0xff;
 
-  WKBReader(BinaryReader& reader): reader(reader) {
+  WKBReader(BinaryReader& reader, WKGeometryHandler& handler): reader(reader), handler(handler) {
     this->swapEndian = false;
     this->featureId = 0;
     this->partId = PART_ID_INVALID;
@@ -42,67 +43,13 @@ public:
     try {
       this->readFeature(this->featureId);
     } catch (WKParseException& error) {
-      if (!this->nextError(error, this->featureId)) {
+      if (!handler.nextError(error, this->featureId)) {
         throw error;
       }
     }
 
     this->featureId += 1;
   }
-
-  virtual void nextFeatureStart(size_t featureId) {
-
-  }
-
-  virtual void nextFeatureEnd(size_t featureId) {
-
-  }
-
-  virtual void nextNull(size_t featureId) {
-
-  }
-
-  virtual void nextGeometryStart(const WKGeometryMeta meta, uint32_t partId) {
-
-  }
-
-  virtual void nextGeometryEnd(const WKGeometryMeta meta, uint32_t partId) {
-
-  }
-
-  virtual void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
-
-  }
-
-  virtual void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
-
-  }
-
-  virtual void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
-
-  }
-
-  virtual bool nextError(WKParseException& error, size_t featureId) {
-    return false;
-  }
-
-protected:
-  BinaryReader& reader;
-
-  size_t featureId;
-  uint32_t partId;
-  uint32_t ringId;
-  uint32_t coordId;
-
-  std::vector<WKGeometryMeta> stack;
-
-  unsigned char endian;
-  WKGeometryMeta meta;
-  uint32_t srid;
-  double x;
-  double y;
-  double z;
-  double m;
 
   // accessors (may need more, these are sufficient for WKT translator)
   const WKGeometryMeta lastGeometryType(int level) {
@@ -121,16 +68,35 @@ protected:
     return this->stack.size();
   }
 
+protected:
+  BinaryReader& reader;
+  WKGeometryHandler& handler;
+
+  size_t featureId;
+  uint32_t partId;
+  uint32_t ringId;
+  uint32_t coordId;
+
+  std::vector<WKGeometryMeta> stack;
+
+  unsigned char endian;
+  WKGeometryMeta meta;
+  uint32_t srid;
+  double x;
+  double y;
+  double z;
+  double m;
+
   virtual void readFeature(size_t featureId) {
-    this->nextFeatureStart(featureId);
+    this->handler.nextFeatureStart(featureId);
 
     if (this->reader.featureIsNull()) {
-      this->nextNull(featureId);
+      this->handler.nextNull(featureId);
     } else {
       this->readGeometry(PART_ID_INVALID);
     }
 
-    this->nextFeatureEnd(featureId);
+    this->handler.nextFeatureEnd(featureId);
   }
 
   void readGeometry(uint32_t partId) {
@@ -153,7 +119,7 @@ protected:
     }
 
     this->stack.push_back(meta);
-    this->nextGeometryStart(meta, partId);
+    this->handler.nextGeometryStart(meta, partId);
 
     switch (meta.geometryType) {
     case WKGeometryType::Point:
@@ -179,7 +145,7 @@ protected:
       );
     }
 
-    this->nextGeometryEnd(meta, partId);
+    this->handler.nextGeometryEnd(meta, partId);
     this->stack.pop_back();
   }
 
@@ -191,12 +157,12 @@ protected:
   }
 
   void readLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
-    this->nextLinearRingStart(meta, ringId, size);
+    this->handler.nextLinearRingStart(meta, ringId, size);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
-    this->nextLinearRingEnd(meta, ringId, size);
+    this->handler.nextLinearRingEnd(meta, ringId, size);
   }
 
   void readPolygon(WKGeometryMeta meta) {
@@ -222,18 +188,18 @@ protected:
     if (meta.hasZ && meta.hasM) {
       this->z = this->readDouble();
       this->m = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xyzm(x, y, z, m), coordId);
+      this->handler.nextCoordinate(meta, WKCoord::xyzm(x, y, z, m), coordId);
 
     } else if (meta.hasZ) {
       this->z = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xyz(x, y, z), coordId);
+      this->handler.nextCoordinate(meta, WKCoord::xyz(x, y, z), coordId);
 
     } else if (meta.hasM) {
       this->m = this->readDouble();
-      this->nextCoordinate(meta, WKCoord::xym(x, y, m), coordId);
+      this->handler.nextCoordinate(meta, WKCoord::xym(x, y, m), coordId);
 
     } else {
-      this->nextCoordinate(meta, WKCoord::xy(x, y), coordId);
+      this->handler.nextCoordinate(meta, WKCoord::xy(x, y), coordId);
     }
   }
 

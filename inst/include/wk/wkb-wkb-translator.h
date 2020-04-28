@@ -6,20 +6,20 @@
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKBTranslator: WKBReader, public WKTranslator {
+class WKBWKBTranslator: WKGeometryHandler, public WKTranslator {
 public:
-  WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): WKBReader(reader), writer(writer) {
+  WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): reader(reader, *this), writer(writer) {
 
   }
 
   // expose these as the public interface
   virtual bool hasNextFeature() {
     this->writer.seekNextFeature();
-    return WKBReader::hasNextFeature();
+    return reader.hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBReader::iterateFeature();
+    reader.iterateFeature();
   }
 
   void setEndian(unsigned char endian) {
@@ -27,6 +27,7 @@ public:
   }
 
 protected:
+  WKBReader reader;
   WKBWriter writer;
   WKGeometryMeta newMeta;
 
@@ -41,7 +42,7 @@ protected:
     this->writer.writeEndian();
     this->writer.writeUint32(this->newMeta.ewkbType);
 
-    if (this->newMeta.hasSRID) this->writer.writeUint32(srid);
+    if (this->newMeta.hasSRID) this->writer.writeUint32(this->newMeta.srid);
     if (this->newMeta.geometryType != WKGeometryType::Point) this->writer.writeUint32(meta.size);
   }
 

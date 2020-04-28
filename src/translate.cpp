@@ -21,11 +21,13 @@ public:
     this->setTrim(true);
   }
 
-  void readFeature(size_t featureId) {
+  void nextFeatureStart(size_t featureId) {
     this->stream.str("");
     this->stream.clear();
     this->nextIsNull = false;
-    WKBWKTTranslator::readFeature(featureId);
+  }
+
+  void nextFeatureEnd(size_t featureId) {
     if (this->nextIsNull) {
       this->output[featureId] = NA_STRING;
     } else {

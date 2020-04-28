@@ -1,24 +1,26 @@
 
 #include <Rcpp.h>
 #include "wk/io-rcpp.h"
+#include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
 using namespace Rcpp;
 
-class RcppWKBValidator: WKBReader {
+class RcppWKBValidator: WKGeometryHandler {
 public:
   Rcpp::CharacterVector output;
+  WKBReader reader;
 
-  RcppWKBValidator(WKRawVectorListReader& reader): WKBReader(reader) {
+  RcppWKBValidator(WKRawVectorListReader& reader): reader(reader, *this) {
     this->output = CharacterVector(reader.nFeatures());
   }
 
   // expose these as the public interface
   virtual bool hasNextFeature() {
-    return WKBReader::hasNextFeature();
+    return reader.hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBReader::iterateFeature();
+    reader.iterateFeature();
   }
 
   virtual bool nextError(WKParseException& error, size_t featureId) {

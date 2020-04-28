@@ -3,21 +3,22 @@
 #define WK_TRANSLATOR_H
 
 #include <iostream>
+#include "wk/geometry-handler.h"
 #include "wk/translator.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKTTranslator: WKBReader, public WKTranslator {
+class WKBWKTTranslator: WKGeometryHandler, public WKTranslator {
 public:
 
-  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): WKBReader(reader), out(stream) {}
+  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
 
   // expose these as the public interface
   bool hasNextFeature() {
-    return WKBReader::hasNextFeature();
+    return reader.hasNextFeature();
   }
 
   virtual void iterateFeature() {
-    WKBReader::iterateFeature();
+    reader.iterateFeature();
   }
 
   // output stream manipulations I'd rather not remember
@@ -39,16 +40,12 @@ public:
   }
 
 protected:
+  WKBReader reader;
   std::ostream& out;
 
   // default null handling returns ""
   virtual void nextNull(size_t featureId) {
 
-  }
-
-  // theoretically, somebody might want to change this behaviour
-  virtual void readFeature(size_t featureId) {
-    WKBReader::readFeature(featureId);
   }
 
 private:
@@ -130,24 +127,24 @@ private:
   }
 
   bool iteratingMulti() {
-    size_t stackSize = this->recursionLevel();
+    size_t stackSize = this->reader.recursionLevel();
     if (stackSize <= 1) {
       return false;
     }
 
-    const WKGeometryMeta nester = this->lastGeometryType(-2);
+    const WKGeometryMeta nester = this->reader.lastGeometryType(-2);
     return nester.geometryType == WKGeometryType::MultiPoint ||
       nester.geometryType == WKGeometryType::MultiLineString ||
       nester.geometryType == WKGeometryType::MultiPolygon;
   }
 
   bool iteratingCollection() {
-    size_t stackSize = this->recursionLevel();
+    size_t stackSize = this->reader.recursionLevel();
     if (stackSize <= 1) {
       return false;
     }
 
-    const WKGeometryMeta nester = this->lastGeometryType(-2);
+    const WKGeometryMeta nester = this->reader.lastGeometryType(-2);
     return nester.geometryType == WKGeometryType::GeometryCollection;
   }
 };
