@@ -64,35 +64,7 @@ protected:
 
   }
 
-  virtual void nextPoint(WKGeometryMeta meta) {
-    this->readCoordinate(meta, 0);
-  }
-
-  virtual void nextLinestring(WKGeometryMeta meta) {
-    this->readLineString(meta);
-  }
-
-  virtual void nextPolygon(WKGeometryMeta meta) {
-    this->readPolygon(meta);
-  }
-
-  virtual void nextCollection(WKGeometryMeta meta) {
-    this->readMultiGeometry(meta);
-  }
-
-  virtual void nextCoordinate(const WKCoord coord, uint32_t coordId) {
-
-  }
-
-  virtual void nextEndian(unsigned char endian, uint32_t partId) {
-
-  }
-
-  virtual void nextGeometryType(WKGeometryMeta meta, uint32_t partId) {
-
-  }
-
-  virtual void nextSRID(WKGeometryMeta meta, uint32_t partId, uint32_t srid) {
+  virtual void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
 
   }
 
@@ -166,16 +138,12 @@ protected:
   void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
     this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
-    this->nextEndian(this->endian, partId);
 
     WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
-    this->stack.push_back(meta);
-    this->nextGeometryType(meta, partId);
 
     if (meta.hasSRID) {
       meta.srid = this->readUint32();
       this->srid = meta.srid;
-      this->nextSRID(meta, partId, this->srid);
     }
 
     if (meta.geometryType == WKGeometryType::Point) {
@@ -186,23 +154,24 @@ protected:
       meta.size = this->readUint32();
     }
 
+    this->stack.push_back(meta);
     this->nextGeometryStart(meta, partId);
 
     switch (meta.geometryType) {
     case WKGeometryType::Point:
-      this->nextPoint(meta);
+      this->readCoordinate(meta, 0);
       break;
     case WKGeometryType::LineString:
-      this->nextLinestring(meta);
+      this->readLineString(meta);
       break;
     case WKGeometryType::Polygon:
-      this->nextPolygon(meta);
+      this->readPolygon(meta);
       break;
     case WKGeometryType::MultiPoint:
     case WKGeometryType::MultiLineString:
     case WKGeometryType::MultiPolygon:
     case WKGeometryType::GeometryCollection:
-      this->nextCollection(meta);
+      this->readCollection(meta);
       break;
     default:
       throw std::runtime_error(
@@ -223,18 +192,18 @@ protected:
     if (meta.hasZ && meta.hasM) {
       this->z = this->readDouble();
       this->m = this->readDouble();
-      this->nextCoordinate(WKCoord::xyzm(x, y, z, m), coordId);
+      this->nextCoordinate(meta, WKCoord::xyzm(x, y, z, m), coordId);
 
     } else if (meta.hasZ) {
       this->z = this->readDouble();
-      this->nextCoordinate(WKCoord::xyz(x, y, z), coordId);
+      this->nextCoordinate(meta, WKCoord::xyz(x, y, z), coordId);
 
     } else if (meta.hasM) {
       this->m = this->readDouble();
-      this->nextCoordinate(WKCoord::xym(x, y, m), coordId);
+      this->nextCoordinate(meta, WKCoord::xym(x, y, m), coordId);
 
     } else {
-      this->nextCoordinate(WKCoord::xy(x, y), coordId);
+      this->nextCoordinate(meta, WKCoord::xy(x, y), coordId);
     }
   }
 
@@ -246,12 +215,12 @@ protected:
   }
 
   void readLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
-    this->nextLinearRingStart(meta, size, ringId);
+    this->nextLinearRingStart(meta, ringId, size);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
-    this->nextLinearRingEnd(meta, size, ringId);
+    this->nextLinearRingEnd(meta, ringId, size);
   }
 
   void readPolygon(WKGeometryMeta meta) {
@@ -263,7 +232,7 @@ protected:
     }
   }
 
-  void readMultiGeometry(WKGeometryMeta meta) {
+  void readCollection(WKGeometryMeta meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->partId = i;
       this->readGeometry(i);

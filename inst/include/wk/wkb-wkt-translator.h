@@ -64,16 +64,16 @@ private:
     this->writeGeometryClose(meta.size);
   }
 
-  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingStart(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
     this->out << "(";
   }
 
-  void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingEnd(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
     this->out << ")";
   }
 
-  void nextCoordinate(const WKCoord coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta meta, const WKCoord coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
     this->out << coord.x << " " << coord.y;
     if (this->newMeta.hasZ && coord.hasZ) {
