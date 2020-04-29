@@ -14,17 +14,8 @@ public:
   WKTWriter(WKStringExporter& exporter): WKWriter(exporter), exporter(exporter) {}
 
   virtual void nextFeatureStart(size_t featureId) {
-    out.str("");
-    out.clear();
     this->stack.clear();
     WKWriter::nextFeatureStart(featureId);
-  }
-
-  virtual void nextFeatureEnd(size_t featureId) {
-    // this is a hack until I properly convert this to using
-    // the string exporter interface
-    exporter.writeString(out.str());
-    WKWriter::nextFeatureEnd(featureId);
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
@@ -41,40 +32,45 @@ public:
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
     this->writeRingSep(ringId);
-    this->out << "(";
+    this->exporter.writeConstChar("(");
   }
 
   void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
-    this->out << ")";
+    this->exporter.writeConstChar(")");
   }
 
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
-    this->out << coord.x << " " << coord.y;
+    this->exporter.writeDouble(coord.x);
+    this->exporter.writeConstChar(" ");
+    this->exporter.writeDouble(coord.y);
+
     if (this->newMeta.hasZ && coord.hasZ) {
-      this->out << " " << coord.z;
+      this->exporter.writeConstChar(" ");
+      this->exporter.writeDouble(coord.z);
     }
+
     if (this->newMeta.hasM && coord.hasM) {
-      this->out << " " << coord.m;
+      this->exporter.writeConstChar(" ");
+      this->exporter.writeDouble(coord.m);
     }
   }
 
 protected:
   WKStringExporter& exporter;
-  std::stringstream out;
   std::vector<WKGeometryMeta> stack;
 
   void writeGeometryOpen(uint32_t size) {
     if (size == 0) {
-      this->out << "EMPTY";
+      this->exporter.writeConstChar("EMPTY");
     } else {
-      this->out << "(";
+      this->exporter.writeConstChar("(");
     }
   }
 
   void writeGeometryClose(uint32_t size) {
     if (size > 0) {
-      this->out << ")";
+      this->exporter.writeConstChar(")");
     }
   }
 
@@ -83,7 +79,7 @@ protected:
     bool iterMulti = iteratingMulti();
 
     if ((iterCollection || iterMulti) && partId > 0) {
-      this->out << ", ";
+      this->exporter.writeConstChar(", ");
     }
 
     if(iterMulti) {
@@ -91,21 +87,24 @@ protected:
     }
 
     if(!iterCollection && meta.hasSRID) {
-      this->out << "SRID=" << srid << ";";
+      this->exporter.writeConstChar("SRID=");
+      this->exporter.writeUint32(srid);
+      this->exporter.writeConstChar(";");
     }
 
-    this->out << meta.wktType() << " ";
+    this->exporter.writeString(meta.wktType());
+    this->exporter.writeConstChar(" ");
   }
 
   void writeRingSep(uint32_t ringId) {
     if (ringId > 0) {
-      this->out << ", ";
+      this->exporter.writeConstChar(", ");
     }
   }
 
   void writeCoordSep(uint32_t coordId) {
     if (coordId > 0) {
-      this->out << ", ";
+      this->exporter.writeConstChar(", ");
     }
   }
 
