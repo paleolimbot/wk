@@ -28,10 +28,10 @@
 class WKStringTokenizer {
 public:
     enum {
-      TT_EOF,
-      TT_EOL,
-      TT_NUMBER,
-      TT_WORD
+      TT_EOF = 0,
+      TT_EOL = 1,
+      TT_NUMBER = 2,
+      TT_WORD = 3
     };
 
     explicit WKStringTokenizer(const std::string& txt):

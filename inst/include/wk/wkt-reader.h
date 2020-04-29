@@ -4,6 +4,7 @@
 
 #include <string>
 #include <clocale>
+#include <iostream>
 
 #include "wk/reader.h"
 #include "wk/io-string.h"
@@ -76,12 +77,19 @@ protected:
       throw WKParseException(Formatter() << "Unknown type " << type);
     }
 
-    WKGeometryMeta meta(geometryType, false, false, false);
+    WKGeometryMeta meta = this->getNextEmptyOrOpener(tokenizer, geometryType);
     this->readGeometry(tokenizer, meta, partId);
   }
 
   void readGeometry(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t partId) {
     handler.nextGeometryStart(meta, partId);
+
+    // if empty, calling read* functions will fail becausse
+    // the empty token has been consumed
+    if (meta.size == 0) {
+      handler.nextGeometryEnd(meta, partId);
+      return;
+    }
 
     switch (meta.geometryType) {
 
@@ -125,12 +133,6 @@ protected:
   }
 
   void readPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      // TODO need this in a sec
-      return;
-    }
-
     this->readCoordinate(tokenizer, meta, 0);
     this->getNextCloser(tokenizer);
   }
@@ -140,16 +142,12 @@ protected:
   }
 
   void readPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      return;
-    }
-
     uint32_t ringId = 0;
     this->readLinearRingText(tokenizer, meta, ringId);
     ringId++;
 
-    nextToken = this->getNextCloserOrComma(tokenizer);
+    std::string nextToken;
+    this->getNextCloserOrComma(tokenizer);
     while(nextToken == ",") {
       this->readLinearRingText(tokenizer, meta, ringId);
       ringId++;
@@ -164,15 +162,12 @@ protected:
   }
 
   void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = getNextEmptyOrOpener(tokenizer);
-    if (nextToken == "EMPTY") {
-      return;
-    }
 
     int tok = tokenizer->peekNextToken();
     if (tok == WKStringTokenizer::TT_NUMBER) {
 
       // Try to parse deprecated form "MULTIPOINT(0 0, 1 1)"
+      std::string nextToken;
       uint32_t partId = 0;
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
@@ -188,6 +183,7 @@ protected:
 
     } else if(tok == '(') {
       // Try to parse correct form "MULTIPOINT((0 0), (1 1))"
+      std::string nextToken;
       uint32_t partId = 0;
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
@@ -233,11 +229,7 @@ protected:
   }
 
   void readMultiLineStringText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      return;
-    }
-
+    std::string nextToken;
     uint32_t partId = 0;
     do {
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
@@ -251,11 +243,7 @@ protected:
   }
 
   void readMultiPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      return;
-    }
-
+    std::string nextToken;
     uint32_t partId = 0;
     do {
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
@@ -269,10 +257,7 @@ protected:
   }
 
   void readGeometryCollectionText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      return;
-    }
+    std::string nextToken;
 
     uint32_t partId = 0;
     do {
@@ -284,11 +269,7 @@ protected:
   }
 
   void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-
-    if(nextToken == "EMPTY") {
-      return;
-    }
+    std::string nextToken;
 
     uint32_t coordId = 0;
     this->readCoordinate(tokenizer, meta, coordId);
@@ -342,23 +323,43 @@ protected:
     }
   }
 
-  std::string getNextEmptyOrOpener(WKStringTokenizer* tokenizer) {
+  WKGeometryMeta getNextEmptyOrOpener(WKStringTokenizer* tokenizer, int geometryType) {
     std::string nextWord = this->getNextWord(tokenizer);
+
+    bool hasZ = false;
+    bool hasM = false;
+    bool hasSRID = false;
 
     // Skip the Z, M or ZM of an SF1.2 3/4 dim coordinate.
     // TODO we're going to need this in a sec
-    if(nextWord == "Z" || nextWord == "M" || nextWord == "ZM") {
+    if (nextWord == "Z") {
+      hasZ = true;
+      nextWord = this->getNextWord(tokenizer);
+    } else if (nextWord == "M") {
+      hasM = true;
+      nextWord = this->getNextWord(tokenizer);
+    } else if (nextWord == "ZM") {
+      hasZ = true;
+      hasM = true;
       nextWord = this->getNextWord(tokenizer);
     }
 
-    if(nextWord == "EMPTY" || nextWord == "(") {
-      return nextWord;
+    WKGeometryMeta meta = WKGeometryMeta(geometryType, hasZ, hasM, hasSRID);
+    if(nextWord == "EMPTY") {
+      meta.hasSize = true;
+      meta.size = 0;
+      return meta;
+
+    } else if (nextWord == "(") {
+      return meta;
+
+    } else {
+      throw WKParseException(
+          Formatter() <<
+            "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
+              nextWord
+      );
     }
-    throw WKParseException(
-        Formatter() <<
-          "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
-            nextWord
-    );
   }
 
   std::string getNextCloserOrComma(WKStringTokenizer* tokenizer) {
