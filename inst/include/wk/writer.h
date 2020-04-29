@@ -1,13 +1,13 @@
 
-#ifndef WK_TRANSLATOR
-#define WK_TRANSLATOR
+#ifndef WK_WRITER
+#define WK_WRITER
 
 #include "wk/geometry-meta.h"
 
-class WKTranslator {
+class WKWriter {
 public:
   // by default, leave everything as is!
-  WKTranslator(): includeZ(2), includeM(2), includeSRID(2) {}
+  WKWriter(): includeZ(2), includeM(2), includeSRID(2) {}
 
   // expose these as the public interface
   virtual bool hasNextFeature() = 0;

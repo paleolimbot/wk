@@ -1,20 +1,20 @@
 
 #include <sstream>
 #include <Rcpp.h>
-#include "wk/wkb-wkt-translator.h"
+#include "wk/wkt-writer.h"
 #include "wk/wkb-wkb-translator.h"
 #include "wk/io-rcpp.h"
 
 using namespace Rcpp;
 
-class RcppWKBWKTTranslator: public WKBWKTTranslator {
+class RcppWKBWKTWriter: public WKTWriter {
 public:
   Rcpp::CharacterVector output;
   std::stringstream stream;
   bool nextIsNull;
 
-  RcppWKBWKTTranslator(WKBytesProvider& reader):
-    WKBWKTTranslator(reader, stream), output(reader.nFeatures()) {
+  RcppWKBWKTWriter(WKBytesProvider& reader):
+    WKTWriter(reader, stream), output(reader.nFeatures()) {
     // set default formatting
     this->ensureClassicLocale();
     this->setRoundingPrecision(16);
@@ -44,7 +44,7 @@ public:
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
                                             int includeSRID, int precision, bool trim) {
   WKRawVectorListProvider reader(wkb);
-  RcppWKBWKTTranslator translator(reader);
+  RcppWKBWKTWriter translator(reader);
 
   translator.setIncludeZ(includeZ);
   translator.setIncludeM(includeM);
@@ -66,7 +66,7 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
   WKRawVectorListExporter writer(wkb.size());
   writer.setBufferSize(bufferSize);
 
-  WKBWKBTranslator translator(reader, writer);
+  WKBWKBWriter translator(reader, writer);
 
   translator.setIncludeZ(includeZ);
   translator.setIncludeM(includeM);

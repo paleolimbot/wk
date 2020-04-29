@@ -1,16 +1,16 @@
 
-#ifndef WK_TRANSLATOR_H
-#define WK_TRANSLATOR_H
+#ifndef WK_WRITER_H
+#define WK_WRITER_H
 
 #include <iostream>
 #include "wk/geometry-handler.h"
-#include "wk/translator.h"
+#include "wk/writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKTTranslator: WKGeometryHandler, public WKTranslator {
+class WKTWriter: WKGeometryHandler, public WKWriter {
 public:
 
-  WKBWKTTranslator(WKBytesProvider& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
+  WKTWriter(WKBytesProvider& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
 
   // expose these as the public interface
   bool hasNextFeature() {

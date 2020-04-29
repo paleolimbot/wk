@@ -1,14 +1,14 @@
 
-#ifndef WK_WKB_WKB_TRANSLATOR
-#define WK_WKB_WKB_TRANSLATOR
+#ifndef WK_WKB_WKB_WRITER
+#define WK_WKB_WKB_WRITER
 
-#include "wk/translator.h"
+#include "wk/writer.h"
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKBTranslator: WKGeometryHandler, public WKTranslator {
+class WKBWKBWriter: WKGeometryHandler, public WKWriter {
 public:
-  WKBWKBTranslator(WKBytesProvider& reader, WKBytesExporter& writer): reader(reader, *this), writer(writer) {
+  WKBWKBWriter(WKBytesProvider& reader, WKBytesExporter& writer): reader(reader, *this), writer(writer) {
 
   }
 
