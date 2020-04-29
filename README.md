@@ -122,49 +122,16 @@ wkb_read_custom(list(point_wkb))
 
 The full handler interface includes methods for the start and end of
 features, geometries (which may be nested), linear rings, coordinates,
-and parse errors.
+and parse errors. You can preview what will get called for a given
+geometry using `wkb|wkt_debug()` functions.
 
-``` cpp
-class WKGeometryHandler {
-public:
-
-  virtual void nextFeatureStart(size_t featureId) {
-
-  }
-
-  virtual void nextFeatureEnd(size_t featureId) {
-
-  }
-
-  virtual void nextNull(size_t featureId) {
-
-  }
-
-  virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
-
-  }
-
-  virtual void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
-
-  }
-
-  virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
-
-  }
-
-  virtual void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
-
-  }
-
-  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
-
-  }
-
-  virtual bool nextError(WKParseException& error, size_t featureId) {
-    return false;
-  }
-
-};
+``` r
+wkb_debug(list(point_wkb))
+#> nextFeatureStart(0)
+#> nextGeometryStart(POINT [1], WKBReader.PART_ID_INVALID)
+#> nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
+#> nextGeometryEnd(POINT [1], WKBReader.PART_ID_INVALID)
+#> nextFeatureEnd(0)
 ```
 
 ## Work in progress
