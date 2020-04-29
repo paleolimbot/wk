@@ -165,8 +165,15 @@ protected:
   void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
 
     int tok = tokenizer->peekNextToken();
-    if (tok == WKStringTokenizer::TT_NUMBER) {
 
+    // the next token can be EMPTY, which we only
+    // deal with as the 'correct' multipoint form
+    std::string nextWord;
+    if (tok == WKStringTokenizer::TT_WORD) {
+      nextWord = tokenizer->getSVal();
+    }
+
+    if (tok == WKStringTokenizer::TT_NUMBER) {
       // Try to parse deprecated form "MULTIPOINT(0 0, 1 1)"
       std::string nextToken;
       uint32_t partId = 0;
@@ -182,7 +189,7 @@ protected:
         nextToken = this->getNextCloserOrComma(tokenizer);
       } while (nextToken == ",");
 
-    } else if(tok == '(') {
+    } else if(tok == '(' || (tok == WKStringTokenizer::TT_WORD && nextWord == "EMPTY")) {
       // Try to parse correct form "MULTIPOINT((0 0), (1 1))"
       std::string nextToken;
       uint32_t partId = 0;
@@ -203,7 +210,7 @@ protected:
       err << "Unexpected token: ";
       switch(tok) {
       case WKStringTokenizer::TT_WORD:
-        err << "WORD " << tokenizer->getSVal();
+        err << "WORD " << nextWord;
         break;
       case WKStringTokenizer::TT_NUMBER:
         err << "NUMBER " << tokenizer->getNVal();
@@ -318,7 +325,7 @@ protected:
     case WKStringTokenizer::TT_EOL:
       throw WKParseException("Expected number but encountered end of line");
     case WKStringTokenizer::TT_WORD:
-      throw WKParseException(Formatter() << "Expected number but encountered word" << tokenizer->getSVal());
+      throw WKParseException(Formatter() << "Expected number but encountered word " << tokenizer->getSVal());
     case '(':
       throw WKParseException("Expected number but encountered '('");
     case ')':

@@ -68,3 +68,30 @@ test_that("basic translation works on empty geoms", {
     "GEOMETRYCOLLECTION EMPTY"
   )
 })
+
+test_that("mutli* geometries can contain empties", {
+  expect_identical(
+    wkt_translate_wkt("MULTIPOINT (EMPTY)"),
+    "MULTIPOINT (EMPTY)"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOINT ((1 1), EMPTY)"),
+    "MULTIPOINT ((1 1), EMPTY)"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTILINESTRING (EMPTY)"),
+    "MULTILINESTRING (EMPTY)"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTILINESTRING ((1 1, 2 4), EMPTY)"),
+    "MULTILINESTRING ((1 1, 2 4), EMPTY)"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOLYGON (((1 1, 2 4, 3 6)), EMPTY)"),
+    "MULTIPOLYGON (((1 1, 2 4, 3 6)), EMPTY)"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOLYGON (EMPTY)"),
+    "MULTIPOLYGON (EMPTY)"
+  )
+})
