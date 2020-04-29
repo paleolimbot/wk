@@ -12,8 +12,8 @@ test_that("debugger works on wkb", {
 })
 
 test_that("debugger works on wkt", {
-  wkt_debug("LINESTRING (30 10, 0 0, 0 1)")
-  wkt_debug("POLYGON ((30 10, 0 0, 0 1, 30 10))")
-  wkt_debug("MULTIPOINT (30 10, 0 0)")
-  wkt_debug("MULTIPOINT ((30 10), (0 0))")
+  expect_output(wkt_debug("LINESTRING (30 10, 0 0, 0 1)"), "LINESTRING")
+  expect_output(wkt_debug("POLYGON ((30 10, 0 0, 0 1, 30 10))"), "POLYGON")
+  expect_output(wkt_debug("MULTIPOINT (30 10, 0 0)"), "MULTIPOINT")
+  expect_output(wkt_debug("MULTIPOINT ((30 10), (0 0))"), "MULTIPOINT")
 })
