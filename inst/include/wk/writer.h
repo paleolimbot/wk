@@ -1,6 +1,6 @@
 
-#ifndef WK_WRITER
-#define WK_WRITER
+#ifndef WK_WRITER_H
+#define WK_WRITER_H
 
 #include "wk/geometry-meta.h"
 

@@ -3,7 +3,6 @@
 #define WK_WKB_WKB_WRITER
 
 #include "wk/writer.h"
-#include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
 
 class WKBWKBWriter: WKGeometryHandler, public WKWriter {
@@ -23,12 +22,12 @@ public:
   }
 
   void setEndian(unsigned char endian) {
-    this->writer.setEndian(endian);
+    this->endian = endian;
+    this->swapEndian = WKBytesUtils::nativeEndian() != endian;
   }
 
 protected:
   WKBReader reader;
-  WKBWriter writer;
   WKGeometryMeta newMeta;
 
   virtual void nextNull(size_t featureId) {
@@ -39,26 +38,65 @@ protected:
     // make a new geometry type based on the creation options
     this->newMeta = this->getNewMeta(meta);
 
-    this->writer.writeEndian();
-    this->writer.writeUint32(this->newMeta.ewkbType);
+    this->writeEndian();
+    this->writeUint32(this->newMeta.ewkbType);
 
-    if (this->newMeta.hasSRID) this->writer.writeUint32(this->newMeta.srid);
-    if (this->newMeta.geometryType != WKGeometryType::Point) this->writer.writeUint32(meta.size);
+    if (this->newMeta.hasSRID) this->writeUint32(this->newMeta.srid);
+    if (this->newMeta.geometryType != WKGeometryType::Point) this->writeUint32(meta.size);
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
-    this->writer.writeUint32(size);
+    this->writeUint32(size);
   }
 
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
-    this->writer.writeDouble(coord.x);
-    this->writer.writeDouble(coord.y);
+    this->writeDouble(coord.x);
+    this->writeDouble(coord.y);
     if (this->newMeta.hasZ && coord.hasZ) {
-      this->writer.writeDouble(coord.z);
+      this->writeDouble(coord.z);
     }
     if (this->newMeta.hasM && coord.hasM) {
-      this->writer.writeDouble(coord.m);
+      this->writeDouble(coord.m);
     }
+  }
+
+private:
+  bool swapEndian;
+  unsigned char endian;
+  WKBytesExporter& writer;
+
+  size_t writeEndian() {
+    return this->writeChar(this->endian);
+  }
+
+  size_t writeCoord(WKCoord coord) {
+    size_t bytesWritten = 0;
+    for (size_t i=0; i < coord.size(); i++) {
+      bytesWritten += this->writeDouble(coord[i]);
+    }
+    return bytesWritten;
+  }
+
+  size_t writeChar(unsigned char value) {
+    return this->writer.writeCharRaw(value);
+  }
+
+  size_t writeDouble(double value) {
+    if (this->swapEndian) {
+      this->writer.writeDoubleRaw(WKBytesUtils::swapEndian<double>(value));
+    } else {
+      this->writer.writeDoubleRaw(value);
+    }
+    return sizeof(double);
+  }
+
+  size_t writeUint32(uint32_t value) {
+    if (this->swapEndian) {
+      this->writer.writeUint32Raw(WKBytesUtils::swapEndian<uint32_t>(value));
+    } else {
+      this->writer.writeUint32Raw(value);
+    }
+    return sizeof(uint32_t);
   }
 };
 

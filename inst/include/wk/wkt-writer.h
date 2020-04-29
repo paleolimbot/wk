@@ -1,6 +1,6 @@
 
-#ifndef WK_WRITER_H
-#define WK_WRITER_H
+#ifndef WK_WKT_WRITER_H
+#define WK_WKT_WRITER_H
 
 #include <iostream>
 #include "wk/geometry-handler.h"
