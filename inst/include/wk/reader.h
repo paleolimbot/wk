@@ -13,25 +13,8 @@ public:
 
   WKReader(WKGeometryHandler& handler): handler(handler) {}
 
-  // stack accessors (may need more, these are sufficient for WKT translator)
-  const WKGeometryMeta lastGeometryType(int level) {
-    if (level >= 0) {
-      return this->stack[level];
-    } else {
-      return this->stack[this->stack.size() + level];
-    }
-  }
-
-  const WKGeometryMeta lastGeometryType() {
-    return lastGeometryType(-1);
-  }
-
-  size_t recursionLevel() {
-    return this->stack.size();
-  }
-
 protected:
-  std::vector<WKGeometryMeta> stack;
+
   WKGeometryHandler& handler;
 };
 

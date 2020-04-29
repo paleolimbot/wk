@@ -9,10 +9,6 @@ public:
   // by default, leave everything as is!
   WKWriter(): includeZ(2), includeM(2), includeSRID(2) {}
 
-  // expose these as the public interface
-  virtual bool hasNextFeature() = 0;
-  virtual void iterateFeature() = 0;
-
   // creation optioins for all WKX formats
   void setIncludeSRID(int includeSRID) {
     this->includeSRID = includeSRID;
@@ -30,8 +26,9 @@ protected:
   int includeZ;
   int includeM;
   int includeSRID;
+  WKGeometryMeta newMeta;
 
-  WKGeometryMeta getNewMeta(const WKGeometryMeta& meta) {
+  virtual WKGeometryMeta getNewMeta(const WKGeometryMeta& meta) {
     WKGeometryMeta newMeta(
       meta.geometryType,
       this->actuallyIncludeZ(meta),

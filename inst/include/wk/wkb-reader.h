@@ -22,7 +22,6 @@ public:
     this->coordId = COORD_ID_NONE;
     this->srid = WKGeometryMeta::SRID_NONE;
     this->endian = ENDIAN_NONE;
-    this->stack = std::vector<WKGeometryMeta>();
   }
 
   bool hasNextFeature() {
@@ -35,7 +34,6 @@ public:
     this->coordId = COORD_ID_NONE;
     this->endian = ENDIAN_NONE;
     this->srid = WKGeometryMeta::SRID_NONE;
-    this->stack.clear();
 
     try {
       this->readFeature(this->featureId);
@@ -94,7 +92,6 @@ protected:
       meta.size = this->readUint32();
     }
 
-    this->stack.push_back(meta);
     this->handler.nextGeometryStart(meta, partId);
 
     switch (meta.geometryType) {
@@ -122,7 +119,6 @@ protected:
     }
 
     this->handler.nextGeometryEnd(meta, partId);
-    this->stack.pop_back();
   }
 
   void readPoint(const WKGeometryMeta meta) {

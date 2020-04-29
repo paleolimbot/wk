@@ -1,24 +1,16 @@
 
-#ifndef WK_WKB_WRITER
-#define WK_WKB_WRITER
+#ifndef WK_WKB_WRITER_H
+#define WK_WKB_WRITER_H
 
+#include "wk/geometry-handler.h"
+#include "wk/io-bytes.h"
 #include "wk/writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWKBWriter: WKGeometryHandler, public WKWriter {
+class WKBWriter: public WKGeometryHandler, public WKWriter {
 public:
-  WKBWKBWriter(WKBytesProvider& reader, WKBytesExporter& writer): reader(reader, *this), writer(writer) {
+  WKBWriter(WKBytesExporter& writer): writer(writer) {
 
-  }
-
-  // expose these as the public interface
-  virtual bool hasNextFeature() {
-    this->writer.seekNextFeature();
-    return reader.hasNextFeature();
-  }
-
-  virtual void iterateFeature() {
-    reader.iterateFeature();
   }
 
   void setEndian(unsigned char endian) {
@@ -27,8 +19,6 @@ public:
   }
 
 protected:
-  WKBReader reader;
-  WKGeometryMeta newMeta;
 
   virtual void nextNull(size_t featureId) {
     this->writer.writeNull();

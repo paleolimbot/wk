@@ -3,55 +3,35 @@
 #define WK_WKT_WRITER_H
 
 #include <iostream>
+#include "wk/io-string.h"
 #include "wk/geometry-handler.h"
 #include "wk/writer.h"
 #include "wk/wkb-reader.h"
 
-class WKTWriter: WKGeometryHandler, public WKWriter {
+class WKTWriter: public WKGeometryHandler, public WKWriter {
 public:
 
-  WKTWriter(WKBytesProvider& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
+  WKTWriter(WKStringExporter& exporter): exporter(exporter) {}
 
-  // expose these as the public interface
-  bool hasNextFeature() {
-    return reader.hasNextFeature();
+  virtual void nextFeatureStart(size_t featureId) {
+    out.str("");
+    out.clear();
+    this->stack.clear();
   }
 
-  virtual void iterateFeature() {
-    reader.iterateFeature();
+  virtual void nextFeatureEnd(size_t featureId) {
+    // this is a hack until I properly convert this to using
+    // the string exporter interface
+    exporter.writeString(out.str());
   }
-
-  // output stream manipulations I'd rather not remember
-  // how to do again
-  void ensureClassicLocale() {
-    this->out.imbue(std::locale::classic());
-  }
-
-  void setRoundingPrecision(int precision) {
-    this->out.precision(precision);
-  }
-
-  void setTrim(bool trim) {
-    if (trim) {
-      this->out.unsetf(out.fixed);
-    } else {
-      this->out.setf(out.fixed);
-    }
-  }
-
-protected:
-  WKBReader reader;
-  std::ostream& out;
 
   // default null handling returns ""
   virtual void nextNull(size_t featureId) {
 
   }
 
-private:
-  WKGeometryMeta newMeta;
-
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+    this->stack.push_back(meta);
     this->newMeta = this->getNewMeta(meta);
     this->writeGeometrySep(this->newMeta, partId, this->newMeta.srid);
     this->writeGeometryOpen(meta.size);
@@ -59,6 +39,7 @@ private:
 
   void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
     this->writeGeometryClose(meta.size);
+    this->stack.pop_back();
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
@@ -80,6 +61,11 @@ private:
       this->out << " " << coord.m;
     }
   }
+
+protected:
+  WKStringExporter& exporter;
+  std::stringstream out;
+  std::vector<WKGeometryMeta> stack;
 
   void writeGeometryOpen(uint32_t size) {
     if (size == 0) {
@@ -126,25 +112,42 @@ private:
     }
   }
 
+  // stack accessors
+  const WKGeometryMeta lastGeometryType(int level) {
+    if (level >= 0) {
+      return this->stack[level];
+    } else {
+      return this->stack[this->stack.size() + level];
+    }
+  }
+
+  const WKGeometryMeta lastGeometryType() {
+    return lastGeometryType(-1);
+  }
+
+  size_t recursionLevel() {
+    return this->stack.size();
+  }
+
   bool iteratingMulti() {
-    size_t stackSize = this->reader.recursionLevel();
+    size_t stackSize = this->recursionLevel();
     if (stackSize <= 1) {
       return false;
     }
 
-    const WKGeometryMeta nester = this->reader.lastGeometryType(-2);
+    const WKGeometryMeta nester = this->lastGeometryType(-2);
     return nester.geometryType == WKGeometryType::MultiPoint ||
       nester.geometryType == WKGeometryType::MultiLineString ||
       nester.geometryType == WKGeometryType::MultiPolygon;
   }
 
   bool iteratingCollection() {
-    size_t stackSize = this->reader.recursionLevel();
+    size_t stackSize = this->recursionLevel();
     if (stackSize <= 1) {
       return false;
     }
 
-    const WKGeometryMeta nester = this->reader.lastGeometryType(-2);
+    const WKGeometryMeta nester = this->lastGeometryType(-2);
     return nester.geometryType == WKGeometryType::GeometryCollection;
   }
 };

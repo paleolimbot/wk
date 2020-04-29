@@ -7,75 +7,47 @@
 
 using namespace Rcpp;
 
-class RcppWKBWKTWriter: public WKTWriter {
-public:
-  Rcpp::CharacterVector output;
-  std::stringstream stream;
-  bool nextIsNull;
-
-  RcppWKBWKTWriter(WKBytesProvider& reader):
-    WKTWriter(reader, stream), output(reader.nFeatures()) {
-    // set default formatting
-    this->ensureClassicLocale();
-    this->setRoundingPrecision(16);
-    this->setTrim(true);
-  }
-
-  void nextFeatureStart(size_t featureId) {
-    this->stream.str("");
-    this->stream.clear();
-    this->nextIsNull = false;
-  }
-
-  void nextFeatureEnd(size_t featureId) {
-    if (this->nextIsNull) {
-      this->output[featureId] = NA_STRING;
-    } else {
-      this->output[featureId] = stream.str();
-    }
-  }
-
-  void nextNull(size_t featureId) {
-    this->nextIsNull = true;
-  }
-};
-
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
                                             int includeSRID, int precision, bool trim) {
-  WKRawVectorListProvider reader(wkb);
-  RcppWKBWKTWriter translator(reader);
+  WKRawVectorListProvider provider(wkb);
+  WKCharacterVectorExporter exporter(provider.nFeatures());
 
-  translator.setIncludeZ(includeZ);
-  translator.setIncludeM(includeM);
-  translator.setIncludeSRID(includeSRID);
-  translator.setRoundingPrecision(precision);
-  translator.setTrim(trim);
+  WKTWriter writer(exporter);
+  WKBReader reader(provider, writer);
 
-  while (translator.hasNextFeature()) {
-    translator.iterateFeature();
+  writer.setIncludeZ(includeZ);
+  writer.setIncludeM(includeM);
+  writer.setIncludeSRID(includeSRID);
+  exporter.setRoundingPrecision(precision);
+  exporter.setTrim(trim);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 
-  return translator.output;
+  return exporter.output;
 }
 
 // [[Rcpp::export]]
 Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
                                  int includeSRID, int endian, int bufferSize) {
-  WKRawVectorListProvider reader(wkb);
-  WKRawVectorListExporter writer(wkb.size());
-  writer.setBufferSize(bufferSize);
 
-  WKBWKBWriter translator(reader, writer);
+  WKRawVectorListProvider provider(wkb);
+  WKRawVectorListExporter exporter(provider.nFeatures());
 
-  translator.setIncludeZ(includeZ);
-  translator.setIncludeM(includeM);
-  translator.setIncludeSRID(includeSRID);
-  translator.setEndian(endian);
+  WKBWriter writer(exporter);
+  WKBReader reader(provider, writer);
 
-  while (translator.hasNextFeature()) {
-    translator.iterateFeature();
+  exporter.setBufferSize(bufferSize);
+  writer.setIncludeZ(includeZ);
+  writer.setIncludeM(includeM);
+  writer.setIncludeSRID(includeSRID);
+  writer.setEndian(endian);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 
-  return writer.output;
+  return exporter.output;
 }
