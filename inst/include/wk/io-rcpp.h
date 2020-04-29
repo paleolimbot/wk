@@ -4,7 +4,7 @@
 
 #include <Rcpp.h>
 #include "wk/parse-exception.h"
-#include "wk/io-utils.h"
+#include "wk/io-bytes.h"
 
 using namespace Rcpp;
 

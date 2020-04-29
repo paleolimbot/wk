@@ -5,7 +5,7 @@
 #include "wk/reader.h"
 #include "wk/parse-exception.h"
 #include "wk/geometry-meta.h"
-#include "wk/io-utils.h"
+#include "wk/io-bytes.h"
 #include "wk/geometry-handler.h"
 #include "wk/coord.h"
 
@@ -77,7 +77,7 @@ protected:
 
   void readGeometry(uint32_t partId) {
     this->endian = this->readChar();
-    this->swapEndian = ((int)endian != (int)IOUtils::nativeEndian());
+    this->swapEndian = ((int)endian != (int)WKBytesUtils::nativeEndian());
 
     WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
 
@@ -191,7 +191,7 @@ protected:
 
   double readDouble() {
     if (this->swapEndian) {
-      return IOUtils::swapEndian<double>(this->readDoubleRaw());
+      return WKBytesUtils::swapEndian<double>(this->readDoubleRaw());
     } else
       return this->readDoubleRaw();
   }
@@ -201,7 +201,7 @@ private:
 
   double readUint32() {
     if (this->swapEndian) {
-      return IOUtils::swapEndian<uint32_t>(this->readUint32Raw());
+      return WKBytesUtils::swapEndian<uint32_t>(this->readUint32Raw());
     } else
       return this->readUint32Raw();
   }

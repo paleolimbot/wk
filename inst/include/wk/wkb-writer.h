@@ -4,13 +4,13 @@
 
 #include "wk/geometry-meta.h"
 #include "wk/coord.h"
-#include "wk/io-utils.h"
+#include "wk/io-bytes.h"
 
 class WKBWriter {
 public:
 
   WKBWriter(WKBytesExporter& writer): writer(writer) {
-    this->setEndian(IOUtils::nativeEndian());
+    this->setEndian(WKBytesUtils::nativeEndian());
   }
 
   bool seekNextFeature() {
@@ -23,7 +23,7 @@ public:
 
   void setEndian(unsigned char endian) {
     this->endian = endian;
-    this->swapEndian = IOUtils::nativeEndian() != endian;
+    this->swapEndian = WKBytesUtils::nativeEndian() != endian;
   }
 
   size_t writeEndian() {
@@ -44,7 +44,7 @@ public:
 
   size_t writeDouble(double value) {
     if (this->swapEndian) {
-      this->writer.writeDoubleRaw(IOUtils::swapEndian<double>(value));
+      this->writer.writeDoubleRaw(WKBytesUtils::swapEndian<double>(value));
     } else {
       this->writer.writeDoubleRaw(value);
     }
@@ -53,7 +53,7 @@ public:
 
   size_t writeUint32(uint32_t value) {
     if (this->swapEndian) {
-      this->writer.writeUint32Raw(IOUtils::swapEndian<uint32_t>(value));
+      this->writer.writeUint32Raw(WKBytesUtils::swapEndian<uint32_t>(value));
     } else {
       this->writer.writeUint32Raw(value);
     }
