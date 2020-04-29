@@ -4,7 +4,7 @@
 
 #include <cmath>
 #include <vector>
-#include <exception>
+#include <stdexcept>
 
 class WKCoord {
 public:
