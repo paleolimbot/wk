@@ -3,6 +3,7 @@
 #define WK_PARSE_EXCEPTION_H
 
 #include <string>
+#include <exception>
 
 class WKParseException: public std::runtime_error {
 public:
