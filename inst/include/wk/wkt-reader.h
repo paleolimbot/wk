@@ -157,6 +157,7 @@ protected:
 
   void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t ringId) {
     handler.nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
+    this->getNextEmptyOrOpener(tokenizer, 0);
     this->readCoordinates(tokenizer, meta);
     handler.nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
   }
@@ -186,6 +187,7 @@ protected:
       std::string nextToken;
       uint32_t partId = 0;
       do {
+        this->getNextEmptyOrOpener(tokenizer, 0);
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
         childMeta.srid = meta.srid;
 
@@ -232,6 +234,7 @@ protected:
     std::string nextToken;
     uint32_t partId = 0;
     do {
+      this->getNextEmptyOrOpener(tokenizer, 0);
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
 
@@ -246,6 +249,7 @@ protected:
     std::string nextToken;
     uint32_t partId = 0;
     do {
+      this->getNextEmptyOrOpener(tokenizer, 0);
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
 
@@ -330,8 +334,7 @@ protected:
     bool hasM = false;
     bool hasSRID = false;
 
-    // Skip the Z, M or ZM of an SF1.2 3/4 dim coordinate.
-    // TODO we're going to need this in a sec
+    // Parse the Z, M or ZM of an SF1.2 3/4 dim coordinate.
     if (nextWord == "Z") {
       hasZ = true;
       nextWord = this->getNextWord(tokenizer);
