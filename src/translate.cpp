@@ -2,7 +2,7 @@
 #include <sstream>
 #include <Rcpp.h>
 #include "wk/wkt-writer.h"
-#include "wk/wkb-wkb-translator.h"
+#include "wk/wkb-writer.h"
 #include "wk/io-rcpp.h"
 
 using namespace Rcpp;
