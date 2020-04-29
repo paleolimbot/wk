@@ -5,13 +5,14 @@
 #include <Rcpp.h>
 #include "wk/parse-exception.h"
 #include "wk/io-bytes.h"
+#include "wk/io-string.h"
 
 using namespace Rcpp;
 
-class WKRawVectorListReader: public WKBytesProvider {
+class WKRawVectorListProvider: public WKBytesProvider {
 public:
 
-  WKRawVectorListReader(List container) {
+  WKRawVectorListProvider(List container) {
     this->container = container;
     this->index = -1;
     this->featureNull = true;
@@ -79,7 +80,7 @@ private:
   }
 };
 
-class WKRawVectorListWriter: public WKBytesExporter {
+class WKRawVectorListExporter: public WKBytesExporter {
 public:
   List output;
   RawVector buffer;
@@ -88,7 +89,7 @@ public:
   R_xlen_t index;
   R_xlen_t offset;
 
-  WKRawVectorListWriter(size_t size): WKBytesExporter(size) {
+  WKRawVectorListExporter(size_t size): WKBytesExporter(size) {
     this->prevIsNull = false;
     this->index = -1;
     this->offset = 0;
@@ -166,6 +167,36 @@ public:
     memcpy(&(this->buffer[this->offset]), &value, sizeof(T));
     this->offset += sizeof(T);
     return sizeof(T);
+  }
+};
+
+class WKCharacterVectorProvider: WKStringProvider {
+
+};
+
+class WKCharacterVectorExporter: public WKStringStreamExporter {
+public:
+  CharacterVector output;
+  size_t index;
+  bool nextIsNull;
+
+  WKCharacterVectorExporter(size_t size):
+    WKStringStreamExporter(size), output(size), index(0), nextIsNull(false) {}
+
+  bool seekNextFeature() {
+    if (this->nextIsNull) {
+      this->output[this->index] = NA_STRING;
+    } else {
+      this->output[this->index] = this->stream.str();
+    }
+
+    this->index++;
+    this->nextIsNull = false;
+    return this->index < this->nFeatures();
+  }
+
+  void writeNull() {
+    this->nextIsNull = true;
   }
 };
 

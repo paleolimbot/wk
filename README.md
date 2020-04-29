@@ -102,7 +102,7 @@ public:
 
 // [[Rcpp::export]]
 void wkb_read_custom(List wkb) {
-  WKRawVectorListReader reader(wkb);
+  WKRawVectorListProvider reader(wkb);
   CustomHandler handler;
   WKBReader wkbReader(reader, handler);
   

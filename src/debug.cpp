@@ -9,7 +9,7 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 void cpp_debug_wkb(List wkb) {
-  WKRawVectorListReader input(wkb);
+  WKRawVectorListProvider input(wkb);
   WKGeometryDebugHandler handler(Rcout);
   WKBReader reader(input, handler);
 

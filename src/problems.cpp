@@ -10,7 +10,7 @@ public:
   Rcpp::CharacterVector output;
   WKBReader reader;
 
-  RcppWKBValidator(WKRawVectorListReader& reader): reader(reader, *this) {
+  RcppWKBValidator(WKRawVectorListProvider& reader): reader(reader, *this) {
     this->output = CharacterVector(reader.nFeatures());
   }
 
@@ -35,7 +35,7 @@ public:
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
-  WKRawVectorListReader reader(wkb);
+  WKRawVectorListProvider reader(wkb);
   RcppWKBValidator validator(reader);
 
   while (validator.hasNextFeature()) {

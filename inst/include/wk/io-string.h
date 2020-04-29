@@ -8,7 +8,7 @@
 
 class WKStringProvider: public WKProvider {
 public:
-
+// work in progress!
 };
 
 class WKStringExporter: public WKExporter {
@@ -26,6 +26,18 @@ public:
     this->stream.imbue(std::locale::classic());
   }
 
+  void setRoundingPrecision(int precision) {
+    this->stream.precision(precision);
+  }
+
+  void setTrim(bool trim) {
+    if (trim) {
+      this->stream.unsetf(stream.fixed);
+    } else {
+      this->stream.setf(stream.fixed);
+    }
+  }
+
   void writeString(std::string value) {
     this->stream << value;
   }
@@ -39,7 +51,7 @@ public:
   }
 
   void writeUint32(uint32_t value) {
-    this->stream <<  value;
+    this->stream << value;
   }
 
 protected:
