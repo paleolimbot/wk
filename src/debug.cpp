@@ -20,8 +20,11 @@ void cpp_debug_wkb(List wkb) {
 
 // [[Rcpp::export]]
 void cpp_debug_wkt(CharacterVector input) {
-  std::string str_in = as<std::string>(input[0]);
+  WKCharacterVectorProvider provider(input);
   WKGeometryDebugHandler handler(Rcout);
-  WKTReader reader(handler);
-  reader.read(str_in);
+  WKTReader reader(provider, handler);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
 }

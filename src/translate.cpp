@@ -51,3 +51,27 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
 
   return exporter.output;
 }
+
+// [[Rcpp::export]]
+CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int includeM,
+                                      int includeSRID, int precision, bool trim) {
+
+  // WKRawVectorListProvider provider(wkb);
+  // WKCharacterVectorExporter exporter(provider.nFeatures());
+  //
+  // WKTWriter writer(exporter);
+  // WKBReader reader(provider, writer);
+  //
+  // writer.setIncludeZ(includeZ);
+  // writer.setIncludeM(includeM);
+  // writer.setIncludeSRID(includeSRID);
+  // exporter.setRoundingPrecision(precision);
+  // exporter.setTrim(trim);
+  //
+  // while (reader.hasNextFeature()) {
+  //   reader.iterateFeature();
+  // }
+  //
+  // return exporter.output;
+  return CharacterVector::create();
+}

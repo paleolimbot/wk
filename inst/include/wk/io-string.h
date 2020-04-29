@@ -4,11 +4,15 @@
 
 #include <locale>
 #include <sstream>
+
 #include "wk/io.h"
 
+// for now, the only option is to provide a reference to a string
+// the string tokenizer operates on a string iterator, which might be
+// more flexible for the WKT reader but less flexible for other applications
 class WKStringProvider: public WKProvider {
 public:
-// work in progress!
+  virtual const std::string featureString() = 0;
 };
 
 class WKStringExporter: public WKExporter {

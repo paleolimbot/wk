@@ -2,11 +2,11 @@
 #ifndef WK_IO_RCPP_H
 #define WK_IO_RCPP_H
 
-#include <Rcpp.h>
 #include "wk/parse-exception.h"
 #include "wk/io-bytes.h"
 #include "wk/io-string.h"
 
+#include <Rcpp.h>
 using namespace Rcpp;
 
 class WKRawVectorListProvider: public WKBytesProvider {
@@ -170,8 +170,44 @@ public:
   }
 };
 
-class WKCharacterVectorProvider: WKStringProvider {
+class WKCharacterVectorProvider: public WKStringProvider {
+public:
+  CharacterVector container;
+  R_xlen_t index;
+  bool featureNull;
+  std::string data;
 
+  WKCharacterVectorProvider(CharacterVector container):
+    container(container), index(-1), featureNull(false) {}
+
+  bool seekNextFeature() {
+    this->index++;
+    if (this->index >= this->container.size()) {
+      return false;
+    }
+
+    if (CharacterVector::is_na(this->container[this->index])) {
+      this->featureNull = true;
+      this->data = std::string("");
+    } else {
+      this->featureNull = false;
+      this->data = as<std::string>(this->container[this->index]);
+    }
+
+    return true;
+  }
+
+  const std::string featureString() {
+    return this->data;
+  }
+
+  bool featureIsNull() {
+    return this->featureNull;
+  }
+
+  size_t nFeatures() {
+    return container.size();
+  }
 };
 
 class WKCharacterVectorExporter: public WKStringStreamExporter {

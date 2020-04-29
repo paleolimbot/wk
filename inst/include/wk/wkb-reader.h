@@ -14,7 +14,8 @@ class WKBReader: public WKReader {
 public:
   const static unsigned char ENDIAN_NONE = 0xff;
 
-  WKBReader(WKBytesProvider& reader, WKGeometryHandler& handler): WKReader(handler), reader(reader) {
+  WKBReader(WKBytesProvider& provider, WKGeometryHandler& handler):
+    WKReader(provider, handler), provider(provider) {
     this->swapEndian = false;
     this->featureId = 0;
     this->partId = PART_ID_NONE;
@@ -24,47 +25,19 @@ public:
     this->endian = ENDIAN_NONE;
   }
 
-  bool hasNextFeature() {
-    return this->reader.seekNextFeature();
-  }
-
-  void iterateFeature() {
-    this->partId = PART_ID_NONE;
-    this->ringId = RING_ID_NONE;
-    this->coordId = COORD_ID_NONE;
+  virtual void iterateFeature() {
     this->endian = ENDIAN_NONE;
-    this->srid = WKGeometryMeta::SRID_NONE;
-
-    try {
-      this->readFeature(this->featureId);
-    } catch (WKParseException& error) {
-      if (!handler.nextError(error, this->featureId)) {
-        throw error;
-      }
-    }
-
-    this->featureId += 1;
+    WKReader::iterateFeature();
   }
 
 protected:
-  WKBytesProvider& reader;
-
-  size_t featureId;
-  uint32_t partId;
-  uint32_t ringId;
-  uint32_t coordId;
-
+  WKBytesProvider& provider;
   unsigned char endian;
-  uint32_t srid;
-  double x;
-  double y;
-  double z;
-  double m;
 
   virtual void readFeature(size_t featureId) {
     this->handler.nextFeatureStart(featureId);
 
-    if (this->reader.featureIsNull()) {
+    if (this->provider.featureIsNull()) {
       this->handler.nextNull(featureId);
     } else {
       this->readGeometry(PART_ID_NONE);
@@ -203,19 +176,19 @@ private:
   }
 
   unsigned char readCharRaw() {
-    return this->reader.readCharRaw();
+    return this->provider.readCharRaw();
   }
 
   double readDoubleRaw() {
-    return this->reader.readDoubleRaw();
+    return this->provider.readDoubleRaw();
   }
 
   uint32_t readUint32Raw() {
-    return this->reader.readUint32Raw();
+    return this->provider.readUint32Raw();
   }
 
   bool seekNextFeature() {
-    return this->reader.seekNextFeature();
+    return this->provider.seekNextFeature();
   }
 };
 

@@ -2,11 +2,11 @@
 #ifndef WK_WKT_READER_H
 #define WK_WKT_READER_H
 
-
 #include <string>
 #include <clocale>
 
 #include "wk/reader.h"
+#include "wk/io-string.h"
 #include "wk/formatter.h"
 #include "wk/geometry-handler.h"
 #include "wk/string-tokenizer.h"
@@ -17,7 +17,8 @@
 class WKTReader: public WKReader {
 public:
 
-  WKTReader(WKGeometryHandler& handler): WKReader(handler) {
+  WKTReader(WKStringProvider& provider, WKGeometryHandler& handler):
+    WKReader(provider, handler), provider(provider) {
     // TODO evaluate if we need this if we use C++11's double parser
 #ifdef _MSC_VER
     // Avoid multithreading issues caused by setlocale
@@ -30,11 +31,13 @@ public:
     std::setlocale(LC_NUMERIC, "C");
   }
 
-  void read(const std::string& wellKnownText) {
+  void readFeature(size_t featureId) {
+    const std::string& wellKnownText = this->provider.featureString();
     WKStringTokenizer tokenizer(wellKnownText);
-    handler.nextFeatureStart(0);
+
+    handler.nextFeatureStart(featureId);
     this->readGeometryTaggedText(&tokenizer, PART_ID_NONE);
-    handler.nextFeatureEnd(0);
+    handler.nextFeatureEnd(featureId);
   }
 
   ~WKTReader() {
@@ -42,6 +45,7 @@ public:
   }
 
 protected:
+  WKStringProvider& provider;
 
   void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId) {
     std::string type = this->getNextWord(tokenizer);
