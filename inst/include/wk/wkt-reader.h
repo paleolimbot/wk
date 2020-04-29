@@ -148,7 +148,7 @@ protected:
 
   void readGeometryTaggedText(WKStringTokenizer* tokenizer) {
     std::string type = this->getNextWord(tokenizer);
-    std::cout << "Geometry! type = " << type << "\n";
+
     if(type == "POINT") {
       return this->readPointText(tokenizer);
 
@@ -325,7 +325,6 @@ private:
 
     }
 
-    std::cout << "Coordinate! x = " << coord.x << ", y = " << coord.y << "\n";
     return coord;
   }
 

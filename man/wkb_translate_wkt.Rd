@@ -3,6 +3,8 @@
 \name{wkb_translate_wkt}
 \alias{wkb_translate_wkt}
 \alias{wkb_translate_wkb}
+\alias{wkt_translate_wkt}
+\alias{wkt_translate_wkb}
 \alias{wkb_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
@@ -23,6 +25,10 @@ wkb_translate_wkb(
   endian = wkb_platform_endian(),
   buffer_size = 2048
 )
+
+wkt_translate_wkt(wkt)
+
+wkt_translate_wkb(wkt)
 
 wkb_platform_endian()
 }
@@ -49,6 +55,8 @@ WKB reader worth its salt will read either).}
 each feature, in bytes. This will be extended when needed, but if you
 are calling this repeatedly with huge geometries, setting this value
 to a larger number may result in less copying.}
+
+\item{wkt}{A character vector containing well-known text.}
 }
 \value{
 \code{\link[=wkb_translate_wkt]{wkb_translate_wkt()}} returns a character vector of

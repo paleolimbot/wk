@@ -11,6 +11,7 @@
 class WKBReader {
 
 public:
+  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
   const static uint32_t PART_ID_INVALID = UINT32_MAX;
   const static uint32_t RING_ID_INVALID = UINT32_MAX;
   const static uint32_t COORD_ID_INVALID = UINT32_MAX;

@@ -5,13 +5,23 @@
 
 using namespace Rcpp;
 
-// parse_test
-void parse_test(CharacterVector input);
-RcppExport SEXP _wk_parse_test(SEXP inputSEXP) {
+// cpp_debug_wkb
+void cpp_debug_wkb(List wkb);
+RcppExport SEXP _wk_cpp_debug_wkb(SEXP wkbSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wkb(wkbSEXP);
+    cpp_debug_wkb(wkb);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_debug_wkt
+void cpp_debug_wkt(CharacterVector input);
+RcppExport SEXP _wk_cpp_debug_wkt(SEXP inputSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type input(inputSEXP);
-    parse_test(input);
+    cpp_debug_wkt(input);
     return R_NilValue;
 END_RCPP
 }
@@ -60,7 +70,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wk_parse_test", (DL_FUNC) &_wk_parse_test, 1},
+    {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
+    {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 6},
     {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},

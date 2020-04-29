@@ -3,6 +3,7 @@
 #'
 #' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by [sf::st_as_binary()].
+#' @param wkt A character vector containing well-known text.
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
@@ -48,6 +49,18 @@ wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid 
     endian = endian,
     bufferSize = buffer_size
   )
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
+wkt_translate_wkt <- function(wkt) {
+  stop("Not implemented")
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
+wkt_translate_wkb <- function(wkt) {
+  stop("Not implemented")
 }
 
 #' @rdname wkb_translate_wkt
