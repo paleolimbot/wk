@@ -26,7 +26,14 @@ wkb_translate_wkb(
   buffer_size = 2048
 )
 
-wkt_translate_wkt(wkt)
+wkt_translate_wkt(
+  wkt,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  precision = 16,
+  trim = TRUE
+)
 
 wkt_translate_wkb(wkt)
 

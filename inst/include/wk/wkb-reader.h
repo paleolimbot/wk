@@ -110,17 +110,17 @@ protected:
     for (uint32_t i=0; i < meta.size; i++) {
       this->ringId = i;
       ringSize = this->readUint32();
-      this->readLinearRing(meta, i, ringSize);
+      this->readLinearRing(meta, ringSize, i);
     }
   }
 
-  void readLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
-    this->handler.nextLinearRingStart(meta, ringId, size);
+  void readLinearRing(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+    this->handler.nextLinearRingStart(meta, size, ringId);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
-    this->handler.nextLinearRingEnd(meta, ringId, size);
+    this->handler.nextLinearRingEnd(meta, size, ringId);
   }
 
   void readCollection(WKGeometryMeta meta) {

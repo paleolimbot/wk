@@ -53,8 +53,16 @@ wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkt <- function(wkt) {
-  stop("Not implemented")
+wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
+                              precision = 16, trim = TRUE) {
+  cpp_translate_wkt_wkt(
+    wkt,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    precision = precision,
+    trim = trim
+  )
 }
 
 #' @rdname wkb_translate_wkt

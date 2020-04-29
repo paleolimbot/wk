@@ -30,12 +30,12 @@ public:
     this->stack.pop_back();
   }
 
-  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->writeRingSep(ringId);
     this->exporter.writeConstChar("(");
   }
 
-  void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->exporter.writeConstChar(")");
   }
 

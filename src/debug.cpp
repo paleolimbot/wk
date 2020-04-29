@@ -2,9 +2,9 @@
 #include "wk/geometry-debug-handler.h"
 #include "wk/wkb-reader.h"
 #include "wk/wkt-reader.h"
-#include "wk/io-rcpp.h"
 
 #include <Rcpp.h>
+#include "wk/io-rcpp.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]

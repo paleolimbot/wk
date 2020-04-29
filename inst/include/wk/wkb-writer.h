@@ -29,7 +29,7 @@ public:
     if (this->newMeta.geometryType != WKGeometryType::Point) this->writeUint32(meta.size);
   }
 
-  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t ringId, uint32_t size) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->writeUint32(size);
   }
 
