@@ -187,8 +187,9 @@ protected:
       std::string nextToken;
       uint32_t partId = 0;
       do {
-        this->getNextEmptyOrOpener(tokenizer, 0);
-        WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
+        WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::Point);
+        childMeta.hasZ = meta.hasZ;
+        childMeta.hasM = meta.hasM;
         childMeta.srid = meta.srid;
 
         this->readGeometry(tokenizer, childMeta, partId);
@@ -234,8 +235,9 @@ protected:
     std::string nextToken;
     uint32_t partId = 0;
     do {
-      this->getNextEmptyOrOpener(tokenizer, 0);
-      WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
+      WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::LineString);
+      childMeta.hasZ = meta.hasZ;
+      childMeta.hasM = meta.hasM;
       childMeta.srid = meta.srid;
 
       this->readGeometry(tokenizer, childMeta, partId);
@@ -249,8 +251,9 @@ protected:
     std::string nextToken;
     uint32_t partId = 0;
     do {
-      this->getNextEmptyOrOpener(tokenizer, 0);
-      WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
+      WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::Polygon);
+      childMeta.hasZ = meta.hasZ;
+      childMeta.hasM = meta.hasM;
       childMeta.srid = meta.srid;
 
       this->readGeometry(tokenizer, childMeta, partId);

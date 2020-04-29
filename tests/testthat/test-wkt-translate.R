@@ -13,16 +13,20 @@ test_that("basic translation works on non-empty 2D geoms", {
     "POLYGON ((30 10, 0 0, 10 10, 30 10))"
   )
   expect_identical(
+    wkt_translate_wkt("MULTIPOINT (30 10, 0 0, 10 10)"),
+    "MULTIPOINT ((30 10), (0 0), (10 10))"
+  )
+  expect_identical(
     wkt_translate_wkt("MULTIPOINT ((30 10), (0 0), (10 10))"),
     "MULTIPOINT ((30 10), (0 0), (10 10))"
   )
   expect_identical(
-    wkt_translate_wkt("MULTILINESTRING ((30 10, 0 0))"),
-    "MULTILINESTRING ((30 10, 0 0))"
+    wkt_translate_wkt("MULTILINESTRING ((30 10, 0 0), (20 20, 0 0))"),
+    "MULTILINESTRING ((30 10, 0 0), (20 20, 0 0))"
   )
   expect_identical(
-    wkt_translate_wkt("MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)))"),
-    "MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)))"
+    wkt_translate_wkt("MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)), ((30 10, 0 0, 10 10, 30 10)))"),
+    "MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)), ((30 10, 0 0, 10 10, 30 10)))"
   )
   expect_identical(
     wkt_translate_wkt(
