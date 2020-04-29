@@ -14,7 +14,7 @@ class WKBReader: public WKReader {
 public:
   const static unsigned char ENDIAN_NONE = 0xff;
 
-  WKBReader(BinaryReader& reader, WKGeometryHandler& handler): WKReader(handler), reader(reader) {
+  WKBReader(WKBytesProvider& reader, WKGeometryHandler& handler): WKReader(handler), reader(reader) {
     this->swapEndian = false;
     this->featureId = 0;
     this->partId = PART_ID_NONE;
@@ -49,7 +49,7 @@ public:
   }
 
 protected:
-  BinaryReader& reader;
+  WKBytesProvider& reader;
 
   size_t featureId;
   uint32_t partId;

@@ -8,7 +8,7 @@
 
 using namespace Rcpp;
 
-class WKRawVectorListReader: public BinaryReader {
+class WKRawVectorListReader: public WKBytesProvider {
 public:
 
   WKRawVectorListReader(List container) {
@@ -79,7 +79,7 @@ private:
   }
 };
 
-class WKRawVectorListWriter: public BinaryWriter {
+class WKRawVectorListWriter: public WKBytesExporter {
 public:
   List output;
   RawVector buffer;
@@ -88,7 +88,7 @@ public:
   R_xlen_t index;
   R_xlen_t offset;
 
-  WKRawVectorListWriter(size_t size): BinaryWriter(size) {
+  WKRawVectorListWriter(size_t size): WKBytesExporter(size) {
     this->prevIsNull = false;
     this->index = -1;
     this->offset = 0;

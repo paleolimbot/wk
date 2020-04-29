@@ -9,7 +9,7 @@
 class WKBWriter {
 public:
 
-  WKBWriter(BinaryWriter& writer): writer(writer) {
+  WKBWriter(WKBytesExporter& writer): writer(writer) {
     this->setEndian(IOUtils::nativeEndian());
   }
 
@@ -63,7 +63,7 @@ public:
 private:
   bool swapEndian;
   unsigned char endian;
-  BinaryWriter& writer;
+  WKBytesExporter& writer;
 };
 
 #endif

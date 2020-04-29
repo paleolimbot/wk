@@ -8,7 +8,7 @@
 
 class WKBWKBTranslator: WKGeometryHandler, public WKTranslator {
 public:
-  WKBWKBTranslator(BinaryReader& reader, BinaryWriter& writer): reader(reader, *this), writer(writer) {
+  WKBWKBTranslator(WKBytesProvider& reader, WKBytesExporter& writer): reader(reader, *this), writer(writer) {
 
   }
 

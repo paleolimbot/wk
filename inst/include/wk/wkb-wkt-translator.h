@@ -10,7 +10,7 @@
 class WKBWKTTranslator: WKGeometryHandler, public WKTranslator {
 public:
 
-  WKBWKTTranslator(BinaryReader& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
+  WKBWKTTranslator(WKBytesProvider& reader, std::ostream& stream): reader(reader, *this), out(stream) {}
 
   // expose these as the public interface
   bool hasNextFeature() {

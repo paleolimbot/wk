@@ -13,7 +13,7 @@ public:
   std::stringstream stream;
   bool nextIsNull;
 
-  RcppWKBWKTTranslator(BinaryReader& reader):
+  RcppWKBWKTTranslator(WKBytesProvider& reader):
     WKBWKTTranslator(reader, stream), output(reader.nFeatures()) {
     // set default formatting
     this->ensureClassicLocale();

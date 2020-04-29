@@ -25,7 +25,7 @@ public:
   }
 };
 
-class BinaryReader {
+class WKBytesProvider {
 public:
   virtual unsigned char readCharRaw() = 0;
   virtual double readDoubleRaw() = 0;
@@ -34,14 +34,14 @@ public:
   virtual bool featureIsNull() = 0;
   virtual size_t nFeatures() = 0;
 
-  virtual ~BinaryReader() {}
+  virtual ~WKBytesProvider() {}
 };
 
-class BinaryWriter {
+class WKBytesExporter {
 public:
   size_t size;
 
-  BinaryWriter(size_t size): size(size) {}
+  WKBytesExporter(size_t size): size(size) {}
 
   virtual bool seekNextFeature() = 0;
   virtual void writeNull() = 0;
@@ -53,7 +53,7 @@ public:
     return this->size;
   }
 
-  virtual ~BinaryWriter() {}
+  virtual ~WKBytesExporter() {}
 };
 
 #endif
