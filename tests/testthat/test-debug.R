@@ -10,3 +10,10 @@ test_that("debugger works on wkb", {
   point_bad_type[2] <- as.raw(0xff)
   expect_output(wkb_debug(list(point_bad_type)), "Unrecognized geometry type")
 })
+
+test_that("debugger works on wkt", {
+  wkt_debug("LINESTRING (30 10, 0 0, 0 1)")
+  wkt_debug("POLYGON ((30 10, 0 0, 0 1, 30 10))")
+  wkt_debug("MULTIPOINT (30 10, 0 0)")
+  wkt_debug("MULTIPOINT ((30 10), (0 0))")
+})

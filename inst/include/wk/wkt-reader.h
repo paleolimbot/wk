@@ -15,6 +15,11 @@
 
 class WKTReader {
 public:
+  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
+  const static uint32_t PART_ID_INVALID = UINT32_MAX;
+  const static uint32_t RING_ID_INVALID = UINT32_MAX;
+  const static uint32_t COORD_ID_INVALID = UINT32_MAX;
+  const static uint32_t SRID_INVALID = UINT32_MAX;
 
   WKTReader(WKGeometryHandler& handler): handler(handler) {
 
@@ -31,7 +36,7 @@ public:
 
   void read(const std::string& wellKnownText) {
     WKStringTokenizer tokenizer(wellKnownText);
-    this->readGeometryTaggedText(&tokenizer);
+    this->readGeometryTaggedText(&tokenizer, PART_ID_INVALID);
   }
 
   ~WKTReader() {
@@ -41,22 +46,22 @@ public:
 protected:
   WKGeometryHandler& handler;
 
-  std::vector<WKCoord> readCoordinates(WKStringTokenizer* tokenizer) {
+  void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    std::vector<WKCoord> v;
+
     if(nextToken == "EMPTY") {
-      return v;
+      return;
     }
 
-    v.push_back(this->readCoordinate(tokenizer));
-
+    uint32_t coordId = 0;
+    this->readCoordinate(tokenizer, meta, coordId);
+    coordId++;
     nextToken = this->getNextCloserOrComma(tokenizer);
     while(nextToken == ",") {
-      v.push_back(this->readCoordinate(tokenizer));
+      this->readCoordinate(tokenizer, meta, coordId);
+      coordId++;
       nextToken = this->getNextCloserOrComma(tokenizer);
     }
-
-    return v;
   }
 
   double getNextNumber(WKStringTokenizer* tokenizer) {
@@ -146,80 +151,161 @@ protected:
     }
   }
 
-  void readGeometryTaggedText(WKStringTokenizer* tokenizer) {
+  void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId) {
     std::string type = this->getNextWord(tokenizer);
+    int geometryType;
 
     if(type == "POINT") {
-      return this->readPointText(tokenizer);
+      geometryType = WKGeometryType::Point;
 
     } else if(type == "LINESTRING") {
-      return this->readLineStringText(tokenizer);
-
-    } else if(type == "LINEARRING") {
-      return this->readLinearRingText(tokenizer);
+      geometryType = WKGeometryType::LineString;
 
     } else if(type == "POLYGON") {
-      return this->readPolygonText(tokenizer);
+      geometryType = WKGeometryType::Polygon;
 
     } else if(type == "MULTIPOINT") {
-      return this->readMultiPointText(tokenizer);
+      geometryType = WKGeometryType::MultiPoint;
 
     } else if(type == "MULTILINESTRING") {
-      return this->readMultiLineStringText(tokenizer);
+      geometryType = WKGeometryType::MultiLineString;
 
     } else if(type == "MULTIPOLYGON") {
-      return this->readMultiPolygonText(tokenizer);
+      geometryType = WKGeometryType::MultiPolygon;
 
     } else if(type == "GEOMETRYCOLLECTION") {
-      return this->readGeometryCollectionText(tokenizer);
+      geometryType = WKGeometryType::GeometryCollection;
 
     } else {
-      throw WKParseException(Formatter() << "Unknown type" << type);
+      throw WKParseException(Formatter() << "Unknown type " << type);
     }
+
+    WKGeometryMeta meta(geometryType, false, false, false);
+    meta.hasSize = false;
+    meta.size = SIZE_UNKNOWN;
+    this->readGeometry(tokenizer, meta, partId);
   }
 
-  void readPointText(WKStringTokenizer* tokenizer) {
+  void readGeometry(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t partId) {
+    handler.nextGeometryStart(meta, partId);
+
+    switch (meta.geometryType) {
+
+    case WKGeometryType::Point:
+      this->readPointText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::LineString:
+      this->readLineStringText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::Polygon:
+      this->readPolygonText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::MultiPoint:
+      this->readMultiPointText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::MultiLineString:
+      this->readMultiLineStringText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::MultiPolygon:
+      this->readMultiPolygonText(tokenizer, meta);
+      break;
+
+    case WKGeometryType::GeometryCollection:
+      this->readGeometryCollectionText(tokenizer, meta);
+      break;
+
+    default:
+      throw WKParseException(
+          Formatter() <<
+            "Unrecognized geometry type: " <<
+            meta.geometryType
+      );
+    }
+
+    handler.nextGeometryEnd(meta, partId);
+  }
+
+  void readPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
     if(nextToken == "EMPTY") {
       // TODO need this in a sec
       return;
     }
 
-    this->readCoordinate(tokenizer);
+    this->readCoordinate(tokenizer, meta, 0);
     this->getNextCloser(tokenizer);
   }
 
-  void readLineStringText(WKStringTokenizer* tokenizer) {
-    this->readCoordinates(tokenizer);
+  void readLineStringText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
+    this->readCoordinates(tokenizer, meta);
   }
 
-  void readLinearRingText(WKStringTokenizer* tokenizer) {
-    this->readCoordinates(tokenizer);
+  void readPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
+    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
+    if(nextToken == "EMPTY") {
+      return;
+    }
+
+    uint32_t ringId = 0;
+    this->readLinearRingText(tokenizer, meta, ringId);
+    ringId++;
+
+    nextToken = this->getNextCloserOrComma(tokenizer);
+    while(nextToken == ",") {
+      this->readLinearRingText(tokenizer, meta, ringId);
+      ringId++;
+      nextToken = this->getNextCloserOrComma(tokenizer);
+    }
   }
 
-  void readMultiPointText(WKStringTokenizer* tokenizer) {
+  void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t ringId) {
+    handler.nextLinearRingStart(meta, SIZE_UNKNOWN, ringId);
+    this->readCoordinates(tokenizer, meta);
+    handler.nextLinearRingEnd(meta, SIZE_UNKNOWN, ringId);
+  }
+
+  void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = getNextEmptyOrOpener(tokenizer);
     if (nextToken == "EMPTY") {
       return;
     }
 
     int tok = tokenizer->peekNextToken();
-
     if (tok == WKStringTokenizer::TT_NUMBER) {
 
       // Try to parse deprecated form "MULTIPOINT(0 0, 1 1)"
-      std::vector<WKCoord> coords;
-
+      uint32_t partId = 0;
       do {
-        coords.push_back(this->readCoordinate(tokenizer));
+        WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
+        childMeta.hasSize = false;
+        childMeta.size = SIZE_UNKNOWN;
+        childMeta.srid = meta.srid;
+
+        handler.nextGeometryStart(childMeta, partId);
+        this->readCoordinate(tokenizer, meta, 0);
+        handler.nextGeometryEnd(childMeta, partId);
+        partId++;
+
         nextToken = this->getNextCloserOrComma(tokenizer);
       } while (nextToken == ",");
 
     } else if(tok == '(') {
       // Try to parse correct form "MULTIPOINT((0 0), (1 1))"
-
+      uint32_t partId = 0;
       do {
-        this->readPointText(tokenizer);
+        WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
+        childMeta.hasSize = false;
+        childMeta.size = SIZE_UNKNOWN;
+        childMeta.srid = meta.srid;
+
+        this->readGeometry(tokenizer, childMeta, partId);
+        partId++;
+
         nextToken = getNextCloserOrComma(tokenizer);
       } while (nextToken == ",");
 
@@ -248,7 +334,7 @@ protected:
         break;
       default:
         err << "??";
-        break;
+      break;
       }
 
       err << std::endl;
@@ -256,52 +342,54 @@ protected:
     }
   }
 
-  void readPolygonText(WKStringTokenizer* tokenizer) {
+  void readMultiLineStringText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
     if(nextToken == "EMPTY") {
       return;
     }
 
-    this->readLinearRingText(tokenizer);
-    nextToken = this->getNextCloserOrComma(tokenizer);
-    while(nextToken == ",") {
-      this->readLinearRingText(tokenizer);
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    }
-  }
-
-  void readMultiLineStringText(WKStringTokenizer* tokenizer) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-    if(nextToken == "EMPTY") {
-      return;
-    }
-
+    uint32_t partId = 0;
     do {
-      this->readLineStringText(tokenizer);
+      WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
+      childMeta.hasSize = false;
+      childMeta.size = SIZE_UNKNOWN;
+      childMeta.srid = meta.srid;
+
+      this->readGeometry(tokenizer, childMeta, partId);
+      partId++;
+
       nextToken = this->getNextCloserOrComma(tokenizer);
     } while (nextToken == ",");
   }
 
-  void readMultiPolygonText(WKStringTokenizer* tokenizer) {
+  void readMultiPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
     if(nextToken == "EMPTY") {
       return;
     }
 
     do {
-      this->readPolygonText(tokenizer);
+      WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
+      childMeta.hasSize = false;
+      childMeta.size = SIZE_UNKNOWN;
+      childMeta.srid = meta.srid;
+
+      this->readPolygonText(tokenizer, meta);
       nextToken = this->getNextCloserOrComma(tokenizer);
     } while (nextToken == ",");
   }
 
-  void readGeometryCollectionText(WKStringTokenizer* tokenizer) {
+  void readGeometryCollectionText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
     if(nextToken == "EMPTY") {
       return;
     }
 
+    uint32_t partId = 0;
     do {
-      this->readGeometryTaggedText(tokenizer);
+      this->readGeometryTaggedText(tokenizer, partId);
+      partId++;
+
       nextToken = this->getNextCloserOrComma(tokenizer);
     } while (nextToken == ",");
   }
@@ -309,7 +397,7 @@ protected:
 private:
   std::string saved_locale;
 
-  const WKCoord readCoordinate(WKStringTokenizer* tokenizer) {
+  void readCoordinate(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t coordId) {
     WKCoord coord;
     coord.x = this->getNextNumber(tokenizer);
     coord.y = this->getNextNumber(tokenizer);
@@ -325,7 +413,7 @@ private:
 
     }
 
-    return coord;
+    handler.nextCoordinate(meta, coord, coordId);
   }
 
   bool isNumberNext(WKStringTokenizer* tokenizer) {

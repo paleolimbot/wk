@@ -10,29 +10,39 @@
 
 class WKGeometryDebugHandler: public WKGeometryHandler {
 public:
-  WKGeometryDebugHandler(std::ostream& out): out(out) {}
+  WKGeometryDebugHandler(std::ostream& out): out(out), indentationLevel(0) {}
 
   virtual void nextFeatureStart(size_t featureId) {
+    this->indentationLevel = 0;
+    this->indent();
     out << "nextFeatureStart(" << featureId <<  ")\n";
+    this->indentationLevel++;
   }
 
   virtual void nextFeatureEnd(size_t featureId) {
+    this->indentationLevel--;
+    this->indent();
     out << "nextFeatureEnd(" << featureId <<  ")\n";
   }
 
   virtual void nextNull(size_t featureId) {
+    this->indent();
     out << "nextNull(" << featureId <<  ")\n";
   }
 
   virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+    this->indent();
     out << "nextGeometryStart(";
     this->writeMeta(meta);
     out << ", ";
     this->writeMaybeUnknown(partId, "WKBReader.PART_ID_INVALID");
     out << ")\n";
+    this->indentationLevel++;
   }
 
   virtual void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
+    this->indentationLevel--;
+    this->indent();
     out << "nextGeometryEnd(";
     this->writeMeta(meta);
     out << ", ";
@@ -41,14 +51,18 @@ public:
   }
 
   virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+    this->indent();
     out << "nextLinearRingStart(";
     this->writeMeta(meta);
     out << ", ";
     this->writeMaybeUnknown(size, "WKBReader.SIZE_UNKNOWN");
     out << ", " << ringId << ")\n";
+    this->indentationLevel++;
   }
 
   virtual void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+    this->indentationLevel--;
+    this->indent();
     out << "nextLinearRingEnd(";
     this->writeMeta(meta);
     out << ", ";
@@ -57,6 +71,7 @@ public:
   }
 
   virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+    this->indent();
     out << "nextCoordinate(";
     this->writeMeta(meta);
     out << ", " << "WKCoord(x = " << coord.x << ", y = " << coord.y;
@@ -126,8 +141,15 @@ public:
     }
   }
 
+  virtual void indent() {
+    for (int i=0; i < indentationLevel; i++)  {
+      out << "    ";
+    }
+  }
+
 protected:
   std::ostream& out;
+  int indentationLevel;
 };
 
 #endif
