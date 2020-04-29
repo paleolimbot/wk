@@ -32,7 +32,9 @@ public:
 
   void read(const std::string& wellKnownText) {
     WKStringTokenizer tokenizer(wellKnownText);
+    handler.nextFeatureStart(0);
     this->readGeometryTaggedText(&tokenizer, PART_ID_NONE);
+    handler.nextFeatureEnd(0);
   }
 
   ~WKTReader() {
@@ -71,8 +73,6 @@ protected:
     }
 
     WKGeometryMeta meta(geometryType, false, false, false);
-    meta.hasSize = false;
-    meta.size = WKGeometryMeta::SIZE_UNKNOWN;
     this->readGeometry(tokenizer, meta, partId);
   }
 
@@ -172,8 +172,6 @@ protected:
       uint32_t partId = 0;
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
-        childMeta.hasSize = false;
-        childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
         childMeta.srid = meta.srid;
 
         handler.nextGeometryStart(childMeta, partId);
@@ -189,8 +187,6 @@ protected:
       uint32_t partId = 0;
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
-        childMeta.hasSize = false;
-        childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
         childMeta.srid = meta.srid;
 
         this->readGeometry(tokenizer, childMeta, partId);
@@ -241,8 +237,6 @@ protected:
     uint32_t partId = 0;
     do {
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
-      childMeta.hasSize = false;
-      childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
       childMeta.srid = meta.srid;
 
       this->readGeometry(tokenizer, childMeta, partId);
@@ -258,13 +252,14 @@ protected:
       return;
     }
 
+    uint32_t partId = 0;
     do {
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
-      childMeta.hasSize = false;
-      childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
       childMeta.srid = meta.srid;
 
-      this->readPolygonText(tokenizer, meta);
+      this->readGeometry(tokenizer, childMeta, partId);
+      partId++;
+
       nextToken = this->getNextCloserOrComma(tokenizer);
     } while (nextToken == ",");
   }

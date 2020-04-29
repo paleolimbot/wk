@@ -54,14 +54,20 @@ public:
     hasZ(ewkbType & EWKB_Z_BIT),
     hasM(ewkbType & EWKB_M_BIT),
     hasSRID(ewkbType & EWKB_SRID_BIT),
-    ewkbType(ewkbType) {}
+    ewkbType(ewkbType),
+    hasSize(false),
+    size(SIZE_UNKNOWN),
+    srid(SRID_NONE) {}
 
   WKGeometryMeta(int geometryType, bool hasZ, bool hasM, bool hasSRID):
     geometryType(geometryType),
     hasZ(hasZ),
     hasM(hasM),
     hasSRID(hasSRID),
-    ewkbType(calcEWKBType(geometryType, hasZ, hasM, hasSRID)) {}
+    ewkbType(calcEWKBType(geometryType, hasZ, hasM, hasSRID)),
+    hasSize(false),
+    size(SIZE_UNKNOWN),
+    srid(SRID_NONE) {}
 
   std::string wktType() const {
     Formatter f;
