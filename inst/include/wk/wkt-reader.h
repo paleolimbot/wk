@@ -302,14 +302,28 @@ protected:
     coord.y = this->getNextNumber(tokenizer);
 
     if (this->isNumberNext(tokenizer)) {
-      coord.z = this->getNextNumber(tokenizer);
-      coord.hasZ = true;
-
-      if(this->isNumberNext(tokenizer)) {
+      if (meta.hasZ) {
+        coord.z = this->getNextNumber(tokenizer);
+        coord.hasZ = true;
+      } else if (meta.hasM) {
         coord.m = this->getNextNumber(tokenizer);
         coord.hasM = true;
+      } else {
+        throw WKParseException(Formatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
       }
 
+      if(this->isNumberNext(tokenizer)) {
+        if (meta.hasM) {
+          coord.m = this->getNextNumber(tokenizer);
+          coord.hasM = true;
+        } else {
+          throw WKParseException(Formatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
+        }
+      } else if (meta.hasZ && meta.hasM) {
+        throw WKParseException("Expected M coordinate but foound ','  or ')'");
+      }
+    } else if (meta.hasZ || meta.hasM) {
+      throw WKParseException("Expected Z or M coordinate");
     }
 
     handler.nextCoordinate(meta, coord, coordId);

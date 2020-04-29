@@ -95,3 +95,57 @@ test_that("mutli* geometries can contain empties", {
     "MULTIPOLYGON (EMPTY)"
   )
 })
+
+test_that("Z, ZM, and M prefixes are parsed", {
+  expect_identical(
+    wkt_translate_wkt("POINT (30 10)"),
+    "POINT (30 10)"
+  )
+  expect_identical(
+    wkt_translate_wkt("POINT Z (30 10 1)"),
+    "POINT Z (30 10 1)"
+  )
+  expect_identical(
+    wkt_translate_wkt("POINT M (30 10 1)"),
+    "POINT M (30 10 1)"
+  )
+  expect_identical(
+    wkt_translate_wkt("POINT ZM (30 10 0 1)"),
+    "POINT ZM (30 10 0 1)"
+  )
+})
+
+test_that("correctly formatted ZM geomteries are translated identically", {
+  expect_identical(
+    wkt_translate_wkt("POINT ZM (30 10 0 1)"),
+    "POINT ZM (30 10 0 1)"
+  )
+  expect_identical(
+    wkt_translate_wkt("LINESTRING ZM (30 10 0 1, 0 0 2 3)"),
+    "LINESTRING ZM (30 10 0 1, 0 0 2 3)"
+  )
+  expect_identical(
+    wkt_translate_wkt("POLYGON ZM ((30 10 2 1, 0 0 9 10, 10 10 10 8, 30 10 3 8))"),
+    "POLYGON ZM ((30 10 2 1, 0 0 9 10, 10 10 10 8, 30 10 3 8))"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOINT ZM (30 10 32 1, 0 0 2 8, 10 10 1 99)"),
+    "MULTIPOINT ZM ((30 10 32 1), (0 0 2 8), (10 10 1 99))"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOINT ZM ((30 10 32 1), (0 0 2 8), (10 10 1 99))"),
+    "MULTIPOINT ZM ((30 10 32 1), (0 0 2 8), (10 10 1 99))"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTILINESTRING ZM ((30 10 2 1, 0 0 2 8), (20 20 1 1, 0 0 2 2))"),
+    "MULTILINESTRING ZM ((30 10 2 1, 0 0 2 8), (20 20 1 1, 0 0 2 2))"
+  )
+  expect_identical(
+    wkt_translate_wkt("MULTIPOLYGON ZM (((30 10 1 3, 0 0 9 1, 10 10 5 9, 30 10 1 2)))"),
+    "MULTIPOLYGON ZM (((30 10 1 3, 0 0 9 1, 10 10 5 9, 30 10 1 2)))"
+  )
+  expect_identical(
+    wkt_translate_wkt("GEOMETRYCOLLECTION (POINT ZM (30 10 1 2))"),
+    "GEOMETRYCOLLECTION (POINT ZM (30 10 1 2))"
+  )
+})
