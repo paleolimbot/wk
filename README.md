@@ -128,9 +128,9 @@ geometry using `wkb|wkt_debug()` functions.
 ``` r
 wkb_debug(list(point_wkb))
 #> nextFeatureStart(0)
-#> nextGeometryStart(POINT [1], WKBReader.PART_ID_INVALID)
-#> nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
-#> nextGeometryEnd(POINT [1], WKBReader.PART_ID_INVALID)
+#>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
+#>         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
+#>     nextGeometryEnd(POINT [1], WKReader::PART_ID_NONE)
 #> nextFeatureEnd(0)
 ```
 

@@ -3,13 +3,15 @@
 #define WK_READER_H
 
 #include "wk/geometry-meta.h"
+#include "wk/geometry-handler.h"
 
 class WKReader  {
 public:
-  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
-  const static uint32_t PART_ID_INVALID = UINT32_MAX;
-  const static uint32_t RING_ID_INVALID = UINT32_MAX;
-  const static uint32_t COORD_ID_INVALID = UINT32_MAX;
+  const static uint32_t PART_ID_NONE = UINT32_MAX;
+  const static uint32_t RING_ID_NONE = UINT32_MAX;
+  const static uint32_t COORD_ID_NONE = UINT32_MAX;
+
+  WKReader(WKGeometryHandler& handler): handler(handler) {}
 
   // stack accessors (may need more, these are sufficient for WKT translator)
   const WKGeometryMeta lastGeometryType(int level) {
@@ -30,9 +32,7 @@ public:
 
 protected:
   std::vector<WKGeometryMeta> stack;
-
-
-
+  WKGeometryHandler& handler;
 };
 
 

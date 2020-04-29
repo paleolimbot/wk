@@ -35,7 +35,7 @@ public:
     out << "nextGeometryStart(";
     this->writeMeta(meta);
     out << ", ";
-    this->writeMaybeUnknown(partId, "WKBReader.PART_ID_INVALID");
+    this->writeMaybeUnknown(partId, "WKReader::PART_ID_NONE");
     out << ")\n";
     this->indentationLevel++;
   }
@@ -46,7 +46,7 @@ public:
     out << "nextGeometryEnd(";
     this->writeMeta(meta);
     out << ", ";
-    this->writeMaybeUnknown(partId, "WKBReader.PART_ID_INVALID");
+    this->writeMaybeUnknown(partId, "WKReader::PART_ID_NONE");
     out << ")\n";
   }
 
@@ -55,7 +55,7 @@ public:
     out << "nextLinearRingStart(";
     this->writeMeta(meta);
     out << ", ";
-    this->writeMaybeUnknown(size, "WKBReader.SIZE_UNKNOWN");
+    this->writeMaybeUnknown(size, "WKGeometryMeta::SIZE_UNKNOWN");
     out << ", " << ringId << ")\n";
     this->indentationLevel++;
   }
@@ -66,7 +66,7 @@ public:
     out << "nextLinearRingEnd(";
     this->writeMeta(meta);
     out << ", ";
-    this->writeMaybeUnknown(size, "WKBReader.SIZE_UNKNOWN");
+    this->writeMaybeUnknown(size, "WKGeometryMeta::SIZE_UNKNOWN");
     out << ", " << ringId << ")\n";
   }
 

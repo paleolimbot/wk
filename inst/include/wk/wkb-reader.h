@@ -12,17 +12,16 @@
 class WKBReader: public WKReader {
 
 public:
-  const static uint32_t SRID_INVALID = UINT32_MAX;
-  const static unsigned char ENDIAN_INVALID = 0xff;
+  const static unsigned char ENDIAN_NONE = 0xff;
 
-  WKBReader(BinaryReader& reader, WKGeometryHandler& handler): reader(reader), handler(handler) {
+  WKBReader(BinaryReader& reader, WKGeometryHandler& handler): WKReader(handler), reader(reader) {
     this->swapEndian = false;
     this->featureId = 0;
-    this->partId = PART_ID_INVALID;
-    this->ringId = RING_ID_INVALID;
-    this->coordId = COORD_ID_INVALID;
-    this->srid = SRID_INVALID;
-    this->endian = ENDIAN_INVALID;
+    this->partId = PART_ID_NONE;
+    this->ringId = RING_ID_NONE;
+    this->coordId = COORD_ID_NONE;
+    this->srid = WKGeometryMeta::SRID_NONE;
+    this->endian = ENDIAN_NONE;
     this->stack = std::vector<WKGeometryMeta>();
   }
 
@@ -31,11 +30,11 @@ public:
   }
 
   void iterateFeature() {
-    this->partId = PART_ID_INVALID;
-    this->ringId = RING_ID_INVALID;
-    this->coordId = COORD_ID_INVALID;
-    this->endian = ENDIAN_INVALID;
-    this->srid = SRID_INVALID;
+    this->partId = PART_ID_NONE;
+    this->ringId = RING_ID_NONE;
+    this->coordId = COORD_ID_NONE;
+    this->endian = ENDIAN_NONE;
+    this->srid = WKGeometryMeta::SRID_NONE;
     this->stack.clear();
 
     try {
@@ -51,7 +50,6 @@ public:
 
 protected:
   BinaryReader& reader;
-  WKGeometryHandler& handler;
 
   size_t featureId;
   uint32_t partId;
@@ -71,7 +69,7 @@ protected:
     if (this->reader.featureIsNull()) {
       this->handler.nextNull(featureId);
     } else {
-      this->readGeometry(PART_ID_INVALID);
+      this->readGeometry(PART_ID_NONE);
     }
 
     this->handler.nextFeatureEnd(featureId);

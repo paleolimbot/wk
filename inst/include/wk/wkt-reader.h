@@ -6,6 +6,7 @@
 #include <string>
 #include <clocale>
 
+#include "wk/reader.h"
 #include "wk/formatter.h"
 #include "wk/geometry-handler.h"
 #include "wk/string-tokenizer.h"
@@ -13,16 +14,11 @@
 #include "wk/coord.h"
 
 
-class WKTReader {
+class WKTReader: public WKReader {
 public:
-  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
-  const static uint32_t PART_ID_INVALID = UINT32_MAX;
-  const static uint32_t RING_ID_INVALID = UINT32_MAX;
-  const static uint32_t COORD_ID_INVALID = UINT32_MAX;
-  const static uint32_t SRID_INVALID = UINT32_MAX;
 
-  WKTReader(WKGeometryHandler& handler): handler(handler) {
-
+  WKTReader(WKGeometryHandler& handler): WKReader(handler) {
+    // TODO evaluate if we need this if we use C++11's double parser
 #ifdef _MSC_VER
     // Avoid multithreading issues caused by setlocale
     _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
@@ -36,7 +32,7 @@ public:
 
   void read(const std::string& wellKnownText) {
     WKStringTokenizer tokenizer(wellKnownText);
-    this->readGeometryTaggedText(&tokenizer, PART_ID_INVALID);
+    this->readGeometryTaggedText(&tokenizer, PART_ID_NONE);
   }
 
   ~WKTReader() {
@@ -44,112 +40,6 @@ public:
   }
 
 protected:
-  WKGeometryHandler& handler;
-
-  void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
-
-    if(nextToken == "EMPTY") {
-      return;
-    }
-
-    uint32_t coordId = 0;
-    this->readCoordinate(tokenizer, meta, coordId);
-    coordId++;
-    nextToken = this->getNextCloserOrComma(tokenizer);
-    while(nextToken == ",") {
-      this->readCoordinate(tokenizer, meta, coordId);
-      coordId++;
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    }
-  }
-
-  double getNextNumber(WKStringTokenizer* tokenizer) {
-    int type = tokenizer->nextToken();
-    switch(type) {
-    case WKStringTokenizer::TT_NUMBER:
-      return tokenizer->getNVal();
-    case WKStringTokenizer::TT_EOF:
-      throw WKParseException("Expected number but encountered end of stream");
-    case WKStringTokenizer::TT_EOL:
-      throw WKParseException("Expected number but encountered end of line");
-    case WKStringTokenizer::TT_WORD:
-      throw WKParseException(Formatter() << "Expected number but encountered word" << tokenizer->getSVal());
-    case '(':
-      throw WKParseException("Expected number but encountered '('");
-    case ')':
-      throw WKParseException("Expected number but encountered ')'");
-    case ',':
-      throw WKParseException("Expected number but encountered ','");
-    default:
-      throw std::runtime_error(Formatter() << "getNextNumber(): Unexpected token type " << type);
-    }
-  }
-
-  std::string getNextEmptyOrOpener(WKStringTokenizer* tokenizer) {
-    std::string nextWord = this->getNextWord(tokenizer);
-
-    // Skip the Z, M or ZM of an SF1.2 3/4 dim coordinate.
-    // TODO we're going to need this in a sec
-    if(nextWord == "Z" || nextWord == "M" || nextWord == "ZM") {
-      nextWord = this->getNextWord(tokenizer);
-    }
-
-    if(nextWord == "EMPTY" || nextWord == "(") {
-      return nextWord;
-    }
-    throw WKParseException(
-        Formatter() <<
-          "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
-          nextWord
-    );
-  }
-
-  std::string getNextCloserOrComma(WKStringTokenizer* tokenizer) {
-    std::string nextWord = this->getNextWord(tokenizer);
-    if(nextWord == "," || nextWord == ")") {
-      return nextWord;
-    }
-
-    throw  WKParseException(Formatter() << "Expected ')' or ',' but encountered" << nextWord);
-  }
-
-  std::string getNextCloser(WKStringTokenizer* tokenizer) {
-    std::string nextWord = getNextWord(tokenizer);
-    if(nextWord == ")") {
-      return nextWord;
-    }
-
-    throw WKParseException(Formatter() << "Expected ')' but encountered" << nextWord);
-  }
-
-  std::string getNextWord(WKStringTokenizer* tokenizer) {
-    int type = tokenizer->nextToken();
-    switch(type) {
-    case WKStringTokenizer::TT_WORD: {
-      std::string word = tokenizer->getSVal();
-      int i = static_cast<int>(word.size());
-      while(--i >= 0) {
-        word[i] = static_cast<char>(toupper(word[i]));
-      }
-      return word;
-    }
-    case WKStringTokenizer::TT_EOF:
-      throw WKParseException("Expected word but encountered end of stream");
-    case WKStringTokenizer::TT_EOL:
-      throw WKParseException("Expected word but encountered end of line");
-    case WKStringTokenizer::TT_NUMBER:
-      throw WKParseException(Formatter() << "Expected word but encountered number" << tokenizer->getNVal());
-    case '(':
-      return "(";
-    case ')':
-      return ")";
-    case ',':
-      return ",";
-    default:
-      throw std::runtime_error(Formatter() << "Unexpected token type " << type);
-    }
-  }
 
   void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId) {
     std::string type = this->getNextWord(tokenizer);
@@ -182,7 +72,7 @@ protected:
 
     WKGeometryMeta meta(geometryType, false, false, false);
     meta.hasSize = false;
-    meta.size = SIZE_UNKNOWN;
+    meta.size = WKGeometryMeta::SIZE_UNKNOWN;
     this->readGeometry(tokenizer, meta, partId);
   }
 
@@ -264,9 +154,9 @@ protected:
   }
 
   void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t ringId) {
-    handler.nextLinearRingStart(meta, SIZE_UNKNOWN, ringId);
+    handler.nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
     this->readCoordinates(tokenizer, meta);
-    handler.nextLinearRingEnd(meta, SIZE_UNKNOWN, ringId);
+    handler.nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
   }
 
   void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
@@ -283,7 +173,7 @@ protected:
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
         childMeta.hasSize = false;
-        childMeta.size = SIZE_UNKNOWN;
+        childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
         childMeta.srid = meta.srid;
 
         handler.nextGeometryStart(childMeta, partId);
@@ -300,7 +190,7 @@ protected:
       do {
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
         childMeta.hasSize = false;
-        childMeta.size = SIZE_UNKNOWN;
+        childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
         childMeta.srid = meta.srid;
 
         this->readGeometry(tokenizer, childMeta, partId);
@@ -352,7 +242,7 @@ protected:
     do {
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.hasSize = false;
-      childMeta.size = SIZE_UNKNOWN;
+      childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
       childMeta.srid = meta.srid;
 
       this->readGeometry(tokenizer, childMeta, partId);
@@ -371,7 +261,7 @@ protected:
     do {
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.hasSize = false;
-      childMeta.size = SIZE_UNKNOWN;
+      childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
       childMeta.srid = meta.srid;
 
       this->readPolygonText(tokenizer, meta);
@@ -394,8 +284,23 @@ protected:
     } while (nextToken == ",");
   }
 
-private:
-  std::string saved_locale;
+  void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
+    std::string nextToken = this->getNextEmptyOrOpener(tokenizer);
+
+    if(nextToken == "EMPTY") {
+      return;
+    }
+
+    uint32_t coordId = 0;
+    this->readCoordinate(tokenizer, meta, coordId);
+    coordId++;
+    nextToken = this->getNextCloserOrComma(tokenizer);
+    while(nextToken == ",") {
+      this->readCoordinate(tokenizer, meta, coordId);
+      coordId++;
+      nextToken = this->getNextCloserOrComma(tokenizer);
+    }
+  }
 
   void readCoordinate(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t coordId) {
     WKCoord coord;
@@ -416,9 +321,102 @@ private:
     handler.nextCoordinate(meta, coord, coordId);
   }
 
+  double getNextNumber(WKStringTokenizer* tokenizer) {
+    int type = tokenizer->nextToken();
+    switch(type) {
+    case WKStringTokenizer::TT_NUMBER:
+      return tokenizer->getNVal();
+    case WKStringTokenizer::TT_EOF:
+      throw WKParseException("Expected number but encountered end of stream");
+    case WKStringTokenizer::TT_EOL:
+      throw WKParseException("Expected number but encountered end of line");
+    case WKStringTokenizer::TT_WORD:
+      throw WKParseException(Formatter() << "Expected number but encountered word" << tokenizer->getSVal());
+    case '(':
+      throw WKParseException("Expected number but encountered '('");
+    case ')':
+      throw WKParseException("Expected number but encountered ')'");
+    case ',':
+      throw WKParseException("Expected number but encountered ','");
+    default:
+      throw std::runtime_error(Formatter() << "getNextNumber(): Unexpected token type " << type);
+    }
+  }
+
+  std::string getNextEmptyOrOpener(WKStringTokenizer* tokenizer) {
+    std::string nextWord = this->getNextWord(tokenizer);
+
+    // Skip the Z, M or ZM of an SF1.2 3/4 dim coordinate.
+    // TODO we're going to need this in a sec
+    if(nextWord == "Z" || nextWord == "M" || nextWord == "ZM") {
+      nextWord = this->getNextWord(tokenizer);
+    }
+
+    if(nextWord == "EMPTY" || nextWord == "(") {
+      return nextWord;
+    }
+    throw WKParseException(
+        Formatter() <<
+          "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
+            nextWord
+    );
+  }
+
+  std::string getNextCloserOrComma(WKStringTokenizer* tokenizer) {
+    std::string nextWord = this->getNextWord(tokenizer);
+    if(nextWord == "," || nextWord == ")") {
+      return nextWord;
+    }
+
+    throw  WKParseException(Formatter() << "Expected ')' or ',' but encountered" << nextWord);
+  }
+
+  std::string getNextCloser(WKStringTokenizer* tokenizer) {
+    std::string nextWord = getNextWord(tokenizer);
+    if(nextWord == ")") {
+      return nextWord;
+    }
+
+    throw WKParseException(Formatter() << "Expected ')' but encountered" << nextWord);
+  }
+
+
+
+  std::string getNextWord(WKStringTokenizer* tokenizer) {
+    int type = tokenizer->nextToken();
+    switch(type) {
+    case WKStringTokenizer::TT_WORD: {
+      std::string word = tokenizer->getSVal();
+      int i = static_cast<int>(word.size());
+      while(--i >= 0) {
+        word[i] = static_cast<char>(toupper(word[i]));
+      }
+      return word;
+    }
+    case WKStringTokenizer::TT_EOF:
+      throw WKParseException("Expected word but encountered end of stream");
+    case WKStringTokenizer::TT_EOL:
+      throw WKParseException("Expected word but encountered end of line");
+    case WKStringTokenizer::TT_NUMBER:
+      throw WKParseException(Formatter() << "Expected word but encountered number" << tokenizer->getNVal());
+    case '(':
+      return "(";
+    case ')':
+      return ")";
+    case ',':
+      return ",";
+    default:
+      throw std::runtime_error(Formatter() << "Unexpected token type " << type);
+    }
+  }
+
   bool isNumberNext(WKStringTokenizer* tokenizer) {
     return tokenizer->peekNextToken() == WKStringTokenizer::TT_NUMBER;
   }
+
+private:
+  std::string saved_locale;
+
 };
 
 #endif

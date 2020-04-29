@@ -26,6 +26,9 @@ enum WKGeometryType {
 
 class WKGeometryMeta {
 public:
+  const static uint32_t SRID_NONE = 0;
+  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
+
   // type info
   uint32_t geometryType;
   bool hasZ;
@@ -43,8 +46,8 @@ public:
     hasSRID(false),
     ewkbType(0),
     hasSize(false),
-    size(0),
-    srid(0) {}
+    size(SIZE_UNKNOWN),
+    srid(SRID_NONE) {}
 
   WKGeometryMeta(uint32_t ewkbType):
     geometryType(ewkbType & 0x000000ff),
