@@ -84,17 +84,42 @@ class WKRawVectorListExporter: public WKBytesExporter {
 public:
   List output;
   RawVector buffer;
-  bool prevIsNull;
+  bool featureNull;
 
   R_xlen_t index;
   R_xlen_t offset;
 
   WKRawVectorListExporter(size_t size): WKBytesExporter(size) {
-    this->prevIsNull = false;
-    this->index = -1;
+    this->featureNull = false;
+    this->index = 0;
     this->offset = 0;
     output = List(size);
     this->setBufferSize(2048);
+  }
+
+  void prepareNextFeature() {
+    this->offset = 0;
+    this->featureNull = false;
+  }
+
+  void writeNull() {
+    this->featureNull = true;
+  }
+
+  void writeNextFeature() {
+    if (this->index >= output.size()) {
+      stop("Attempt to set index out of range (WKRawVectorListExporter)");
+    }
+
+    if (this->featureNull) {
+      this->output[this->index] = R_NilValue;
+    } else if (this->offset == 0) {
+      this->output[this->index] = RawVector::create();
+    } else {
+      this->output[this->index] = this->buffer[Range(0, this->offset - 1)];
+    }
+
+    this->index++;
   }
 
   void setBufferSize(R_xlen_t bufferSize) {
@@ -117,31 +142,6 @@ public:
     }
 
     this->buffer = newBuffer;
-  }
-
-  bool seekNextFeature() {
-    if (this->index == -1) {
-      this->index += 1;
-      return true;
-    }
-
-    if (this->prevIsNull) {
-      this->output[this->index] = R_NilValue;
-    } else if (this->offset == 0) {
-      this->output[this->index] = RawVector::create();
-    } else {
-      this->output[this->index] = this->buffer[Range(0, this->offset - 1)];
-    }
-
-    this->index++;
-    this->offset = 0;
-    this->prevIsNull = false;
-
-    return this->index >= this->output.size();
-  }
-
-  void writeNull() {
-    this->prevIsNull = true;
   }
 
   size_t writeCharRaw(unsigned char value) {
@@ -177,31 +177,32 @@ class WKCharacterVectorProvider: WKStringProvider {
 class WKCharacterVectorExporter: public WKStringStreamExporter {
 public:
   CharacterVector output;
-  size_t index;
-  bool nextIsNull;
+  R_xlen_t index;
+  bool featureNull;
 
   WKCharacterVectorExporter(size_t size):
-    WKStringStreamExporter(size), output(size), index(-1), nextIsNull(false) {}
+    WKStringStreamExporter(size), output(size), index(0), featureNull(false) {}
 
-  bool seekNextFeature() {
-    if (this->index == -1) {
-      this->index += 1;
-      return true;
+  void prepareNextFeature() {
+    this->featureNull = false;
+  }
+
+  void writeNull() {
+    this->featureNull = true;
+  }
+
+  void writeNextFeature() {
+    if (this->index >= output.size()) {
+      stop("Attempt to set index out of range (WKCharacterVectorExporter)");
     }
 
-    if (this->nextIsNull) {
+    if (this->featureNull) {
       this->output[this->index] = NA_STRING;
     } else {
       this->output[this->index] = this->stream.str();
     }
 
     this->index++;
-    this->nextIsNull = false;
-    return this->index < this->nFeatures();
-  }
-
-  void writeNull() {
-    this->nextIsNull = true;
   }
 };
 

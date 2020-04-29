@@ -8,7 +8,7 @@
 #include "wk/writer.h"
 #include "wk/wkb-reader.h"
 
-class WKTWriter: public WKGeometryHandler, public WKWriter {
+class WKTWriter: public WKWriter {
 public:
 
   WKTWriter(WKStringExporter& exporter): WKWriter(exporter), exporter(exporter) {}
@@ -17,17 +17,14 @@ public:
     out.str("");
     out.clear();
     this->stack.clear();
+    WKWriter::nextFeatureStart(featureId);
   }
 
   virtual void nextFeatureEnd(size_t featureId) {
     // this is a hack until I properly convert this to using
     // the string exporter interface
     exporter.writeString(out.str());
-  }
-
-  // default null handling returns ""
-  virtual void nextNull(size_t featureId) {
-
+    WKWriter::nextFeatureEnd(featureId);
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {

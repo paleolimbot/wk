@@ -2,16 +2,25 @@
 #ifndef WK_WRITER_H
 #define WK_WRITER_H
 
+#include "wk/geometry-handler.h"
 #include "wk/geometry-meta.h"
 #include "wk/io.h"
 
-class WKWriter {
+class WKWriter: public WKGeometryHandler {
 public:
   // by default, leave everything as is!
   WKWriter(WKExporter& exporter): exporter(exporter), includeZ(2), includeM(2), includeSRID(2) {}
 
-  bool hasNextFeature() {
-    return exporter.seekNextFeature();
+  virtual void nextFeatureStart(size_t featureId) {
+    exporter.prepareNextFeature();
+  }
+
+  virtual void nextNull(size_t featureId) {
+    exporter.writeNull();
+  }
+
+  virtual void nextFeatureEnd(size_t featureId) {
+    exporter.writeNextFeature();
   }
 
   // creation optioins for all WKX formats

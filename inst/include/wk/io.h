@@ -13,8 +13,9 @@ public:
 class WKExporter {
 public:
   WKExporter(size_t size): size(size) {}
-  virtual bool seekNextFeature() = 0;
+  virtual void prepareNextFeature() = 0;
   virtual void writeNull() = 0;
+  virtual void writeNextFeature() = 0;
   size_t nFeatures() {
     return this->size;
   }

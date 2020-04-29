@@ -7,7 +7,7 @@
 #include "wk/writer.h"
 #include "wk/wkb-reader.h"
 
-class WKBWriter: public WKGeometryHandler, public WKWriter {
+class WKBWriter: public WKWriter {
 public:
   WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter) {
 
@@ -16,10 +16,6 @@ public:
   void setEndian(unsigned char endian) {
     this->endian = endian;
     this->swapEndian = WKBytesUtils::nativeEndian() != endian;
-  }
-
-  virtual void nextNull(size_t featureId) {
-    this->exporter.writeNull();
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
