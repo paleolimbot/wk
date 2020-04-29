@@ -2,19 +2,16 @@
 #ifndef WK_WKB_READER_H
 #define WK_WKB_READER_H
 
+#include "wk/reader.h"
 #include "wk/parse-exception.h"
 #include "wk/geometry-meta.h"
 #include "wk/io-utils.h"
 #include "wk/geometry-handler.h"
 #include "wk/coord.h"
 
-class WKBReader {
+class WKBReader: public WKReader {
 
 public:
-  const static uint32_t SIZE_UNKNOWN = UINT32_MAX;
-  const static uint32_t PART_ID_INVALID = UINT32_MAX;
-  const static uint32_t RING_ID_INVALID = UINT32_MAX;
-  const static uint32_t COORD_ID_INVALID = UINT32_MAX;
   const static uint32_t SRID_INVALID = UINT32_MAX;
   const static unsigned char ENDIAN_INVALID = 0xff;
 
@@ -52,23 +49,6 @@ public:
     this->featureId += 1;
   }
 
-  // accessors (may need more, these are sufficient for WKT translator)
-  const WKGeometryMeta lastGeometryType(int level) {
-    if (level >= 0) {
-      return this->stack[level];
-    } else {
-      return this->stack[this->stack.size() + level];
-    }
-  }
-
-  const WKGeometryMeta lastGeometryType() {
-    return lastGeometryType(-1);
-  }
-
-  size_t recursionLevel() {
-    return this->stack.size();
-  }
-
 protected:
   BinaryReader& reader;
   WKGeometryHandler& handler;
@@ -78,10 +58,7 @@ protected:
   uint32_t ringId;
   uint32_t coordId;
 
-  std::vector<WKGeometryMeta> stack;
-
   unsigned char endian;
-  WKGeometryMeta meta;
   uint32_t srid;
   double x;
   double y;
@@ -124,7 +101,7 @@ protected:
 
     switch (meta.geometryType) {
     case WKGeometryType::Point:
-      this->readCoordinate(meta, 0);
+      this->readPoint(meta);
       break;
     case WKGeometryType::LineString:
       this->readLineString(meta);
@@ -150,20 +127,15 @@ protected:
     this->stack.pop_back();
   }
 
-  void readLineString(WKGeometryMeta meta) {
+  void readPoint(const WKGeometryMeta meta) {
+    this->readCoordinate(meta, 0);
+  }
+
+  void readLineString(const WKGeometryMeta meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
-  }
-
-  void readLinearRing(WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
-    this->handler.nextLinearRingStart(meta, ringId, size);
-    for (uint32_t i=0; i < size; i++) {
-      this->coordId = i;
-      this->readCoordinate(meta, i);
-    }
-    this->handler.nextLinearRingEnd(meta, ringId, size);
   }
 
   void readPolygon(WKGeometryMeta meta) {
@@ -173,6 +145,15 @@ protected:
       ringSize = this->readUint32();
       this->readLinearRing(meta, i, ringSize);
     }
+  }
+
+  void readLinearRing(const WKGeometryMeta meta, uint32_t ringId, uint32_t size) {
+    this->handler.nextLinearRingStart(meta, ringId, size);
+    for (uint32_t i=0; i < size; i++) {
+      this->coordId = i;
+      this->readCoordinate(meta, i);
+    }
+    this->handler.nextLinearRingEnd(meta, ringId, size);
   }
 
   void readCollection(WKGeometryMeta meta) {
