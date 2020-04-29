@@ -9,7 +9,7 @@
 
 class WKBWriter: public WKGeometryHandler, public WKWriter {
 public:
-  WKBWriter(WKBytesExporter& writer): writer(writer) {
+  WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter) {
 
   }
 
@@ -18,10 +18,8 @@ public:
     this->swapEndian = WKBytesUtils::nativeEndian() != endian;
   }
 
-protected:
-
   virtual void nextNull(size_t featureId) {
-    this->writer.writeNull();
+    this->exporter.writeNull();
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
@@ -53,7 +51,7 @@ protected:
 private:
   bool swapEndian;
   unsigned char endian;
-  WKBytesExporter& writer;
+  WKBytesExporter& exporter;
 
   size_t writeEndian() {
     return this->writeChar(this->endian);
@@ -68,23 +66,23 @@ private:
   }
 
   size_t writeChar(unsigned char value) {
-    return this->writer.writeCharRaw(value);
+    return this->exporter.writeCharRaw(value);
   }
 
   size_t writeDouble(double value) {
     if (this->swapEndian) {
-      this->writer.writeDoubleRaw(WKBytesUtils::swapEndian<double>(value));
+      this->exporter.writeDoubleRaw(WKBytesUtils::swapEndian<double>(value));
     } else {
-      this->writer.writeDoubleRaw(value);
+      this->exporter.writeDoubleRaw(value);
     }
     return sizeof(double);
   }
 
   size_t writeUint32(uint32_t value) {
     if (this->swapEndian) {
-      this->writer.writeUint32Raw(WKBytesUtils::swapEndian<uint32_t>(value));
+      this->exporter.writeUint32Raw(WKBytesUtils::swapEndian<uint32_t>(value));
     } else {
-      this->writer.writeUint32Raw(value);
+      this->exporter.writeUint32Raw(value);
     }
     return sizeof(uint32_t);
   }

@@ -22,8 +22,10 @@ Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int in
   exporter.setRoundingPrecision(precision);
   exporter.setTrim(trim);
 
+  writer.hasNextFeature();
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
+    writer.hasNextFeature();
   }
 
   return exporter.output;
@@ -45,8 +47,10 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
   writer.setIncludeSRID(includeSRID);
   writer.setEndian(endian);
 
+  writer.hasNextFeature();
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
+    writer.hasNextFeature();
   }
 
   return exporter.output;

@@ -127,15 +127,15 @@ public:
 
     if (this->prevIsNull) {
       this->output[this->index] = R_NilValue;
-      this->prevIsNull = false;
     } else if (this->offset == 0) {
       this->output[this->index] = RawVector::create();
     } else {
       this->output[this->index] = this->buffer[Range(0, this->offset - 1)];
     }
 
-    this->index += 1;
+    this->index++;
     this->offset = 0;
+    this->prevIsNull = false;
 
     return this->index >= this->output.size();
   }
@@ -181,9 +181,14 @@ public:
   bool nextIsNull;
 
   WKCharacterVectorExporter(size_t size):
-    WKStringStreamExporter(size), output(size), index(0), nextIsNull(false) {}
+    WKStringStreamExporter(size), output(size), index(-1), nextIsNull(false) {}
 
   bool seekNextFeature() {
+    if (this->index == -1) {
+      this->index += 1;
+      return true;
+    }
+
     if (this->nextIsNull) {
       this->output[this->index] = NA_STRING;
     } else {

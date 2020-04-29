@@ -11,7 +11,7 @@
 class WKTWriter: public WKGeometryHandler, public WKWriter {
 public:
 
-  WKTWriter(WKStringExporter& exporter): exporter(exporter) {}
+  WKTWriter(WKStringExporter& exporter): WKWriter(exporter), exporter(exporter) {}
 
   virtual void nextFeatureStart(size_t featureId) {
     out.str("");

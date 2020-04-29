@@ -3,11 +3,16 @@
 #define WK_WRITER_H
 
 #include "wk/geometry-meta.h"
+#include "wk/io.h"
 
 class WKWriter {
 public:
   // by default, leave everything as is!
-  WKWriter(): includeZ(2), includeM(2), includeSRID(2) {}
+  WKWriter(WKExporter& exporter): exporter(exporter), includeZ(2), includeM(2), includeSRID(2) {}
+
+  bool hasNextFeature() {
+    return exporter.seekNextFeature();
+  }
 
   // creation optioins for all WKX formats
   void setIncludeSRID(int includeSRID) {
@@ -23,6 +28,7 @@ public:
   }
 
 protected:
+  WKExporter& exporter;
   int includeZ;
   int includeM;
   int includeSRID;
