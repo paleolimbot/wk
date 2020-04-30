@@ -134,6 +134,85 @@ wkb_debug(list(point_wkb))
 #> nextFeatureEnd(0)
 ```
 
-## Work in progress
+## Performance
 
-This package is under heavy construction and may change at any time.
+This package is mostly designed for no system dependencies and
+flexibility, but also happens to be reasonably fast.
+
+Read WKB + Write WKB:
+
+``` r
+bench::mark(
+  wk = wk:::wkb_translate_wkb(nc_wkb),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
+  sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
+  wkb = wkb::readWKB(wkb::writeWKB(nc_sp)),
+  check = FALSE
+)
+#> # A tibble: 4 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk            125µs  148.9µs    6296.    73.95KB     7.61
+#> 2 geos_c      523.1µs  578.8µs    1642.    50.21KB     2.09
+#> 3 sf          401.2µs  469.6µs    2030.    99.57KB     6.70
+#> 4 wkb          54.7ms   55.3ms      18.1    5.23MB    63.3
+```
+
+Read WKB + Write WKT:
+
+``` r
+bench::mark(
+  wk = wk:::wkb_translate_wkt(nc_wkb),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkt_ptype),
+  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
+  wellknown = lapply(nc_wkb, wellknown::wkb_wkt),
+  check = FALSE
+)
+#> Warning: Some expressions had a GC in every iteration; so filtering is
+#> disabled.
+#> # A tibble: 4 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk            9.8ms  10.32ms     95.4     4.54MB     0   
+#> 2 geos_c       4.26ms   4.58ms    213.      3.32KB     0   
+#> 3 sf         182.61ms 184.05ms      5.41  541.35KB    10.8 
+#> 4 wellknown   26.96ms  28.27ms     33.9     3.42MB     1.99
+```
+
+Read WKT + Write WKB:
+
+``` r
+bench::mark(
+  wk = wk:::wkt_translate_wkb(nc_wkt),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkb_ptype),
+  sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
+  wellknown = lapply(nc_wkt, wellknown::wkt_wkb),
+  check = FALSE
+)
+#> # A tibble: 4 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk           2.04ms   2.25ms     434.    67.66KB     0   
+#> 2 geos_c       2.66ms    2.9ms     329.    49.48KB     0   
+#> 3 sf           3.78ms   4.83ms     207.   186.48KB     4.26
+#> 4 wellknown   48.89ms  51.24ms      19.6    1.31MB     2.18
+```
+
+Read WKT + Write WKT:
+
+``` r
+bench::mark(
+  wk = wk:::wkt_translate_wkt(nc_wkt),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
+  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
+  check = FALSE
+)
+#> Warning: Some expressions had a GC in every iteration; so filtering is
+#> disabled.
+#> # A tibble: 3 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk          11.82ms  12.88ms     77.2     4.51MB     0   
+#> 2 geos_c       6.37ms   6.91ms    143.      3.32KB     0   
+#> 3 sf         196.01ms 203.06ms      4.86  249.56KB     8.10
+```

@@ -115,6 +115,66 @@ The full handler interface includes methods for the start and end of features, g
 wkb_debug(list(point_wkb))
 ```
 
-## Work in progress
+## Performance
 
-This package is under heavy construction and may change at any time.
+This package is mostly designed for no system dependencies and flexibility, but also happens to be reasonably fast.
+
+```{r, echo=FALSE}
+# set up the test data
+nc_wkb <- geovctrs::geo_nc$geometry
+nc_wkt <- geovctrs::as_geo_wkt(nc_wkb)
+nc_WKB <- nc_wkb
+class(nc_WKB) <- "WKB"
+nc_sfc <- sf::st_as_sfc(nc_WKB, EWKB = TRUE)
+nc_sp <- sf::as_Spatial(nc_sfc)
+wkt_ptype <- geovctrs::geo_wkt()
+wkb_ptype <- geovctrs::geo_wkb()
+```
+
+Read WKB + Write WKB:
+
+```{r}
+bench::mark(
+  wk = wk:::wkb_translate_wkb(nc_wkb),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
+  sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
+  wkb = wkb::readWKB(wkb::writeWKB(nc_sp)),
+  check = FALSE
+)
+```
+
+Read WKB + Write WKT:
+
+```{r}
+bench::mark(
+  wk = wk:::wkb_translate_wkt(nc_wkb),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkt_ptype),
+  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
+  wellknown = lapply(nc_wkb, wellknown::wkb_wkt),
+  check = FALSE
+)
+```
+
+Read WKT + Write WKB:
+
+```{r}
+bench::mark(
+  wk = wk:::wkt_translate_wkb(nc_wkt),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkb_ptype),
+  sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
+  wellknown = lapply(nc_wkt, wellknown::wkt_wkb),
+  check = FALSE
+)
+```
+
+Read WKT + Write WKT:
+
+```{r}
+bench::mark(
+  wk = wk:::wkt_translate_wkt(nc_wkt),
+  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
+  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
+  check = FALSE
+)
+```
+
