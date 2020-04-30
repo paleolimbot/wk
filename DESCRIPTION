@@ -2,11 +2,18 @@ Package: wk
 Title: Lightweight Well-Known Geometry Parsing
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Dewey",
-           family = "Dunnington",
-           role = c("aut", "cre"),
-           email = "dewey@fishandwhistle.net",
-           comment = c(ORCID = "0000-0002-9415-4582"))
+    c(
+      person(given = "Dewey",
+             family = "Dunnington",
+             role = c("aut"),
+             email = "dewey@fishandwhistle.net",
+             comment = c(ORCID = "0000-0002-9415-4582")),
+       person(given = "Edzer",
+               family = "Pebesma",
+               role = c("aut", "cre"),
+               email = "edzer.pebesma@uni-muenster.de",
+               comment = c(ORCID = "0000-0001-8049-7069"))
+    )
 Description: Provides a minimal R and C++ API for parsing
   well-known binary (WKB) and well-known text (WKT).
 License: GPL-3

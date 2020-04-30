@@ -9,11 +9,17 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R build
 status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
 The goal of wk is to provide lightweight R and C++ infrastsructure for
 packages to use well-known formats (well-known binary and well-known
 text) as input and/or output without requiring external software.
+Well-known binary is very fast to read and write, whereas well-known
+text is human-readable and human-writable. Together, these formats allow
+for efficient interchange between software packages (WKB), and highly
+readable tests and examples (WKT).
 
 ## Installation
 
@@ -152,10 +158,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            125µs  148.9µs    6296.    73.95KB     7.61
-#> 2 geos_c      523.1µs  578.8µs    1642.    50.21KB     2.09
-#> 3 sf          401.2µs  469.6µs    2030.    99.57KB     6.70
-#> 4 wkb          54.7ms   55.3ms      18.1    5.23MB    63.3
+#> 1 wk          120.2µs  145.7µs    6564.    73.95KB     7.51
+#> 2 geos_c      496.5µs  563.1µs    1717.    50.21KB     2.08
+#> 3 sf          395.9µs  448.2µs    2164.    99.57KB     6.66
+#> 4 wkb          52.3ms   52.4ms      19.1    5.23MB    66.7
 ```
 
 Read WKB + Write WKT:
@@ -173,10 +179,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            9.8ms  10.32ms     95.4     4.54MB     0   
-#> 2 geos_c       4.26ms   4.58ms    213.      3.32KB     0   
-#> 3 sf         182.61ms 184.05ms      5.41  541.35KB    10.8 
-#> 4 wellknown   26.96ms  28.27ms     33.9     3.42MB     1.99
+#> 1 wk           9.63ms  10.09ms     97.9     4.54MB     0   
+#> 2 geos_c       4.07ms   4.68ms    212.      3.32KB     0   
+#> 3 sf         181.18ms  184.6ms      5.39  541.35KB     8.98
+#> 4 wellknown   26.05ms  27.44ms     30.7     3.42MB     3.83
 ```
 
 Read WKT + Write WKB:
@@ -192,10 +198,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           2.04ms   2.25ms     434.    67.66KB     0   
-#> 2 geos_c       2.66ms    2.9ms     329.    49.48KB     0   
-#> 3 sf           3.78ms   4.83ms     207.   186.48KB     4.26
-#> 4 wellknown   48.89ms  51.24ms      19.6    1.31MB     2.18
+#> 1 wk              2ms   2.13ms     460.    67.66KB     0   
+#> 2 geos_c       2.54ms   2.83ms     345.    49.48KB     0   
+#> 3 sf           3.26ms   3.67ms     266.   186.48KB     2.08
+#> 4 wellknown   46.08ms   49.6ms      20.1    1.31MB     5.01
 ```
 
 Read WKT + Write WKT:
@@ -212,7 +218,7 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          11.82ms  12.88ms     77.2     4.51MB     0   
-#> 2 geos_c       6.37ms   6.91ms    143.      3.32KB     0   
-#> 3 sf         196.01ms 203.06ms      4.86  249.56KB     8.10
+#> 1 wk          10.77ms  11.95ms     84.0     4.51MB      0  
+#> 2 geos_c       6.05ms   6.58ms    150.      3.32KB      0  
+#> 3 sf         196.78ms 199.27ms      5.00  248.66KB     10.0
 ```
