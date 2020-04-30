@@ -151,16 +151,12 @@ protected:
 
   void readPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
     uint32_t ringId = 0;
-    this->readLinearRingText(tokenizer, meta, ringId);
-    ringId++;
-
     std::string nextToken;
-    this->getNextCloserOrComma(tokenizer);
-    while(nextToken == ",") {
+    do {
       this->readLinearRingText(tokenizer, meta, ringId);
       ringId++;
       nextToken = this->getNextCloserOrComma(tokenizer);
-    }
+    } while (nextToken == ",");
   }
 
   void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t ringId) {
