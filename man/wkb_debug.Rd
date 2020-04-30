@@ -3,11 +3,14 @@
 \name{wkb_debug}
 \alias{wkb_debug}
 \alias{wkt_debug}
+\alias{wkt_streamer_debug}
 \title{Debug well-known geometry}
 \usage{
 wkb_debug(wkb)
 
 wkt_debug(wkt)
+
+wkt_streamer_debug(wkt)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that

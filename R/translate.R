@@ -67,8 +67,16 @@ wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkb <- function(wkt) {
-  stop("Not implemented")
+wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
+                              endian = wkb_platform_endian(), buffer_size = 2048) {
+  cpp_translate_wkt_wkb(
+    wkt,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    endian = endian,
+    bufferSize = buffer_size
+  )
 }
 
 #' @rdname wkb_translate_wkt

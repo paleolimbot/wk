@@ -28,3 +28,14 @@ void cpp_debug_wkt(CharacterVector input) {
     reader.iterateFeature();
   }
 }
+
+// [[Rcpp::export]]
+void cpp_debug_wkt_streamer(CharacterVector input) {
+  WKCharacterVectorProvider provider(input);
+  WKGeometryDebugHandler handler(Rcout);
+  WKTStreamingReader reader(provider, handler);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+}

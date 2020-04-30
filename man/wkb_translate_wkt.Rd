@@ -35,7 +35,14 @@ wkt_translate_wkt(
   trim = TRUE
 )
 
-wkt_translate_wkb(wkt)
+wkt_translate_wkb(
+  wkt,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  endian = wkb_platform_endian(),
+  buffer_size = 2048
+)
 
 wkb_platform_endian()
 }

@@ -9,6 +9,10 @@ cpp_debug_wkt <- function(input) {
     invisible(.Call(`_wk_cpp_debug_wkt`, input))
 }
 
+cpp_debug_wkt_streamer <- function(input) {
+    invisible(.Call(`_wk_cpp_debug_wkt_streamer`, input))
+}
+
 cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
@@ -23,5 +27,9 @@ cpp_translate_wkb_wkb <- function(wkb, includeZ, includeM, includeSRID, endian, 
 
 cpp_translate_wkt_wkt <- function(wkt, includeZ, includeM, includeSRID, precision, trim) {
     .Call(`_wk_cpp_translate_wkt_wkt`, wkt, includeZ, includeM, includeSRID, precision, trim)
+}
+
+cpp_translate_wkt_wkb <- function(wkt, includeZ, includeM, includeSRID, endian, bufferSize) {
+    .Call(`_wk_cpp_translate_wkt_wkb`, wkt, includeZ, includeM, includeSRID, endian, bufferSize)
 }
 

@@ -62,13 +62,36 @@ CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int inc
   WKCharacterVectorExporter exporter(provider.nFeatures());
 
   WKTWriter writer(exporter);
-  WKTReader reader(provider, writer);
+  WKTStreamingReader reader(provider, writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
   exporter.setRoundingPrecision(precision);
   exporter.setTrim(trim);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+
+  return exporter.output;
+}
+
+// [[Rcpp::export]]
+Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM,
+                                 int includeSRID, int endian, int bufferSize) {
+
+  WKCharacterVectorProvider provider(wkt);
+  WKRawVectorListExporter exporter(provider.nFeatures());
+
+  WKBWriter writer(exporter);
+  WKTReader reader(provider, writer);
+
+  exporter.setBufferSize(bufferSize);
+  writer.setIncludeZ(includeZ);
+  writer.setIncludeM(includeM);
+  writer.setIncludeSRID(includeSRID);
+  writer.setEndian(endian);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();

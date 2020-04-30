@@ -25,6 +25,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_debug_wkt_streamer
+void cpp_debug_wkt_streamer(CharacterVector input);
+RcppExport SEXP _wk_cpp_debug_wkt_streamer(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type input(inputSEXP);
+    cpp_debug_wkt_streamer(input);
+    return R_NilValue;
+END_RCPP
+}
 // cpp_problems_wkb
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb);
 RcppExport SEXP _wk_cpp_problems_wkb(SEXP wkbSEXP) {
@@ -84,14 +94,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_translate_wkt_wkb
+Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM, int includeSRID, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_translate_wkt_wkb(SEXP wktSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    Rcpp::traits::input_parameter< int >::type includeZ(includeZSEXP);
+    Rcpp::traits::input_parameter< int >::type includeM(includeMSEXP);
+    Rcpp::traits::input_parameter< int >::type includeSRID(includeSRIDSEXP);
+    Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkt_wkb(wkt, includeZ, includeM, includeSRID, endian, bufferSize));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
+    {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 6},
     {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},
     {"_wk_cpp_translate_wkt_wkt", (DL_FUNC) &_wk_cpp_translate_wkt_wkt, 6},
+    {"_wk_cpp_translate_wkt_wkb", (DL_FUNC) &_wk_cpp_translate_wkt_wkb, 6},
     {NULL, NULL, 0}
 };
 

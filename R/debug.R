@@ -17,3 +17,9 @@ wkb_debug <- function(wkb) {
 wkt_debug <- function(wkt) {
   cpp_debug_wkt(wkt)
 }
+
+#' @rdname wkb_debug
+#' @export
+wkt_streamer_debug <- function(wkt) {
+  cpp_debug_wkt_streamer(wkt)
+}

@@ -5,6 +5,7 @@
 #include <string>
 #include <clocale>
 
+#include "wk/geometry.h"
 #include "wk/reader.h"
 #include "wk/io-string.h"
 #include "wk/formatter.h"
@@ -14,10 +15,10 @@
 #include "wk/coord.h"
 
 
-class WKTReader: public WKReader {
+class WKTStreamingReader: public WKReader {
 public:
 
-  WKTReader(WKStringProvider& provider, WKGeometryHandler& handler):
+  WKTStreamingReader(WKStringProvider& provider, WKGeometryHandler& handler):
     WKReader(provider, handler), provider(provider) {
     // TODO evaluate if we need this if we use C++11's double parser
 #ifdef _MSC_VER
@@ -31,6 +32,10 @@ public:
     std::setlocale(LC_NUMERIC, "C");
   }
 
+  ~WKTStreamingReader() {
+    std::setlocale(LC_NUMERIC, saved_locale.c_str());
+  }
+
   void readFeature(size_t featureId) {
     const std::string& wellKnownText = this->provider.featureString();
     WKStringTokenizer tokenizer(wellKnownText);
@@ -38,10 +43,6 @@ public:
     handler.nextFeatureStart(featureId);
     this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
     handler.nextFeatureEnd(featureId);
-  }
-
-  ~WKTReader() {
-    std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
 protected:
@@ -473,6 +474,156 @@ private:
   std::string saved_locale;
   const static uint32_t SRID_UNKNOWN = UINT32_MAX;
 
+};
+
+class WKTReader: public WKReader, private WKGeometryHandler {
+public:
+  WKTReader(WKStringProvider& provider, WKGeometryHandler& handler):
+    WKReader(provider, handler), baseReader(provider, *this) {}
+
+  void readFeature(size_t featureId) {
+    baseReader.readFeature(featureId);
+  }
+
+  virtual void nextFeatureStart(size_t featureId) {
+    this->stack.clear();
+    handler.nextFeatureStart(featureId);
+  }
+
+  virtual void nextNull(size_t featureId) {
+    handler.nextNull(featureId);
+  }
+
+  virtual void nextFeatureEnd(size_t featureId) {
+    if (this->stack.size() > 0) {
+      this->readGeometry(this->current(), PART_ID_NONE);
+    }
+    handler.nextFeatureEnd(featureId);
+  }
+
+  void readGeometry(const WKGeometry& geometry, uint32_t partId) {
+    handler.nextGeometryStart(geometry.meta, partId);
+
+    switch (geometry.meta.geometryType) {
+
+    case WKGeometryType::Point:
+      this->readPoint((WKPoint&)geometry);
+      break;
+    case WKGeometryType::LineString:
+      this->readLinestring((WKLineString&)geometry);
+      break;
+    case WKGeometryType::Polygon:
+      this->readPolygon((WKPolygon&)geometry);
+      break;
+
+    case WKGeometryType::MultiPoint:
+    case WKGeometryType::MultiLineString:
+    case WKGeometryType::MultiPolygon:
+    case WKGeometryType::GeometryCollection:
+      this->readCollection((WKCollection&)geometry);
+      break;
+
+    default:
+      throw WKParseException(
+          Formatter() <<
+            "Unrecognized geometry type: " <<
+              geometry.meta.geometryType
+      );
+    }
+
+    handler.nextGeometryEnd(geometry.meta, partId);
+  }
+
+  virtual void readPoint(const WKPoint& geometry)  {
+    for (uint32_t i=0; i < geometry.coords.size(); i++) {
+      handler.nextCoordinate(geometry.meta, geometry.coords[i], i);
+    }
+  }
+
+  virtual void readLinestring(const WKLineString& geometry)  {
+    for (uint32_t i=0; i < geometry.coords.size(); i++) {
+      handler.nextCoordinate(geometry.meta, geometry.coords[i], i);
+    }
+  }
+
+  virtual void readPolygon(const WKPolygon& geometry)  {
+    uint32_t nRings = geometry.rings.size();
+    for (uint32_t i=0; i < nRings; i++) {
+      uint32_t ringSize = geometry.rings[i].size();
+      handler.nextLinearRingStart(geometry.meta, ringSize, i);
+
+      for (uint32_t j=0; j < ringSize; j++) {
+        handler.nextCoordinate(geometry.meta, geometry.rings[i][j], j);
+      }
+
+      handler.nextLinearRingEnd(geometry.meta, ringSize, i);
+    }
+  }
+
+  virtual void readCollection(const WKCollection& geometry)  {
+    for (uint32_t i=0; i < geometry.meta.size; i++) {
+      this->readGeometry(geometry.geometries[i], i);
+    }
+  }
+
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+    switch (meta.geometryType) {
+
+    case WKGeometryType::Point:
+      this->stack.push_back(std::unique_ptr<WKGeometry>(new WKPoint(meta)));
+      break;
+
+    case WKGeometryType::LineString:
+      this->stack.push_back(std::unique_ptr<WKGeometry>(new WKLineString(meta)));
+      break;
+
+    case WKGeometryType::Polygon:
+      this->stack.push_back(std::unique_ptr<WKGeometry>(new WKPolygon(meta)));
+      break;
+
+    case WKGeometryType::MultiPoint:
+    case WKGeometryType::MultiLineString:
+    case WKGeometryType::MultiPolygon:
+    case WKGeometryType::GeometryCollection:
+      this->stack.push_back(std::unique_ptr<WKGeometry>(new WKCollection(meta)));
+      break;
+
+    default:
+      throw WKParseException(
+          Formatter() <<
+            "Unrecognized geometry type: " <<
+              meta.geometryType
+      );
+    }
+  }
+
+  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
+    this->current().meta.size = this->current().size();
+    this->current().meta.hasSize = true;
+    // leave the last geometry for nextFeatureEnd()
+    if (this->stack.size() > 1) {
+      this->stack.pop_back();
+    }
+  }
+
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+    ((WKPolygon&)this->current()).rings.push_back(WKLinearRing());
+  }
+
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+    this->current().addCoordinate(coord);
+  }
+
+  bool nextError(WKParseException& error, size_t featureId) {
+    return handler.nextError(error, featureId);
+  }
+
+protected:
+  WKTStreamingReader baseReader;
+  std::vector<std::unique_ptr<WKGeometry>> stack;
+  WKGeometry& current() {
+    return *stack[stack.size() - 1];
+  }
 };
 
 #endif
