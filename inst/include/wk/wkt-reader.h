@@ -37,7 +37,7 @@ public:
     WKStringTokenizer tokenizer(wellKnownText);
 
     handler.nextFeatureStart(featureId);
-    this->readGeometryTaggedText(&tokenizer, PART_ID_NONE);
+    this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
     handler.nextFeatureEnd(featureId);
   }
 
@@ -48,11 +48,14 @@ public:
 protected:
   WKStringProvider& provider;
 
-  void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId) {
+  void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId, uint32_t srid) {
     std::string type = this->getNextWord(tokenizer);
     int geometryType;
 
-    if(type == "POINT") {
+    if (type == "SRID" && srid == SRID_UNKNOWN) {
+      this->readGeometryTaggedText(tokenizer, partId, this->getSRID(tokenizer));
+      return;
+    } else if(type == "POINT") {
       geometryType = WKGeometryType::Point;
 
     } else if(type == "LINESTRING") {
@@ -78,6 +81,11 @@ protected:
     }
 
     WKGeometryMeta meta = this->getNextEmptyOrOpener(tokenizer, geometryType);
+    if (srid != SRID_UNKNOWN) {
+      meta.hasSRID = true;
+      meta.srid = srid;
+    }
+
     this->readGeometry(tokenizer, meta, partId);
   }
 
@@ -275,7 +283,7 @@ protected:
 
     uint32_t partId = 0;
     do {
-      this->readGeometryTaggedText(tokenizer, partId);
+      this->readGeometryTaggedText(tokenizer, partId, SRID_UNKNOWN);
       partId++;
 
       nextToken = this->getNextCloserOrComma(tokenizer);
@@ -351,6 +359,25 @@ protected:
     }
   }
 
+  int getSRID(WKStringTokenizer* tokenizer) {
+    int nextToken = tokenizer->peekNextToken();
+    if (nextToken == '=') {
+      // consume the "="
+      this->getNextWord(tokenizer);
+      int srid = this->getNextNumber(tokenizer);
+      std::string nextWord = this->getNextWord(tokenizer);
+      if (nextWord == ";") {
+        return srid;
+      } else {
+        throw WKParseException(Formatter() << "Expected ';' but found " << nextWord);
+      }
+    } else {
+      // better error message here will require some refactoring of all the
+      // errors
+      throw WKParseException(Formatter() <<  "Expected '=' and SRID");
+    }
+  }
+
   WKGeometryMeta getNextEmptyOrOpener(WKStringTokenizer* tokenizer, int geometryType) {
     std::string nextWord = this->getNextWord(tokenizer);
 
@@ -407,8 +434,6 @@ protected:
     throw WKParseException(Formatter() << "Expected ')' but encountered" << nextWord);
   }
 
-
-
   std::string getNextWord(WKStringTokenizer* tokenizer) {
     int type = tokenizer->nextToken();
     switch(type) {
@@ -432,6 +457,10 @@ protected:
       return ")";
     case ',':
       return ",";
+    case ';':
+      return ";";
+    case '=':
+      return "=";
     default:
       throw std::runtime_error(Formatter() << "Unexpected token type " << type);
     }
@@ -443,6 +472,7 @@ protected:
 
 private:
   std::string saved_locale;
+  const static uint32_t SRID_UNKNOWN = UINT32_MAX;
 
 };
 

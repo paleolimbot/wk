@@ -50,13 +50,14 @@ public:
       case '(':
       case ')':
       case ',':
+      case ';':
+      case '=':
         return *iter++;
       case '\n':
       case '\r':
       case '\t':
       case ' ':
-        std::string::size_type pos = str.find_first_not_of(" \n\r\t",
-                                                      iter - str.begin());
+        std::string::size_type pos = str.find_first_not_of(" \n\r\t", iter - str.begin());
         if(pos == std::string::npos) {
           return WKStringTokenizer::TT_EOF;
         }
@@ -65,8 +66,7 @@ public:
           return nextToken();
         }
       }
-      std::string::size_type pos = str.find_first_of("\n\r\t() ,",
-                                                iter - str.begin());
+      std::string::size_type pos = str.find_first_of("\n\r\t() ,;=", iter - str.begin());
       if(pos == std::string::npos) {
         if(iter != str.end()) {
           tok.assign(iter, str.end());
@@ -110,13 +110,15 @@ public:
       case '(':
       case ')':
       case ',':
+      case ';':
+      case '=':
         return str[pos];
       }
 
       // It's either a Number or a Word, let's
       // see when it ends
 
-      pos = str.find_first_of("\n\r\t() ,", iter - str.begin());
+      pos = str.find_first_of("\n\r\t() ,;=", iter - str.begin());
 
       if(pos == std::string::npos) {
         if(iter != str.end()) {

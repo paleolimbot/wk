@@ -115,6 +115,13 @@ test_that("Z, ZM, and M prefixes are parsed", {
   )
 })
 
+test_that("SRID prefixes are parsed", {
+  expect_identical(
+    wkt_translate_wkt("SRID=218;POINT (30 10)"),
+    "SRID=218;POINT (30 10)"
+  )
+})
+
 test_that("correctly formatted ZM geomteries are translated identically", {
   expect_identical(
     wkt_translate_wkt("POINT ZM (30 10 0 1)"),
