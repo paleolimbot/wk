@@ -17,7 +17,8 @@ Authors@R:
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides a minimal R and C++ API for parsing
   well-known binary (WKB) and well-known text (WKT).
-License: GPL-3
+License: LGPL (>= 2.1)
+Copyright: file COPYRIGHTS
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

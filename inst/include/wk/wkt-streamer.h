@@ -1,3 +1,24 @@
+/**********************************************************************
+ *
+ * {wk} for R borrowed this code from...
+ * GEOS - Geometry Engine Open Source
+ * http://geos.osgeo.org
+ *
+ * Copyright (C) 2005-2006 Refractions Research Inc.
+ * Copyright (C) 2001-2002 Vivid Solutions Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU Lesser General Public Licence as published
+ * by the Free Software Foundation.
+ * See the COPYING file for more information.
+ *
+ **********************************************************************
+ *
+ * Last port: io/WKTReader.java rev. 1.1 (JTS-1.7)
+ * Modifications for {wk}: make self-contained, don't use namespace std,
+ *   modify for event-based parse style.
+ *
+ **********************************************************************/
 
 #ifndef WK_WKT_STREAMER_H
 #define WK_WKT_STREAMER_H
