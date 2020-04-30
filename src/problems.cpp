@@ -3,26 +3,14 @@
 #include "wk/io-rcpp.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
-#include "wk/wkt-reader.h"
+#include "wk/wkt-streamer.h"
 using namespace Rcpp;
 
-class RcppWKBValidator: WKGeometryHandler {
+class WKValidator: public WKGeometryHandler {
 public:
-  Rcpp::CharacterVector output;
-  WKBReader reader;
+  CharacterVector output;
 
-  RcppWKBValidator(WKRawVectorListProvider& reader): reader(reader, *this) {
-    this->output = CharacterVector(reader.nFeatures());
-  }
-
-  // expose these as the public interface
-  virtual bool hasNextFeature() {
-    return reader.hasNextFeature();
-  }
-
-  virtual void iterateFeature() {
-    reader.iterateFeature();
-  }
+  WKValidator(size_t size): output(size) {}
 
   virtual bool nextError(WKParseException& error, size_t featureId) {
     this->output[featureId] = error.what();
@@ -36,11 +24,27 @@ public:
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
-  WKRawVectorListProvider reader(wkb);
-  RcppWKBValidator validator(reader);
+  WKValidator validator(wkb.size());
 
-  while (validator.hasNextFeature()) {
-    validator.iterateFeature();
+  WKRawVectorListProvider provider(wkb);
+  WKBReader reader(provider, validator);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+
+  return validator.output;
+}
+
+// [[Rcpp::export]]
+Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
+  WKValidator validator(wkt.size());
+
+  WKCharacterVectorProvider provider(wkt);
+  WKTStreamer reader(provider, validator);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 
   return validator.output;

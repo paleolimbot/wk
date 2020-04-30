@@ -17,6 +17,10 @@ cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
 
+cpp_problems_wkt <- function(wkt) {
+    .Call(`_wk_cpp_problems_wkt`, wkt)
+}
+
 cpp_translate_wkb_wkt <- function(wkb, includeZ, includeM, includeSRID, precision, trim) {
     .Call(`_wk_cpp_translate_wkb_wkt`, wkb, includeZ, includeM, includeSRID, precision, trim)
 }

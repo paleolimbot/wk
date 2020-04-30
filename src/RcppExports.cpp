@@ -46,6 +46,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_problems_wkt
+Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt);
+RcppExport SEXP _wk_cpp_problems_wkt(SEXP wktSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_problems_wkt(wkt));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_translate_wkb_wkt
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM, int includeSRID, int precision, bool trim);
 RcppExport SEXP _wk_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
@@ -116,6 +127,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
+    {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 6},
     {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},
     {"_wk_cpp_translate_wkt_wkt", (DL_FUNC) &_wk_cpp_translate_wkt_wkt, 6},

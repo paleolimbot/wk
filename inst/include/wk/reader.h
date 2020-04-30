@@ -12,7 +12,8 @@ public:
   const static uint32_t RING_ID_NONE = UINT32_MAX;
   const static uint32_t COORD_ID_NONE = UINT32_MAX;
 
-  WKReader(WKProvider& provider, WKGeometryHandler& handler): handler(handler), provider(provider) {}
+  WKReader(WKProvider& provider, WKGeometryHandler& handler):
+    handler(handler), featureId(0), provider(provider) {}
 
   virtual bool hasNextFeature() {
     return this->provider.seekNextFeature();
@@ -33,6 +34,10 @@ public:
     }
 
     this->featureId++;
+  }
+
+  virtual size_t nFeatures() {
+    return  this->provider.nFeatures();
   }
 
 protected:
