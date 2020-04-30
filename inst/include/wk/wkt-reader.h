@@ -4,7 +4,6 @@
 
 #include <string>
 #include <clocale>
-#include <iostream>
 
 #include "wk/reader.h"
 #include "wk/io-string.h"
