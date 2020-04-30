@@ -63,14 +63,14 @@ public:
 class WKCollection: public WKGeometry {
 public:
   WKCollection(WKGeometryMeta meta): WKGeometry(meta) {}
-  std::vector<WKGeometry> geometries;
+  std::vector<std::unique_ptr<WKGeometry>> geometries;
 
   uint32_t size() {
     return geometries.size();
   }
 
   void addCoordinate(const WKCoord& coord) {
-    geometries[geometries.size() - 1].addCoordinate(coord);
+    geometries[geometries.size() - 1]->addCoordinate(coord);
   }
 };
 

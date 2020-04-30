@@ -471,7 +471,7 @@ private:
 class WKTReader: public WKReader, private WKGeometryHandler {
 public:
   WKTReader(WKStringProvider& provider, WKGeometryHandler& handler):
-    WKReader(provider, handler), baseReader(provider, *this) {}
+    WKReader(provider, handler), baseReader(provider, *this), feature(nullptr) {}
 
   void readFeature(size_t featureId) {
     baseReader.readFeature(featureId);
@@ -487,8 +487,8 @@ public:
   }
 
   virtual void nextFeatureEnd(size_t featureId) {
-    if (this->stack.size() > 0) {
-      this->readGeometry(this->current(), PART_ID_NONE);
+    if (this->feature) {
+      this->readGeometry(*feature, PART_ID_NONE);
     }
     handler.nextFeatureEnd(featureId);
   }
@@ -554,7 +554,7 @@ public:
 
   virtual void readCollection(const WKCollection& geometry)  {
     for (uint32_t i=0; i < geometry.meta.size; i++) {
-      this->readGeometry(geometry.geometries[i], i);
+      this->readGeometry(*geometry.geometries[i], i);
     }
   }
 
@@ -590,11 +590,21 @@ public:
   }
 
   void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
-    this->current().meta.size = this->current().size();
-    this->current().meta.hasSize = true;
-    // leave the last geometry for nextFeatureEnd()
-    if (this->stack.size() > 1) {
-      this->stack.pop_back();
+    // there is almost certainly a better way to do this
+    std::unique_ptr<WKGeometry> currentPtr(this->stack[this->stack.size() - 1].release());
+    this->stack.pop_back();
+
+    // set the size meta
+    currentPtr->meta.size = currentPtr->size();
+    currentPtr->meta.hasSize = true;
+
+    // if the parent is a collection, add this geometry to the collection
+    if (stack.size() >= 1) {
+      if (WKCollection* parent = dynamic_cast<WKCollection*>(&this->current())){
+        parent->geometries.push_back(std::unique_ptr<WKGeometry>(currentPtr.release()));
+      }
+    } else if (stack.size() == 0) {
+      this->feature = std::unique_ptr<WKGeometry>(currentPtr.release());
     }
   }
 
@@ -613,6 +623,7 @@ public:
 protected:
   WKTStreamingReader baseReader;
   std::vector<std::unique_ptr<WKGeometry>> stack;
+  std::unique_ptr<WKGeometry> feature;
   WKGeometry& current() {
     return *stack[stack.size() - 1];
   }
