@@ -92,7 +92,7 @@ protected:
   void readGeometry(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t partId) {
     handler.nextGeometryStart(meta, partId);
 
-    // if empty, calling read* functions will fail becausse
+    // if empty, calling read* functions will fail because
     // the empty token has been consumed
     if (meta.size == 0) {
       handler.nextGeometryEnd(meta, partId);
@@ -287,17 +287,13 @@ protected:
   }
 
   void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
-    std::string nextToken;
-
     uint32_t coordId = 0;
-    this->readCoordinate(tokenizer, meta, coordId);
-    coordId++;
-    nextToken = this->getNextCloserOrComma(tokenizer);
-    while(nextToken == ",") {
+    std::string nextToken;
+    do {
       this->readCoordinate(tokenizer, meta, coordId);
       coordId++;
       nextToken = this->getNextCloserOrComma(tokenizer);
-    }
+    } while (nextToken == ",");
   }
 
   void readCoordinate(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t coordId) {
