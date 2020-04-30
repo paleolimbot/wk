@@ -20,11 +20,6 @@ public:
   }
 
   virtual void iterateFeature() {
-    this->partId = PART_ID_NONE;
-    this->ringId = RING_ID_NONE;
-    this->coordId = COORD_ID_NONE;
-    this->srid = WKGeometryMeta::SRID_NONE;
-
     try {
       this->readFeature(this->featureId);
     } catch (WKParseException& error) {
@@ -42,17 +37,7 @@ public:
 
 protected:
   WKGeometryHandler& handler;
-
   size_t featureId;
-  uint32_t partId;
-  uint32_t ringId;
-  uint32_t coordId;
-  uint32_t srid;
-
-  double x;
-  double y;
-  double z;
-  double m;
 
   virtual void readFeature(size_t featureId) = 0;
 

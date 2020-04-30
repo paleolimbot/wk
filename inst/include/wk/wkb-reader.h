@@ -167,6 +167,15 @@ protected:
 
 private:
   bool swapEndian;
+  uint32_t partId;
+  uint32_t ringId;
+  uint32_t coordId;
+  uint32_t srid;
+
+  double x;
+  double y;
+  double z;
+  double m;
 
   double readUint32() {
     if (this->swapEndian) {
