@@ -25,5 +25,10 @@ Authors:
   \item Edzer Pebesma \email{edzer.pebesma@uni-muenster.de} (\href{https://orcid.org/0000-0001-8049-7069}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item GEOS developers [copyright holder]
+}
+
 }
 \keyword{internal}
