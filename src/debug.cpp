@@ -33,7 +33,7 @@ void cpp_debug_wkt(CharacterVector input) {
 void cpp_debug_wkt_streamer(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
   WKGeometryDebugHandler handler(Rcout);
-  WKTStreamingReader reader(provider, handler);
+  WKTStreamer reader(provider, handler);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();

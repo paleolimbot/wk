@@ -62,7 +62,7 @@ CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int inc
   WKCharacterVectorExporter exporter(provider.nFeatures());
 
   WKTWriter writer(exporter);
-  WKTStreamingReader reader(provider, writer);
+  WKTStreamer reader(provider, writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
