@@ -63,13 +63,13 @@ private:
   List container;
   R_xlen_t index;
   RawVector data;
-  R_xlen_t offset;
+  size_t offset;
   bool featureNull;
 
   template<typename T>
   T readBinary() {
     // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
-    if ((this->offset + sizeof(T)) > this->data.size()) {
+    if ((this->offset + sizeof(T)) > ((size_t) this->data.size())) {
       throw WKParseException("Reached end of RawVector input");
     }
 
@@ -87,7 +87,7 @@ public:
   bool featureNull;
 
   R_xlen_t index;
-  R_xlen_t offset;
+  size_t offset;
 
   WKRawVectorListExporter(size_t size): WKBytesExporter(size) {
     this->featureNull = false;
@@ -137,7 +137,7 @@ public:
     }
 
     RawVector newBuffer = RawVector(bufferSize);
-    for (R_xlen_t i=0; i < this->offset; i++) {
+    for (size_t i=0; i < this->offset; i++) {
       newBuffer[i] = this->buffer[i];
     }
 
@@ -159,7 +159,7 @@ public:
   template<typename T>
   size_t writeBinary(T value) {
     // Rcout << "Writing " << sizeof(T) << "(" << value << ") starting at " << this->offset << "\n";
-    while ((this->offset + sizeof(T)) > this->buffer.size()) {
+    while ((this->offset + sizeof(T)) > ((size_t) this->buffer.size())) {
       // we're going to need a bigger boat
       this->extendBufferSize(this->buffer.size() * 2);
     }

@@ -158,10 +158,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          120.2µs  145.7µs    6564.    73.95KB     7.51
-#> 2 geos_c      496.5µs  563.1µs    1717.    50.21KB     2.08
-#> 3 sf          395.9µs  448.2µs    2164.    99.57KB     6.66
-#> 4 wkb          52.3ms   52.4ms      19.1    5.23MB    66.7
+#> 1 wk            122µs    151µs    6337.    73.95KB     7.61
+#> 2 geos_c      500.7µs  573.8µs    1680.    50.21KB     2.09
+#> 3 sf            396µs  463.1µs    2080.    99.57KB     6.65
+#> 4 wkb          53.5ms   53.6ms      18.7    5.23MB    65.4
 ```
 
 Read WKB + Write WKT:
@@ -179,10 +179,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           9.63ms  10.09ms     97.9     4.54MB     0   
-#> 2 geos_c       4.07ms   4.68ms    212.      3.32KB     0   
-#> 3 sf         181.18ms  184.6ms      5.39  541.35KB     8.98
-#> 4 wellknown   26.05ms  27.44ms     30.7     3.42MB     3.83
+#> 1 wk           9.18ms  10.08ms     98.4     4.54MB     0   
+#> 2 geos_c       3.99ms   4.49ms    219.      3.32KB     0   
+#> 3 sf         173.76ms 174.87ms      5.67  541.35KB    11.3 
+#> 4 wellknown   24.92ms  27.36ms     35.1     3.42MB     3.90
 ```
 
 Read WKT + Write WKB:
@@ -198,10 +198,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk              2ms   2.13ms     460.    67.66KB     0   
-#> 2 geos_c       2.54ms   2.83ms     345.    49.48KB     0   
-#> 3 sf           3.26ms   3.67ms     266.   186.48KB     2.08
-#> 4 wellknown   46.08ms   49.6ms      20.1    1.31MB     5.01
+#> 1 wk            1.9ms   2.13ms     454.    67.66KB     0   
+#> 2 geos_c       2.63ms   2.82ms     345.    49.48KB     0   
+#> 3 sf           3.47ms   3.88ms     252.   186.48KB     2.08
+#> 4 wellknown   46.79ms  47.87ms      20.6    1.31MB     5.16
 ```
 
 Read WKT + Write WKT:
@@ -218,7 +218,7 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          10.77ms  11.95ms     84.0     4.51MB      0  
-#> 2 geos_c       6.05ms   6.58ms    150.      3.32KB      0  
-#> 3 sf         196.78ms 199.27ms      5.00  248.66KB     10.0
+#> 1 wk          11.32ms  12.22ms     81.1     4.51MB      0  
+#> 2 geos_c       6.35ms   6.74ms    146.      3.32KB      0  
+#> 3 sf          182.4ms 184.02ms      5.43  250.35KB     10.9
 ```
