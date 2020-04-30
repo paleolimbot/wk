@@ -25,6 +25,15 @@
 #'   of raw vectors.
 #' @export
 #'
+#' @examples
+#' # translate between WKT and WKB
+#' (wkb <- wkt_translate_wkb("POINT (30 10)"))
+#' wkb_translate_wkt(wkb)
+#'
+#' # some basic creation options are also available
+#' wkt_translate_wkt("POINT (30 10)", trim = FALSE)
+#' wkb_translate_wkb(wkb, endian = 0)
+#'
 wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
                               precision = 16, trim = TRUE) {
   cpp_translate_wkb_wkt(

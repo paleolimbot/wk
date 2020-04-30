@@ -18,7 +18,20 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 
 \item{wkt}{A character vector containing well-known text.}
 }
+\value{
+The input, invisibly
+}
 \description{
 Prints the raw calls to the \code{WKBGeometryHandler()}. Useful for writing
 custom C++ handlers and debugging read problems.
+}
+\examples{
+wkt_debug("MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))")
+wkt_streamer_debug("MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))")
+wkb_debug(
+  wkt_translate_wkb(
+    "MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"
+  )
+)
+
 }

@@ -11,6 +11,13 @@ test_that("debugger works on wkb", {
   expect_output(wkb_debug(list(point_bad_type)), "Unrecognized geometry type")
 })
 
+test_that("debugger works on wkt stream", {
+  expect_output(wkt_streamer_debug("LINESTRING (30 10, 0 0, 0 1)"), "LINESTRING")
+  expect_output(wkt_streamer_debug("POLYGON ((30 10, 0 0, 0 1, 30 10))"), "POLYGON")
+  expect_output(wkt_streamer_debug("MULTIPOINT (30 10, 0 0)"), "MULTIPOINT")
+  expect_output(wkt_streamer_debug("MULTIPOINT ((30 10), (0 0))"), "MULTIPOINT")
+})
+
 test_that("debugger works on wkt", {
   expect_output(wkt_debug("LINESTRING (30 10, 0 0, 0 1)"), "LINESTRING")
   expect_output(wkt_debug("POLYGON ((30 10, 0 0, 0 1, 30 10))"), "POLYGON")
