@@ -289,25 +289,13 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
   expect_identical(
     wkt_translate_wkl("POINT (30 10)"),
     list(
-      structure(
-        matrix(
-          c(30, 10),
-          ncol = 2, dimnames = list(NULL, c("x", "y"))
-        ),
-        class = "wk_wkl_POINT"
-      )
+      structure(matrix(c(30, 10),  ncol = 2), class = "wk_wkl_POINT")
     )
   )
   expect_identical(
     wkt_translate_wkl("LINESTRING (30 10, 0 0)"),
     list(
-      structure(
-        matrix(
-          c(30, 10, 0, 0),
-          ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-        ),
-        class = "wk_wkl_LINESTRING"
-      )
+      structure(matrix(c(30, 10, 0, 0), ncol = 2, byrow = TRUE), class = "wk_wkl_LINESTRING")
     )
   )
   expect_identical(
@@ -315,10 +303,7 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
     list(
       structure(
         list(
-          matrix(
-            c(30, 10, 0, 0, 10, 10, 30, 10),
-            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-          )
+          matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
         ),
         class = "wk_wkl_POLYGON"
       )
@@ -329,14 +314,8 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
     list(
       structure(
         list(
-          matrix(
-            c(30, 10),
-            ncol = 2, dimnames = list(NULL, c("x", "y"))
-          ),
-          matrix(
-            c(0, 0),
-            ncol = 2, dimnames = list(NULL, c("x", "y"))
-          )
+          matrix(c(30, 10), ncol = 2),
+          matrix(c(0, 0), ncol = 2)
         ),
         class = "wk_wkl_MULTIPOINT"
       )
@@ -347,14 +326,8 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
     list(
       structure(
         list(
-          matrix(
-            c(30, 10, 0, 0),
-            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-          ),
-          matrix(
-            c(20, 20, 0, 0),
-            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-          )
+          matrix(c(30, 10, 0, 0), ncol = 2, byrow = TRUE),
+          matrix(c(20, 20, 0, 0), ncol = 2, byrow = TRUE)
         ),
         class = "wk_wkl_MULTILINESTRING"
       )
@@ -366,16 +339,10 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
       structure(
         list(
           list(
-            matrix(
-              c(30, 10, 0, 0, 10, 10, 30, 10),
-              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-            )
+            matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
           ),
           list(
-            matrix(
-              c(30, 10, 0, 0, 10, 10, 30, 10),
-              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-            )
+            matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
           )
         ),
         class = "wk_wkl_MULTIPOLYGON"
@@ -389,30 +356,18 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
     list(
       structure(
         list(
-          structure(
-            matrix(
-              c(30, 10),
-              ncol = 2, dimnames = list(NULL, c("x", "y"))
-            ),
-            class = "wk_wkl_POINT"
-          ),
+          structure(matrix(c(30, 10), ncol = 2), class = "wk_wkl_POINT"),
           structure(
             list(
               structure(
-                matrix(
-                  c(12, 6),
-                  ncol = 2, dimnames = list(NULL, c("x", "y"))
-                ),
+                matrix(c(12, 6), ncol = 2),
                 class = "wk_wkl_POINT"
               )
             ),
             class = "wk_wkl_GEOMETRYCOLLECTION"
           ),
           structure(
-            matrix(
-              c(1, 2, 3, 4),
-              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
-            ),
+            matrix(c(1, 2, 3, 4), ncol = 2, byrow = TRUE),
             class = "wk_wkl_LINESTRING"
           )
         ),

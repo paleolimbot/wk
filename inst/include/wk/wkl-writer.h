@@ -41,9 +41,18 @@ protected:
       this->initCoords(meta, meta.size);
       if (!this->isNestingMulti()) {
         this->currentCoordinates.attr("class") = this->metaAsClass(this->newMeta);
-      }
-      if (meta.hasSRID && this->stack.size() > 0) {
-        this->currentCoordinates.attr("srid") = meta.srid;
+
+        if (this->newMeta.hasSRID) {
+          this->currentCoordinates.attr("srid") = this->newMeta.srid;
+        }
+
+        if (this->newMeta.hasZ) {
+          this->currentCoordinates.attr("hasZ") = true;
+        }
+
+        if (this->newMeta.hasM) {
+          this->currentCoordinates.attr("hasM") = true;
+        }
       }
       break;
     case WKGeometryType::Polygon:
@@ -55,9 +64,18 @@ protected:
       this->stack.push_back(Rcpp::List(this->newMeta.size));
       if (this->newMeta.geometryType != WKGeometryType::Polygon || !nestingMulti) {
         this->stack[this->stack.size() - 1].attr("class") = this->metaAsClass(this->newMeta);
-      }
-      if (meta.hasSRID && this->stack.size() > 1) {
-        this->stack[this->stack.size() - 1] = meta.srid;
+
+        if (this->newMeta.hasSRID) {
+          this->stack[this->stack.size() - 1].attr("srid") = this->newMeta.srid;
+        }
+
+        if (this->newMeta.hasZ) {
+          this->stack[this->stack.size() - 1].attr("hasZ") = true;
+        }
+
+        if (this->newMeta.hasM) {
+          this->stack[this->stack.size() - 1].attr("hasM") = true;
+        }
       }
       break;
 
@@ -128,15 +146,6 @@ protected:
   void initCoords(const WKGeometryMeta& meta, uint32_t size) {
     int coordSize = 2 + meta.hasZ + meta.hasM;
     currentCoordinates = Rcpp::NumericMatrix(size, coordSize);
-    if (meta.hasZ && meta.hasM) {
-      Rcpp::colnames(currentCoordinates) = Rcpp::CharacterVector::create("x", "y", "z", "m");
-    } else if (meta.hasZ) {
-      Rcpp::colnames(currentCoordinates) = Rcpp::CharacterVector::create("x", "y", "z");
-    } else if (meta.hasM) {
-      Rcpp::colnames(currentCoordinates) = Rcpp::CharacterVector::create("x", "y", "m");
-    } else {
-      Rcpp::colnames(currentCoordinates) = Rcpp::CharacterVector::create("x", "y");
-    }
   }
 
   bool isNestingMulti() {
