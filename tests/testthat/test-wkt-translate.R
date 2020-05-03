@@ -40,10 +40,6 @@ test_that("basic translation works on non-empty 2D geoms", {
   )
 })
 
-test_that("basic translation works on NA geoms", {
-  expect_identical(wkt_translate_wkb(NA_character_), list(NULL))
-})
-
 test_that("basic translation works on empty geoms", {
   expect_identical(
     wkt_translate_wkt("POINT EMPTY"),
@@ -165,6 +161,16 @@ test_that("correctly formatted ZM geomteries are translated identically", {
   )
 })
 
+test_that("wkt_translate_wkb() works on NA", {
+  expect_identical(wkt_translate_wkb(NA_character_), list(NULL))
+})
+
+test_that("wkt_translate_wkb() works on empty points", {
+  expect_identical(
+    wkb_translate_wkt(wkt_translate_wkb("POINT EMPTY")),
+    "POINT (nan nan)"
+  )
+})
 
 test_that("wkt_translate_wkb() works simple geometries", {
 
