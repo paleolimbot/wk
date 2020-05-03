@@ -2,6 +2,7 @@
 #' Mark raw vectors as well-known binary
 #'
 #' @param x A [list()] of [raw()] vectors or `NULL`.
+#' @param ... Unused
 #'
 #' @return A [new_wk_wkb()]
 #' @export
@@ -10,7 +11,7 @@
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
 wkb <- function(x) {
-  attributes(s) <- NULL
+  attributes(x) <- NULL
   wkb <- new_wk_wkb(x)
   validate_wk_wkb(x)
   wkb
@@ -31,12 +32,13 @@ as_wkb.wk_wkb <- function(x, ...) {
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
+#' @param ... Unused
 #'
 #' @export
 #'
 new_wk_wkb <- function(x) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
-    stop("wkb input must be a bare list",  call. = FALSE)
+    stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
   structure(x, class = c("wk_wkb", "wk_vctr"))

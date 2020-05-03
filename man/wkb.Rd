@@ -14,6 +14,8 @@ as_wkb(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
+
+\item{...}{Unused}
 }
 \value{
 A \code{\link[=new_wk_wkb]{new_wk_wkb()}}

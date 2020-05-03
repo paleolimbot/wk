@@ -39,6 +39,7 @@ rep.wk_vctr <- function(x, ...) {
   new_wk_vctr(NextMethod(), x)
 }
 
+#' @rdname new_wk_wkb
 #' @export
 rep_len.wk_vctr <- function(x, ...) {
   new_wk_vctr(NextMethod(), x)
@@ -50,16 +51,28 @@ new_wk_vctr <- function(x, template) {
 
 stop_for_problems <- function(problems) {
   if (any(!is.na(problems))) {
+    n_problems <- sum(!is.na(problems))
+    summary_problems <- utils::head(which(!is.na(problems)))
     problem_summary <- paste0(
-      sprintf("[%s] %s", which(!is.na(problems)), problems[!is.na(problems)]),
+      sprintf("[%s] %s", summary_problems, problems[summary_problems]),
       collapse = "\n"
     )
 
+    if (n_problems > length(summary_problems)) {
+      problem_summary <- paste0(
+        problem_summary,
+        sprintf("\n...and %s more problems", n_problems - length(summary_problems))
+      )
+    }
+
     stop(
       sprintf(
-        "Encountered %s parse problems:\n%s",
-        sum(!is.na(problems)), problem_summary
-      )
+        "Encountered %s parse problem%s:\n%s",
+        n_problems,
+        if (n_problems == 1) "" else "s",
+        problem_summary
+      ),
+      call. = FALSE
     )
   }
   invisible(problems)
