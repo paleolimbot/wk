@@ -8,8 +8,7 @@
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
 #' @param endian For WKB writing, 0 for big endian, 1 for little endinan.
-#'   Defaults to [wkb_platform_endian()] (slightly faster, and any
-#'   WKB reader worth its salt will read either).
+#'   Defaults to [wkb_platform_endian()] (slightly faster).
 #' @param include_z,include_m,include_srid Include the
 #'   values of the Z and M coordinates and/or SRID
 #'   in the output? Use `FALSE` to omit, `TRUE` to include, or `NA` to include

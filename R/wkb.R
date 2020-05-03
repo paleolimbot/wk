@@ -2,6 +2,7 @@
 #' Mark raw vectors as well-known binary
 #'
 #' @param x A [list()] of [raw()] vectors or `NULL`.
+#' @inheritParams wkb_translate_wkt
 #' @param ... Unused
 #'
 #' @return A [new_wk_wkb()]
@@ -25,8 +26,25 @@ as_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkb <- function(x, ...) {
-  x
+as_wkb.wk_wkb <- function(x, ..., include_z = NA, include_m = NA, include_srid = NA,
+                          endian = NA) {
+  if (is.na(include_z) && is.na(include_m) && is.na(include_srid) && is.na(endian)) {
+    x
+  } else {
+    if (is.na(endian)) {
+      endian <- wkb_platform_endian()
+    }
+
+    new_wk_wkb(
+      wkb_translate_wkb(
+        x,
+        include_z = include_z,
+        include_m = include_m,
+        include_srid = include_srid,
+        endian = endian
+      )
+    )
+  }
 }
 
 #' S3 Details for wk_wkb

@@ -1,10 +1,15 @@
 
 test_that("wkb class works", {
-  x <- wkb(wkt_translate_wkb(c("POINT (40 10)")))
+  x <- wkb(wkt_translate_wkb("POINT (40 10)", endian = 1))
   expect_is(x, "wk_wkb")
   expect_is(x, "wk_vctr")
   expect_output(print(x), "wk_wkb")
   expect_identical(as_wkb(x), x)
+
+  # make sure creation options get passed through for identity case
+  expect_identical(unclass(as_wkb(x))[[1]][1], as.raw(0x01))
+  expect_identical(unclass(as_wkb(x, endian = 0))[[1]][1], as.raw(0x00))
+
   expect_is(wkb(list(NULL)), "wk_wkb")
 
   expect_error(new_wk_wkb(structure(list(), thing = "stuff")), "must be a list")

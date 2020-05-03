@@ -10,12 +10,33 @@ wkb(x)
 
 as_wkb(x, ...)
 
-\method{as_wkb}{wk_wkb}(x, ...)
+\method{as_wkb}{wk_wkb}(x, ..., include_z = NA, include_m = NA, include_srid = NA, endian = NA)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
 
 \item{...}{Unused}
+
+\item{include_z}{Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
+only if present. Note that using \code{TRUE} may result in an error if there
+is no value present in the original.}
+
+\item{include_m}{Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
+only if present. Note that using \code{TRUE} may result in an error if there
+is no value present in the original.}
+
+\item{include_srid}{Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
+only if present. Note that using \code{TRUE} may result in an error if there
+is no value present in the original.}
+
+\item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
+Defaults to \code{\link[=wkb_platform_endian]{wkb_platform_endian()}} (slightly faster).}
 }
 \value{
 A \code{\link[=new_wk_wkb]{new_wk_wkb()}}

@@ -62,8 +62,7 @@ is no value present in the original.}
 \item{trim}{Trim unnecessary zeroes in the output?}
 
 \item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
-Defaults to \code{\link[=wkb_platform_endian]{wkb_platform_endian()}} (slightly faster, and any
-WKB reader worth its salt will read either).}
+Defaults to \code{\link[=wkb_platform_endian]{wkb_platform_endian()}} (slightly faster).}
 
 \item{buffer_size}{For WKB writing, the initial buffer size to use for
 each feature, in bytes. This will be extended when needed, but if you
