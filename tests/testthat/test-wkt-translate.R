@@ -285,4 +285,139 @@ test_that("wkt_translate_wkb() works with nested collections", {
   expect_identical(wkt_translate_wkb(wkt), list(collection))
 })
 
-
+test_that("basic WKL translation works on non-empty 2D geoms", {
+  expect_identical(
+    wkt_translate_wkl("POINT (30 10)"),
+    list(
+      structure(
+        matrix(
+          c(30, 10),
+          ncol = 2, dimnames = list(NULL, c("x", "y"))
+        ),
+        class = "wk_wkl_POINT"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl("LINESTRING (30 10, 0 0)"),
+    list(
+      structure(
+        matrix(
+          c(30, 10, 0, 0),
+          ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+        ),
+        class = "wk_wkl_LINESTRING"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl("POLYGON ((30 10, 0 0, 10 10, 30 10))"),
+    list(
+      structure(
+        list(
+          matrix(
+            c(30, 10, 0, 0, 10, 10, 30, 10),
+            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+          )
+        ),
+        class = "wk_wkl_POLYGON"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl("MULTIPOINT ((30 10), (0 0))"),
+    list(
+      structure(
+        list(
+          matrix(
+            c(30, 10),
+            ncol = 2, dimnames = list(NULL, c("x", "y"))
+          ),
+          matrix(
+            c(0, 0),
+            ncol = 2, dimnames = list(NULL, c("x", "y"))
+          )
+        ),
+        class = "wk_wkl_MULTIPOINT"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl("MULTILINESTRING ((30 10, 0 0), (20 20, 0 0))"),
+    list(
+      structure(
+        list(
+          matrix(
+            c(30, 10, 0, 0),
+            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+          ),
+          matrix(
+            c(20, 20, 0, 0),
+            ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+          )
+        ),
+        class = "wk_wkl_MULTILINESTRING"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl("MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)), ((30 10, 0 0, 10 10, 30 10)))"),
+    list(
+      structure(
+        list(
+          list(
+            matrix(
+              c(30, 10, 0, 0, 10, 10, 30, 10),
+              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+            )
+          ),
+          list(
+            matrix(
+              c(30, 10, 0, 0, 10, 10, 30, 10),
+              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+            )
+          )
+        ),
+        class = "wk_wkl_MULTIPOLYGON"
+      )
+    )
+  )
+  expect_identical(
+    wkt_translate_wkl(
+      "GEOMETRYCOLLECTION (POINT (30 10), GEOMETRYCOLLECTION (POINT (12 6)), LINESTRING (1 2, 3 4))"
+    ),
+    list(
+      structure(
+        list(
+          structure(
+            matrix(
+              c(30, 10),
+              ncol = 2, dimnames = list(NULL, c("x", "y"))
+            ),
+            class = "wk_wkl_POINT"
+          ),
+          structure(
+            list(
+              structure(
+                matrix(
+                  c(12, 6),
+                  ncol = 2, dimnames = list(NULL, c("x", "y"))
+                ),
+                class = "wk_wkl_POINT"
+              )
+            ),
+            class = "wk_wkl_GEOMETRYCOLLECTION"
+          ),
+          structure(
+            matrix(
+              c(1, 2, 3, 4),
+              ncol = 2, byrow = TRUE, dimnames = list(NULL, c("x", "y"))
+            ),
+            class = "wk_wkl_LINESTRING"
+          )
+        ),
+        class = "wk_wkl_GEOMETRYCOLLECTION"
+      )
+    )
+  )
+})

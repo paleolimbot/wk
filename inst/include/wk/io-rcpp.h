@@ -33,6 +33,26 @@ public:
   }
 };
 
+class WKListExporter: public WKExporter {
+public:
+  Rcpp::List output;
+  R_xlen_t index;
+  WKListExporter(size_t size): WKExporter(size), output(size), index(0) {}
+
+  void prepareNextFeature() {}
+
+  void setFeature(SEXP item) {
+    this->output[this->index] = item;
+  }
+
+  void writeNull() {
+    this->setFeature(R_NilValue);
+  }
+
+  void writeNextFeature() {
+    this->index++;
+  }
+};
 
 
 class WKRawVectorListProvider: public WKBytesProvider {

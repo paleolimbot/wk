@@ -4,6 +4,7 @@
 #include "wk/wkt-reader.h"
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
+#include "wk/wkl-writer.h"
 
 #include <Rcpp.h>
 #include "wk/io-rcpp.h"
@@ -92,6 +93,27 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
   writer.setEndian(endian);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+
+  return exporter.output;
+}
+
+
+// [[Rcpp::export]]
+Rcpp::List cpp_translate_wkt_wkl(CharacterVector wkt, int includeZ, int includeM, int includeSRID) {
+
+  WKCharacterVectorProvider provider(wkt);
+  WKListExporter exporter(provider.nFeatures());
+
+  WKLWriter writer(exporter);
+  WKTReader reader(provider, writer);
+
+  writer.setIncludeZ(includeZ);
+  writer.setIncludeM(includeM);
+  writer.setIncludeSRID(includeSRID);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
