@@ -8,9 +8,7 @@
 
 class WKLWriter: public WKWriter {
 public:
-  WKLWriter(WKListExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {
-
-  }
+  WKLWriter(WKListExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {}
 
 protected:
   // I'm sure there's a way to do this without as much copying
@@ -47,11 +45,11 @@ protected:
         }
 
         if (this->newMeta.hasZ) {
-          this->currentCoordinates.attr("hasZ") = true;
+          this->currentCoordinates.attr("has_z") = true;
         }
 
         if (this->newMeta.hasM) {
-          this->currentCoordinates.attr("hasM") = true;
+          this->currentCoordinates.attr("has_m") = true;
         }
       }
       break;
@@ -70,11 +68,11 @@ protected:
         }
 
         if (this->newMeta.hasZ) {
-          this->stack[this->stack.size() - 1].attr("hasZ") = true;
+          this->stack[this->stack.size() - 1].attr("has_z") = true;
         }
 
         if (this->newMeta.hasM) {
-          this->stack[this->stack.size() - 1].attr("hasM") = true;
+          this->stack[this->stack.size() - 1].attr("has_m") = true;
         }
       }
       break;
@@ -140,7 +138,29 @@ protected:
   }
 
   std::string metaAsClass(const WKGeometryMeta& meta) {
-    return Formatter() << "wk_wkl_" << meta.wktType();
+    switch (meta.geometryType) {
+
+    case WKGeometryType::Point:
+      return "wk_point";
+    case WKGeometryType::LineString:
+      return "wk_linestring";
+    case WKGeometryType::Polygon:
+      return "wk_polygon";
+    case WKGeometryType::MultiPoint:
+      return "wk_multipoint";
+    case WKGeometryType::MultiLineString:
+      return "wk_multilinestring";
+    case WKGeometryType::MultiPolygon:
+      return "wk_multipolygon";
+    case WKGeometryType::GeometryCollection:
+      return "wk_geometrycollection";
+    default:
+      throw WKParseException(
+          Formatter() <<
+            "Unrecognized geometry type: " <<
+              meta.geometryType
+      );
+    }
   }
 
   void initCoords(const WKGeometryMeta& meta, uint32_t size) {
@@ -153,9 +173,9 @@ protected:
         Rcpp::List nestingGeometry = this->stack[this->stack.size() - 1];
         if (nestingGeometry.hasAttribute("class")) {
         std::string nestingClass = Rcpp::as<std::string>(this->stack[this->stack.size() - 1].attr("class"));
-        return nestingClass == "wk_wkl_MULTIPOINT" ||
-          nestingClass == "wk_wkl_MULTILINESTRING" ||
-          nestingClass == "wk_wkl_MULTIPOLYGON";
+        return nestingClass == "wk_multipoint" ||
+          nestingClass == "wk_multilinestring" ||
+          nestingClass == "wk_multipolygon";
       } else {
         return false;
       }
@@ -169,13 +189,21 @@ protected:
       Rcpp::List nestingGeometry = this->stack[this->stack.size() - 1];
       if (nestingGeometry.hasAttribute("class")) {
         std::string nestingClass = Rcpp::as<std::string>(nestingGeometry.attr("class"));
-        return nestingClass == "wk_wkl_GEOMETRYCOLLECTION";
+        return nestingClass == "wk_geometrycollection";
       } else {
         return false;
       }
     } else {
       return false;
     }
+  }
+
+private:
+  static std::string str_tolower(std::string s) {
+    std::transform(s.begin(), s.end(), s.begin(),
+                   [](unsigned char c){ return std::tolower(c); } // correct
+    );
+    return s;
   }
 };
 
