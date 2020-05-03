@@ -57,11 +57,16 @@ public:
   }
 
   void readFeature(size_t featureId) {
-    const std::string& wellKnownText = this->provider.featureString();
-    WKStringTokenizer tokenizer(wellKnownText);
-
     handler.nextFeatureStart(featureId);
-    this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
+
+    if (this->provider.featureIsNull()) {
+      this->handler.nextNull(featureId);
+    } else {
+      const std::string& wellKnownText = this->provider.featureString();
+      WKStringTokenizer tokenizer(wellKnownText);
+      this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
+    }
+
     handler.nextFeatureEnd(featureId);
   }
 

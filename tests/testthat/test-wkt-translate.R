@@ -40,6 +40,10 @@ test_that("basic translation works on non-empty 2D geoms", {
   )
 })
 
+test_that("basic translation works on NA geoms", {
+  expect_identical(wkt_translate_wkb(NA_character_), list(NULL))
+})
+
 test_that("basic translation works on empty geoms", {
   expect_identical(
     wkt_translate_wkt("POINT EMPTY"),
