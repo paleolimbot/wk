@@ -3,12 +3,15 @@
 \name{wkt}
 \alias{wkt}
 \alias{as_wkt}
+\alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
 \title{Mark character vectors as well-known text}
 \usage{
 wkt(x)
 
 as_wkt(x, ...)
+
+\method{as_wkt}{character}(x, ...)
 
 \method{as_wkt}{wk_wkt}(
   x,

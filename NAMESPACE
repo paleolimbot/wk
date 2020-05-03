@@ -2,7 +2,11 @@
 
 S3method("[",wk_vctr)
 S3method("[[",wk_vctr)
+S3method(as_wkb,character)
 S3method(as_wkb,wk_wkb)
+S3method(as_wkb,wk_wkt)
+S3method(as_wkt,character)
+S3method(as_wkt,wk_wkb)
 S3method(as_wkt,wk_wkt)
 S3method(c,wk_vctr)
 S3method(format,wk_wkb)

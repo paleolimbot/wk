@@ -26,25 +26,42 @@ as_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkb <- function(x, ..., include_z = NA, include_m = NA, include_srid = NA,
-                          endian = NA) {
-  if (is.na(include_z) && is.na(include_m) && is.na(include_srid) && is.na(endian)) {
+as_wkb.character <- function(x, ...) {
+  as_wkb(wkt(x), ...)
+}
+
+#' @rdname wkb
+#' @export
+as_wkb.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
+                          endian = NULL) {
+  if (is.null(include_z) && is.null(include_m) && is.null(include_srid) && is.null(endian)) {
     x
   } else {
-    if (is.na(endian)) {
-      endian <- wkb_platform_endian()
-    }
-
     new_wk_wkb(
       wkb_translate_wkb(
         x,
-        include_z = include_z,
-        include_m = include_m,
-        include_srid = include_srid,
-        endian = endian
+        include_z = include_z %||% NA,
+        include_m = include_m %||% NA,
+        include_srid = include_srid %||% NA,
+        endian = endian %||% wkb_platform_endian()
       )
     )
   }
+}
+
+#' @rdname wkb
+#' @export
+as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
+                          endian = NULL) {
+  new_wk_wkb(
+    wkt_translate_wkb(
+      x,
+      include_z = include_z %||% NA,
+      include_m = include_m %||% NA,
+      include_srid = include_srid %||% NA,
+      endian = endian %||% wkb_platform_endian()
+    )
+  )
 }
 
 #' S3 Details for wk_wkb

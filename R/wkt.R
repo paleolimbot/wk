@@ -27,6 +27,12 @@ as_wkt <- function(x, ...) {
 
 #' @rdname wkt
 #' @export
+as_wkt.character <- function(x, ...) {
+  as_wkt(wkt(x), ...)
+}
+
+#' @rdname wkt
+#' @export
 as_wkt.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
                           precision = NULL, trim = NULL) {
   if (is.null(include_z) && is.null(include_m) && is.null(include_srid) &&
@@ -44,6 +50,22 @@ as_wkt.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
       )
     )
   }
+}
+
+#' @rdname wkb
+#' @export
+as_wkt.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
+                          precision = NULL, trim = NULL) {
+  new_wk_wkt(
+    wkb_translate_wkt(
+      x,
+      include_z = include_z %||% NA,
+      include_m = include_m %||% NA,
+      include_srid = include_srid %||% NA,
+      precision = precision %||% 16,
+      trim = trim %||% TRUE
+    )
+  )
 }
 
 #' S3 Details for wk_wkt
