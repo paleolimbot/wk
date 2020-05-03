@@ -7,12 +7,38 @@
 #include "wk/io-string.h"
 
 #include <Rcpp.h>
-using namespace Rcpp;
+
+class WKListProvider: public WKProvider {
+public:
+  Rcpp::List& input;
+  R_xlen_t index;
+
+  WKListProvider(Rcpp::List& input): input(input), index(-1) {}
+
+  SEXP feature() {
+    return this->input[this->index];
+  }
+
+  bool seekNextFeature() {
+    this->index++;
+    return this->index < input.size();
+  }
+
+  bool featureIsNull() {
+    return this->input[this->index] == R_NilValue;
+  }
+
+  size_t nFeatures() {
+    return input.size();
+  }
+};
+
+
 
 class WKRawVectorListProvider: public WKBytesProvider {
 public:
 
-  WKRawVectorListProvider(List container) {
+  WKRawVectorListProvider(Rcpp::List container) {
     this->container = container;
     this->index = -1;
     this->featureNull = true;
@@ -41,10 +67,10 @@ public:
 
     if (item == R_NilValue) {
       this->featureNull = true;
-      this->data = RawVector::create();
+      this->data = Rcpp::RawVector::create();
     } else {
       this->featureNull = false;
-      this->data = (RawVector)item;
+      this->data = (Rcpp::RawVector)item;
     }
 
     this->offset = 0;
@@ -60,9 +86,9 @@ public:
   }
 
 private:
-  List container;
+  Rcpp::List container;
   R_xlen_t index;
-  RawVector data;
+  Rcpp::RawVector data;
   size_t offset;
   bool featureNull;
 
@@ -82,8 +108,8 @@ private:
 
 class WKRawVectorListExporter: public WKBytesExporter {
 public:
-  List output;
-  RawVector buffer;
+  Rcpp::List output;
+  Rcpp::RawVector buffer;
   bool featureNull;
 
   R_xlen_t index;
@@ -93,7 +119,7 @@ public:
     this->featureNull = false;
     this->index = 0;
     this->offset = 0;
-    output = List(size);
+    output = Rcpp::List(size);
     this->setBufferSize(2048);
   }
 
@@ -108,15 +134,15 @@ public:
 
   void writeNextFeature() {
     if (this->index >= output.size()) {
-      stop("Attempt to set index out of range (WKRawVectorListExporter)");
+      Rcpp::stop("Attempt to set index out of range (WKRawVectorListExporter)");
     }
 
     if (this->featureNull) {
       this->output[this->index] = R_NilValue;
     } else if (this->offset == 0) {
-      this->output[this->index] = RawVector::create();
+      this->output[this->index] = Rcpp::RawVector::create();
     } else {
-      this->output[this->index] = this->buffer[Range(0, this->offset - 1)];
+      this->output[this->index] = this->buffer[Rcpp::Range(0, this->offset - 1)];
     }
 
     this->index++;
@@ -127,7 +153,7 @@ public:
       throw std::runtime_error("Attempt to set zero or negative buffer size");
     }
 
-    RawVector newBuffer = RawVector(bufferSize);
+    Rcpp::RawVector newBuffer = Rcpp::RawVector(bufferSize);
     this->buffer = newBuffer;
   }
 
@@ -136,7 +162,7 @@ public:
       throw std::runtime_error("Attempt to shrink RawVector buffer size");
     }
 
-    RawVector newBuffer = RawVector(bufferSize);
+    Rcpp::RawVector newBuffer = Rcpp::RawVector(bufferSize);
     for (size_t i=0; i < this->offset; i++) {
       newBuffer[i] = this->buffer[i];
     }
@@ -172,12 +198,12 @@ public:
 
 class WKCharacterVectorProvider: public WKStringProvider {
 public:
-  CharacterVector container;
+  Rcpp::CharacterVector container;
   R_xlen_t index;
   bool featureNull;
   std::string data;
 
-  WKCharacterVectorProvider(CharacterVector container):
+  WKCharacterVectorProvider(Rcpp::CharacterVector container):
     container(container), index(-1), featureNull(false) {}
 
   bool seekNextFeature() {
@@ -186,12 +212,12 @@ public:
       return false;
     }
 
-    if (CharacterVector::is_na(this->container[this->index])) {
+    if (Rcpp::CharacterVector::is_na(this->container[this->index])) {
       this->featureNull = true;
       this->data = std::string("");
     } else {
       this->featureNull = false;
-      this->data = as<std::string>(this->container[this->index]);
+      this->data = Rcpp::as<std::string>(this->container[this->index]);
     }
 
     return true;
@@ -212,7 +238,7 @@ public:
 
 class WKCharacterVectorExporter: public WKStringStreamExporter {
 public:
-  CharacterVector output;
+  Rcpp::CharacterVector output;
   R_xlen_t index;
   bool featureNull;
 
@@ -229,7 +255,7 @@ public:
 
   void writeNextFeature() {
     if (this->index >= output.size()) {
-      stop("Attempt to set index out of range (WKCharacterVectorExporter)");
+      Rcpp::stop("Attempt to set index out of range (WKCharacterVectorExporter)");
     }
 
     if (this->featureNull) {
