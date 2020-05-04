@@ -89,8 +89,8 @@ wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkl <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_translate_wkt_wkl(
+wkt_translate_wk_sexp <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
+  cpp_translate_wkt_wk_sexp(
     wkt,
     includeZ = include_z,
     includeM = include_m,

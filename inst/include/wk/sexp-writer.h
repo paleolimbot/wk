@@ -1,21 +1,21 @@
 
-#ifndef WKL_WRITER_H
-#define WKL_WRITER_H
+#ifndef WK_SEXP_WRITER_H
+#define WK_SEXP_WRITER_H
 
 #include "wk/writer.h"
 #include "wk/io-rcpp.h"
 
 
-class WKLWriter: public WKWriter {
+class WKSEXPWriter: public WKWriter {
 public:
-  WKLWriter(WKListExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {}
+  WKSEXPWriter(WKSEXPExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {}
 
 protected:
   // I'm sure there's a way to do this without as much copying
   std::vector<Rcpp::List> stack;
   SEXP feature;
   Rcpp::NumericMatrix currentCoordinates;
-  WKListExporter& exporter;
+  WKSEXPExporter& exporter;
 
   void nextFeatureStart(size_t featureId) {
     this->stack.clear();

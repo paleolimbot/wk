@@ -8,12 +8,12 @@
 
 #include <Rcpp.h>
 
-class WKListProvider: public WKProvider {
+class WKSEXPProvider: public WKProvider {
 public:
   Rcpp::List& input;
   R_xlen_t index;
 
-  WKListProvider(Rcpp::List& input): input(input), index(-1) {}
+  WKSEXPProvider(Rcpp::List& input): input(input), index(-1) {}
 
   SEXP feature() {
     return this->input[this->index];
@@ -33,11 +33,11 @@ public:
   }
 };
 
-class WKListExporter: public WKExporter {
+class WKSEXPExporter: public WKExporter {
 public:
   Rcpp::List output;
   R_xlen_t index;
-  WKListExporter(size_t size): WKExporter(size), output(size), index(0) {}
+  WKSEXPExporter(size_t size): WKExporter(size), output(size), index(0) {}
 
   void prepareNextFeature() {}
 

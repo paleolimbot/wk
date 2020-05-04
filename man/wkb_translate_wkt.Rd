@@ -5,7 +5,7 @@
 \alias{wkb_translate_wkb}
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
-\alias{wkt_translate_wkl}
+\alias{wkt_translate_wk_sexp}
 \alias{wkb_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
@@ -45,7 +45,7 @@ wkt_translate_wkb(
   buffer_size = 2048
 )
 
-wkt_translate_wkl(wkt, include_z = NA, include_m = NA, include_srid = NA)
+wkt_translate_wk_sexp(wkt, include_z = NA, include_m = NA, include_srid = NA)
 
 wkb_platform_endian()
 }

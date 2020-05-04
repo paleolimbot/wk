@@ -4,7 +4,7 @@
 #include "wk/wkt-reader.h"
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
-#include "wk/wkl-writer.h"
+#include "wk/sexp-writer.h"
 
 #include <Rcpp.h>
 #include "wk/io-rcpp.h"
@@ -103,12 +103,13 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
 
 
 // [[Rcpp::export]]
-Rcpp::List cpp_translate_wkt_wkl(CharacterVector wkt, int includeZ, int includeM, int includeSRID) {
+Rcpp::List cpp_translate_wkt_wk_sexp(CharacterVector wkt, int includeZ, int includeM,
+                                     int includeSRID) {
 
   WKCharacterVectorProvider provider(wkt);
-  WKListExporter exporter(provider.nFeatures());
+  WKSEXPExporter exporter(provider.nFeatures());
 
-  WKLWriter writer(exporter);
+  WKSEXPWriter writer(exporter);
   WKTReader reader(provider, writer);
 
   writer.setIncludeZ(includeZ);
