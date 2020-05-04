@@ -1,6 +1,6 @@
 
-#ifndef WK_IO_RCPP_H
-#define WK_IO_RCPP_H
+#ifndef WK_RCPP_IO_H
+#define WK_RCPP_IO_H
 
 #include "wk/parse-exception.h"
 #include "wk/io-bytes.h"

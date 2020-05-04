@@ -4,10 +4,10 @@
 #include "wk/wkt-reader.h"
 #include "wk/wkb-writer.h"
 #include "wk/wkb-reader.h"
-#include "wk/sexp-writer.h"
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
+#include "wk/sexp-writer.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]

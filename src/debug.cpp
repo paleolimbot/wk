@@ -4,7 +4,7 @@
 #include "wk/wkt-reader.h"
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]

@@ -1,7 +1,7 @@
 
 #include <Rcpp.h>
 
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
 #include "wk/wkt-reader.h"

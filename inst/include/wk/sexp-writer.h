@@ -3,7 +3,7 @@
 #define WK_SEXP_WRITER_H
 
 #include "wk/writer.h"
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
 
 
 class WKSEXPWriter: public WKWriter {
