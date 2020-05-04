@@ -43,7 +43,7 @@ as_wkb.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
         include_z = include_z %||% NA,
         include_m = include_m %||% NA,
         include_srid = include_srid %||% NA,
-        endian = endian %||% wkb_platform_endian()
+        endian = endian %||% wk_platform_endian()
       )
     )
   }
@@ -59,7 +59,7 @@ as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
       include_z = include_z %||% NA,
       include_m = include_m %||% NA,
       include_srid = include_srid %||% NA,
-      endian = endian %||% wkb_platform_endian()
+      endian = endian %||% wk_platform_endian()
     )
   )
 }

@@ -105,7 +105,7 @@ anything useful.
 // [[Rcpp::depends(wk)]]
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
 #include "wk/wkt-reader.h"
 using namespace Rcpp;
 
@@ -124,8 +124,10 @@ public:
 // [[Rcpp::export]]
 void wkt_read_custom(CharacterVector wkt) {
   WKCharacterVectorProvider provider(wkt);
+  WKTReader reader(provider);
+  
   CustomHandler handler;
-  WKTReader reader(provider, handler);
+  reader.setHandler(&handler);
   
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -174,10 +176,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          115.3µs  138.7µs    7068.    68.43KB     6.75
-#> 2 geos_c      498.9µs  552.9µs    1771.    50.21KB     2.09
-#> 3 sf          370.9µs  438.1µs    2191.    99.57KB     6.59
-#> 4 wkb          52.9ms   53.1ms      18.8    5.23MB    65.9
+#> 1 wk          122.9µs  146.8µs    6501.    68.43KB     6.64
+#> 2 geos_c      525.2µs  575.6µs    1682.    50.21KB     0   
+#> 3 sf          386.6µs  440.8µs    2218.    99.57KB     9.21
+#> 4 wkb          52.5ms   52.5ms      18.8    5.23MB    44.0
 ```
 
 Read WKB + Write WKT:
@@ -195,10 +197,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          10.04ms  11.04ms     88.3     4.56MB     0   
-#> 2 geos_c       4.27ms   4.51ms    217.      3.32KB     0   
-#> 3 sf         179.87ms 183.16ms      5.48  541.35KB    11.0 
-#> 4 wellknown   28.68ms  30.31ms     32.6     3.42MB     1.92
+#> 1 wk           9.34ms   9.95ms     99.5     4.56MB     0   
+#> 2 geos_c        3.9ms   4.37ms    225.      3.32KB     0   
+#> 3 sf         172.16ms 173.37ms      5.73  541.35KB    11.5 
+#> 4 wellknown   24.72ms  26.73ms     37.1     3.42MB     1.95
 ```
 
 Read WKT + Write WKB:
@@ -214,10 +216,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           2.02ms    2.2ms     436.    53.58KB     0   
-#> 2 geos_c       2.59ms   2.84ms     347.    49.48KB     0   
-#> 3 sf           3.36ms   3.79ms     257.   186.48KB     4.39
-#> 4 wellknown    45.6ms  47.26ms      20.8    1.31MB     2.08
+#> 1 wk           1.96ms   2.15ms     456.    53.58KB     0   
+#> 2 geos_c       2.44ms   2.75ms     359.    49.48KB     2.11
+#> 3 sf           3.31ms   3.71ms     263.   186.48KB     2.05
+#> 4 wellknown   46.55ms  47.98ms      20.7    1.31MB     4.61
 ```
 
 Read WKT + Write WKT:
@@ -234,9 +236,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk             11ms  12.22ms     81.9     4.51MB      0  
-#> 2 geos_c        5.9ms   6.52ms    152.      3.32KB      0  
-#> 3 sf          174.9ms 175.67ms      5.62  259.44KB     11.2
+#> 1 wk          11.11ms  12.25ms     81.8     4.51MB      0  
+#> 2 geos_c       6.08ms   6.55ms    150.      3.32KB      0  
+#> 3 sf         178.97ms 180.83ms      5.51  260.61KB     11.0
 ```
 
 Generate coordinates:
@@ -251,7 +253,7 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb       1.56ms   2.06ms     475.     1.38MB     27.0
-#> 2 sfheaders    12.3ms  14.22ms      68.6    5.44MB     28.3
-#> 3 sf          28.69ms     30ms      33.3    5.61MB     20.0
+#> 1 wk_wkb       1.82ms   2.35ms     424.     1.38MB     20.6
+#> 2 sfheaders   12.31ms  13.14ms      74.5    5.44MB     20.9
+#> 3 sf           29.6ms     30ms      32.8    5.61MB     19.7
 ```

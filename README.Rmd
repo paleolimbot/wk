@@ -78,7 +78,7 @@ The wk package takes an event-based approach to parsing inspired by the event-ba
 // [[Rcpp::depends(wk)]]
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
 #include "wk/wkt-reader.h"
 using namespace Rcpp;
 
@@ -97,8 +97,10 @@ public:
 // [[Rcpp::export]]
 void wkt_read_custom(CharacterVector wkt) {
   WKCharacterVectorProvider provider(wkt);
+  WKTReader reader(provider);
+  
   CustomHandler handler;
-  WKTReader reader(provider, handler);
+  reader.setHandler(&handler);
   
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
