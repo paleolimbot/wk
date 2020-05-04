@@ -5,6 +5,10 @@ cpp_coords_wkb <- function(wkb) {
     .Call(`_wk_cpp_coords_wkb`, wkb)
 }
 
+cpp_coords_wkt <- function(wkt) {
+    .Call(`_wk_cpp_coords_wkt`, wkt)
+}
+
 cpp_debug_wkb <- function(wkb) {
     invisible(.Call(`_wk_cpp_debug_wkb`, wkb))
 }

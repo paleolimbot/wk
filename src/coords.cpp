@@ -41,6 +41,20 @@ public:
     m(nCoordinates),
     i(0) {}
 
+  List assembleCoordinates()  {
+    return List::create(
+      _["feature_id"] = this->featureId,
+      _["nest_id"] = this->nestId,
+      _["part_id"] = this->partId,
+      _["ring_id"] = this->ringId,
+      _["coord_id"] = this->coordId,
+      _["x"] = this->x,
+      _["y"] = this->y,
+      _["z"] = this->z,
+      _["m"] = this->m
+    );
+  }
+
 protected:
   R_xlen_t i;
   std::vector<int> partIdStack;
@@ -130,15 +144,27 @@ List cpp_coords_wkb(List wkb) {
     readerAssembler.iterateFeature();
   }
 
-  return List::create(
-    _["feature_id"] = assembler.featureId,
-    _["nest_id"] = assembler.nestId,
-    _["part_id"] = assembler.partId,
-    _["ring_id"] = assembler.ringId,
-    _["coord_id"] = assembler.coordId,
-    _["x"] = assembler.x,
-    _["y"] = assembler.y,
-    _["z"] = assembler.z,
-    _["m"] = assembler.m
-  );
+  return assembler.assembleCoordinates();
+}
+
+// [[Rcpp::export]]
+List cpp_coords_wkt(CharacterVector wkt) {
+
+  // first, count coordinates
+  WKCoordinateCounter counter(wkt.size());
+  WKCharacterVectorProvider provider(wkt);
+  WKTStreamer readerCounter(provider, counter);
+  while (readerCounter.hasNextFeature()) {
+    readerCounter.iterateFeature();
+  }
+
+  // then, assemble
+  WKCoordinateAssembler assembler(counter.nCoordinates);
+  provider = WKCharacterVectorProvider(wkt);
+  WKTStreamer readerAssembler(provider, assembler);
+  while (readerAssembler.hasNextFeature()) {
+    readerAssembler.iterateFeature();
+  }
+
+  return assembler.assembleCoordinates();
 }

@@ -16,6 +16,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_coords_wkt
+List cpp_coords_wkt(CharacterVector wkt);
+RcppExport SEXP _wk_cpp_coords_wkt(SEXP wktSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_wkt(wkt));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_debug_wkb
 void cpp_debug_wkb(List wkb);
 RcppExport SEXP _wk_cpp_debug_wkb(SEXP wkbSEXP) {
@@ -149,6 +160,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 1},
+    {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 1},
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},

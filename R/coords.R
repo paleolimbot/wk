@@ -24,5 +24,6 @@ wkb_coords <- function(wkb) {
 #' @rdname wkb_coords
 #' @export
 wkt_coords <- function(wkt) {
-  cpp_coords_wkt(wkt)
+  coords <- cpp_coords_wkt(wkt)
+  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
 }
