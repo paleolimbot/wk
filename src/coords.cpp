@@ -57,18 +57,10 @@ public:
 
 protected:
   R_xlen_t i;
-  std::vector<int> partIdStack;
+  uint32_t lastPartId;
   size_t lastFeatureId;
   int lastRingId;
   int lastNestId;
-
-  int currentPartId() {
-    if (partIdStack.size() > 0) {
-      return this->partIdStack[this->partIdStack.size() - 1];
-    } else {
-      return NA_INTEGER;
-    }
-  }
 
   void nextFeatureStart(size_t featureId) {
     this->lastNestId = 0;
@@ -76,13 +68,12 @@ protected:
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
-    if (partId == WKReader::PART_ID_NONE) {
-      this->partIdStack.push_back(NA_INTEGER);
-    } else {
-      this->partIdStack.push_back(partId + 1);
-    }
-
     this->lastRingId = NA_INTEGER;
+    if (partId == WKReader::PART_ID_NONE) {
+      this->lastPartId = NA_INTEGER;
+    } else {
+      this->lastPartId  = partId + 1;
+    }
 
     if (meta.geometryType == WKGeometryType::GeometryCollection) {
       this->lastNestId++;
@@ -93,7 +84,6 @@ protected:
     if (meta.geometryType == WKGeometryType::GeometryCollection) {
       this->lastNestId--;
     }
-    this->partIdStack.pop_back();
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
@@ -104,7 +94,7 @@ protected:
     R_xlen_t i = this->i;
     this->featureId[i] = this->lastFeatureId;
     this->nestId[i] = this->lastNestId;
-    this->partId[i] = this->currentPartId();
+    this->partId[i] = this->lastPartId;
     this->ringId[i] = this->lastRingId;
     this->coordId[i] = coordId + 1;
     this->x[i] = coord.x;
