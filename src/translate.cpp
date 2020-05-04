@@ -14,17 +14,18 @@ using namespace Rcpp;
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
                                             int includeSRID, int precision, bool trim) {
   WKRawVectorListProvider provider(wkb);
-  WKCharacterVectorExporter exporter(provider.nFeatures());
-
-  WKTWriter writer(exporter);
   WKBReader reader(provider);
+
+  WKCharacterVectorExporter exporter(provider.nFeatures());
+  WKTWriter writer(exporter);
+  exporter.setRoundingPrecision(precision);
+  exporter.setTrim(trim);
+
   reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
-  exporter.setRoundingPrecision(precision);
-  exporter.setTrim(trim);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -38,13 +39,14 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
                                  int includeSRID, int endian, int bufferSize) {
 
   WKRawVectorListProvider provider(wkb);
-  WKRawVectorListExporter exporter(provider.nFeatures());
-
-  WKBWriter writer(exporter);
   WKBReader reader(provider);
+
+  WKRawVectorListExporter exporter(provider.nFeatures());
+  exporter.setBufferSize(bufferSize);
+  WKBWriter writer(exporter);
+
   reader.setHandler(&writer);
 
-  exporter.setBufferSize(bufferSize);
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
@@ -62,17 +64,18 @@ CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int inc
                                       int includeSRID, int precision, bool trim) {
 
   WKCharacterVectorProvider provider(wkt);
-  WKCharacterVectorExporter exporter(provider.nFeatures());
-
-  WKTWriter writer(exporter);
   WKTStreamer reader(provider);
+
+  WKCharacterVectorExporter exporter(provider.nFeatures());
+  exporter.setRoundingPrecision(precision);
+  exporter.setTrim(trim);
+  WKTWriter writer(exporter);
+
   reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
-  exporter.setRoundingPrecision(precision);
-  exporter.setTrim(trim);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -86,17 +89,18 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
                                  int includeSRID, int endian, int bufferSize) {
 
   WKCharacterVectorProvider provider(wkt);
-  WKRawVectorListExporter exporter(provider.nFeatures());
-
-  WKBWriter writer(exporter);
   WKTReader reader(provider);
+
+  WKRawVectorListExporter exporter(provider.nFeatures());
+  exporter.setBufferSize(bufferSize);
+  WKBWriter writer(exporter);
+  writer.setEndian(endian);
+
   reader.setHandler(&writer);
 
-  exporter.setBufferSize(bufferSize);
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
-  writer.setEndian(endian);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -111,10 +115,11 @@ Rcpp::List cpp_translate_wkt_wksexp(CharacterVector wkt, int includeZ, int inclu
                                      int includeSRID) {
 
   WKCharacterVectorProvider provider(wkt);
-  WKSEXPExporter exporter(provider.nFeatures());
-
-  WKSEXPWriter writer(exporter);
   WKTReader reader(provider);
+
+  WKSEXPExporter exporter(provider.nFeatures());
+  WKSEXPWriter writer(exporter);
+
   reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
