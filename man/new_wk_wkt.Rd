@@ -11,8 +11,6 @@ validate_wk_wkt(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wkt]{wkt()}} vector}
-
-\item{...}{Unused}
 }
 \description{
 S3 Details for wk_wkt
