@@ -1,5 +1,14 @@
 
-test_that("basic WKL translation works on non-empty 2D geoms", {
+test_that("basic wksexp translation works to WKB", {
+  expect_identical(
+    wkb_translate_wksexp(wkt_translate_wkb("POINT (30 10)")),
+    list(
+      structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+    )
+  )
+})
+
+test_that("basic wksexp translation works on non-empty 2D geoms", {
   expect_identical(
     wkt_translate_wksexp("POINT (30 10)"),
     list(
@@ -91,7 +100,7 @@ test_that("basic WKL translation works on non-empty 2D geoms", {
   )
 })
 
-test_that("basic WKL translation works on non-empty Z geoms", {
+test_that("basic wksexp translation works on non-empty Z geoms", {
   expect_identical(
     wkt_translate_wksexp("POINT Z (30 10 2)"),
     list(
@@ -146,7 +155,7 @@ test_that("basic WKL translation works on non-empty Z geoms", {
 })
 
 
-test_that("basic WKL translation works on non-empty M geoms", {
+test_that("basic wksexp translation works on non-empty M geoms", {
   expect_identical(
     wkt_translate_wksexp("POINT M (30 10 2)"),
     list(
@@ -200,7 +209,7 @@ test_that("basic WKL translation works on non-empty M geoms", {
   )
 })
 
-test_that("basic WKL translation works on non-empty 3D geoms", {
+test_that("basic wksexp translation works on non-empty 3D geoms", {
   expect_identical(
     wkt_translate_wksexp("POINT ZM (30 10 2 13)"),
     list(
@@ -263,7 +272,7 @@ test_that("basic WKL translation works on non-empty 3D geoms", {
 })
 
 
-test_that("basic WKL translation works on non-empty 2D geoms", {
+test_that("basic wksexp translation works on non-empty 2D geoms", {
   expect_identical(
     wkt_translate_wksexp("SRID=837;POINT (30 10)"),
     list(

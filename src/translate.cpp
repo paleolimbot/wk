@@ -78,6 +78,15 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
 }
 
 // [[Rcpp::export]]
+Rcpp::List cpp_translate_wkb_wksexp(Rcpp::List wkb, int includeZ, int includeM,
+                                    int includeSRID) {
+
+  WKRawVectorListProvider provider(wkb);
+  WKBReader reader(provider);
+  return cpp_translate_base_wksexp(reader, includeZ, includeM, includeSRID);
+}
+
+// [[Rcpp::export]]
 CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int includeM,
                                       int includeSRID, int precision, bool trim) {
 

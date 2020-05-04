@@ -8,7 +8,7 @@
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
 #' @param endian For WKB writing, 0 for big endian, 1 for little endinan.
-#'   Defaults to [wkb_platform_endian()] (slightly faster).
+#'   Defaults to [wk_platform_endian()] (slightly faster).
 #' @param include_z,include_m,include_srid Include the
 #'   values of the Z and M coordinates and/or SRID
 #'   in the output? Use `FALSE` to omit, `TRUE` to include, or `NA` to include
@@ -48,7 +48,7 @@ wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid 
 #' @rdname wkb_translate_wkt
 #' @export
 wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wkb_platform_endian(), buffer_size = 2048) {
+                              endian = wk_platform_endian(), buffer_size = 2048) {
   cpp_translate_wkb_wkb(
     wkb,
     includeZ = include_z,
@@ -56,6 +56,17 @@ wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid 
     includeSRID = include_srid,
     endian = endian,
     bufferSize = buffer_size
+  )
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
+wkb_translate_wksexp <- function(wkb, include_z = NA, include_m = NA, include_srid = NA) {
+  cpp_translate_wkb_wksexp(
+    wkb,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid
   )
 }
 
@@ -76,7 +87,7 @@ wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid 
 #' @rdname wkb_translate_wkt
 #' @export
 wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wkb_platform_endian(), buffer_size = 2048) {
+                              endian = wk_platform_endian(), buffer_size = 2048) {
   cpp_translate_wkt_wkb(
     wkt,
     includeZ = include_z,
@@ -100,6 +111,6 @@ wkt_translate_wksexp <- function(wkt, include_z = NA, include_m = NA, include_sr
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_platform_endian <- function() {
+wk_platform_endian <- function() {
   match(.Platform$endian, c("big", "little")) - 1L
 }

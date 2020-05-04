@@ -67,7 +67,7 @@ only if present. Note that using \code{TRUE} may result in an error if there
 is no value present in the original.}
 
 \item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
-Defaults to \code{\link[=wkb_platform_endian]{wkb_platform_endian()}} (slightly faster).}
+Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
 
 \item{precision}{The rounding precision to use when writing
 (number of decimal places).}
