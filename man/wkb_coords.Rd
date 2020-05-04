@@ -3,7 +3,7 @@
 \name{wkb_coords}
 \alias{wkb_coords}
 \alias{wkt_coords}
-\title{Data frames of coordinates}
+\title{Extract coordinates from well-known geometries}
 \usage{
 wkb_coords(wkb)
 
@@ -18,17 +18,19 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 \value{
 A data.frame with columns:
 \itemize{
-\item \code{feature_id}
-\item \code{nest_id}
-\item \code{part_id}
-\item \code{ring_id}
-\item \code{coordinate_id}
-\item \code{x}
-\item \code{y}
-\item \code{z}
-\item \code{m}
+\item \code{feature_id}: The index of the top-level feature
+\item \code{nest_id}: The recursion level (if feature is a geometry collection)
+\item \code{part_id}: The part index (if nested within a multi-geometry or collection)
+\item \code{ring_id}: The ring index
+\item \code{coordinate_id}: The coordinate index
+\item \code{x}, \code{y}, \code{z}, \code{m}: Coordinaate values (both absence and \code{nan} are recorded
+as \code{NA})
 }
 }
 \description{
-Data frames of coordinates
+Extract coordinates from well-known geometries
+}
+\examples{
+wkt_coords("LINESTRING (0 1, 19 27)")
+
 }

@@ -11,8 +11,8 @@ using namespace Rcpp;
 class WKCoordinateCounter: public WKGeometryHandler {
 public:
   size_t nCoordinates;
-  WKCoordinateCounter(size_t size): nCoordinates(0) {}
-  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+  WKCoordinateCounter(): nCoordinates(0) {}
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->nCoordinates++;
   }
 };
@@ -70,12 +70,12 @@ protected:
     }
   }
 
-  virtual void nextFeatureStart(size_t featureId) {
+  void nextFeatureStart(size_t featureId) {
     this->lastNestId = 0;
     this->lastFeatureId = featureId + 1;
   }
 
-  virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     if (partId == WKReader::PART_ID_NONE) {
       this->partIdStack.push_back(NA_INTEGER);
     } else {
@@ -89,18 +89,18 @@ protected:
     }
   }
 
-  virtual void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
+  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
     if (meta.geometryType == WKGeometryType::GeometryCollection) {
       this->lastNestId--;
     }
     this->partIdStack.pop_back();
   }
 
-  virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->lastRingId = ringId + 1;
   }
 
-  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     R_xlen_t i = this->i;
     this->featureId[i] = this->lastFeatureId;
     this->nestId[i] = this->lastNestId;
@@ -129,7 +129,7 @@ protected:
 List cpp_coords_wkb(List wkb) {
 
   // first, count coordinates
-  WKCoordinateCounter counter(wkb.size());
+  WKCoordinateCounter counter;
   WKRawVectorListProvider provider(wkb);
   WKBReader readerCounter(provider, counter);
   while (readerCounter.hasNextFeature()) {
@@ -151,7 +151,7 @@ List cpp_coords_wkb(List wkb) {
 List cpp_coords_wkt(CharacterVector wkt) {
 
   // first, count coordinates
-  WKCoordinateCounter counter(wkt.size());
+  WKCoordinateCounter counter;
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer readerCounter(provider, counter);
   while (readerCounter.hasNextFeature()) {

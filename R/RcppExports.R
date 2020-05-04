@@ -21,6 +21,10 @@ cpp_debug_wkt_streamer <- function(input) {
     invisible(.Call(`_wk_cpp_debug_wkt_streamer`, input))
 }
 
+cpp_meta_wkt_streamer <- function(wkt, recursive) {
+    .Call(`_wk_cpp_meta_wkt_streamer`, wkt, recursive)
+}
+
 cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
