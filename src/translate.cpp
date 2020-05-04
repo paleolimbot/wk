@@ -103,7 +103,7 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
 
 
 // [[Rcpp::export]]
-Rcpp::List cpp_translate_wkt_wk_sexp(CharacterVector wkt, int includeZ, int includeM,
+Rcpp::List cpp_translate_wkt_wksexp(CharacterVector wkt, int includeZ, int includeM,
                                      int includeSRID) {
 
   WKCharacterVectorProvider provider(wkt);

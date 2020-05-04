@@ -57,7 +57,7 @@ cpp_translate_wkt_wkb <- function(wkt, includeZ, includeM, includeSRID, endian, 
     .Call(`_wk_cpp_translate_wkt_wkb`, wkt, includeZ, includeM, includeSRID, endian, bufferSize)
 }
 
-cpp_translate_wkt_wk_sexp <- function(wkt, includeZ, includeM, includeSRID) {
-    .Call(`_wk_cpp_translate_wkt_wk_sexp`, wkt, includeZ, includeM, includeSRID)
+cpp_translate_wkt_wksexp <- function(wkt, includeZ, includeM, includeSRID) {
+    .Call(`_wk_cpp_translate_wkt_wksexp`, wkt, includeZ, includeM, includeSRID)
 }
 
