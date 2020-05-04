@@ -13,7 +13,14 @@ public:
   const static uint32_t COORD_ID_NONE = UINT32_MAX;
 
   WKReader(WKProvider& provider, WKGeometryHandler& handler):
-    handler(handler), featureId(0), provider(provider) {}
+    handler(handler), provider(provider) {
+    this->reset();
+  }
+
+  virtual void reset() {
+    this->provider.reset();
+    this->featureId = 0;
+  }
 
   virtual bool hasNextFeature() {
     return this->provider.seekNextFeature();
