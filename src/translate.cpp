@@ -8,6 +8,7 @@
 #include <Rcpp.h>
 #include "wk/rcpp-io.h"
 #include "wk/sexp-writer.h"
+#include "wk/sexp-reader.h"
 using namespace Rcpp;
 
 void cpp_translate_base(WKReader& reader, WKWriter& writer,
@@ -112,4 +113,12 @@ Rcpp::List cpp_translate_wkt_wksexp(CharacterVector wkt, int includeZ, int inclu
   WKCharacterVectorProvider provider(wkt);
   WKTReader reader(provider);
   return cpp_translate_base_wksexp(reader, includeZ, includeM, includeSRID);
+}
+
+// [[Rcpp::export]]
+CharacterVector cpp_translate_wksexp_wkt(List wksexp, int includeZ, int includeM,
+                                         int includeSRID, int precision, bool trim) {
+  WKSEXPProvider provider(wksexp);
+  WKSEXPReader reader(provider);
+  return cpp_translate_base_wkt(reader, includeZ, includeM, includeSRID, precision, trim);
 }

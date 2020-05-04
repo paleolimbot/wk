@@ -7,6 +7,7 @@
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
 \alias{wkt_translate_wksexp}
+\alias{wksexp_translate_wkt}
 \alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
@@ -49,6 +50,15 @@ wkt_translate_wkb(
 )
 
 wkt_translate_wksexp(wkt, include_z = NA, include_m = NA, include_srid = NA)
+
+wksexp_translate_wkt(
+  wksexp,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  precision = 16,
+  trim = TRUE
+)
 
 wk_platform_endian()
 }

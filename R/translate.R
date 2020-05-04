@@ -111,6 +111,20 @@ wkt_translate_wksexp <- function(wkt, include_z = NA, include_m = NA, include_sr
 
 #' @rdname wkb_translate_wkt
 #' @export
+wksexp_translate_wkt <- function(wksexp, include_z = NA, include_m = NA, include_srid = NA,
+                                 precision = 16, trim = TRUE) {
+  cpp_translate_wksexp_wkt(
+    wksexp,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    precision = precision,
+    trim = trim
+  )
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
 wk_platform_endian <- function() {
   match(.Platform$endian, c("big", "little")) - 1L
 }

@@ -57,6 +57,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_debug_wksexp
+void cpp_debug_wksexp(List input);
+RcppExport SEXP _wk_cpp_debug_wksexp(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type input(inputSEXP);
+    cpp_debug_wksexp(input);
+    return R_NilValue;
+END_RCPP
+}
 // cpp_meta_wkb
 List cpp_meta_wkb(List wkb, bool recursive);
 RcppExport SEXP _wk_cpp_meta_wkb(SEXP wkbSEXP, SEXP recursiveSEXP) {
@@ -207,6 +217,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_translate_wksexp_wkt
+CharacterVector cpp_translate_wksexp_wkt(List wksexp, int includeZ, int includeM, int includeSRID, int precision, bool trim);
+RcppExport SEXP _wk_cpp_translate_wksexp_wkt(SEXP wksexpSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksexp(wksexpSEXP);
+    Rcpp::traits::input_parameter< int >::type includeZ(includeZSEXP);
+    Rcpp::traits::input_parameter< int >::type includeM(includeMSEXP);
+    Rcpp::traits::input_parameter< int >::type includeSRID(includeSRIDSEXP);
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wksexp_wkt(wksexp, includeZ, includeM, includeSRID, precision, trim));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 1},
@@ -214,6 +240,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
+    {"_wk_cpp_debug_wksexp", (DL_FUNC) &_wk_cpp_debug_wksexp, 1},
     {"_wk_cpp_meta_wkb", (DL_FUNC) &_wk_cpp_meta_wkb, 2},
     {"_wk_cpp_meta_wkt", (DL_FUNC) &_wk_cpp_meta_wkt, 2},
     {"_wk_cpp_meta_wkt_streamer", (DL_FUNC) &_wk_cpp_meta_wkt_streamer, 2},
@@ -225,6 +252,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_translate_wkt_wkt", (DL_FUNC) &_wk_cpp_translate_wkt_wkt, 6},
     {"_wk_cpp_translate_wkt_wkb", (DL_FUNC) &_wk_cpp_translate_wkt_wkb, 6},
     {"_wk_cpp_translate_wkt_wksexp", (DL_FUNC) &_wk_cpp_translate_wkt_wksexp, 4},
+    {"_wk_cpp_translate_wksexp_wkt", (DL_FUNC) &_wk_cpp_translate_wksexp_wkt, 6},
     {NULL, NULL, 0}
 };
 

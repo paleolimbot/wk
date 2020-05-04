@@ -324,3 +324,107 @@ test_that("basic wksexp translation works on non-empty 2D geoms", {
     )
   )
 })
+
+test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+      )
+    ),
+    "POINT (30 10)"
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(matrix(c(30, 10, 0, 0), ncol = 2, byrow = TRUE), class = "wk_linestring")
+      )
+    ),
+    "LINESTRING (30 10, 0 0)"
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
+          ),
+          class = "wk_polygon"
+        )
+      )
+    ),
+    "POLYGON ((30 10, 0 0, 10 10, 30 10))"
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10), ncol = 2),
+            matrix(c(0, 0), ncol = 2)
+          ),
+          class = "wk_multipoint"
+        )
+      )
+    ),
+    "MULTIPOINT ((30 10), (0 0))"
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10, 0, 0), ncol = 2, byrow = TRUE),
+            matrix(c(20, 20, 0, 0), ncol = 2, byrow = TRUE)
+          ),
+          class = "wk_multilinestring"
+        )
+      )
+    ),
+    "MULTILINESTRING ((30 10, 0 0), (20 20, 0 0))",
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            list(
+              matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
+            ),
+            list(
+              matrix(c(30, 10, 0, 0, 10, 10, 30, 10), ncol = 2, byrow = TRUE)
+            )
+          ),
+          class = "wk_multipolygon"
+        )
+      )
+    ),
+    "MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)), ((30 10, 0 0, 10 10, 30 10)))"
+  )
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            structure(matrix(c(30, 10), ncol = 2), class = "wk_point"),
+            structure(
+              list(
+                structure(
+                  matrix(c(12, 6), ncol = 2),
+                  class = "wk_point"
+                )
+              ),
+              class = "wk_geometrycollection"
+            ),
+            structure(
+              matrix(c(1, 2, 3, 4), ncol = 2, byrow = TRUE),
+              class = "wk_linestring"
+            )
+          ),
+          class = "wk_geometrycollection"
+        )
+      )
+    ),
+    "GEOMETRYCOLLECTION (POINT (30 10), GEOMETRYCOLLECTION (POINT (12 6)), LINESTRING (1 2, 3 4))"
+  )
+})

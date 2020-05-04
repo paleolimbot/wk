@@ -24,3 +24,14 @@ test_that("debugger works on wkt", {
   expect_output(wkt_debug("MULTIPOINT (30 10, 0 0)"), "MULTIPOINT")
   expect_output(wkt_debug("MULTIPOINT ((30 10), (0 0))"), "MULTIPOINT")
 })
+
+test_that("debugger works on sexp", {
+  expect_output(
+    wksexp_debug(
+      list(
+        structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+      )
+    ),
+    "POINT"
+  )
+})
