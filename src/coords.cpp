@@ -115,50 +115,34 @@ protected:
   }
 };
 
-// [[Rcpp::export]]
-List cpp_coords_wkb(List wkb) {
-
-  // first, count coordinates
+List cpp_coords_base(WKReader& reader) {
   WKCoordinateCounter counter;
-  WKRawVectorListProvider provider(wkb);
-  WKBReader readerCounter(provider);
-  readerCounter.setHandler(&counter);
-  while (readerCounter.hasNextFeature()) {
-    readerCounter.iterateFeature();
+  reader.setHandler(&counter);
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 
-  // then, assemble
+  reader.reset();
+
   WKCoordinateAssembler assembler(counter.nCoordinates);
-  provider = WKRawVectorListProvider(wkb);
-  WKBReader readerAssembler(provider);
-  readerAssembler.setHandler(&assembler);
-  while (readerAssembler.hasNextFeature()) {
-    readerAssembler.iterateFeature();
+  reader.setHandler(&assembler);
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 
   return assembler.assembleCoordinates();
 }
 
 // [[Rcpp::export]]
+List cpp_coords_wkb(List wkb) {
+  WKRawVectorListProvider provider(wkb);
+  WKBReader reader(provider);
+  return cpp_coords_base(reader);
+}
+
+// [[Rcpp::export]]
 List cpp_coords_wkt(CharacterVector wkt) {
-
-  // first, count coordinates
-  WKCoordinateCounter counter;
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer readerCounter(provider);
-  readerCounter.setHandler(&counter);
-  while (readerCounter.hasNextFeature()) {
-    readerCounter.iterateFeature();
-  }
-
-  // then, assemble
-  WKCoordinateAssembler assembler(counter.nCoordinates);
-  provider = WKCharacterVectorProvider(wkt);
-  WKTStreamer readerAssembler(provider);
-  readerAssembler.setHandler(&assembler);
-  while (readerAssembler.hasNextFeature()) {
-    readerAssembler.iterateFeature();
-  }
-
-  return assembler.assembleCoordinates();
+  WKTStreamer reader(provider);
+  return cpp_coords_base(reader);
 }

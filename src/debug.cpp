@@ -19,11 +19,8 @@ void cpp_debug_wkb(List wkb) {
   }
 }
 
-// [[Rcpp::export]]
-void cpp_debug_wkt(CharacterVector input) {
-  WKCharacterVectorProvider provider(input);
+void cpp_debug_base(WKReader& reader) {
   WKGeometryDebugHandler handler(Rcout);
-  WKTReader reader(provider);
   reader.setHandler(&handler);
 
   while (reader.hasNextFeature()) {
@@ -32,13 +29,15 @@ void cpp_debug_wkt(CharacterVector input) {
 }
 
 // [[Rcpp::export]]
+void cpp_debug_wkt(CharacterVector input) {
+  WKCharacterVectorProvider provider(input);
+  WKTReader reader(provider);
+  cpp_debug_base(reader);
+}
+
+// [[Rcpp::export]]
 void cpp_debug_wkt_streamer(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
-  WKGeometryDebugHandler handler(Rcout);
   WKTStreamer reader(provider);
-  reader.setHandler(&handler);
-
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
+  cpp_debug_base(reader);
 }
