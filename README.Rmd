@@ -38,37 +38,39 @@ If you can load the package, you're good to go!
 library(wk)
 ```
 
-## Translate between WKB and WKT
+## Basic vector classes for WKT and WKB
 
-This package mostly provides C++ headers to avoid committing to any particular in-memory format, but it contains enough R code to test that the C++ headers will actually work. As such, you can translate between well-known binary (a `list()` of `raw()` vectors) and well-known text (character vector):
-
-```{r}
-point_wkb <- as.raw(
-  c(0x00, # 0x00 = big endian
-    0x00, 0x00, 0x00, 0x01, # 0x00000001 = POINT
-    0x40, 0x3e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # x coordinate (double)
-    0x40, 0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  # y coordinate (double)
-  )
-)
-
-wkb_translate_wkt(list(point_wkb))
-```
-
-## Validate WKB and WKT
-
-It is often useful to attempt parsing a geometry to see if it will succeed. The "problems" functions parse well-known geometry vectors, returning a character vector of parsing problems (or `NA` if there were none).
+Want to return an object that any spatial package can read? Use `wkt()` to mark a character vector as containing well-known text, or `wkb()` to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in `format()` and `print()` methods.
 
 ```{r}
-wkb_problems(list(point_wkb))
-
-point_bad_type <- point_wkb
-point_bad_type[5] <- as.raw(0xff)
-wkb_problems(list(point_bad_type))
+wkt("POINT (30 10)")
+as_wkb(wkt("POINT (30 10)"))
 ```
+
+## Extract coordinates and meta information
+
+One of the main drawbacks to passing around geomtries in WKB is that the format is opaque to R users, who need coordinates as R object rather than binary vectors. In addition to `print()` and `plot()` methods for `wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable coordinates and feature meta.
+
+```{r}
+wkt_coords("POINT ZM (1 2 3 4)")
+wkt_meta("POINT ZM (1 2 3 4)")
+```
+
+## Well-known R objects?
+
+The wk package experimentally generates (and parses) well-known "s" expressions (the C name for R objects). This is similar to the format that [sf](https://r-spatial.github.io/sf) uses.
+
+```{r}
+wkt_translate_wksexp("POINT (30 10)")
+```
+
+## Dependencies
+
+The wk package imports [Rcpp](https://cran.r-project.org/package=Rcpp).
 
 ## Using the C++ headers
 
-The wk package takes an event-based approach to parsing inspired by the event-based SAX XML parser. This allows the package to avoid inventing an in-memory format, since it never has to store geometries in memory. This is class-based, so you will have to make your own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do anything useful.
+The wk package takes an event-based approach to parsing inspired by the event-based SAX XML parser. This makes the readers and writers highly re-usable! This system is class-based, so you will have to make your own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do anything useful.
 
 ```{Rcpp}
 // If you're writing code in a package, you'll also
@@ -77,7 +79,7 @@ The wk package takes an event-based approach to parsing inspired by the event-ba
 
 #include <Rcpp.h>
 #include "wk/io-rcpp.h"
-#include "wk/wkb-reader.h"
+#include "wk/wkt-reader.h"
 using namespace Rcpp;
 
 class CustomHandler: public WKGeometryHandler {
@@ -93,13 +95,13 @@ public:
 };
 
 // [[Rcpp::export]]
-void wkb_read_custom(List wkb) {
-  WKRawVectorListProvider reader(wkb);
+void wkt_read_custom(CharacterVector wkt) {
+  WKCharacterVectorProvider provider(wkt);
   CustomHandler handler;
-  WKBReader wkbReader(reader, handler);
+  WKTReader reader(provider, handler);
   
-  while (wkbReader.hasNextFeature()) {
-    wkbReader.iterateFeature();
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 }
 ```
@@ -107,18 +109,18 @@ void wkb_read_custom(List wkb) {
 On our example point, this prints the following:
 
 ```{r}
-wkb_read_custom(list(point_wkb))
+wkt_read_custom("POINT (30 10)")
 ```
 
 The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using `wkb|wkt_debug()` functions.
 
 ```{r}
-wkb_debug(list(point_wkb))
+wkt_debug("POINT (30 10)")
 ```
 
 ## Performance
 
-This package is mostly designed for no system dependencies and flexibility, but also happens to be reasonably fast.
+This package is mostly designed for no system dependencies and flexibility, but also happens to be really fast for some common operations.
 
 ```{r, echo=FALSE}
 # set up the test data
@@ -179,3 +181,13 @@ bench::mark(
 )
 ```
 
+Generate coordinates:
+
+```{r}
+bench::mark(
+  wk_wkb = wk::wkb_coords(rep(nc_wkb, 10)),
+  sfheaders = sfheaders::sfc_to_df(rep(nc_sfc, 10)),
+  sf = sf::st_coordinates(rep(nc_sfc, 10)),
+  check = FALSE
+)
+```
