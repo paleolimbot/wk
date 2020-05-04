@@ -10,10 +10,16 @@
 
 class WKSEXPProvider: public WKProvider {
 public:
-  Rcpp::List& input;
+  Rcpp::List input;
   R_xlen_t index;
 
-  WKSEXPProvider(Rcpp::List& input): input(input), index(-1) {}
+  WKSEXPProvider(Rcpp::List input): input(input) {
+    this->reset();
+  }
+
+  void reset() {
+    this->index = -1;
+  }
 
   SEXP feature() {
     return this->input[this->index];
@@ -58,8 +64,11 @@ public:
 class WKRawVectorListProvider: public WKBytesProvider {
 public:
 
-  WKRawVectorListProvider(Rcpp::List container) {
-    this->container = container;
+  WKRawVectorListProvider(Rcpp::List container): container(container) {
+    this->reset();
+  }
+
+  void reset() {
     this->index = -1;
     this->featureNull = true;
     this->offset = 0;
@@ -223,8 +232,14 @@ public:
   bool featureNull;
   std::string data;
 
-  WKCharacterVectorProvider(Rcpp::CharacterVector container):
-    container(container), index(-1), featureNull(false) {}
+  WKCharacterVectorProvider(Rcpp::CharacterVector container): container(container) {
+    this->reset();
+  }
+
+  void reset() {
+    this->index = -1;
+    this->featureNull = false;
+  }
 
   bool seekNextFeature() {
     this->index++;
