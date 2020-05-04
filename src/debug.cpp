@@ -11,7 +11,8 @@ using namespace Rcpp;
 void cpp_debug_wkb(List wkb) {
   WKRawVectorListProvider input(wkb);
   WKGeometryDebugHandler handler(Rcout);
-  WKBReader reader(input, handler);
+  WKBReader reader(input);
+  reader.setHandler(&handler);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -22,7 +23,8 @@ void cpp_debug_wkb(List wkb) {
 void cpp_debug_wkt(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
   WKGeometryDebugHandler handler(Rcout);
-  WKTReader reader(provider, handler);
+  WKTReader reader(provider);
+  reader.setHandler(&handler);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -33,7 +35,8 @@ void cpp_debug_wkt(CharacterVector input) {
 void cpp_debug_wkt_streamer(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
   WKGeometryDebugHandler handler(Rcout);
-  WKTStreamer reader(provider, handler);
+  WKTStreamer reader(provider);
+  reader.setHandler(&handler);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();

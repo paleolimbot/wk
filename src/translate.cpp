@@ -17,7 +17,8 @@ Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int in
   WKCharacterVectorExporter exporter(provider.nFeatures());
 
   WKTWriter writer(exporter);
-  WKBReader reader(provider, writer);
+  WKBReader reader(provider);
+  reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
@@ -40,7 +41,8 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
   WKRawVectorListExporter exporter(provider.nFeatures());
 
   WKBWriter writer(exporter);
-  WKBReader reader(provider, writer);
+  WKBReader reader(provider);
+  reader.setHandler(&writer);
 
   exporter.setBufferSize(bufferSize);
   writer.setIncludeZ(includeZ);
@@ -63,7 +65,8 @@ CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int inc
   WKCharacterVectorExporter exporter(provider.nFeatures());
 
   WKTWriter writer(exporter);
-  WKTStreamer reader(provider, writer);
+  WKTStreamer reader(provider);
+  reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
@@ -86,7 +89,8 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
   WKRawVectorListExporter exporter(provider.nFeatures());
 
   WKBWriter writer(exporter);
-  WKTReader reader(provider, writer);
+  WKTReader reader(provider);
+  reader.setHandler(&writer);
 
   exporter.setBufferSize(bufferSize);
   writer.setIncludeZ(includeZ);
@@ -110,7 +114,8 @@ Rcpp::List cpp_translate_wkt_wksexp(CharacterVector wkt, int includeZ, int inclu
   WKSEXPExporter exporter(provider.nFeatures());
 
   WKSEXPWriter writer(exporter);
-  WKTReader reader(provider, writer);
+  WKTReader reader(provider);
+  reader.setHandler(&writer);
 
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);

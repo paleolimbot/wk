@@ -27,7 +27,8 @@ Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
   WKValidator validator(wkb.size());
 
   WKRawVectorListProvider provider(wkb);
-  WKBReader reader(provider, validator);
+  WKBReader reader(provider);
+  reader.setHandler(&validator);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -41,7 +42,8 @@ Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
   WKValidator validator(wkt.size());
 
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer reader(provider, validator);
+  WKTStreamer reader(provider);
+  reader.setHandler(&validator);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();

@@ -38,8 +38,7 @@
 class WKTStreamer: public WKReader {
 public:
 
-  WKTStreamer(WKStringProvider& provider, WKGeometryHandler& handler):
-    WKReader(provider, handler), provider(provider) {
+  WKTStreamer(WKStringProvider& provider): WKReader(provider), provider(provider) {
     // TODO evaluate if we need this if we use C++11's double parser
 #ifdef _MSC_VER
     // Avoid multithreading issues caused by setlocale
@@ -57,17 +56,17 @@ public:
   }
 
   void readFeature(size_t featureId) {
-    handler.nextFeatureStart(featureId);
+    this->handler->nextFeatureStart(featureId);
 
     if (this->provider.featureIsNull()) {
-      this->handler.nextNull(featureId);
+      this->handler->nextNull(featureId);
     } else {
       const std::string& wellKnownText = this->provider.featureString();
       WKStringTokenizer tokenizer(wellKnownText);
       this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
     }
 
-    handler.nextFeatureEnd(featureId);
+    this->handler->nextFeatureEnd(featureId);
   }
 
 protected:
@@ -115,12 +114,12 @@ protected:
   }
 
   void readGeometry(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t partId) {
-    handler.nextGeometryStart(meta, partId);
+    this->handler->nextGeometryStart(meta, partId);
 
     // if empty, calling read* functions will fail because
     // the empty token has been consumed
     if (meta.size == 0) {
-      handler.nextGeometryEnd(meta, partId);
+      this->handler->nextGeometryEnd(meta, partId);
       return;
     }
 
@@ -162,7 +161,7 @@ protected:
       );
     }
 
-    handler.nextGeometryEnd(meta, partId);
+    this->handler->nextGeometryEnd(meta, partId);
   }
 
   void readPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
@@ -185,10 +184,10 @@ protected:
   }
 
   void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta, uint32_t ringId) {
-    handler.nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
+    this->handler->nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
     this->getNextEmptyOrOpener(tokenizer, 0);
     this->readCoordinates(tokenizer, meta);
-    handler.nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
+    this->handler->nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
   }
 
   void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta meta) {
@@ -210,9 +209,9 @@ protected:
         WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
         childMeta.srid = meta.srid;
 
-        handler.nextGeometryStart(childMeta, partId);
+        this->handler->nextGeometryStart(childMeta, partId);
         this->readCoordinate(tokenizer, meta, 0);
-        handler.nextGeometryEnd(childMeta, partId);
+        this->handler->nextGeometryEnd(childMeta, partId);
         partId++;
 
         nextToken = this->getNextCloserOrComma(tokenizer);
@@ -351,7 +350,7 @@ protected:
       throw WKParseException("Expected Z or M coordinate");
     }
 
-    handler.nextCoordinate(meta, coord, coordId);
+    this->handler->nextCoordinate(meta, coord, coordId);
   }
 
   double getNextNumber(WKStringTokenizer* tokenizer) {

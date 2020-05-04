@@ -121,7 +121,8 @@ List cpp_coords_wkb(List wkb) {
   // first, count coordinates
   WKCoordinateCounter counter;
   WKRawVectorListProvider provider(wkb);
-  WKBReader readerCounter(provider, counter);
+  WKBReader readerCounter(provider);
+  readerCounter.setHandler(&counter);
   while (readerCounter.hasNextFeature()) {
     readerCounter.iterateFeature();
   }
@@ -129,7 +130,8 @@ List cpp_coords_wkb(List wkb) {
   // then, assemble
   WKCoordinateAssembler assembler(counter.nCoordinates);
   provider = WKRawVectorListProvider(wkb);
-  WKBReader readerAssembler(provider, assembler);
+  WKBReader readerAssembler(provider);
+  readerAssembler.setHandler(&assembler);
   while (readerAssembler.hasNextFeature()) {
     readerAssembler.iterateFeature();
   }
@@ -143,7 +145,8 @@ List cpp_coords_wkt(CharacterVector wkt) {
   // first, count coordinates
   WKCoordinateCounter counter;
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer readerCounter(provider, counter);
+  WKTStreamer readerCounter(provider);
+  readerCounter.setHandler(&counter);
   while (readerCounter.hasNextFeature()) {
     readerCounter.iterateFeature();
   }
@@ -151,7 +154,8 @@ List cpp_coords_wkt(CharacterVector wkt) {
   // then, assemble
   WKCoordinateAssembler assembler(counter.nCoordinates);
   provider = WKCharacterVectorProvider(wkt);
-  WKTStreamer readerAssembler(provider, assembler);
+  WKTStreamer readerAssembler(provider);
+  readerAssembler.setHandler(&assembler);
   while (readerAssembler.hasNextFeature()) {
     readerAssembler.iterateFeature();
   }

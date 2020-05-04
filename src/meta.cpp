@@ -166,7 +166,8 @@ List cpp_meta_wkb(List wkb, bool recursive) {
   // first, count
   WKMetaCounter counter(recursive);
   WKRawVectorListProvider provider(wkb);
-  WKBReader readerCounter(provider, counter);
+  WKBReader readerCounter(provider);
+  readerCounter.setHandler(&counter);
   while (readerCounter.hasNextFeature()) {
     readerCounter.iterateFeature();
   }
@@ -174,7 +175,8 @@ List cpp_meta_wkb(List wkb, bool recursive) {
   // then, assemble
   WKMetaAssembler assembler(recursive, counter.nMeta);
   provider = WKRawVectorListProvider(wkb);
-  WKBReader readerAssembler(provider, assembler);
+  WKBReader readerAssembler(provider);
+  readerAssembler.setHandler(&assembler);
   while (readerAssembler.hasNextFeature()) {
     readerAssembler.iterateFeature();
   }
@@ -188,7 +190,8 @@ List cpp_meta_wkt(CharacterVector wkt, bool recursive) {
   // first, count
   WKMetaCounter counter(recursive);
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer readerCounter(provider, counter);
+  WKTStreamer readerCounter(provider);
+  readerCounter.setHandler(&counter);
   while (readerCounter.hasNextFeature()) {
     readerCounter.iterateFeature();
   }
@@ -196,7 +199,8 @@ List cpp_meta_wkt(CharacterVector wkt, bool recursive) {
   // then, assemble
   WKMetaAssembler assembler(recursive, counter.nMeta);
   provider = WKCharacterVectorProvider(wkt);
-  WKTReader readerAssembler(provider, assembler);
+  WKTReader readerAssembler(provider);
+  readerAssembler.setHandler(&assembler);
   while (readerAssembler.hasNextFeature()) {
     readerAssembler.iterateFeature();
   }
@@ -210,7 +214,8 @@ List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {
   // first, count coordinates
   WKMetaCounter counter(recursive);
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer readerCounter(provider, counter);
+  WKTStreamer readerCounter(provider);
+  readerCounter.setHandler(&counter);
   while (readerCounter.hasNextFeature()) {
     readerCounter.iterateFeature();
   }
@@ -218,7 +223,8 @@ List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {
   // then, assemble
   WKMetaAssembler assembler(recursive, counter.nMeta);
   provider = WKCharacterVectorProvider(wkt);
-  WKTStreamer readerAssembler(provider, assembler);
+  WKTStreamer readerAssembler(provider);
+  readerAssembler.setHandler(&assembler);
   while (readerAssembler.hasNextFeature()) {
     readerAssembler.iterateFeature();
   }
