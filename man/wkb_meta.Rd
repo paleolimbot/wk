@@ -43,7 +43,7 @@ A data.frame with columns:
 \item \code{size}: For points and linestrings the number of points, for polygons
 the number of rings, and for mutli-geometries and collection types,
 the number of child geometries.
-\item \code{srid}: The spatial reference identifier
+\item \code{srid}: The spatial reference identifier as an integer
 }
 }
 \description{

@@ -4,6 +4,7 @@
 #include "wk/io-rcpp.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
+#include "wk/wkt-reader.h"
 #include "wk/wkt-streamer.h"
 
 using namespace Rcpp;
@@ -157,6 +158,51 @@ protected:
   int lastNestId;
   bool recursive;
 };
+
+
+// [[Rcpp::export]]
+List cpp_meta_wkb(List wkb, bool recursive) {
+
+  // first, count
+  WKMetaCounter counter(recursive);
+  WKRawVectorListProvider provider(wkb);
+  WKBReader readerCounter(provider, counter);
+  while (readerCounter.hasNextFeature()) {
+    readerCounter.iterateFeature();
+  }
+
+  // then, assemble
+  WKMetaAssembler assembler(recursive, counter.nMeta);
+  provider = WKRawVectorListProvider(wkb);
+  WKBReader readerAssembler(provider, assembler);
+  while (readerAssembler.hasNextFeature()) {
+    readerAssembler.iterateFeature();
+  }
+
+  return assembler.assembleMeta();
+}
+
+// [[Rcpp::export]]
+List cpp_meta_wkt(CharacterVector wkt, bool recursive) {
+
+  // first, count
+  WKMetaCounter counter(recursive);
+  WKCharacterVectorProvider provider(wkt);
+  WKTStreamer readerCounter(provider, counter);
+  while (readerCounter.hasNextFeature()) {
+    readerCounter.iterateFeature();
+  }
+
+  // then, assemble
+  WKMetaAssembler assembler(recursive, counter.nMeta);
+  provider = WKCharacterVectorProvider(wkt);
+  WKTReader readerAssembler(provider, assembler);
+  while (readerAssembler.hasNextFeature()) {
+    readerAssembler.iterateFeature();
+  }
+
+  return assembler.assembleMeta();
+}
 
 // [[Rcpp::export]]
 List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {

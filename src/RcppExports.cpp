@@ -57,6 +57,30 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_meta_wkb
+List cpp_meta_wkb(List wkb, bool recursive);
+RcppExport SEXP _wk_cpp_meta_wkb(SEXP wkbSEXP, SEXP recursiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wkb(wkbSEXP);
+    Rcpp::traits::input_parameter< bool >::type recursive(recursiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_meta_wkb(wkb, recursive));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_meta_wkt
+List cpp_meta_wkt(CharacterVector wkt, bool recursive);
+RcppExport SEXP _wk_cpp_meta_wkt(SEXP wktSEXP, SEXP recursiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    Rcpp::traits::input_parameter< bool >::type recursive(recursiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_meta_wkt(wkt, recursive));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_meta_wkt_streamer
 List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive);
 RcppExport SEXP _wk_cpp_meta_wkt_streamer(SEXP wktSEXP, SEXP recursiveSEXP) {
@@ -176,6 +200,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
+    {"_wk_cpp_meta_wkb", (DL_FUNC) &_wk_cpp_meta_wkb, 2},
+    {"_wk_cpp_meta_wkt", (DL_FUNC) &_wk_cpp_meta_wkt, 2},
     {"_wk_cpp_meta_wkt_streamer", (DL_FUNC) &_wk_cpp_meta_wkt_streamer, 2},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},

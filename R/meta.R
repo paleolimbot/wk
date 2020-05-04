@@ -17,7 +17,7 @@
 #' - `size`: For points and linestrings the number of points, for polygons
 #'   the number of rings, and for mutli-geometries and collection types,
 #'   the number of child geometries.
-#' - `srid`: The spatial reference identifier
+#' - `srid`: The spatial reference identifier as an integer
 #'
 #' @examples
 #' wkt_meta("POINT (30 10)")
@@ -25,21 +25,25 @@
 #' wkt_meta("GEOMETRYCOLLECTION (POINT (30 10))", recursive = TRUE)
 #'
 wkb_meta <- function(wkb, recursive = FALSE) {
-
+  meta <- cpp_meta_wkb(wkb, recursive = recursive)
+  # slightly faster than data.frame()
+  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
 }
 
 #' @rdname wkb_meta
 #' @export
 wkt_meta <- function(wkt, recursive = FALSE) {
-
+  meta <- cpp_meta_wkt(wkt, recursive = recursive)
+  # slightly faster than data.frame()
+  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
 }
 
 #' @rdname wkb_meta
 #' @export
 wkt_streamer_meta <- function(wkt, recursive = FALSE) {
-  coords <- cpp_meta_wkt_streamer(wkt, recursive = recursive)
+  meta <- cpp_meta_wkt_streamer(wkt, recursive = recursive)
   # slightly faster than data.frame()
-  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
+  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
 }
 
 #' @rdname wkb_meta

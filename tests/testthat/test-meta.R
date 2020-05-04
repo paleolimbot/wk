@@ -1,4 +1,36 @@
 
+test_that("wkb_meta() works", {
+  expect_identical(
+    wkb_meta(wkt_translate_wkb("POINT (30 10)")),
+    data.frame(
+      feature_id = 1L,
+      nest_id = 0L,
+      part_id = NA_integer_,
+      type_id = 1L,
+      size = 1L,
+      srid = NA_integer_,
+      has_z = FALSE,
+      has_m = FALSE
+    )
+  )
+})
+
+test_that("wkt_meta() works", {
+  expect_identical(
+    wkt_meta("POINT (30 10)"),
+    data.frame(
+      feature_id = 1L,
+      nest_id = 0L,
+      part_id = NA_integer_,
+      type_id = 1L,
+      size = 1L,
+      srid = NA_integer_,
+      has_z = FALSE,
+      has_m = FALSE
+    )
+  )
+})
+
 test_that("wkt_streamer_meta() works", {
   # point
   expect_identical(
