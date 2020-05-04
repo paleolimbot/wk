@@ -23,7 +23,7 @@ void cpp_translate_base(WKReader& reader, WKWriter& writer,
   }
 }
 
-Rcpp::CharacterVector cpp_translate_wkt_base(WKReader& reader,
+Rcpp::CharacterVector cpp_translate_base_wkt(WKReader& reader,
                                              int includeZ, int includeM, int includeSRID,
                                              int precision, bool trim) {
   WKCharacterVectorExporter exporter(reader.nFeatures());
@@ -36,7 +36,7 @@ Rcpp::CharacterVector cpp_translate_wkt_base(WKReader& reader,
   return exporter.output;
 }
 
-Rcpp::List cpp_translate_wkb_base(WKReader& reader,
+Rcpp::List cpp_translate_base_wkb(WKReader& reader,
                                   int includeZ, int includeM, int includeSRID,
                                   int endian, int bufferSize) {
   WKRawVectorListExporter exporter(reader.nFeatures());
@@ -49,13 +49,23 @@ Rcpp::List cpp_translate_wkb_base(WKReader& reader,
   return exporter.output;
 }
 
+Rcpp::List cpp_translate_base_wksexp(WKReader& reader,
+                                     int includeZ, int includeM, int includeSRID) {
+  WKSEXPExporter exporter(reader.nFeatures());
+  WKSEXPWriter writer(exporter);
+
+  cpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
+
+  return exporter.output;
+}
+
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
                                             int includeSRID, int precision, bool trim) {
   WKRawVectorListProvider provider(wkb);
   WKBReader reader(provider);
-  return cpp_translate_wkt_base(reader, includeZ, includeM, includeSRID, precision, trim);
+  return cpp_translate_base_wkt(reader, includeZ, includeM, includeSRID, precision, trim);
 }
 
 // [[Rcpp::export]]
@@ -64,8 +74,7 @@ Rcpp::List cpp_translate_wkb_wkb(Rcpp::List wkb, int includeZ, int includeM,
 
   WKRawVectorListProvider provider(wkb);
   WKBReader reader(provider);
-
-  return cpp_translate_wkb_base(reader, includeZ, includeM, includeSRID, endian, bufferSize);
+  return cpp_translate_base_wkb(reader, includeZ, includeM, includeSRID, endian, bufferSize);
 }
 
 // [[Rcpp::export]]
@@ -74,23 +83,7 @@ CharacterVector cpp_translate_wkt_wkt(CharacterVector wkt, int includeZ, int inc
 
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer reader(provider);
-
-  WKCharacterVectorExporter exporter(provider.nFeatures());
-  exporter.setRoundingPrecision(precision);
-  exporter.setTrim(trim);
-  WKTWriter writer(exporter);
-
-  reader.setHandler(&writer);
-
-  writer.setIncludeZ(includeZ);
-  writer.setIncludeM(includeM);
-  writer.setIncludeSRID(includeSRID);
-
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-
-  return exporter.output;
+  return cpp_translate_base_wkt(reader, includeZ, includeM, includeSRID, precision, trim);
 }
 
 // [[Rcpp::export]]
@@ -99,23 +92,7 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
 
   WKCharacterVectorProvider provider(wkt);
   WKTReader reader(provider);
-
-  WKRawVectorListExporter exporter(provider.nFeatures());
-  exporter.setBufferSize(bufferSize);
-  WKBWriter writer(exporter);
-  writer.setEndian(endian);
-
-  reader.setHandler(&writer);
-
-  writer.setIncludeZ(includeZ);
-  writer.setIncludeM(includeM);
-  writer.setIncludeSRID(includeSRID);
-
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-
-  return exporter.output;
+  return cpp_translate_base_wkb(reader, includeZ, includeM, includeSRID, endian, bufferSize);
 }
 
 
@@ -125,19 +102,5 @@ Rcpp::List cpp_translate_wkt_wksexp(CharacterVector wkt, int includeZ, int inclu
 
   WKCharacterVectorProvider provider(wkt);
   WKTReader reader(provider);
-
-  WKSEXPExporter exporter(provider.nFeatures());
-  WKSEXPWriter writer(exporter);
-
-  reader.setHandler(&writer);
-
-  writer.setIncludeZ(includeZ);
-  writer.setIncludeM(includeM);
-  writer.setIncludeSRID(includeSRID);
-
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-
-  return exporter.output;
+  return cpp_translate_base_wksexp(reader, includeZ, includeM, includeSRID);
 }
