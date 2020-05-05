@@ -78,6 +78,42 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_format_wkb
+Rcpp::CharacterVector cpp_format_wkb(Rcpp::List wkb, int maxCoords);
+RcppExport SEXP _wk_cpp_format_wkb(SEXP wkbSEXP, SEXP maxCoordsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
+    Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wkb(wkb, maxCoords));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_format_wkt
+Rcpp::CharacterVector cpp_format_wkt(CharacterVector wkt, int maxCoords);
+RcppExport SEXP _wk_cpp_format_wkt(SEXP wktSEXP, SEXP maxCoordsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wkt(wkt, maxCoords));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_format_wksxp
+Rcpp::CharacterVector cpp_format_wksxp(List wksxp, int maxCoords);
+RcppExport SEXP _wk_cpp_format_wksxp(SEXP wksxpSEXP, SEXP maxCoordsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wksxp(wksxp, maxCoords));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_meta_wkb
 List cpp_meta_wkb(List wkb, bool recursive);
 RcppExport SEXP _wk_cpp_meta_wkb(SEXP wkbSEXP, SEXP recursiveSEXP) {
@@ -306,6 +342,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
     {"_wk_cpp_debug_wksxp", (DL_FUNC) &_wk_cpp_debug_wksxp, 1},
+    {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 2},
+    {"_wk_cpp_format_wkt", (DL_FUNC) &_wk_cpp_format_wkt, 2},
+    {"_wk_cpp_format_wksxp", (DL_FUNC) &_wk_cpp_format_wksxp, 2},
     {"_wk_cpp_meta_wkb", (DL_FUNC) &_wk_cpp_meta_wkb, 2},
     {"_wk_cpp_meta_wkt", (DL_FUNC) &_wk_cpp_meta_wkt, 2},
     {"_wk_cpp_meta_wkt_streamer", (DL_FUNC) &_wk_cpp_meta_wkt_streamer, 2},

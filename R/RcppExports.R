@@ -29,6 +29,18 @@ cpp_debug_wksxp <- function(input) {
     invisible(.Call(`_wk_cpp_debug_wksxp`, input))
 }
 
+cpp_format_wkb <- function(wkb, maxCoords) {
+    .Call(`_wk_cpp_format_wkb`, wkb, maxCoords)
+}
+
+cpp_format_wkt <- function(wkt, maxCoords) {
+    .Call(`_wk_cpp_format_wkt`, wkt, maxCoords)
+}
+
+cpp_format_wksxp <- function(wksxp, maxCoords) {
+    .Call(`_wk_cpp_format_wksxp`, wksxp, maxCoords)
+}
+
 cpp_meta_wkb <- function(wkb, recursive) {
     .Call(`_wk_cpp_meta_wkb`, wkb, recursive)
 }
