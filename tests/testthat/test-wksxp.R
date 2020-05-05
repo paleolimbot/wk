@@ -1,0 +1,35 @@
+
+test_that("wksxp class works", {
+  x <- wksxp(wkt_translate_wksxp("POINT (40 10)"))
+  expect_is(x, "wk_wksxp")
+  expect_is(x, "wk_vctr")
+  expect_output(print(x), "wk_wksxp")
+  expect_match(as.character(x), "POINT")
+
+  expect_is(wksxp(list(NULL)), "wk_wksxp")
+
+  expect_error(new_wk_wksxp(structure(list(), thing = "stuff")), "must be a list")
+  expect_error(new_wk_wksxp("char!"), "must be a list")
+  expect_error(wksxp(list(raw())), "Encountered 1 parse problem")
+  expect_error(wksxp(rep(list(raw()), 10)), "Encountered 10 parse problem")
+
+  expect_is(x[1], "wk_wksxp")
+  expect_identical(x[[1]], x[1])
+  expect_is(c(x, x), "wk_wksxp")
+  expect_identical(rep(x, 2), c(x, x))
+  expect_identical(rep_len(x, 2), c(x, x))
+  expect_length(c(x, x), 2)
+})
+
+test_that("as_wksxp() works", {
+  x <- wksxp(wkt_translate_wksxp("SRID=44;POINT (40 10)"))
+  expect_identical(as_wksxp(x), x)
+
+  # make sure creation options get passed through for identity case
+  expect_identical(attr(unclass(as_wksxp(x, include_srid = TRUE))[[1]], "srid"), 44)
+  expect_identical(attr(unclass(as_wksxp(x, include_srid = FALSE))[[1]], "srid"), NULL)
+
+  expect_identical(as_wksxp("SRID=44;POINT (40 10)"), x)
+  expect_identical(as_wksxp(wkt("SRID=44;POINT (40 10)")), x)
+  expect_identical(as_wksxp(as_wkb("SRID=44;POINT (40 10)")), x)
+})
