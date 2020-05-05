@@ -19,6 +19,8 @@
 #'   the number of child geometries.
 #' - `srid`: The spatial reference identifier as an integer
 #'
+#' @export
+#'
 #' @examples
 #' wkt_meta("POINT (30 10)")
 #' wkt_meta("GEOMETRYCOLLECTION (POINT (30 10))", recursive = FALSE)
