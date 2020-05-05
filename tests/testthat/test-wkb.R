@@ -4,6 +4,7 @@ test_that("wkb class works", {
   expect_is(x, "wk_wkb")
   expect_is(x, "wk_vctr")
   expect_output(print(x), "wk_wkb")
+  expect_match(as.character(x), "POINT")
 
   expect_is(wkb(list(NULL)), "wk_wkb")
 

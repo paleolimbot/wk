@@ -96,6 +96,12 @@ validate_wk_wkb <- function(x) {
 
 #' @export
 format.wk_wkb <- function(x, ...) {
-  heads <- lapply(unclass(x), utils::head, 5)
-  vapply(heads, function(x) paste0(format(x), collapse = " "), character(1))
+  paste0("<", wkb_format(x), ">")
+}
+
+# as far as I can tell, this is the only way to change
+# how the object appears in the viewer
+#' @export
+as.character.wk_wkb <- function(x, ...) {
+  format(x, ...)
 }
