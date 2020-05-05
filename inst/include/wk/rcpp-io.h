@@ -282,6 +282,8 @@ public:
 
   void prepareNextFeature() {
     this->featureNull = false;
+    this->stream.str("");
+    this->stream.clear();
   }
 
   void writeNull() {

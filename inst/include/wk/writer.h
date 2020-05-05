@@ -23,7 +23,7 @@ public:
     exporter.writeNextFeature();
   }
 
-  // creation optioins for all WKX formats
+  // creation options for all WKX formats
   void setIncludeSRID(int includeSRID) {
     this->includeSRID = includeSRID;
   }
