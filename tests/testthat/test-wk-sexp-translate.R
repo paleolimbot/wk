@@ -428,3 +428,106 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "GEOMETRYCOLLECTION (POINT (30 10), GEOMETRYCOLLECTION (POINT (12 6)), LINESTRING (1 2, 3 4))"
   )
 })
+
+test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          matrix(c(30, 10, 1, 2),  ncol = 4),
+          has_z = TRUE, has_m = TRUE, class = "wk_point"
+        )
+      )
+    ),
+    "POINT ZM (30 10 1 2)"
+  )
+
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10, 1, 2, 0, 0, 1, 2, 10, 10, 1, 2, 30, 10, 1, 2), ncol = 4, byrow = TRUE)
+          ),
+          has_z = TRUE,
+          has_m = TRUE,
+          class = "wk_polygon"
+        )
+      )
+    ),
+    "POLYGON ZM ((30 10 1 2, 0 0 1 2, 10 10 1 2, 30 10 1 2))"
+  )
+
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10, 1, 2), ncol = 4),
+            matrix(c(0, 0, 1, 2), ncol = 4)
+          ),
+          has_z = TRUE,
+          has_m = TRUE,
+          class = "wk_multipoint"
+        )
+      )
+    ),
+    "MULTIPOINT ZM ((30 10 1 2), (0 0 1 2))"
+  )
+
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            matrix(c(30, 10, 1, 2, 0, 0, 1, 2), ncol = 4, byrow = TRUE),
+            matrix(c(20, 20, 1, 2, 0, 0, 1, 2), ncol = 4, byrow = TRUE)
+          ),
+          has_z = TRUE,
+          has_m = TRUE,
+          class = "wk_multilinestring"
+        )
+      )
+    ),
+    "MULTILINESTRING ZM ((30 10 1 2, 0 0 1 2), (20 20 1 2, 0 0 1 2))",
+  )
+
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          list(
+            list(
+              matrix(c(30, 10, 1, 2, 0, 0, 1, 2, 10, 10, 1, 2, 30, 10, 1, 2), ncol = 4, byrow = TRUE)
+            ),
+            list(
+              matrix(c(30, 10, 2, 3, 0, 0, 2, 3, 10, 10, 2, 3, 30, 10, 2, 3), ncol = 4, byrow = TRUE)
+            )
+          ),
+          has_z = TRUE,
+          has_m = TRUE,
+          class = "wk_multipolygon"
+        )
+      )
+    ),
+    "MULTIPOLYGON ZM (((30 10 1 2, 0 0 1 2, 10 10 1 2, 30 10 1 2)), ((30 10 2 3, 0 0 2 3, 10 10 2 3, 30 10 2 3)))"
+  )
+})
+
+test_that("basic reverse wksexp translation works with SRID", {
+  expect_identical(
+    wksexp_translate_wkt(
+      list(
+        structure(
+          matrix(c(30, 10),  ncol = 2),
+          srid = 43, class = "wk_point"
+        )
+      )
+    ),
+    "SRID=43;POINT (30 10)"
+  )
+})
+
+test_that("basic reverse wksexp translation works with NULL", {
+  expect_identical(wksexp_translate_wkt(list(NULL)), NA_character_)
+})

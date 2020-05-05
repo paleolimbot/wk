@@ -258,7 +258,7 @@ private:
 
     if (item.hasAttribute("has_m")) {
       try {
-        hasZ = item.attr("has_m");
+        hasM = item.attr("has_m");
       } catch(std::exception& e) {
         throw WKParseException("'has_m' attribute has unexpected type");
       }
