@@ -7,7 +7,7 @@
 \alias{as_wkb.wk_wkb}
 \alias{as_wkb.wk_wkt}
 \alias{as_wkt.wk_wkb}
-\title{Mark raw vectors as well-known binary}
+\title{Mark lists of raw vectors as well-known binary}
 \usage{
 wkb(x)
 
@@ -78,7 +78,7 @@ Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly fa
 A \code{\link[=new_wk_wkb]{new_wk_wkb()}}
 }
 \description{
-Mark raw vectors as well-known binary
+Mark lists of raw vectors as well-known binary
 }
 \examples{
 wkb(wkt_translate_wkb("POINT (20 10)"))

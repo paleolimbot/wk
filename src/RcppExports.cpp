@@ -195,6 +195,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_ranges_wkb
+List cpp_ranges_wkb(List wkb, bool naRm, bool onlyFinite);
+RcppExport SEXP _wk_cpp_ranges_wkb(SEXP wkbSEXP, SEXP naRmSEXP, SEXP onlyFiniteSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wkb(wkbSEXP);
+    Rcpp::traits::input_parameter< bool >::type naRm(naRmSEXP);
+    Rcpp::traits::input_parameter< bool >::type onlyFinite(onlyFiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_ranges_wkb(wkb, naRm, onlyFinite));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_ranges_wkt
+List cpp_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite);
+RcppExport SEXP _wk_cpp_ranges_wkt(SEXP wktSEXP, SEXP naRmSEXP, SEXP onlyFiniteSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    Rcpp::traits::input_parameter< bool >::type naRm(naRmSEXP);
+    Rcpp::traits::input_parameter< bool >::type onlyFinite(onlyFiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_ranges_wkt(wkt, naRm, onlyFinite));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_ranges_wksxp
+List cpp_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite);
+RcppExport SEXP _wk_cpp_ranges_wksxp(SEXP wksxpSEXP, SEXP naRmSEXP, SEXP onlyFiniteSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    Rcpp::traits::input_parameter< bool >::type naRm(naRmSEXP);
+    Rcpp::traits::input_parameter< bool >::type onlyFinite(onlyFiniteSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_ranges_wksxp(wksxp, naRm, onlyFinite));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_translate_wkb_wkt
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM, int includeSRID, int precision, bool trim);
 RcppExport SEXP _wk_cpp_translate_wkb_wkt(SEXP wkbSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
@@ -352,6 +391,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
     {"_wk_cpp_problems_wksxp", (DL_FUNC) &_wk_cpp_problems_wksxp, 1},
+    {"_wk_cpp_ranges_wkb", (DL_FUNC) &_wk_cpp_ranges_wkb, 3},
+    {"_wk_cpp_ranges_wkt", (DL_FUNC) &_wk_cpp_ranges_wkt, 3},
+    {"_wk_cpp_ranges_wksxp", (DL_FUNC) &_wk_cpp_ranges_wksxp, 3},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 6},
     {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},
     {"_wk_cpp_translate_wkb_wksxp", (DL_FUNC) &_wk_cpp_translate_wkb_wksxp, 4},

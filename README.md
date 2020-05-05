@@ -39,12 +39,11 @@ library(wk)
 
 ## Basic vector classes for WKT and WKB
 
-Want to return an object that any spatial package can read? Use `wkt()`
-to mark a character vector as containing well-known text, or `wkb()` to
-mark a vector as well-known binary. These have some basic vector
-features built in, which means you can subset, repeat, concatenate, and
-put these objects in a data frame or tibble. These come with built-in
-`format()` and `print()` methods.
+Use `wkt()` to mark a character vector as containing well-known text, or
+`wkb()` to mark a vector as well-known binary. These have some basic
+vector features built in, which means you can subset, repeat,
+concatenate, and put these objects in a data frame or tibble. These come
+with built-in `format()` and `print()` methods.
 
 ``` r
 wkt("POINT (30 10)")
@@ -174,9 +173,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            304µs    359µs     2647.   114.1KB     18.3
-#> 2 geos_c        521µs    574µs     1668.    53.5KB      0  
-#> 3 sf            398µs    455µs     1965.    99.8KB     14.4
+#> 1 wk            310µs    357µs     2759.   114.1KB    18.4 
+#> 2 geos_c        520µs    582µs     1664.    53.5KB     2.08
+#> 3 sf            383µs    440µs     2194.    99.8KB    13.9
 ```
 
 Read WKB + Write WKT:
@@ -194,10 +193,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.02ms   3.44ms    285.      3.32KB     0   
-#> 2 geos_c       3.92ms   4.32ms    228.      3.32KB     0   
-#> 3 sf         176.78ms 180.48ms      5.45  569.81KB    21.8 
-#> 4 wellknown    24.3ms   28.5ms     35.2     3.41MB     5.86
+#> 1 wk           3.12ms   3.42ms    288.      3.32KB     0   
+#> 2 geos_c       3.94ms   4.37ms    225.      3.32KB     0   
+#> 3 sf         179.71ms 182.25ms      5.45  569.81KB    21.8 
+#> 4 wellknown   24.16ms  26.62ms     36.5     3.41MB     5.77
 ```
 
 Read WKT + Write WKB:
@@ -213,10 +212,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.92ms   2.13ms     461.    53.58KB     0   
-#> 2 geos_c        2.5ms   2.75ms     358.    49.48KB     0   
-#> 3 sf           3.33ms   3.65ms     268.   186.48KB     8.70
-#> 4 wellknown   48.42ms  50.71ms      19.8    1.31MB     8.50
+#> 1 wk           1.95ms   2.21ms     443.    53.58KB     2.04
+#> 2 geos_c       2.49ms   2.75ms     356.    49.48KB     0   
+#> 3 sf           3.39ms   3.75ms     260.   186.48KB     6.40
+#> 4 wellknown    46.6ms  47.63ms      20.5    1.31MB     8.80
 ```
 
 Read WKT + Write WKT:
@@ -233,9 +232,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.03ms   5.81ms    166.     63.76KB     1.98
-#> 2 geos_c       6.33ms   6.88ms    133.      3.32KB     0   
-#> 3 sf         224.86ms 228.46ms      4.37  236.33KB    17.5
+#> 1 wk           5.25ms   5.84ms    170.     63.76KB     2.00
+#> 2 geos_c       5.88ms   6.54ms    151.      3.32KB     0   
+#> 3 sf         191.73ms 193.06ms      5.08  232.42KB    20.3
 ```
 
 Generate coordinates:
@@ -250,7 +249,7 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     179.11µs 211.44µs     4475.     154KB     25.6
-#> 2 sfheaders  499.71µs 575.78µs     1679.     612KB     55.5
-#> 3 sf           2.11ms   2.34ms      420.     606KB     33.8
+#> 1 wk_wkb     181.53µs 207.49µs     4517.     154KB     25.3
+#> 2 sfheaders  510.61µs 576.63µs     1693.     612KB     56.2
+#> 3 sf           2.11ms   2.36ms      416.     606KB     33.9
 ```

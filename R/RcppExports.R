@@ -69,6 +69,18 @@ cpp_problems_wksxp <- function(wksxp) {
     .Call(`_wk_cpp_problems_wksxp`, wksxp)
 }
 
+cpp_ranges_wkb <- function(wkb, naRm, onlyFinite) {
+    .Call(`_wk_cpp_ranges_wkb`, wkb, naRm, onlyFinite)
+}
+
+cpp_ranges_wkt <- function(wkt, naRm, onlyFinite) {
+    .Call(`_wk_cpp_ranges_wkt`, wkt, naRm, onlyFinite)
+}
+
+cpp_ranges_wksxp <- function(wksxp, naRm, onlyFinite) {
+    .Call(`_wk_cpp_ranges_wksxp`, wksxp, naRm, onlyFinite)
+}
+
 cpp_translate_wkb_wkt <- function(wkb, includeZ, includeM, includeSRID, precision, trim) {
     .Call(`_wk_cpp_translate_wkb_wkt`, wkb, includeZ, includeM, includeSRID, precision, trim)
 }

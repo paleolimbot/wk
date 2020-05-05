@@ -40,7 +40,7 @@ library(wk)
 
 ## Basic vector classes for WKT and WKB
 
-Want to return an object that any spatial package can read? Use `wkt()` to mark a character vector as containing well-known text, or `wkb()` to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in `format()` and `print()` methods.
+Use `wkt()` to mark a character vector as containing well-known text, or `wkb()` to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in `format()` and `print()` methods.
 
 ```{r}
 wkt("POINT (30 10)")
