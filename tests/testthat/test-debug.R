@@ -27,7 +27,7 @@ test_that("debugger works on wkt", {
 
 test_that("debugger works on sexp", {
   expect_output(
-    wksexp_debug(
+    wksxp_debug(
       list(
         structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
       )

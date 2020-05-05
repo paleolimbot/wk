@@ -1,11 +1,11 @@
 
-#include <Rcpp.h>
-
-#include "wk/rcpp-io.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
 #include "wk/wkt-streamer.h"
 
+#include <Rcpp.h>
+#include "wk/rcpp-io.h"
+#include "wk/sexp-reader.h"
 using namespace Rcpp;
 
 class WKCoordinateCounter: public WKGeometryHandler {
@@ -144,5 +144,12 @@ List cpp_coords_wkb(List wkb) {
 List cpp_coords_wkt(CharacterVector wkt) {
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer reader(provider);
+  return cpp_coords_base(reader);
+}
+
+// [[Rcpp::export]]
+List cpp_coords_wksxp(List wksxp) {
+  WKSEXPProvider provider(wksxp);
+  WKSEXPReader reader(provider);
   return cpp_coords_base(reader);
 }

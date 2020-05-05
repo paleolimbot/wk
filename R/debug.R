@@ -37,6 +37,6 @@ wkt_streamer_debug <- function(wkt) {
 
 #' @rdname wkb_debug
 #' @export
-wksexp_debug <- function(wksexp) {
-  cpp_debug_wksxp(wksexp)
+wksxp_debug <- function(wksxp) {
+  cpp_debug_wksxp(wksxp)
 }

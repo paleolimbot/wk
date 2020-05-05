@@ -30,3 +30,11 @@ wkt_coords <- function(wkt) {
   # slightly faster than data.frame()
   structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
 }
+
+#' @rdname wkb_coords
+#' @export
+wksxp_coords <- function(wksxp) {
+  coords <- cpp_coords_wksxp(wksxp)
+  # slightly faster than data.frame()
+  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
+}

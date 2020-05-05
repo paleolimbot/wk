@@ -48,6 +48,14 @@ wkt_streamer_meta <- function(wkt, recursive = FALSE) {
 
 #' @rdname wkb_meta
 #' @export
+wksxp_meta <- function(wksxp, recursive = FALSE) {
+  meta <- cpp_meta_wksxp(wksxp, recursive = recursive)
+  # slightly faster than data.frame()
+  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
+}
+
+#' @rdname wkb_meta
+#' @export
 wk_geometry_type <- function(type_id) {
   c(
     "point", "linestring", "polygon",

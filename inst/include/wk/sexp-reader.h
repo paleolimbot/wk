@@ -28,22 +28,28 @@ protected:
   virtual void readClassedGeometry(SEXP item, uint32_t partId) {
 
     WKGeometryMeta meta;
-    if (Rf_inherits(item, "wk_point")) {
-      meta = this->readMeta<Rcpp::NumericMatrix>(item, WKGeometryType::Point);
-    } else if (Rf_inherits(item, "wk_linestring")) {
-      meta = this->readMeta<Rcpp::NumericMatrix>(item, WKGeometryType::LineString);
-    } else if (Rf_inherits(item, "wk_polygon")) {
-      meta = this->readMeta<Rcpp::List>(item, WKGeometryType::Polygon);
-    } else if (Rf_inherits(item, "wk_multipoint"))  {
-      meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiPoint);
-    } else if (Rf_inherits(item, "wk_multilinestring"))  {
-      meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiLineString);
-    } else if (Rf_inherits(item, "wk_multipolygon"))  {
-      meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiPolygon);
-    } else if (Rf_inherits(item, "wk_geometrycollection"))  {
-      meta = this->readMeta<Rcpp::List>(item, WKGeometryType::GeometryCollection);
-    } else {
-      throw WKParseException("Expected object with class 'wk_<geometry_type>'");
+    try {
+      if (Rf_inherits(item, "wk_point")) {
+        meta = this->readMeta<Rcpp::NumericMatrix>(item, WKGeometryType::Point);
+      } else if (Rf_inherits(item, "wk_linestring")) {
+        meta = this->readMeta<Rcpp::NumericMatrix>(item, WKGeometryType::LineString);
+      } else if (Rf_inherits(item, "wk_polygon")) {
+        meta = this->readMeta<Rcpp::List>(item, WKGeometryType::Polygon);
+      } else if (Rf_inherits(item, "wk_multipoint"))  {
+        meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiPoint);
+      } else if (Rf_inherits(item, "wk_multilinestring"))  {
+        meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiLineString);
+      } else if (Rf_inherits(item, "wk_multipolygon"))  {
+        meta = this->readMeta<Rcpp::List>(item, WKGeometryType::MultiPolygon);
+      } else if (Rf_inherits(item, "wk_geometrycollection"))  {
+        meta = this->readMeta<Rcpp::List>(item, WKGeometryType::GeometryCollection);
+      } else {
+        throw WKParseException("Expected object with class 'wk_<geometry_type>'");
+      }
+    } catch(WKParseException& e) {
+      throw e;
+    } catch (std::exception& e) {
+      throw WKParseException(Formatter() << "Unexpected classed object: " << e.what());
     }
 
     this->readGeometry(item, meta, partId);

@@ -1,14 +1,13 @@
 
-#include <Rcpp.h>
-
-#include "wk/rcpp-io.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
 #include "wk/wkt-reader.h"
 #include "wk/wkt-streamer.h"
 
+#include <Rcpp.h>
+#include "wk/rcpp-io.h"
+#include "wk/sexp-reader.h"
 using namespace Rcpp;
-
 
 class WKMetaFoundException: public WKParseException {
 public:
@@ -195,5 +194,12 @@ List cpp_meta_wkt(CharacterVector wkt, bool recursive) {
 List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer reader(provider);
+  return cpp_meta_base(reader, recursive);
+}
+
+// [[Rcpp::export]]
+List cpp_meta_wksxp(List wksxp, bool recursive) {
+  WKSEXPProvider provider(wksxp);
+  WKSEXPReader reader(provider);
   return cpp_meta_base(reader, recursive);
 }

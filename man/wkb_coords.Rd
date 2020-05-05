@@ -3,17 +3,22 @@
 \name{wkb_coords}
 \alias{wkb_coords}
 \alias{wkt_coords}
+\alias{wksxp_coords}
 \title{Extract coordinates from well-known geometries}
 \usage{
 wkb_coords(wkb)
 
 wkt_coords(wkt)
+
+wksxp_coords(wksxp)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 
 \item{wkt}{A character vector containing well-known text.}
+
+\item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
 A data.frame with columns:

@@ -27,6 +27,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_coords_wksxp
+List cpp_coords_wksxp(List wksxp);
+RcppExport SEXP _wk_cpp_coords_wksxp(SEXP wksxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_wksxp(wksxp));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_debug_wkb
 void cpp_debug_wkb(List wkb);
 RcppExport SEXP _wk_cpp_debug_wkb(SEXP wkbSEXP) {
@@ -103,6 +114,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_meta_wksxp
+List cpp_meta_wksxp(List wksxp, bool recursive);
+RcppExport SEXP _wk_cpp_meta_wksxp(SEXP wksxpSEXP, SEXP recursiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    Rcpp::traits::input_parameter< bool >::type recursive(recursiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_meta_wksxp(wksxp, recursive));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_problems_wkb
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb);
 RcppExport SEXP _wk_cpp_problems_wkb(SEXP wkbSEXP) {
@@ -122,6 +145,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_problems_wkt(wkt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_problems_wksxp
+Rcpp::CharacterVector cpp_problems_wksxp(List wksxp);
+RcppExport SEXP _wk_cpp_problems_wksxp(SEXP wksxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_problems_wksxp(wksxp));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -267,6 +301,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 1},
     {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 1},
+    {"_wk_cpp_coords_wksxp", (DL_FUNC) &_wk_cpp_coords_wksxp, 1},
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
@@ -274,8 +309,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_meta_wkb", (DL_FUNC) &_wk_cpp_meta_wkb, 2},
     {"_wk_cpp_meta_wkt", (DL_FUNC) &_wk_cpp_meta_wkt, 2},
     {"_wk_cpp_meta_wkt_streamer", (DL_FUNC) &_wk_cpp_meta_wkt_streamer, 2},
+    {"_wk_cpp_meta_wksxp", (DL_FUNC) &_wk_cpp_meta_wksxp, 2},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
+    {"_wk_cpp_problems_wksxp", (DL_FUNC) &_wk_cpp_problems_wksxp, 1},
     {"_wk_cpp_translate_wkb_wkt", (DL_FUNC) &_wk_cpp_translate_wkb_wkt, 6},
     {"_wk_cpp_translate_wkb_wkb", (DL_FUNC) &_wk_cpp_translate_wkb_wkb, 6},
     {"_wk_cpp_translate_wkb_wksxp", (DL_FUNC) &_wk_cpp_translate_wkb_wksxp, 4},

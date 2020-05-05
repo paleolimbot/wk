@@ -9,6 +9,10 @@ cpp_coords_wkt <- function(wkt) {
     .Call(`_wk_cpp_coords_wkt`, wkt)
 }
 
+cpp_coords_wksxp <- function(wksxp) {
+    .Call(`_wk_cpp_coords_wksxp`, wksxp)
+}
+
 cpp_debug_wkb <- function(wkb) {
     invisible(.Call(`_wk_cpp_debug_wkb`, wkb))
 }
@@ -37,12 +41,20 @@ cpp_meta_wkt_streamer <- function(wkt, recursive) {
     .Call(`_wk_cpp_meta_wkt_streamer`, wkt, recursive)
 }
 
+cpp_meta_wksxp <- function(wksxp, recursive) {
+    .Call(`_wk_cpp_meta_wksxp`, wksxp, recursive)
+}
+
 cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
 
 cpp_problems_wkt <- function(wkt) {
     .Call(`_wk_cpp_problems_wkt`, wkt)
+}
+
+cpp_problems_wksxp <- function(wksxp) {
+    .Call(`_wk_cpp_problems_wksxp`, wksxp)
 }
 
 cpp_translate_wkb_wkt <- function(wkb, includeZ, includeM, includeSRID, precision, trim) {

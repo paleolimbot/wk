@@ -18,6 +18,25 @@ test_that("wkb_coords() works", {
   )
 })
 
+test_that("wksxp_coords() works", {
+  # point
+  sxp <- wkt_translate_wksxp("POINT (30 10)")
+  expect_identical(
+    wksxp_coords(sxp),
+    data.frame(
+      feature_id = 1L,
+      nest_id = 0L,
+      part_id = NA_integer_,
+      ring_id = NA_integer_,
+      coord_id = 1L,
+      x = 30,
+      y = 10,
+      z = NA_real_,
+      m = NA_real_
+    )
+  )
+})
+
 test_that("wkt_coords() works", {
   # point
   expect_identical(
