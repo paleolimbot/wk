@@ -152,6 +152,45 @@ private:
   bool onlyFinite;
 };
 
+class WKFeatureRangeCalculator: public WKRangeCalculator {
+public:
+  NumericVector vxmin;
+  NumericVector vymin;
+  NumericVector vzmin;
+  NumericVector vmmin;
+  NumericVector vxmax;
+  NumericVector vymax;
+  NumericVector vzmax;
+  NumericVector vmmax;
+
+  WKFeatureRangeCalculator(size_t size, bool naRm, bool onlyFinite):
+    WKRangeCalculator(naRm, onlyFinite),
+    vxmin(size),
+    vymin(size),
+    vzmin(size),
+    vmmin(size),
+    vxmax(size),
+    vymax(size),
+    vzmax(size),
+    vmmax(size) {}
+
+  void nextFeatureStart(size_t featureId) {
+    this->reset();
+  }
+
+  void nextFeatureEnd(size_t featureId) {
+    this->vxmin[featureId] = this->xmin;
+    this->vymin[featureId] = this->ymin;
+    this->vzmin[featureId] = this->zmin;
+    this->vmmin[featureId] = this->mmin;
+
+    this->vxmax[featureId] = this->xmax;
+    this->vymax[featureId] = this->ymax;
+    this->vzmax[featureId] = this->zmax;
+    this->vmmax[featureId] = this->mmin;
+  }
+};
+
 List cpp_ranges_base(WKReader& reader, bool naRm, bool onlyFinite) {
   WKRangeCalculator ranges(naRm, onlyFinite);
   reader.setHandler(&ranges);
@@ -191,4 +230,45 @@ List cpp_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
   WKSEXPProvider provider(wksxp);
   WKSEXPReader reader(provider);
   return cpp_ranges_base(reader, naRm, onlyFinite);
+}
+
+List cpp_feature_ranges_base(WKReader& reader, bool naRm, bool onlyFinite) {
+  WKFeatureRangeCalculator ranges(reader.nFeatures(), naRm, onlyFinite);
+  reader.setHandler(&ranges);
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+
+  return List::create(
+    _["xmin"] = ranges.vxmin,
+    _["ymin"] = ranges.vymin,
+    _["zmin"] = ranges.vzmin,
+    _["mmin"] = ranges.vmmin,
+
+    _["xmax"] = ranges.vxmax,
+    _["ymax"] = ranges.vymax,
+    _["zmax"] = ranges.vzmax,
+    _["mmax"] = ranges.vmmax
+  );
+}
+
+// [[Rcpp::export]]
+List cpp_feature_ranges_wkb(List wkb, bool naRm, bool onlyFinite) {
+  WKRawVectorListProvider provider(wkb);
+  WKBReader reader(provider);
+  return cpp_feature_ranges_base(reader, naRm, onlyFinite);
+}
+
+// [[Rcpp::export]]
+List cpp_feature_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite) {
+  WKCharacterVectorProvider provider(wkt);
+  WKTStreamer reader(provider);
+  return cpp_feature_ranges_base(reader, naRm, onlyFinite);
+}
+
+// [[Rcpp::export]]
+List cpp_feature_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
+  WKSEXPProvider provider(wksxp);
+  WKSEXPReader reader(provider);
+  return cpp_feature_ranges_base(reader, naRm, onlyFinite);
 }

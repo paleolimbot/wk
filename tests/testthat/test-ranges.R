@@ -71,4 +71,50 @@ test_that("wksxp_ranges() works", {
   )
 })
 
+test_that("wkt_feature_ranges() works", {
+  expect_identical(
+    wkt_feature_ranges(c("POINT ZM (1 2 3 4)", "POINT ZM (5 6 7 8)")),
+    data.frame(
+      xmin = c(1, 5),
+      ymin = c(2, 6),
+      zmin = c(3, 7),
+      mmin = c(4, 8),
+      xmax = c(1, 5),
+      ymax = c(2, 6),
+      zmax = c(3, 7),
+      mmax = c(4, 8)
+    )
+  )
+})
 
+test_that("wkb_feature_ranges() works", {
+  expect_identical(
+    wkb_feature_ranges(wkt_translate_wkb(c("POINT ZM (1 2 3 4)", "POINT ZM (5 6 7 8)"))),
+    data.frame(
+      xmin = c(1, 5),
+      ymin = c(2, 6),
+      zmin = c(3, 7),
+      mmin = c(4, 8),
+      xmax = c(1, 5),
+      ymax = c(2, 6),
+      zmax = c(3, 7),
+      mmax = c(4, 8)
+    )
+  )
+})
+
+test_that("wkb_feature_ranges() works", {
+  expect_identical(
+    wksxp_feature_ranges(wkt_translate_wksxp(c("POINT ZM (1 2 3 4)", "POINT ZM (5 6 7 8)"))),
+    data.frame(
+      xmin = c(1, 5),
+      ymin = c(2, 6),
+      zmin = c(3, 7),
+      mmin = c(4, 8),
+      xmax = c(1, 5),
+      ymax = c(2, 6),
+      zmax = c(3, 7),
+      mmax = c(4, 8)
+    )
+  )
+})
