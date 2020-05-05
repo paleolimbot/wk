@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -82,74 +82,87 @@
 <p>If you can load the package, you’re good to go!</p>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">wk</span>)</pre></div>
 </div>
-<div id="translate-between-wkb-and-wkt" class="section level2">
+<div id="basic-vector-classes-for-wkt-and-wkb" class="section level2">
 <h2 class="hasAnchor">
-<a href="#translate-between-wkb-and-wkt" class="anchor"></a>Translate between WKB and WKT</h2>
-<p>This package mostly provides C++ headers to avoid committing to any particular in-memory format, but it contains enough R code to test that the C++ headers will actually work. As such, you can translate between well-known binary (a <code><a href="https://rdrr.io/r/base/list.html">list()</a></code> of <code><a href="https://rdrr.io/r/base/raw.html">raw()</a></code> vectors) and well-known text (character vector):</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="no">point_wkb</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/raw.html">as.raw</a></span>(
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0x00</span>, <span class="co"># 0x00 = big endian</span>
-    <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x01</span>, <span class="co"># 0x00000001 = POINT</span>
-    <span class="fl">0x40</span>, <span class="fl">0x3e</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="co"># x coordinate (double)</span>
-    <span class="fl">0x40</span>, <span class="fl">0x24</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>, <span class="fl">0x00</span>  <span class="co"># y coordinate (double)</span>
-  )
-)
-
-<span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">point_wkb</span>))
-<span class="co">#&gt; [1] "POINT (30 10)"</span></pre></div>
+<a href="#basic-vector-classes-for-wkt-and-wkb" class="anchor"></a>Basic vector classes for WKT and WKB</h2>
+<p>Use <code><a href="reference/wkt.html">wkt()</a></code> to mark a character vector as containing well-known text, or <code><a href="reference/wkb.html">wkb()</a></code> to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in <code><a href="https://rdrr.io/r/base/format.html">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> methods.</p>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="reference/wkt.html">wkt</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="co">#&gt; &lt;wk_wkt[1]&gt;</span>
+<span class="co">#&gt; [1] POINT (30 10)</span>
+<span class="fu"><a href="reference/wkb.html">as_wkb</a></span>(<span class="fu"><a href="reference/wkt.html">wkt</a></span>(<span class="st">"POINT (30 10)"</span>))
+<span class="co">#&gt; &lt;wk_wkb[1]&gt;</span>
+<span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span></pre></div>
 </div>
-<div id="validate-wkb-and-wkt" class="section level2">
+<div id="extract-coordinates-and-meta-information" class="section level2">
 <h2 class="hasAnchor">
-<a href="#validate-wkb-and-wkt" class="anchor"></a>Validate WKB and WKT</h2>
-<p>It is often useful to attempt parsing a geometry to see if it will succeed. The “problems” functions parse well-known geometry vectors, returning a character vector of parsing problems (or <code>NA</code> if there were none).</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="reference/wkb_problems.html">wkb_problems</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">point_wkb</span>))
-<span class="co">#&gt; [1] NA</span>
-
-<span class="no">point_bad_type</span> <span class="kw">&lt;-</span> <span class="no">point_wkb</span>
-<span class="no">point_bad_type</span>[<span class="fl">5</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/raw.html">as.raw</a></span>(<span class="fl">0xff</span>)
-<span class="fu"><a href="reference/wkb_problems.html">wkb_problems</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">point_bad_type</span>))
-<span class="co">#&gt; [1] "Unrecognized geometry type in WKBReader::readGeometry(): 255"</span></pre></div>
+<a href="#extract-coordinates-and-meta-information" class="anchor"></a>Extract coordinates and meta information</h2>
+<p>One of the main drawbacks to passing around geomtries in WKB is that the format is opaque to R users, who need coordinates as R object rather than binary vectors. In addition to <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/plot.html">plot()</a></code> methods for <code><a href="reference/wkb.html">wkb()</a></code> vectors, the <code>wk*_meta()</code> and <code>wk*_coords()</code> functions provide usable coordinates and feature meta.</p>
+<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="reference/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="co">#&gt;   feature_id nest_id part_id ring_id coord_id x y z m</span>
+<span class="co">#&gt; 1          1       0      NA      NA        1 1 2 3 4</span>
+<span class="fu"><a href="reference/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="co">#&gt;   feature_id nest_id part_id type_id size srid has_z has_m</span>
+<span class="co">#&gt; 1          1       0      NA       1    1   NA  TRUE  TRUE</span></pre></div>
+</div>
+<div id="well-known-r-objects" class="section level2">
+<h2 class="hasAnchor">
+<a href="#well-known-r-objects" class="anchor"></a>Well-known R objects?</h2>
+<p>The wk package experimentally generates (and parses) well-known “s” expressions (the C name for R objects). This is similar to the format that <a href="https://r-spatial.github.io/sf">sf</a> uses.</p>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt;      [,1] [,2]</span>
+<span class="co">#&gt; [1,]   30   10</span>
+<span class="co">#&gt; attr(,"class")</span>
+<span class="co">#&gt; [1] "wk_point"</span></pre></div>
+</div>
+<div id="dependencies" class="section level2">
+<h2 class="hasAnchor">
+<a href="#dependencies" class="anchor"></a>Dependencies</h2>
+<p>The wk package imports <a href="https://cran.r-project.org/package=Rcpp">Rcpp</a>.</p>
 </div>
 <div id="using-the-c-headers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-the-c-headers" class="anchor"></a>Using the C++ headers</h2>
-<p>The wk package takes an event-based approach to parsing inspired by the event-based SAX XML parser. This allows the package to avoid inventing an in-memory format, since it never has to store geometries in memory. This is class-based, so you will have to make your own subclass of <code>WKGeometryHandler</code> and wire it up to a <code>WKReader</code> to do anything useful.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">// If you're writing code in a package, you'll also</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">// have to put 'wk' in your `LinkingTo:` description field</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">// [[Rcpp::depends(wk)]]</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="pp">#include </span><span class="im">"wk/io-rcpp.h"</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="pp">#include </span><span class="im">"wk/wkb-reader.h"</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="kw">using</span> <span class="kw">namespace</span> Rcpp;</span>
-<span id="cb5-9"><a href="#cb5-9"></a></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="kw">class</span> CustomHandler: <span class="kw">public</span> WKGeometryHandler {</span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="kw">public</span>:</span>
-<span id="cb5-12"><a href="#cb5-12"></a>  </span>
-<span id="cb5-13"><a href="#cb5-13"></a>  <span class="dt">void</span> nextFeatureStart(<span class="dt">size_t</span> featureId) {</span>
-<span id="cb5-14"><a href="#cb5-14"></a>    Rcout &lt;&lt; <span class="st">"Do something before feature "</span> &lt;&lt; featureId &lt;&lt; <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>;</span>
-<span id="cb5-15"><a href="#cb5-15"></a>  }</span>
-<span id="cb5-16"><a href="#cb5-16"></a>  </span>
-<span id="cb5-17"><a href="#cb5-17"></a>  <span class="dt">void</span> nextFeatureEnd(<span class="dt">size_t</span> featureId) {</span>
-<span id="cb5-18"><a href="#cb5-18"></a>    Rcout &lt;&lt; <span class="st">"Do something after feature "</span> &lt;&lt; featureId &lt;&lt; <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>;</span>
-<span id="cb5-19"><a href="#cb5-19"></a>  }</span>
-<span id="cb5-20"><a href="#cb5-20"></a>};</span>
-<span id="cb5-21"><a href="#cb5-21"></a></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co">// [[Rcpp::export]]</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="dt">void</span> wkb_read_custom(List wkb) {</span>
-<span id="cb5-24"><a href="#cb5-24"></a>  WKRawVectorListProvider reader(wkb);</span>
-<span id="cb5-25"><a href="#cb5-25"></a>  CustomHandler handler;</span>
-<span id="cb5-26"><a href="#cb5-26"></a>  WKBReader wkbReader(reader, handler);</span>
-<span id="cb5-27"><a href="#cb5-27"></a>  </span>
-<span id="cb5-28"><a href="#cb5-28"></a>  <span class="cf">while</span> (wkbReader.hasNextFeature()) {</span>
-<span id="cb5-29"><a href="#cb5-29"></a>    wkbReader.iterateFeature();</span>
-<span id="cb5-30"><a href="#cb5-30"></a>  }</span>
-<span id="cb5-31"><a href="#cb5-31"></a>}</span></code></pre></div>
+<p>The wk package takes an event-based approach to parsing inspired by the event-based SAX XML parser. This makes the readers and writers highly re-usable! This system is class-based, so you will have to make your own subclass of <code>WKGeometryHandler</code> and wire it up to a <code>WKReader</code> to do anything useful.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">// If you're writing code in a package, you'll also</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">// have to put 'wk' in your `LinkingTo:` description field</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">// [[Rcpp::depends(wk)]]</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="pp">#include </span><span class="im">"wk/rcpp-io.h"</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="pp">#include </span><span class="im">"wk/wkt-reader.h"</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="kw">using</span> <span class="kw">namespace</span> Rcpp;</span>
+<span id="cb6-9"><a href="#cb6-9"></a></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">class</span> CustomHandler: <span class="kw">public</span> WKGeometryHandler {</span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="kw">public</span>:</span>
+<span id="cb6-12"><a href="#cb6-12"></a>  </span>
+<span id="cb6-13"><a href="#cb6-13"></a>  <span class="dt">void</span> nextFeatureStart(<span class="dt">size_t</span> featureId) {</span>
+<span id="cb6-14"><a href="#cb6-14"></a>    Rcout &lt;&lt; <span class="st">"Do something before feature "</span> &lt;&lt; featureId &lt;&lt; <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>;</span>
+<span id="cb6-15"><a href="#cb6-15"></a>  }</span>
+<span id="cb6-16"><a href="#cb6-16"></a>  </span>
+<span id="cb6-17"><a href="#cb6-17"></a>  <span class="dt">void</span> nextFeatureEnd(<span class="dt">size_t</span> featureId) {</span>
+<span id="cb6-18"><a href="#cb6-18"></a>    Rcout &lt;&lt; <span class="st">"Do something after feature "</span> &lt;&lt; featureId &lt;&lt; <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>;</span>
+<span id="cb6-19"><a href="#cb6-19"></a>  }</span>
+<span id="cb6-20"><a href="#cb6-20"></a>};</span>
+<span id="cb6-21"><a href="#cb6-21"></a></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="dt">void</span> wkt_read_custom(CharacterVector wkt) {</span>
+<span id="cb6-24"><a href="#cb6-24"></a>  WKCharacterVectorProvider provider(wkt);</span>
+<span id="cb6-25"><a href="#cb6-25"></a>  WKTReader reader(provider);</span>
+<span id="cb6-26"><a href="#cb6-26"></a>  </span>
+<span id="cb6-27"><a href="#cb6-27"></a>  CustomHandler handler;</span>
+<span id="cb6-28"><a href="#cb6-28"></a>  reader.setHandler(&amp;handler);</span>
+<span id="cb6-29"><a href="#cb6-29"></a>  </span>
+<span id="cb6-30"><a href="#cb6-30"></a>  <span class="cf">while</span> (reader.hasNextFeature()) {</span>
+<span id="cb6-31"><a href="#cb6-31"></a>    reader.iterateFeature();</span>
+<span id="cb6-32"><a href="#cb6-32"></a>  }</span>
+<span id="cb6-33"><a href="#cb6-33"></a>}</span></code></pre></div>
 <p>On our example point, this prints the following:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="fu">wkb_read_custom</span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">point_wkb</span>))
+<div class="sourceCode" id="cb7"><pre class="r"><span class="fu">wkt_read_custom</span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; Do something before feature 0</span>
 <span class="co">#&gt; Do something after feature 0</span></pre></div>
 <p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkb|wkt_debug()</code> functions.</p>
-<div class="sourceCode" id="cb7"><pre class="r"><span class="fu"><a href="reference/wkb_debug.html">wkb_debug</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">point_wkb</span>))
+<div class="sourceCode" id="cb8"><pre class="r"><span class="fu"><a href="reference/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
 <span class="co">#&gt;         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)</span>
@@ -159,24 +172,22 @@
 <div id="performance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#performance" class="anchor"></a>Performance</h2>
-<p>This package is mostly designed for no system dependencies and flexibility, but also happens to be reasonably fast.</p>
+<p>This package was designed to stand alone and be flexible, but also happens to be really fast for some common operations.</p>
 <p>Read WKB + Write WKB:</p>
-<div class="sourceCode" id="cb8"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
-  <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkb</a></span>(<span class="no">nc_wkb</span>),
+<div class="sourceCode" id="cb9"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+  <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkb</a></span>(<span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wksxp</a></span>(<span class="no">nc_wkb</span>)),
   <span class="kw">geos_c</span> <span class="kw">=</span> <span class="kw pkg">geovctrs</span><span class="kw ns">:::</span><span class="fu">geovctrs_cpp_convert</span>(<span class="no">nc_wkb</span>, <span class="no">wkb_ptype</span>),
   <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">CPL_read_wkb</span>(<span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">CPL_write_wkb</span>(<span class="no">nc_sfc</span>, <span class="kw">EWKB</span> <span class="kw">=</span> <span class="fl">TRUE</span>), <span class="kw">EWKB</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
-  <span class="kw">wkb</span> <span class="kw">=</span> <span class="kw pkg">wkb</span><span class="kw ns">::</span><span class="fu">readWKB</span>(<span class="kw pkg">wkb</span><span class="kw ns">::</span><span class="fu">writeWKB</span>(<span class="no">nc_sp</span>)),
   <span class="kw">check</span> <span class="kw">=</span> <span class="fl">FALSE</span>
 )
-<span class="co">#&gt; # A tibble: 4 x 6</span>
+<span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk          116.4µs  147.8µs    6522.    73.92KB     7.56</span>
-<span class="co">#&gt; 2 geos_c      508.6µs  574.9µs    1675.    50.21KB     2.09</span>
-<span class="co">#&gt; 3 sf          403.9µs  493.7µs    1872.    99.57KB     6.72</span>
-<span class="co">#&gt; 4 wkb          54.7ms   56.5ms      17.7    5.23MB    61.9</span></pre></div>
+<span class="co">#&gt; 1 wk            310µs    357µs     2759.   114.1KB    18.4 </span>
+<span class="co">#&gt; 2 geos_c        520µs    582µs     1664.    53.5KB     2.08</span>
+<span class="co">#&gt; 3 sf            383µs    440µs     2194.    99.8KB    13.9</span></pre></div>
 <p>Read WKB + Write WKT:</p>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+<div class="sourceCode" id="cb10"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span>(<span class="no">nc_wkb</span>),
   <span class="kw">geos_c</span> <span class="kw">=</span> <span class="kw pkg">geovctrs</span><span class="kw ns">:::</span><span class="fu">geovctrs_cpp_convert</span>(<span class="no">nc_wkb</span>, <span class="no">wkt_ptype</span>),
   <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">st_as_text.sfc</span>(<span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">st_as_sfc.WKB</span>(<span class="no">nc_WKB</span>, <span class="kw">EWKB</span> <span class="kw">=</span> <span class="fl">TRUE</span>)),
@@ -188,12 +199,12 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           9.13ms     10ms     99.3     4.54MB     0   </span>
-<span class="co">#&gt; 2 geos_c       4.16ms   4.81ms    198.      3.32KB     0   </span>
-<span class="co">#&gt; 3 sf         185.69ms 187.88ms      5.11  541.35KB    10.2 </span>
-<span class="co">#&gt; 4 wellknown   24.93ms  26.99ms     34.5     3.42MB     1.92</span></pre></div>
+<span class="co">#&gt; 1 wk           3.12ms   3.42ms    288.      3.32KB     0   </span>
+<span class="co">#&gt; 2 geos_c       3.94ms   4.37ms    225.      3.32KB     0   </span>
+<span class="co">#&gt; 3 sf         179.71ms 182.25ms      5.45  569.81KB    21.8 </span>
+<span class="co">#&gt; 4 wellknown   24.16ms  26.62ms     36.5     3.41MB     5.77</span></pre></div>
 <p>Read WKT + Write WKB:</p>
-<div class="sourceCode" id="cb10"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+<div class="sourceCode" id="cb11"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkb</a></span>(<span class="no">nc_wkt</span>),
   <span class="kw">geos_c</span> <span class="kw">=</span> <span class="kw pkg">geovctrs</span><span class="kw ns">:::</span><span class="fu">geovctrs_cpp_convert</span>(<span class="no">nc_wkt</span>, <span class="no">wkb_ptype</span>),
   <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">CPL_write_wkb</span>(<span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">st_as_sfc.character</span>(<span class="no">nc_wkt</span>), <span class="kw">EWKB</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
@@ -203,13 +214,13 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            1.9ms   2.13ms     451.    67.65KB     0   </span>
-<span class="co">#&gt; 2 geos_c       2.45ms    2.7ms     362.    49.48KB     0   </span>
-<span class="co">#&gt; 3 sf           3.29ms   3.67ms     266.   186.48KB     4.26</span>
-<span class="co">#&gt; 4 wellknown   46.47ms  47.17ms      21.1    1.31MB     4.68</span></pre></div>
+<span class="co">#&gt; 1 wk           1.95ms   2.21ms     443.    53.58KB     2.04</span>
+<span class="co">#&gt; 2 geos_c       2.49ms   2.75ms     356.    49.48KB     0   </span>
+<span class="co">#&gt; 3 sf           3.39ms   3.75ms     260.   186.48KB     6.40</span>
+<span class="co">#&gt; 4 wellknown    46.6ms  47.63ms      20.5    1.31MB     8.80</span></pre></div>
 <p>Read WKT + Write WKT:</p>
-<div class="sourceCode" id="cb11"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
-  <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkt</a></span>(<span class="no">nc_wkt</span>),
+<div class="sourceCode" id="cb12"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+  <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkt</a></span>(<span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="no">nc_wkt</span>)),
   <span class="kw">geos_c</span> <span class="kw">=</span> <span class="kw pkg">geovctrs</span><span class="kw ns">:::</span><span class="fu">geovctrs_cpp_convert</span>(<span class="no">nc_wkt</span>, <span class="no">wkt_ptype</span>),
   <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">st_as_text.sfc</span>(<span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">st_as_sfc.character</span>(<span class="no">nc_wkt</span>)),
   <span class="kw">check</span> <span class="kw">=</span> <span class="fl">FALSE</span>
@@ -219,9 +230,22 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk          10.86ms  12.05ms     83.1     4.51MB      0  </span>
-<span class="co">#&gt; 2 geos_c       6.15ms   6.89ms    135.      3.32KB      0  </span>
-<span class="co">#&gt; 3 sf          181.1ms 189.29ms      5.21  248.71KB     10.4</span></pre></div>
+<span class="co">#&gt; 1 wk           5.25ms   5.84ms    170.     63.76KB     2.00</span>
+<span class="co">#&gt; 2 geos_c       5.88ms   6.54ms    151.      3.32KB     0   </span>
+<span class="co">#&gt; 3 sf         191.73ms 193.06ms      5.08  232.42KB    20.3</span></pre></div>
+<p>Generate coordinates:</p>
+<div class="sourceCode" id="cb13"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+  <span class="kw">wk_wkb</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_coords.html">wksxp_coords</a></span>(<span class="no">nc_sxp</span>),
+  <span class="kw">sfheaders</span> <span class="kw">=</span> <span class="kw pkg">sfheaders</span><span class="kw ns">::</span><span class="fu">sfc_to_df</span>(<span class="no">nc_sfc</span>),
+  <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu">st_coordinates</span>(<span class="no">nc_sfc</span>),
+  <span class="kw">check</span> <span class="kw">=</span> <span class="fl">FALSE</span>
+)
+<span class="co">#&gt; # A tibble: 3 x 6</span>
+<span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
+<span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 wk_wkb     181.53µs 207.49µs     4517.     154KB     25.3</span>
+<span class="co">#&gt; 2 sfheaders  510.61µs 576.63µs     1693.     612KB     56.2</span>
+<span class="co">#&gt; 3 sf           2.11ms   2.36ms      416.     606KB     33.9</span></pre></div>
 </div>
 </div>
   </div>

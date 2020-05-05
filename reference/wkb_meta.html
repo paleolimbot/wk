@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug well-known geometry — wkb_debug • wk</title>
+<title>Extract meta information — wkb_meta • wk</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Debug well-known geometry — wkb_debug" />
-<meta property="og:description" content="Prints the raw calls to the WKBGeometryHandler(). Useful for writing
-custom C++ handlers and debugging read problems." />
+<meta property="og:title" content="Extract meta information — wkb_meta" />
+<meta property="og:description" content="Extract meta information" />
 
 
 
@@ -109,23 +108,26 @@ custom C++ handlers and debugging read problems." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug well-known geometry</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wkb_debug.Rd</code></div>
+    <h1>Extract meta information</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/meta.R'><code>R/meta.R</code></a></small>
+    <div class="hidden name"><code>wkb_meta.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Prints the raw calls to the <code>WKBGeometryHandler()</code>. Useful for writing
-custom C++ handlers and debugging read problems.</p>
+    <p>Extract meta information</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_debug</span>(<span class='no'>wkb</span>)
+    <pre class="usage"><span class='fu'>wkb_meta</span>(<span class='no'>wkb</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_debug</span>(<span class='no'>wkt</span>)
+<span class='fu'>wkt_meta</span>(<span class='no'>wkt</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_streamer_debug</span>(<span class='no'>wkt</span>)
+<span class='fu'>wkt_streamer_meta</span>(<span class='no'>wkt</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_debug</span>(<span class='no'>wksxp</span>)</pre>
+<span class='fu'>wksxp_meta</span>(<span class='no'>wksxp</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>wk_geometry_type</span>(<span class='no'>type_id</span>)
+
+<span class='fu'>wk_geometry_type_id</span>(<span class='no'>type</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,6 +138,11 @@ custom C++ handlers and debugging read problems.</p>
 returned by <code>sf::st_as_binary()</code>.</p></td>
     </tr>
     <tr>
+      <th>recursive</th>
+      <td><p>Pass <code>TRUE</code> to recurse into multi-geometries
+and collections to extract meta of sub-geometries</p></td>
+    </tr>
+    <tr>
       <th>wkt</th>
       <td><p>A character vector containing well-known text.</p></td>
     </tr>
@@ -143,51 +150,38 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
       <th>wksxp</th>
       <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of classed objects</p></td>
     </tr>
+    <tr>
+      <th>type_id</th>
+      <td><p>An integer version of the geometry type</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>A string version of the geometry type (e.g.,
+point, linestring, polygon, multipoint, multilinestring,
+multipolygon, geometrycollection)</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The input, invisibly</p>
+    <p>A data.frame with columns:</p><ul>
+<li><p><code>feature_id</code>: The index of the top-level feature</p></li>
+<li><p><code>nest_id</code>: The recursion level (if feature is a geometry collection)</p></li>
+<li><p><code>part_id</code>: The part index (if nested within a multi-geometry or collection)</p></li>
+<li><p><code>type_id</code>: The type identifier (see <code>wk_geometry_type()</code>)</p></li>
+<li><p><code>size</code>: For points and linestrings the number of points, for polygons
+the number of rings, and for mutlti-geometries and collection types,
+the number of child geometries.</p></li>
+<li><p><code>srid</code>: The spatial reference identifier as an integer</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [1], 0)
-#&gt;             nextLinearRingStart(POLYGON [1], 4, 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
-#&gt;         nextGeometryEnd(POLYGON [1], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkt_streamer_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [unknown], 0)
-#&gt;             nextLinearRingStart(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
-#&gt;         nextGeometryEnd(POLYGON [unknown], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkb_debug</span>(
-  <span class='fu'><a href='wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(
-    <span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>
-  )
-)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [1], 0)
-#&gt;             nextLinearRingStart(POLYGON [1], 4, 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
-#&gt;         nextGeometryEnd(POLYGON [1], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
+#&gt; 1          1       0      NA       1    1   NA FALSE FALSE</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
+#&gt; 1          1       0      NA       7    1   NA FALSE FALSE</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
+#&gt; 1          1       0      NA       7    1   NA FALSE FALSE
+#&gt; 2          1       1       1       1    1   NA FALSE FALSE</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

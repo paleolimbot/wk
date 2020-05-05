@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug well-known geometry — wkb_debug • wk</title>
+<title>Mark lists as well-known "S" expressions — wksxp • wk</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Debug well-known geometry — wkb_debug" />
-<meta property="og:description" content="Prints the raw calls to the WKBGeometryHandler(). Useful for writing
-custom C++ handlers and debugging read problems." />
+<meta property="og:title" content="Mark lists as well-known "S" expressions — wksxp" />
+<meta property="og:description" content="Mark lists as well-known &quot;S&quot; expressions" />
 
 
 
@@ -109,85 +108,99 @@ custom C++ handlers and debugging read problems." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug well-known geometry</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wkb_debug.Rd</code></div>
+    <h1>Mark lists as well-known "S" expressions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wksxp.R'><code>R/wksxp.R</code></a></small>
+    <div class="hidden name"><code>wksxp.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Prints the raw calls to the <code>WKBGeometryHandler()</code>. Useful for writing
-custom C++ handlers and debugging read problems.</p>
+    <p>Mark lists as well-known "S" expressions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_debug</span>(<span class='no'>wkb</span>)
+    <pre class="usage"><span class='fu'>wksxp</span>(<span class='no'>x</span>)
 
-<span class='fu'>wkt_debug</span>(<span class='no'>wkt</span>)
+<span class='fu'>as_wksxp</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='fu'>wkt_streamer_debug</span>(<span class='no'>wkt</span>)
+<span class='co'># S3 method for character</span>
+<span class='fu'>as_wksxp</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='fu'>wksxp_debug</span>(<span class='no'>wksxp</span>)</pre>
+<span class='co'># S3 method for wk_wksxp</span>
+<span class='fu'>as_wksxp</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='co'># S3 method for wk_wkt</span>
+<span class='fu'>as_wksxp</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='co'># S3 method for wk_wkb</span>
+<span class='fu'>as_wksxp</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>wkb</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors, such as that
-returned by <code>sf::st_as_binary()</code>.</p></td>
+      <th>x</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> features (see details)</p></td>
     </tr>
     <tr>
-      <th>wkt</th>
-      <td><p>A character vector containing well-known text.</p></td>
+      <th>...</th>
+      <td><p>Unused</p></td>
     </tr>
     <tr>
-      <th>wksxp</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of classed objects</p></td>
+      <th>include_z</th>
+      <td><p>Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
+only if present. Note that using <code>TRUE</code> may result in an error if there
+is no value present in the original.</p></td>
+    </tr>
+    <tr>
+      <th>include_m</th>
+      <td><p>Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
+only if present. Note that using <code>TRUE</code> may result in an error if there
+is no value present in the original.</p></td>
+    </tr>
+    <tr>
+      <th>include_srid</th>
+      <td><p>Include the
+values of the Z and M coordinates and/or SRID
+in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
+only if present. Note that using <code>TRUE</code> may result in an error if there
+is no value present in the original.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The input, invisibly</p>
+    <p>A <code><a href='new_wk_wksxp.html'>new_wk_wksxp()</a></code></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The "wksxp" format is experimental, but was written as a way to
+make it possible for packages to generate <code><a href='wkb.html'>wkb()</a></code> vectors without
+needing to know C++. The format represents geometries as following:</p><ul>
+<li><p>points are matrices with zero or one row</p></li>
+<li><p>linestrings are matrices (one row per point)</p></li>
+<li><p>polygons are lists of matrices (one matrix per ring)</p></li>
+<li><p>multi (point, linestring, polygon) types are lists
+of the simple types (without any meta information)</p></li>
+<li><p>collections are lists of any type (must contain meta)</p></li>
+</ul>
+
+<p>Any geometry that isn't in a multi type must have meta information
+encoded as attributes. The attribures that are used are:</p><ul>
+<li><p><code>class</code>: "wk_(point|linestring|...)</p></li>
+<li><p><code>has_z</code>: use <code>TRUE</code> if there is a Z coordinate
+(may be omitted if false)</p></li>
+<li><p><code>has_m</code>: use <code>TRUE</code> if there is an M coordinate
+(may be omitted if false)</p></li>
+</ul>
+
+<p>This is similar to the <code>sf::sfc()</code> format, but the formats aren't
+interchangable.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [1], 0)
-#&gt;             nextLinearRingStart(POLYGON [1], 4, 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
-#&gt;         nextGeometryEnd(POLYGON [1], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkt_streamer_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [unknown], 0)
-#&gt;             nextLinearRingStart(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [unknown], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
-#&gt;         nextGeometryEnd(POLYGON [unknown], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkb_debug</span>(
-  <span class='fu'><a href='wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(
-    <span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>
-  )
-)</div><div class='output co'>#&gt; nextFeatureStart(0)
-#&gt;     nextGeometryStart(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt;         nextGeometryStart(POLYGON [1], 0)
-#&gt;             nextLinearRingStart(POLYGON [1], 4, 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 0)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 10, y = 0), 1)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 10), 2)
-#&gt;                 nextCoordinate(POLYGON [1], WKCoord(x = 0, y = 0), 3)
-#&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
-#&gt;         nextGeometryEnd(POLYGON [1], 0)
-#&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wksxp</span>(<span class='fu'><a href='wkb_translate_wkt.html'>wkt_translate_wksxp</a></span>(<span class='st'>"POINT (20 10)"</span>))</div><div class='output co'>#&gt; &lt;wk_wksxp[1]&gt;
+#&gt; [1] &lt;POINT (20 10)&gt;</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

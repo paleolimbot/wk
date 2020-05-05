@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -133,21 +133,81 @@
       <tr>
         
         <td>
-          <p><code><a href="wkb_debug.html">wkb_debug()</a></code> <code><a href="wkb_debug.html">wkt_debug()</a></code> <code><a href="wkb_debug.html">wkt_streamer_debug()</a></code> </p>
+          <p><code><a href="new_wk_wkb.html">rep_len.wk_vctr()</a></code> <code><a href="new_wk_wkb.html">new_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">validate_wk_wkb()</a></code> </p>
+        </td>
+        <td><p>S3 Details for wk_wkb</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="new_wk_wksxp.html">new_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">validate_wk_wksxp()</a></code> </p>
+        </td>
+        <td><p>S3 Details for wk_wksxp</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="new_wk_wkt.html">new_wk_wkt()</a></code> <code><a href="new_wk_wkt.html">validate_wk_wkt()</a></code> </p>
+        </td>
+        <td><p>S3 Details for wk_wkt</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> <code><a href="wkb.html">as_wkt(<i>&lt;wk_wkb&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Mark lists of raw vectors as well-known binary</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb_coords.html">wkb_coords()</a></code> <code><a href="wkb_coords.html">wkt_coords()</a></code> <code><a href="wkb_coords.html">wksxp_coords()</a></code> </p>
+        </td>
+        <td><p>Extract coordinates from well-known geometries</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb_debug.html">wkb_debug()</a></code> <code><a href="wkb_debug.html">wkt_debug()</a></code> <code><a href="wkb_debug.html">wkt_streamer_debug()</a></code> <code><a href="wkb_debug.html">wksxp_debug()</a></code> </p>
         </td>
         <td><p>Debug well-known geometry</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_problems.html">wkb_problems()</a></code> <code><a href="wkb_problems.html">wkt_problems()</a></code> </p>
+          <p><code><a href="wkb_format.html">wkb_format()</a></code> <code><a href="wkb_format.html">wkt_format()</a></code> <code><a href="wkb_format.html">wksxp_format()</a></code> </p>
+        </td>
+        <td><p>Format well-known geometry for printing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb_meta.html">wkb_meta()</a></code> <code><a href="wkb_meta.html">wkt_meta()</a></code> <code><a href="wkb_meta.html">wkt_streamer_meta()</a></code> <code><a href="wkb_meta.html">wksxp_meta()</a></code> <code><a href="wkb_meta.html">wk_geometry_type()</a></code> <code><a href="wkb_meta.html">wk_geometry_type_id()</a></code> </p>
+        </td>
+        <td><p>Extract meta information</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb_problems.html">wkb_problems()</a></code> <code><a href="wkb_problems.html">wkt_problems()</a></code> <code><a href="wkb_problems.html">wksxp_problems()</a></code> </p>
         </td>
         <td><p>Validate well-known binary and well-known text</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_translate_wkt.html">wkb_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkb_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkb_platform_endian()</a></code> </p>
+          <p><code><a href="wkb_ranges.html">wkb_ranges()</a></code> <code><a href="wkb_ranges.html">wkt_ranges()</a></code> <code><a href="wkb_ranges.html">wksxp_ranges()</a></code> <code><a href="wkb_ranges.html">wkb_feature_ranges()</a></code> <code><a href="wkb_ranges.html">wkt_feature_ranges()</a></code> <code><a href="wkb_ranges.html">wksxp_feature_ranges()</a></code> </p>
+        </td>
+        <td><p>Extract ranges information</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb_translate_wkt.html">wkb_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkb_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkb_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wk_platform_endian()</a></code> </p>
         </td>
         <td><p>Translate between WKB and WKT</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wksxp.html">wksxp()</a></code> <code><a href="wksxp.html">as_wksxp()</a></code> </p>
+        </td>
+        <td><p>Mark lists as well-known "S" expressions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkt.html">wkt()</a></code> <code><a href="wkt.html">as_wkt()</a></code> </p>
+        </td>
+        <td><p>Mark character vectors as well-known text</p></td>
       </tr>
     </tbody>
     </table>

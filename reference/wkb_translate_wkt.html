@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -131,9 +131,11 @@
   <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='fu'>wkb_platform_endian</span>(),
+  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='fu'>wk_platform_endian</span>(),
   <span class='kw'>buffer_size</span> <span class='kw'>=</span> <span class='fl'>2048</span>
 )
+
+<span class='fu'>wkb_translate_wksxp</span>(<span class='no'>wkb</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
 
 <span class='fu'>wkt_translate_wkt</span>(
   <span class='no'>wkt</span>,
@@ -149,11 +151,33 @@
   <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='fu'>wkb_platform_endian</span>(),
+  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='fu'>wk_platform_endian</span>(),
   <span class='kw'>buffer_size</span> <span class='kw'>=</span> <span class='fl'>2048</span>
 )
 
-<span class='fu'>wkb_platform_endian</span>()</pre>
+<span class='fu'>wkt_translate_wksxp</span>(<span class='no'>wkt</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+
+<span class='fu'>wksxp_translate_wkt</span>(
+  <span class='no'>wksxp</span>,
+  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='fl'>16</span>,
+  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
+
+<span class='fu'>wksxp_translate_wkb</span>(
+  <span class='no'>wksxp</span>,
+  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='fu'>wk_platform_endian</span>(),
+  <span class='kw'>buffer_size</span> <span class='kw'>=</span> <span class='fl'>2048</span>
+)
+
+<span class='fu'>wksxp_translate_wksxp</span>(<span class='no'>wksxp</span>, <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+
+<span class='fu'>wk_platform_endian</span>()</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,8 +207,7 @@ is no value present in the original.</p></td>
     <tr>
       <th>endian</th>
       <td><p>For WKB writing, 0 for big endian, 1 for little endinan.
-Defaults to <code>wkb_platform_endian()</code> (slightly faster, and any
-WKB reader worth its salt will read either).</p></td>
+Defaults to <code>wk_platform_endian()</code> (slightly faster).</p></td>
     </tr>
     <tr>
       <th>buffer_size</th>
@@ -196,6 +219,10 @@ to a larger number may result in less copying.</p></td>
     <tr>
       <th>wkt</th>
       <td><p>A character vector containing well-known text.</p></td>
+    </tr>
+    <tr>
+      <th>wksxp</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of classed objects</p></td>
     </tr>
     </table>
 
