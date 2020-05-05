@@ -46,7 +46,7 @@ A data.frame with columns:
 \item \code{part_id}: The part index (if nested within a multi-geometry or collection)
 \item \code{type_id}: The type identifier (see \code{\link[=wk_geometry_type]{wk_geometry_type()}})
 \item \code{size}: For points and linestrings the number of points, for polygons
-the number of rings, and for mutli-geometries and collection types,
+the number of rings, and for mutlti-geometries and collection types,
 the number of child geometries.
 \item \code{srid}: The spatial reference identifier as an integer
 }

@@ -15,7 +15,7 @@
 #' - `part_id`: The part index (if nested within a multi-geometry or collection)
 #' - `type_id`: The type identifier (see [wk_geometry_type()])
 #' - `size`: For points and linestrings the number of points, for polygons
-#'   the number of rings, and for mutli-geometries and collection types,
+#'   the number of rings, and for mutlti-geometries and collection types,
 #'   the number of child geometries.
 #' - `srid`: The spatial reference identifier as an integer
 #'
