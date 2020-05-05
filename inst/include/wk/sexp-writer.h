@@ -18,6 +18,7 @@ protected:
   WKSEXPExporter& exporter;
 
   void nextFeatureStart(size_t featureId) {
+    WKWriter::nextFeatureStart(featureId);
     this->stack.clear();
     feature = R_NilValue;
   }
@@ -135,6 +136,7 @@ protected:
 
   void nextFeatureEnd(size_t featureId) {
     this->exporter.setFeature(this->feature);
+    WKWriter::nextFeatureEnd(featureId);
   }
 
   std::string metaAsClass(const WKGeometryMeta& meta) {

@@ -48,7 +48,7 @@ public:
   void prepareNextFeature() {}
 
   void setFeature(SEXP item) {
-    this->output[this->index] = item;
+    this->item = item;
   }
 
   void writeNull() {
@@ -56,8 +56,16 @@ public:
   }
 
   void writeNextFeature() {
+    if (this->index >= output.size()) {
+      Rcpp::stop("Attempt to set index out of range (WKSEXPExporter)");
+    }
+
+    this->output[this->index] = this->item;
     this->index++;
   }
+
+private:
+  SEXP item;
 };
 
 
