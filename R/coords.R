@@ -18,23 +18,17 @@
 #' wkt_coords("LINESTRING (0 1, 19 27)")
 #'
 wkb_coords <- function(wkb) {
-  coords <- cpp_coords_wkb(wkb)
-  # slightly faster than data.frame()
-  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
+  new_data_frame(cpp_coords_wkb(wkb))
 }
 
 #' @rdname wkb_coords
 #' @export
 wkt_coords <- function(wkt) {
-  coords <- cpp_coords_wkt(wkt)
-  # slightly faster than data.frame()
-  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
+  new_data_frame(cpp_coords_wkt(wkt))
 }
 
 #' @rdname wkb_coords
 #' @export
 wksxp_coords <- function(wksxp) {
-  coords <- cpp_coords_wksxp(wksxp)
-  # slightly faster than data.frame()
-  structure(coords, row.names = seq_len(length(coords[[1]])), class = "data.frame")
+  new_data_frame(cpp_coords_wksxp(wksxp))
 }

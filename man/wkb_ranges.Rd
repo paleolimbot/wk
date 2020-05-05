@@ -42,7 +42,8 @@ A data.frame with columns:
 }
 }
 \description{
-Extract ranges information
+This is intended to behave the same as \code{\link[=range]{range()}}, returning the
+minimum and maximum x, y, z, and m coordinate values.
 }
 \examples{
 wkt_ranges("POINT (30 10)")

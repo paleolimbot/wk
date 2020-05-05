@@ -27,33 +27,25 @@
 #' wkt_meta("GEOMETRYCOLLECTION (POINT (30 10))", recursive = TRUE)
 #'
 wkb_meta <- function(wkb, recursive = FALSE) {
-  meta <- cpp_meta_wkb(wkb, recursive = recursive)
-  # slightly faster than data.frame()
-  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
+  new_data_frame(cpp_meta_wkb(wkb, recursive = recursive))
 }
 
 #' @rdname wkb_meta
 #' @export
 wkt_meta <- function(wkt, recursive = FALSE) {
-  meta <- cpp_meta_wkt(wkt, recursive = recursive)
-  # slightly faster than data.frame()
-  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
+  new_data_frame(cpp_meta_wkt(wkt, recursive = recursive))
 }
 
 #' @rdname wkb_meta
 #' @export
 wkt_streamer_meta <- function(wkt, recursive = FALSE) {
-  meta <- cpp_meta_wkt_streamer(wkt, recursive = recursive)
-  # slightly faster than data.frame()
-  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
+  new_data_frame(cpp_meta_wkt_streamer(wkt, recursive = recursive))
 }
 
 #' @rdname wkb_meta
 #' @export
 wksxp_meta <- function(wksxp, recursive = FALSE) {
-  meta <- cpp_meta_wksxp(wksxp, recursive = recursive)
-  # slightly faster than data.frame()
-  structure(meta, row.names = seq_len(length(meta[[1]])), class = "data.frame")
+  new_data_frame(cpp_meta_wksxp(wksxp, recursive = recursive))
 }
 
 #' @rdname wkb_meta
