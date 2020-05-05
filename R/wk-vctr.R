@@ -39,7 +39,7 @@ rep.wk_vctr <- function(x, ...) {
   new_wk_vctr(NextMethod(), x)
 }
 
-#' @rdname new_wk_wkb
+#' @method rep_len wk_vctr
 #' @export
 rep_len.wk_vctr <- function(x, ...) {
   new_wk_vctr(NextMethod(), x)

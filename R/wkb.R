@@ -67,7 +67,6 @@ as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
-#' @param ... Unused
 #'
 #' @export
 #'
