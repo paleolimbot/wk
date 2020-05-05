@@ -122,16 +122,16 @@ wkt_debug("POINT (30 10)")
 
 ## Performance
 
-This package is mostly designed for no system dependencies and flexibility, but also happens to be really fast for some common operations.
+This package was designed to stand alone and be flexible, but also happens to be really fast for some common operations.
 
 ```{r, echo=FALSE}
 # set up the test data
-nc_wkb <- geovctrs::geo_nc$geometry
-nc_wkt <- geovctrs::as_geo_wkt(nc_wkb)
-nc_WKB <- nc_wkb
-class(nc_WKB) <- "WKB"
-nc_sfc <- sf::st_as_sfc(nc_WKB, EWKB = TRUE)
-nc_sp <- sf::as_Spatial(nc_sfc)
+nc_sf <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
+nc_sfc <- sf::st_geometry(nc_sf)
+nc_WKB <- sf::st_as_binary(nc_sfc)
+nc_wkb <- geovctrs::new_geovctrs_wkb(unclass(nc_WKB))
+nc_wkt <- geovctrs::new_geovctrs_wkt(wkb_translate_wkt(nc_wkb))
+nc_sxp <- wkb_translate_wksxp(nc_wkb)
 wkt_ptype <- geovctrs::geo_wkt()
 wkb_ptype <- geovctrs::geo_wkb()
 ```
@@ -140,10 +140,9 @@ Read WKB + Write WKB:
 
 ```{r}
 bench::mark(
-  wk = wk:::wkb_translate_wkb(nc_wkb),
+  wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
   geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
   sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
-  wkb = wkb::readWKB(wkb::writeWKB(nc_sp)),
   check = FALSE
 )
 ```
@@ -176,7 +175,7 @@ Read WKT + Write WKT:
 
 ```{r}
 bench::mark(
-  wk = wk:::wkt_translate_wkt(nc_wkt),
+  wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
   geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
   check = FALSE
@@ -187,9 +186,9 @@ Generate coordinates:
 
 ```{r}
 bench::mark(
-  wk_wkb = wk::wkb_coords(rep(nc_wkb, 10)),
-  sfheaders = sfheaders::sfc_to_df(rep(nc_sfc, 10)),
-  sf = sf::st_coordinates(rep(nc_sfc, 10)),
+  wk_wkb = wk::wksxp_coords(nc_sxp),
+  sfheaders = sfheaders::sfc_to_df(nc_sfc),
+  sf = sf::st_coordinates(nc_sfc),
   check = FALSE
 )
 ```

@@ -52,7 +52,7 @@ wkt("POINT (30 10)")
 #> [1] POINT (30 10)
 as_wkb(wkt("POINT (30 10)"))
 #> <wk_wkb[1]>
-#> [1] 01 01 00 00 00
+#> [1] <POINT (30 10)>
 ```
 
 ## Extract coordinates and meta information
@@ -159,27 +159,24 @@ wkt_debug("POINT (30 10)")
 
 ## Performance
 
-This package is mostly designed for no system dependencies and
-flexibility, but also happens to be really fast for some common
-operations.
+This package was designed to stand alone and be flexible, but also
+happens to be really fast for some common operations.
 
 Read WKB + Write WKB:
 
 ``` r
 bench::mark(
-  wk = wk:::wkb_translate_wkb(nc_wkb),
+  wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
   geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
   sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
-  wkb = wkb::readWKB(wkb::writeWKB(nc_sp)),
   check = FALSE
 )
-#> # A tibble: 4 x 6
+#> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          122.9µs  146.8µs    6501.    68.43KB     6.64
-#> 2 geos_c      525.2µs  575.6µs    1682.    50.21KB     0   
-#> 3 sf          386.6µs  440.8µs    2218.    99.57KB     9.21
-#> 4 wkb          52.5ms   52.5ms      18.8    5.23MB    44.0
+#> 1 wk            304µs    359µs     2647.   114.1KB     18.3
+#> 2 geos_c        521µs    574µs     1668.    53.5KB      0  
+#> 3 sf            398µs    455µs     1965.    99.8KB     14.4
 ```
 
 Read WKB + Write WKT:
@@ -197,10 +194,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           9.34ms   9.95ms     99.5     4.56MB     0   
-#> 2 geos_c        3.9ms   4.37ms    225.      3.32KB     0   
-#> 3 sf         172.16ms 173.37ms      5.73  541.35KB    11.5 
-#> 4 wellknown   24.72ms  26.73ms     37.1     3.42MB     1.95
+#> 1 wk           3.02ms   3.44ms    285.      3.32KB     0   
+#> 2 geos_c       3.92ms   4.32ms    228.      3.32KB     0   
+#> 3 sf         176.78ms 180.48ms      5.45  569.81KB    21.8 
+#> 4 wellknown    24.3ms   28.5ms     35.2     3.41MB     5.86
 ```
 
 Read WKT + Write WKB:
@@ -216,17 +213,17 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.96ms   2.15ms     456.    53.58KB     0   
-#> 2 geos_c       2.44ms   2.75ms     359.    49.48KB     2.11
-#> 3 sf           3.31ms   3.71ms     263.   186.48KB     2.05
-#> 4 wellknown   46.55ms  47.98ms      20.7    1.31MB     4.61
+#> 1 wk           1.92ms   2.13ms     461.    53.58KB     0   
+#> 2 geos_c        2.5ms   2.75ms     358.    49.48KB     0   
+#> 3 sf           3.33ms   3.65ms     268.   186.48KB     8.70
+#> 4 wellknown   48.42ms  50.71ms      19.8    1.31MB     8.50
 ```
 
 Read WKT + Write WKT:
 
 ``` r
 bench::mark(
-  wk = wk:::wkt_translate_wkt(nc_wkt),
+  wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
   geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
   check = FALSE
@@ -236,24 +233,24 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          11.11ms  12.25ms     81.8     4.51MB      0  
-#> 2 geos_c       6.08ms   6.55ms    150.      3.32KB      0  
-#> 3 sf         178.97ms 180.83ms      5.51  260.61KB     11.0
+#> 1 wk           5.03ms   5.81ms    166.     63.76KB     1.98
+#> 2 geos_c       6.33ms   6.88ms    133.      3.32KB     0   
+#> 3 sf         224.86ms 228.46ms      4.37  236.33KB    17.5
 ```
 
 Generate coordinates:
 
 ``` r
 bench::mark(
-  wk_wkb = wk::wkb_coords(rep(nc_wkb, 10)),
-  sfheaders = sfheaders::sfc_to_df(rep(nc_sfc, 10)),
-  sf = sf::st_coordinates(rep(nc_sfc, 10)),
+  wk_wkb = wk::wksxp_coords(nc_sxp),
+  sfheaders = sfheaders::sfc_to_df(nc_sfc),
+  sf = sf::st_coordinates(nc_sfc),
   check = FALSE
 )
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb       1.82ms   2.35ms     424.     1.38MB     20.6
-#> 2 sfheaders   12.31ms  13.14ms      74.5    5.44MB     20.9
-#> 3 sf           29.6ms     30ms      32.8    5.61MB     19.7
+#> 1 wk_wkb     179.11µs 211.44µs     4475.     154KB     25.6
+#> 2 sfheaders  499.71µs 575.78µs     1679.     612KB     55.5
+#> 3 sf           2.11ms   2.34ms      420.     606KB     33.8
 ```
