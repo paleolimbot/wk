@@ -12,11 +12,6 @@ print.wk_vctr <- function(x, ...) {
 }
 
 #' @export
-is.na.wk_vctr <- function(x) {
-  vapply(x, is.null, logical(1))
-}
-
-#' @export
 `[.wk_vctr` <- function(x, i) {
   new_wk_vctr(NextMethod(), x)
 }

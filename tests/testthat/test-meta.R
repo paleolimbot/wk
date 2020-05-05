@@ -159,3 +159,13 @@ test_that("wkt_streamer_meta() returns SRIDs if present", {
 test_that("wkt_streamer_meta() fails on parse error", {
   expect_error(wkt_streamer_meta("NOPE"), class = "WKParseException")
 })
+
+test_that("geometry type converters work", {
+  types_str <- c(
+    "point", "linestring", "polygon",
+    "multipoint", "multilinestring", "multipolygon",
+    "geometrycollection"
+  )
+  expect_identical(wk_geometry_type_id(types_str), 1:7)
+  expect_identical(wk_geometry_type(7:1), rev(types_str))
+})

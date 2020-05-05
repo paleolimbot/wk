@@ -7,6 +7,7 @@ test_that("wksxp class works", {
   expect_match(as.character(x), "POINT")
 
   expect_is(wksxp(list(NULL)), "wk_wksxp")
+  expect_true(is.na(wksxp(list(NULL))))
 
   expect_error(new_wk_wksxp(structure(list(), thing = "stuff")), "must be a list")
   expect_error(new_wk_wksxp("char!"), "must be a list")

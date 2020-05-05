@@ -7,6 +7,7 @@ test_that("wkb class works", {
   expect_match(as.character(x), "POINT")
 
   expect_is(wkb(list(NULL)), "wk_wkb")
+  expect_true(is.na(wkb(list(NULL))))
 
   expect_error(new_wk_wkb(structure(list(), thing = "stuff")), "must be a list")
   expect_error(new_wk_wkb("char!"), "must be a list")

@@ -122,6 +122,11 @@ validate_wk_wksxp <- function(x) {
 }
 
 #' @export
+is.na.wk_wksxp <- function(x) {
+  vapply(unclass(x), is.null, logical(1))
+}
+
+#' @export
 format.wk_wksxp <- function(x, ...) {
   paste0("<", wksxp_format(x), ">")
 }

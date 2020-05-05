@@ -94,6 +94,11 @@ validate_wk_wkb <- function(x) {
 }
 
 #' @export
+is.na.wk_wkb <- function(x) {
+  vapply(unclass(x), is.null, logical(1))
+}
+
+#' @export
 format.wk_wkb <- function(x, ...) {
   paste0("<", wkb_format(x), ">")
 }
