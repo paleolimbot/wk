@@ -195,6 +195,7 @@ List cpp_ranges_base(WKReader& reader, bool naRm, bool onlyFinite) {
   WKRangeCalculator ranges(naRm, onlyFinite);
   reader.setHandler(&ranges);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 
@@ -236,6 +237,7 @@ List cpp_feature_ranges_base(WKReader& reader, bool naRm, bool onlyFinite) {
   WKFeatureRangeCalculator ranges(reader.nFeatures(), naRm, onlyFinite);
   reader.setHandler(&ranges);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 

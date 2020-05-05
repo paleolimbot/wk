@@ -28,6 +28,7 @@ Rcpp::CharacterVector cpp_problems_base(WKReader& reader) {
   WKValidator validator(reader.nFeatures());
   reader.setHandler(&validator);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 

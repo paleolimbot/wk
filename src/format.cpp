@@ -54,6 +54,7 @@ Rcpp::CharacterVector cpp_format_base(WKReader& reader, int maxCoords) {
   WKFormatter formatter(exporter, maxCoords);
   reader.setHandler(&formatter);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 

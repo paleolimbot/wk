@@ -162,6 +162,7 @@ List cpp_meta_base(WKReader& reader, bool recursive) {
   WKMetaCounter counter(recursive);
   reader.setHandler(&counter);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 
@@ -169,6 +170,7 @@ List cpp_meta_base(WKReader& reader, bool recursive) {
   WKMetaAssembler assembler(recursive, counter.nMeta);
   reader.setHandler(&assembler);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 

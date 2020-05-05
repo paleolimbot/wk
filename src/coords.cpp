@@ -119,6 +119,7 @@ List cpp_coords_base(WKReader& reader) {
   WKCoordinateCounter counter;
   reader.setHandler(&counter);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 
@@ -127,6 +128,7 @@ List cpp_coords_base(WKReader& reader) {
   WKCoordinateAssembler assembler(counter.nCoordinates);
   reader.setHandler(&assembler);
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 

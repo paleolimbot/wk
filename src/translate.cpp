@@ -20,6 +20,7 @@ void cpp_translate_base(WKReader& reader, WKWriter& writer,
   reader.setHandler(&writer);
 
   while (reader.hasNextFeature()) {
+    checkUserInterrupt();
     reader.iterateFeature();
   }
 }
