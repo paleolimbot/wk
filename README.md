@@ -37,52 +37,67 @@ If you can load the package, you’re good to go\!
 library(wk)
 ```
 
-## Translate between WKB and WKT
+## Basic vector classes for WKT and WKB
 
-This package mostly provides C++ headers to avoid committing to any
-particular in-memory format, but it contains enough R code to test that
-the C++ headers will actually work. As such, you can translate between
-well-known binary (a `list()` of `raw()` vectors) and well-known text
-(character vector):
-
-``` r
-point_wkb <- as.raw(
-  c(0x00, # 0x00 = big endian
-    0x00, 0x00, 0x00, 0x01, # 0x00000001 = POINT
-    0x40, 0x3e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # x coordinate (double)
-    0x40, 0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00  # y coordinate (double)
-  )
-)
-
-wkb_translate_wkt(list(point_wkb))
-#> [1] "POINT (30 10)"
-```
-
-## Validate WKB and WKT
-
-It is often useful to attempt parsing a geometry to see if it will
-succeed. The “problems” functions parse well-known geometry vectors,
-returning a character vector of parsing problems (or `NA` if there were
-none).
+Want to return an object that any spatial package can read? Use `wkt()`
+to mark a character vector as containing well-known text, or `wkb()` to
+mark a vector as well-known binary. These have some basic vector
+features built in, which means you can subset, repeat, concatenate, and
+put these objects in a data frame or tibble. These come with built-in
+`format()` and `print()` methods.
 
 ``` r
-wkb_problems(list(point_wkb))
-#> [1] NA
-
-point_bad_type <- point_wkb
-point_bad_type[5] <- as.raw(0xff)
-wkb_problems(list(point_bad_type))
-#> [1] "Unrecognized geometry type in WKBReader::readGeometry(): 255"
+wkt("POINT (30 10)")
+#> <wk_wkt[1]>
+#> [1] POINT (30 10)
+as_wkb(wkt("POINT (30 10)"))
+#> <wk_wkb[1]>
+#> [1] 01 01 00 00 00
 ```
+
+## Extract coordinates and meta information
+
+One of the main drawbacks to passing around geomtries in WKB is that the
+format is opaque to R users, who need coordinates as R object rather
+than binary vectors. In addition to `print()` and `plot()` methods for
+`wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide
+usable coordinates and feature meta.
+
+``` r
+wkt_coords("POINT ZM (1 2 3 4)")
+#>   feature_id nest_id part_id ring_id coord_id x y z m
+#> 1          1       0      NA      NA        1 1 2 3 4
+wkt_meta("POINT ZM (1 2 3 4)")
+#>   feature_id nest_id part_id type_id size srid has_z has_m
+#> 1          1       0      NA       1    1   NA  TRUE  TRUE
+```
+
+## Well-known R objects?
+
+The wk package experimentally generates (and parses) well-known “s”
+expressions (the C name for R objects). This is similar to the format
+that [sf](https://r-spatial.github.io/sf) uses.
+
+``` r
+wkt_translate_wksxp("POINT (30 10)")
+#> [[1]]
+#>      [,1] [,2]
+#> [1,]   30   10
+#> attr(,"class")
+#> [1] "wk_point"
+```
+
+## Dependencies
+
+The wk package imports [Rcpp](https://cran.r-project.org/package=Rcpp).
 
 ## Using the C++ headers
 
 The wk package takes an event-based approach to parsing inspired by the
-event-based SAX XML parser. This allows the package to avoid inventing
-an in-memory format, since it never has to store geometries in memory.
-This is class-based, so you will have to make your own subclass of
-`WKGeometryHandler` and wire it up to a `WKReader` to do anything
-useful.
+event-based SAX XML parser. This makes the readers and writers highly
+re-usable\! This system is class-based, so you will have to make your
+own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do
+anything useful.
 
 ``` cpp
 // If you're writing code in a package, you'll also
@@ -90,8 +105,8 @@ useful.
 // [[Rcpp::depends(wk)]]
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
-#include "wk/wkb-reader.h"
+#include "wk/rcpp-io.h"
+#include "wk/wkt-reader.h"
 using namespace Rcpp;
 
 class CustomHandler: public WKGeometryHandler {
@@ -107,13 +122,15 @@ public:
 };
 
 // [[Rcpp::export]]
-void wkb_read_custom(List wkb) {
-  WKRawVectorListProvider reader(wkb);
-  CustomHandler handler;
-  WKBReader wkbReader(reader, handler);
+void wkt_read_custom(CharacterVector wkt) {
+  WKCharacterVectorProvider provider(wkt);
+  WKTReader reader(provider);
   
-  while (wkbReader.hasNextFeature()) {
-    wkbReader.iterateFeature();
+  CustomHandler handler;
+  reader.setHandler(&handler);
+  
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
   }
 }
 ```
@@ -121,7 +138,7 @@ void wkb_read_custom(List wkb) {
 On our example point, this prints the following:
 
 ``` r
-wkb_read_custom(list(point_wkb))
+wkt_read_custom("POINT (30 10)")
 #> Do something before feature 0
 #> Do something after feature 0
 ```
@@ -132,7 +149,7 @@ and parse errors. You can preview what will get called for a given
 geometry using `wkb|wkt_debug()` functions.
 
 ``` r
-wkb_debug(list(point_wkb))
+wkt_debug("POINT (30 10)")
 #> nextFeatureStart(0)
 #>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
 #>         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
@@ -143,7 +160,8 @@ wkb_debug(list(point_wkb))
 ## Performance
 
 This package is mostly designed for no system dependencies and
-flexibility, but also happens to be reasonably fast.
+flexibility, but also happens to be really fast for some common
+operations.
 
 Read WKB + Write WKB:
 
@@ -158,10 +176,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          116.4µs  147.8µs    6522.    73.92KB     7.56
-#> 2 geos_c      508.6µs  574.9µs    1675.    50.21KB     2.09
-#> 3 sf          403.9µs  493.7µs    1872.    99.57KB     6.72
-#> 4 wkb          54.7ms   56.5ms      17.7    5.23MB    61.9
+#> 1 wk          122.9µs  146.8µs    6501.    68.43KB     6.64
+#> 2 geos_c      525.2µs  575.6µs    1682.    50.21KB     0   
+#> 3 sf          386.6µs  440.8µs    2218.    99.57KB     9.21
+#> 4 wkb          52.5ms   52.5ms      18.8    5.23MB    44.0
 ```
 
 Read WKB + Write WKT:
@@ -179,10 +197,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           9.13ms     10ms     99.3     4.54MB     0   
-#> 2 geos_c       4.16ms   4.81ms    198.      3.32KB     0   
-#> 3 sf         185.69ms 187.88ms      5.11  541.35KB    10.2 
-#> 4 wellknown   24.93ms  26.99ms     34.5     3.42MB     1.92
+#> 1 wk           9.34ms   9.95ms     99.5     4.56MB     0   
+#> 2 geos_c        3.9ms   4.37ms    225.      3.32KB     0   
+#> 3 sf         172.16ms 173.37ms      5.73  541.35KB    11.5 
+#> 4 wellknown   24.72ms  26.73ms     37.1     3.42MB     1.95
 ```
 
 Read WKT + Write WKB:
@@ -198,10 +216,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            1.9ms   2.13ms     451.    67.65KB     0   
-#> 2 geos_c       2.45ms    2.7ms     362.    49.48KB     0   
-#> 3 sf           3.29ms   3.67ms     266.   186.48KB     4.26
-#> 4 wellknown   46.47ms  47.17ms      21.1    1.31MB     4.68
+#> 1 wk           1.96ms   2.15ms     456.    53.58KB     0   
+#> 2 geos_c       2.44ms   2.75ms     359.    49.48KB     2.11
+#> 3 sf           3.31ms   3.71ms     263.   186.48KB     2.05
+#> 4 wellknown   46.55ms  47.98ms      20.7    1.31MB     4.61
 ```
 
 Read WKT + Write WKT:
@@ -218,7 +236,24 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk          10.86ms  12.05ms     83.1     4.51MB      0  
-#> 2 geos_c       6.15ms   6.89ms    135.      3.32KB      0  
-#> 3 sf          181.1ms 189.29ms      5.21  248.71KB     10.4
+#> 1 wk          11.11ms  12.25ms     81.8     4.51MB      0  
+#> 2 geos_c       6.08ms   6.55ms    150.      3.32KB      0  
+#> 3 sf         178.97ms 180.83ms      5.51  260.61KB     11.0
+```
+
+Generate coordinates:
+
+``` r
+bench::mark(
+  wk_wkb = wk::wkb_coords(rep(nc_wkb, 10)),
+  sfheaders = sfheaders::sfc_to_df(rep(nc_sfc, 10)),
+  sf = sf::st_coordinates(rep(nc_sfc, 10)),
+  check = FALSE
+)
+#> # A tibble: 3 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk_wkb       1.82ms   2.35ms     424.     1.38MB     20.6
+#> 2 sfheaders   12.31ms  13.14ms      74.5    5.44MB     20.9
+#> 3 sf           29.6ms     30ms      32.8    5.61MB     19.7
 ```

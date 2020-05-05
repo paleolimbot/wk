@@ -5,6 +5,7 @@
 #' custom C++ handlers and debugging read problems.
 #'
 #' @inheritParams wkb_translate_wkt
+#'
 #' @return The input, invisibly
 #' @export
 #'
@@ -33,4 +34,12 @@ wkt_debug <- function(wkt) {
 #' @export
 wkt_streamer_debug <- function(wkt) {
   cpp_debug_wkt_streamer(wkt)
+  invisible(wkt)
+}
+
+#' @rdname wkb_debug
+#' @export
+wksxp_debug <- function(wksxp) {
+  cpp_debug_wksxp(wksxp)
+  invisible(wksxp)
 }

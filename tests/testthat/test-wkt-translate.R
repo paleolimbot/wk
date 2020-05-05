@@ -161,6 +161,16 @@ test_that("correctly formatted ZM geomteries are translated identically", {
   )
 })
 
+test_that("wkt_translate_wkb() works on NA", {
+  expect_identical(wkt_translate_wkb(NA_character_), list(NULL))
+})
+
+test_that("wkt_translate_wkb() works on empty points", {
+  expect_identical(
+    wkb_translate_wkt(wkt_translate_wkb("POINT EMPTY")),
+    "POINT (nan nan)"
+  )
+})
 
 test_that("wkt_translate_wkb() works simple geometries", {
 
@@ -274,5 +284,3 @@ test_that("wkt_translate_wkb() works with nested collections", {
 
   expect_identical(wkt_translate_wkb(wkt), list(collection))
 })
-
-

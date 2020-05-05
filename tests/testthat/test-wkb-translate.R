@@ -9,7 +9,6 @@ test_that("wkb_translate_wkt() works with missing values", {
   expect_identical(wkb_translate_wkt(list(NULL, point)), c(NA, "POINT (30 10)"))
 })
 
-
 test_that("wkb_translate_wkt() works with multiple endians", {
 
   point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,

@@ -3,9 +3,14 @@
 \name{wkb_translate_wkt}
 \alias{wkb_translate_wkt}
 \alias{wkb_translate_wkb}
+\alias{wkb_translate_wksxp}
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
-\alias{wkb_platform_endian}
+\alias{wkt_translate_wksxp}
+\alias{wksxp_translate_wkt}
+\alias{wksxp_translate_wkb}
+\alias{wksxp_translate_wksxp}
+\alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
 wkb_translate_wkt(
@@ -22,9 +27,11 @@ wkb_translate_wkb(
   include_z = NA,
   include_m = NA,
   include_srid = NA,
-  endian = wkb_platform_endian(),
+  endian = wk_platform_endian(),
   buffer_size = 2048
 )
+
+wkb_translate_wksxp(wkb, include_z = NA, include_m = NA, include_srid = NA)
 
 wkt_translate_wkt(
   wkt,
@@ -40,11 +47,33 @@ wkt_translate_wkb(
   include_z = NA,
   include_m = NA,
   include_srid = NA,
-  endian = wkb_platform_endian(),
+  endian = wk_platform_endian(),
   buffer_size = 2048
 )
 
-wkb_platform_endian()
+wkt_translate_wksxp(wkt, include_z = NA, include_m = NA, include_srid = NA)
+
+wksxp_translate_wkt(
+  wksxp,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  precision = 16,
+  trim = TRUE
+)
+
+wksxp_translate_wkb(
+  wksxp,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  endian = wk_platform_endian(),
+  buffer_size = 2048
+)
+
+wksxp_translate_wksxp(wksxp, include_z = NA, include_m = NA, include_srid = NA)
+
+wk_platform_endian()
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
@@ -62,8 +91,7 @@ is no value present in the original.}
 \item{trim}{Trim unnecessary zeroes in the output?}
 
 \item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
-Defaults to \code{\link[=wkb_platform_endian]{wkb_platform_endian()}} (slightly faster, and any
-WKB reader worth its salt will read either).}
+Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
 
 \item{buffer_size}{For WKB writing, the initial buffer size to use for
 each feature, in bytes. This will be extended when needed, but if you
@@ -71,6 +99,8 @@ are calling this repeatedly with huge geometries, setting this value
 to a larger number may result in less copying.}
 
 \item{wkt}{A character vector containing well-known text.}
+
+\item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
 \code{\link[=wkb_translate_wkt]{wkb_translate_wkt()}} returns a character vector of

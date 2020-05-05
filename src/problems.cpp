@@ -1,9 +1,11 @@
 
-#include <Rcpp.h>
-#include "wk/io-rcpp.h"
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
 #include "wk/wkt-streamer.h"
+
+#include <Rcpp.h>
+#include "wk/rcpp-io.h"
+#include "wk/sexp-reader.h"
 using namespace Rcpp;
 
 class WKValidator: public WKGeometryHandler {
@@ -22,13 +24,9 @@ public:
   }
 };
 
-// [[Rcpp::export]]
-Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
-  WKValidator validator(wkb.size());
-
-  WKRawVectorListProvider provider(wkb);
-  WKBReader reader(provider, validator);
-
+Rcpp::CharacterVector cpp_problems_base(WKReader& reader) {
+  WKValidator validator(reader.nFeatures());
+  reader.setHandler(&validator);
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
   }
@@ -37,15 +35,22 @@ Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
 }
 
 // [[Rcpp::export]]
+Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
+  WKRawVectorListProvider provider(wkb);
+  WKBReader reader(provider);
+  return cpp_problems_base(reader);
+}
+
+// [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
-  WKValidator validator(wkt.size());
-
   WKCharacterVectorProvider provider(wkt);
-  WKTStreamer reader(provider, validator);
+  WKTStreamer reader(provider);
+  return cpp_problems_base(reader);
+}
 
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-
-  return validator.output;
+// [[Rcpp::export]]
+Rcpp::CharacterVector cpp_problems_wksxp(List wksxp) {
+  WKSEXPProvider provider(wksxp);
+  WKSEXPReader reader(provider);
+  return cpp_problems_base(reader);
 }

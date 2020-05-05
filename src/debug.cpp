@@ -4,14 +4,25 @@
 #include "wk/wkt-reader.h"
 
 #include <Rcpp.h>
-#include "wk/io-rcpp.h"
+#include "wk/rcpp-io.h"
+#include "wk/sexp-reader.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
 void cpp_debug_wkb(List wkb) {
   WKRawVectorListProvider input(wkb);
   WKGeometryDebugHandler handler(Rcout);
-  WKBReader reader(input, handler);
+  WKBReader reader(input);
+  reader.setHandler(&handler);
+
+  while (reader.hasNextFeature()) {
+    reader.iterateFeature();
+  }
+}
+
+void cpp_debug_base(WKReader& reader) {
+  WKGeometryDebugHandler handler(Rcout);
+  reader.setHandler(&handler);
 
   while (reader.hasNextFeature()) {
     reader.iterateFeature();
@@ -21,21 +32,20 @@ void cpp_debug_wkb(List wkb) {
 // [[Rcpp::export]]
 void cpp_debug_wkt(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
-  WKGeometryDebugHandler handler(Rcout);
-  WKTReader reader(provider, handler);
-
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
+  WKTReader reader(provider);
+  cpp_debug_base(reader);
 }
 
 // [[Rcpp::export]]
 void cpp_debug_wkt_streamer(CharacterVector input) {
   WKCharacterVectorProvider provider(input);
-  WKGeometryDebugHandler handler(Rcout);
-  WKTStreamer reader(provider, handler);
+  WKTStreamer reader(provider);
+  cpp_debug_base(reader);
+}
 
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
+// [[Rcpp::export]]
+void cpp_debug_wksxp(List input) {
+  WKSEXPProvider provider(input);
+  WKSEXPReader reader(provider);
+  cpp_debug_base(reader);
 }

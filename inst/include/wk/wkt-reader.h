@@ -14,8 +14,9 @@
 
 class WKTReader: public WKReader, private WKGeometryHandler {
 public:
-  WKTReader(WKStringProvider& provider, WKGeometryHandler& handler):
-    WKReader(provider, handler), baseReader(provider, *this), feature(nullptr) {}
+  WKTReader(WKStringProvider& provider): WKReader(provider), baseReader(provider), feature(nullptr) {
+    this->baseReader.setHandler(this);
+  }
 
   void readFeature(size_t featureId) {
     baseReader.readFeature(featureId);
@@ -25,22 +26,22 @@ protected:
 
   virtual void nextFeatureStart(size_t featureId) {
     this->stack.clear();
-    handler.nextFeatureStart(featureId);
+    this->handler->nextFeatureStart(featureId);
   }
 
   virtual void nextNull(size_t featureId) {
-    handler.nextNull(featureId);
+    this->handler->nextNull(featureId);
   }
 
   virtual void nextFeatureEnd(size_t featureId) {
     if (this->feature) {
       this->readGeometry(*feature, PART_ID_NONE);
     }
-    handler.nextFeatureEnd(featureId);
+    this->handler->nextFeatureEnd(featureId);
   }
 
   void readGeometry(const WKGeometry& geometry, uint32_t partId) {
-    handler.nextGeometryStart(geometry.meta, partId);
+    this->handler->nextGeometryStart(geometry.meta, partId);
 
     switch (geometry.meta.geometryType) {
 
@@ -69,18 +70,18 @@ protected:
       );
     }
 
-    handler.nextGeometryEnd(geometry.meta, partId);
+    this->handler->nextGeometryEnd(geometry.meta, partId);
   }
 
   virtual void readPoint(const WKPoint& geometry)  {
     for (uint32_t i=0; i < geometry.coords.size(); i++) {
-      handler.nextCoordinate(geometry.meta, geometry.coords[i], i);
+      this->handler->nextCoordinate(geometry.meta, geometry.coords[i], i);
     }
   }
 
   virtual void readLinestring(const WKLineString& geometry)  {
     for (uint32_t i=0; i < geometry.coords.size(); i++) {
-      handler.nextCoordinate(geometry.meta, geometry.coords[i], i);
+      this->handler->nextCoordinate(geometry.meta, geometry.coords[i], i);
     }
   }
 
@@ -88,13 +89,13 @@ protected:
     uint32_t nRings = geometry.rings.size();
     for (uint32_t i=0; i < nRings; i++) {
       uint32_t ringSize = geometry.rings[i].size();
-      handler.nextLinearRingStart(geometry.meta, ringSize, i);
+      this->handler->nextLinearRingStart(geometry.meta, ringSize, i);
 
       for (uint32_t j=0; j < ringSize; j++) {
-        handler.nextCoordinate(geometry.meta, geometry.rings[i][j], j);
+        this->handler->nextCoordinate(geometry.meta, geometry.rings[i][j], j);
       }
 
-      handler.nextLinearRingEnd(geometry.meta, ringSize, i);
+      this->handler->nextLinearRingEnd(geometry.meta, ringSize, i);
     }
   }
 
@@ -163,7 +164,7 @@ protected:
   }
 
   bool nextError(WKParseException& error, size_t featureId) {
-    return handler.nextError(error, featureId);
+    return this->handler->nextError(error, featureId);
   }
 
 protected:

@@ -17,3 +17,14 @@ test_that("wkt_problems() reports parsing errors", {
   expect_match(wkt_problems("sss"), "Unknown type")
 })
 
+test_that("wksxp_problems() reports parsing errors", {
+  expect_identical(
+    wksxp_problems(list(structure(matrix(c(30, 10),  ncol = 2), class = "wk_point"))),
+    NA_character_
+  )
+  expect_match(
+    wksxp_problems(list(structure(list(c(30, 10),  ncol = 2), class = "wk_point"))),
+    "Unexpected classed object"
+  )
+})
+
