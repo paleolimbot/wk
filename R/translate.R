@@ -61,8 +61,8 @@ wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wksexp <- function(wkb, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_translate_wkb_wksexp(
+wkb_translate_wksxp <- function(wkb, include_z = NA, include_m = NA, include_srid = NA) {
+  cpp_translate_wkb_wksxp(
     wkb,
     includeZ = include_z,
     includeM = include_m,
@@ -100,8 +100,8 @@ wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wksexp <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_translate_wkt_wksexp(
+wkt_translate_wksxp <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
+  cpp_translate_wkt_wksxp(
     wkt,
     includeZ = include_z,
     includeM = include_m,
@@ -113,7 +113,7 @@ wkt_translate_wksexp <- function(wkt, include_z = NA, include_m = NA, include_sr
 #' @export
 wksexp_translate_wkt <- function(wksexp, include_z = NA, include_m = NA, include_srid = NA,
                                  precision = 16, trim = TRUE) {
-  cpp_translate_wksexp_wkt(
+  cpp_translate_wksxp_wkt(
     wksexp,
     includeZ = include_z,
     includeM = include_m,

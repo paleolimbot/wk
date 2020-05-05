@@ -3,10 +3,10 @@
 \name{wkb_translate_wkt}
 \alias{wkb_translate_wkt}
 \alias{wkb_translate_wkb}
-\alias{wkb_translate_wksexp}
+\alias{wkb_translate_wksxp}
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
-\alias{wkt_translate_wksexp}
+\alias{wkt_translate_wksxp}
 \alias{wksexp_translate_wkt}
 \alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
@@ -29,7 +29,7 @@ wkb_translate_wkb(
   buffer_size = 2048
 )
 
-wkb_translate_wksexp(wkb, include_z = NA, include_m = NA, include_srid = NA)
+wkb_translate_wksxp(wkb, include_z = NA, include_m = NA, include_srid = NA)
 
 wkt_translate_wkt(
   wkt,
@@ -49,7 +49,7 @@ wkt_translate_wkb(
   buffer_size = 2048
 )
 
-wkt_translate_wksexp(wkt, include_z = NA, include_m = NA, include_srid = NA)
+wkt_translate_wksxp(wkt, include_z = NA, include_m = NA, include_srid = NA)
 
 wksexp_translate_wkt(
   wksexp,

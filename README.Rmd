@@ -61,7 +61,7 @@ wkt_meta("POINT ZM (1 2 3 4)")
 The wk package experimentally generates (and parses) well-known "s" expressions (the C name for R objects). This is similar to the format that [sf](https://r-spatial.github.io/sf) uses.
 
 ```{r}
-wkt_translate_wksexp("POINT (30 10)")
+wkt_translate_wksxp("POINT (30 10)")
 ```
 
 ## Dependencies

@@ -79,7 +79,7 @@ expressions (the C name for R objects). This is similar to the format
 that [sf](https://r-spatial.github.io/sf) uses.
 
 ``` r
-wkt_translate_wksexp("POINT (30 10)")
+wkt_translate_wksxp("POINT (30 10)")
 #> [[1]]
 #>      [,1] [,2]
 #> [1,]   30   10
