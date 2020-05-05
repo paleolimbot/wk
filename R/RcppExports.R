@@ -73,3 +73,11 @@ cpp_translate_wksxp_wkt <- function(wksexp, includeZ, includeM, includeSRID, pre
     .Call(`_wk_cpp_translate_wksxp_wkt`, wksexp, includeZ, includeM, includeSRID, precision, trim)
 }
 
+cpp_translate_wksxp_wkb <- function(wksexp, includeZ, includeM, includeSRID, endian, bufferSize) {
+    .Call(`_wk_cpp_translate_wksxp_wkb`, wksexp, includeZ, includeM, includeSRID, endian, bufferSize)
+}
+
+cpp_translate_wksxp_wksxp <- function(wksexp, includeZ, includeM, includeSRID) {
+    .Call(`_wk_cpp_translate_wksxp_wksxp`, wksexp, includeZ, includeM, includeSRID)
+}
+

@@ -4,6 +4,7 @@
 #' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by [sf::st_as_binary()].
 #' @param wkt A character vector containing well-known text.
+#' @param wksxp A `list()` of classed objects
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
@@ -111,15 +112,40 @@ wkt_translate_wksxp <- function(wkt, include_z = NA, include_m = NA, include_sri
 
 #' @rdname wkb_translate_wkt
 #' @export
-wksexp_translate_wkt <- function(wksexp, include_z = NA, include_m = NA, include_srid = NA,
+wksxp_translate_wkt <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
                                  precision = 16, trim = TRUE) {
   cpp_translate_wksxp_wkt(
-    wksexp,
+    wksxp,
     includeZ = include_z,
     includeM = include_m,
     includeSRID = include_srid,
     precision = precision,
     trim = trim
+  )
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
+wksxp_translate_wkb <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
+                                endian = wk_platform_endian(), buffer_size = 2048) {
+  cpp_translate_wksxp_wkb(
+    wksxp,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid,
+    endian = endian,
+    bufferSize = buffer_size
+  )
+}
+
+#' @rdname wkb_translate_wkt
+#' @export
+wksxp_translate_wksxp <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA) {
+  cpp_translate_wksxp_wksxp(
+    wksxp,
+    includeZ = include_z,
+    includeM = include_m,
+    includeSRID = include_srid
   )
 }
 

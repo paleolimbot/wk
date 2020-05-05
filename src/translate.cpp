@@ -60,7 +60,6 @@ Rcpp::List cpp_translate_base_wksxp(WKReader& reader,
   return exporter.output;
 }
 
-
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_translate_wkb_wkt(Rcpp::List wkb, int includeZ, int includeM,
                                             int includeSRID, int precision, bool trim) {
@@ -105,7 +104,6 @@ Rcpp::List cpp_translate_wkt_wkb(CharacterVector wkt, int includeZ, int includeM
   return cpp_translate_base_wkb(reader, includeZ, includeM, includeSRID, endian, bufferSize);
 }
 
-
 // [[Rcpp::export]]
 Rcpp::List cpp_translate_wkt_wksxp(CharacterVector wkt, int includeZ, int includeM,
                                      int includeSRID) {
@@ -121,4 +119,19 @@ CharacterVector cpp_translate_wksxp_wkt(List wksexp, int includeZ, int includeM,
   WKSEXPProvider provider(wksexp);
   WKSEXPReader reader(provider);
   return cpp_translate_base_wkt(reader, includeZ, includeM, includeSRID, precision, trim);
+}
+
+// [[Rcpp::export]]
+List cpp_translate_wksxp_wkb(List wksexp, int includeZ, int includeM,
+                              int includeSRID, int endian, int bufferSize) {
+  WKSEXPProvider provider(wksexp);
+  WKSEXPReader reader(provider);
+  return cpp_translate_base_wkb(reader, includeZ, includeM, includeSRID, endian, bufferSize);
+}
+
+// [[Rcpp::export]]
+List cpp_translate_wksxp_wksxp(List wksexp, int includeZ, int includeM, int includeSRID) {
+  WKSEXPProvider provider(wksexp);
+  WKSEXPReader reader(provider);
+  return cpp_translate_base_wksxp(reader, includeZ, includeM, includeSRID);
 }

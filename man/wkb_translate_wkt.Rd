@@ -7,7 +7,9 @@
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
 \alias{wkt_translate_wksxp}
-\alias{wksexp_translate_wkt}
+\alias{wksxp_translate_wkt}
+\alias{wksxp_translate_wkb}
+\alias{wksxp_translate_wksxp}
 \alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
@@ -51,14 +53,25 @@ wkt_translate_wkb(
 
 wkt_translate_wksxp(wkt, include_z = NA, include_m = NA, include_srid = NA)
 
-wksexp_translate_wkt(
-  wksexp,
+wksxp_translate_wkt(
+  wksxp,
   include_z = NA,
   include_m = NA,
   include_srid = NA,
   precision = 16,
   trim = TRUE
 )
+
+wksxp_translate_wkb(
+  wksxp,
+  include_z = NA,
+  include_m = NA,
+  include_srid = NA,
+  endian = wk_platform_endian(),
+  buffer_size = 2048
+)
+
+wksxp_translate_wksxp(wksxp, include_z = NA, include_m = NA, include_srid = NA)
 
 wk_platform_endian()
 }
@@ -86,6 +99,8 @@ are calling this repeatedly with huge geometries, setting this value
 to a larger number may result in less copying.}
 
 \item{wkt}{A character vector containing well-known text.}
+
+\item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
 \code{\link[=wkb_translate_wkt]{wkb_translate_wkt()}} returns a character vector of

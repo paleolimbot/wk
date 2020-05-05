@@ -1,5 +1,5 @@
 
-test_that("basic wksexp translation works to WKB", {
+test_that("basic wksxp translation works to WKB", {
   expect_identical(
     wkb_translate_wksxp(wkt_translate_wkb("POINT (30 10)")),
     list(
@@ -8,7 +8,7 @@ test_that("basic wksexp translation works to WKB", {
   )
 })
 
-test_that("basic wksexp translation works on non-empty 2D geoms", {
+test_that("basic wksxp translation works on non-empty 2D geoms", {
   expect_identical(
     wkt_translate_wksxp("POINT (30 10)"),
     list(
@@ -100,7 +100,7 @@ test_that("basic wksexp translation works on non-empty 2D geoms", {
   )
 })
 
-test_that("basic wksexp translation works on non-empty Z geoms", {
+test_that("basic wksxp translation works on non-empty Z geoms", {
   expect_identical(
     wkt_translate_wksxp("POINT Z (30 10 2)"),
     list(
@@ -155,7 +155,7 @@ test_that("basic wksexp translation works on non-empty Z geoms", {
 })
 
 
-test_that("basic wksexp translation works on non-empty M geoms", {
+test_that("basic wksxp translation works on non-empty M geoms", {
   expect_identical(
     wkt_translate_wksxp("POINT M (30 10 2)"),
     list(
@@ -209,7 +209,7 @@ test_that("basic wksexp translation works on non-empty M geoms", {
   )
 })
 
-test_that("basic wksexp translation works on non-empty 3D geoms", {
+test_that("basic wksxp translation works on non-empty 3D geoms", {
   expect_identical(
     wkt_translate_wksxp("POINT ZM (30 10 2 13)"),
     list(
@@ -272,7 +272,7 @@ test_that("basic wksexp translation works on non-empty 3D geoms", {
 })
 
 
-test_that("basic wksexp translation works on non-empty 2D geoms", {
+test_that("basic wksxp translation works on non-empty 2D geoms", {
   expect_identical(
     wkt_translate_wksxp("SRID=837;POINT (30 10)"),
     list(
@@ -325,9 +325,9 @@ test_that("basic wksexp translation works on non-empty 2D geoms", {
   )
 })
 
-test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
+test_that("basic reverse wksxp translation works on non-empty 2D geoms", {
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
       )
@@ -335,7 +335,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "POINT (30 10)"
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(matrix(c(30, 10, 0, 0), ncol = 2, byrow = TRUE), class = "wk_linestring")
       )
@@ -343,7 +343,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "LINESTRING (30 10, 0 0)"
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -356,7 +356,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "POLYGON ((30 10, 0 0, 10 10, 30 10))"
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -370,7 +370,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "MULTIPOINT ((30 10), (0 0))"
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -384,7 +384,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "MULTILINESTRING ((30 10, 0 0), (20 20, 0 0))",
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -402,7 +402,7 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
     "MULTIPOLYGON (((30 10, 0 0, 10 10, 30 10)), ((30 10, 0 0, 10 10, 30 10)))"
   )
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -429,9 +429,9 @@ test_that("basic reverse wksexp translation works on non-empty 2D geoms", {
   )
 })
 
-test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
+test_that("basic reverse wksxp translation works on non-empty ZM geoms", {
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           matrix(c(30, 10, 1, 2),  ncol = 4),
@@ -443,7 +443,7 @@ test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
   )
 
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -459,7 +459,7 @@ test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
   )
 
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -476,7 +476,7 @@ test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
   )
 
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -493,7 +493,7 @@ test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
   )
 
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           list(
@@ -514,9 +514,9 @@ test_that("basic reverse wksexp translation works on non-empty ZM geoms", {
   )
 })
 
-test_that("basic reverse wksexp translation works with SRID", {
+test_that("basic reverse wksxp translation works with SRID", {
   expect_identical(
-    wksexp_translate_wkt(
+    wksxp_translate_wkt(
       list(
         structure(
           matrix(c(30, 10),  ncol = 2),
@@ -528,6 +528,30 @@ test_that("basic reverse wksexp translation works with SRID", {
   )
 })
 
-test_that("basic reverse wksexp translation works with NULL", {
-  expect_identical(wksexp_translate_wkt(list(NULL)), NA_character_)
+test_that("basic reverse wksxp translation works with NULL", {
+  expect_identical(wksxp_translate_wkt(list(NULL)), NA_character_)
+})
+
+test_that("identity wksxp translation works", {
+  expect_identical(
+    wksxp_translate_wksxp(
+      list(
+        structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+      )
+    ),
+    list(
+      structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+    )
+  )
+})
+
+test_that("wksxp to wkb works", {
+  expect_identical(
+    wksxp_translate_wkb(
+      list(
+        structure(matrix(c(30, 10),  ncol = 2), class = "wk_point")
+      )
+    ),
+    wkt_translate_wkb("POINT (30 10)")
+  )
 })

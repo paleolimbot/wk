@@ -233,6 +233,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_translate_wksxp_wkb
+List cpp_translate_wksxp_wkb(List wksexp, int includeZ, int includeM, int includeSRID, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_translate_wksxp_wkb(SEXP wksexpSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksexp(wksexpSEXP);
+    Rcpp::traits::input_parameter< int >::type includeZ(includeZSEXP);
+    Rcpp::traits::input_parameter< int >::type includeM(includeMSEXP);
+    Rcpp::traits::input_parameter< int >::type includeSRID(includeSRIDSEXP);
+    Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wksxp_wkb(wksexp, includeZ, includeM, includeSRID, endian, bufferSize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_wksxp_wksxp
+List cpp_translate_wksxp_wksxp(List wksexp, int includeZ, int includeM, int includeSRID);
+RcppExport SEXP _wk_cpp_translate_wksxp_wksxp(SEXP wksexpSEXP, SEXP includeZSEXP, SEXP includeMSEXP, SEXP includeSRIDSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksexp(wksexpSEXP);
+    Rcpp::traits::input_parameter< int >::type includeZ(includeZSEXP);
+    Rcpp::traits::input_parameter< int >::type includeM(includeMSEXP);
+    Rcpp::traits::input_parameter< int >::type includeSRID(includeSRIDSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wksxp_wksxp(wksexp, includeZ, includeM, includeSRID));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 1},
@@ -253,6 +283,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_translate_wkt_wkb", (DL_FUNC) &_wk_cpp_translate_wkt_wkb, 6},
     {"_wk_cpp_translate_wkt_wksxp", (DL_FUNC) &_wk_cpp_translate_wkt_wksxp, 4},
     {"_wk_cpp_translate_wksxp_wkt", (DL_FUNC) &_wk_cpp_translate_wksxp_wkt, 6},
+    {"_wk_cpp_translate_wksxp_wkb", (DL_FUNC) &_wk_cpp_translate_wksxp_wkb, 6},
+    {"_wk_cpp_translate_wksxp_wksxp", (DL_FUNC) &_wk_cpp_translate_wksxp_wksxp, 4},
     {NULL, NULL, 0}
 };
 
