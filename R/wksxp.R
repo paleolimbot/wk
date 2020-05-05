@@ -100,7 +100,6 @@ as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_
 #' S3 Details for wk_wksxp
 #'
 #' @param x A (possibly) [wksxp()] vector
-#' @param ... Unused
 #'
 #' @export
 #'

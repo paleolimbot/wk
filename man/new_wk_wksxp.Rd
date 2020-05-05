@@ -11,8 +11,6 @@ validate_wk_wksxp(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wksxp]{wksxp()}} vector}
-
-\item{...}{Unused}
 }
 \description{
 S3 Details for wk_wksxp
