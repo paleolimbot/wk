@@ -8,6 +8,7 @@
 #' @param na.rm Pass `TRUE` to not consider missing (nan) values
 #' @param finite Pass `TRUE` to only consider finite
 #'   (non-missing, non-infinite) values.
+#' @export
 #'
 #' @return A data.frame with columns:
 #' - `xmin`, `ymin`, `zmin`, and `mmin`: Minimum coordinate values

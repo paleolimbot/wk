@@ -18,7 +18,7 @@ public:
     this->swapEndian = WKBytesUtils::nativeEndian() != endian;
   }
 
-  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+  virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     // make sure meta has a valid size
     if (!meta.hasSize || meta.size == WKGeometryMeta::SIZE_UNKNOWN) {
       throw std::runtime_error("Can't write WKB wihout a valid meta.size");
@@ -41,11 +41,11 @@ public:
     }
   }
 
-  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+  virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->writeUint32(size);
   }
 
-  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writeDouble(coord.x);
     this->writeDouble(coord.y);
     if (this->newMeta.hasZ && coord.hasZ) {
