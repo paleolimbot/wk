@@ -106,11 +106,11 @@
 <a href="#extract-coordinates-and-meta-information" class="anchor"></a>Extract coordinates and meta information</h2>
 <p>One of the main drawbacks to passing around geomtries in WKB is that the format is opaque to R users, who need coordinates as R object rather than binary vectors. In addition to <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> and <code><a href="https://rdrr.io/r/base/plot.html">plot()</a></code> methods for <code><a href="reference/wkb.html">wkb()</a></code> vectors, the <code>wk*_meta()</code> and <code>wk*_coords()</code> functions provide usable coordinates and feature meta.</p>
 <div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="reference/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
-<span class="co">#&gt;   feature_id nest_id part_id ring_id coord_id x y z m</span>
-<span class="co">#&gt; 1          1       0      NA      NA        1 1 2 3 4</span>
+<span class="co">#&gt;   feature_id part_id ring_id x y z m</span>
+<span class="co">#&gt; 1          1       1       0 1 2 3 4</span>
 <span class="fu"><a href="reference/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
-<span class="co">#&gt;   feature_id nest_id part_id type_id size srid has_z has_m</span>
-<span class="co">#&gt; 1          1       0      NA       1    1   NA  TRUE  TRUE</span></pre></div>
+<span class="co">#&gt;   feature_id part_id type_id size srid has_z has_m n_coords</span>
+<span class="co">#&gt; 1          1       1       1    1   NA  TRUE  TRUE        1</span></pre></div>
 </div>
 <div id="well-known-r-objects" class="section level2">
 <h2 class="hasAnchor">
@@ -191,9 +191,9 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            310µs    357µs     2759.   114.1KB    18.4 </span>
-<span class="co">#&gt; 2 geos_c        520µs    582µs     1664.    53.5KB     2.08</span>
-<span class="co">#&gt; 3 sf            383µs    440µs     2194.    99.8KB    13.9</span></pre></div>
+<span class="co">#&gt; 1 wk            273µs    333µs     2966.   114.2KB    18.1 </span>
+<span class="co">#&gt; 2 geos_c        498µs    551µs     1780.    53.5KB     2.03</span>
+<span class="co">#&gt; 3 sf            370µs    413µs     2338.    99.8KB    16.6</span></pre></div>
 <p>Read WKB + Write WKT:</p>
 <div class="sourceCode" id="cb10"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span>(<span class="no">nc_wkb</span>),
@@ -207,10 +207,10 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           3.12ms   3.42ms    288.      3.32KB     0   </span>
-<span class="co">#&gt; 2 geos_c       3.94ms   4.37ms    225.      3.32KB     0   </span>
-<span class="co">#&gt; 3 sf         179.71ms 182.25ms      5.45  569.81KB    21.8 </span>
-<span class="co">#&gt; 4 wellknown   24.16ms  26.62ms     36.5     3.41MB     5.77</span></pre></div>
+<span class="co">#&gt; 1 wk           3.03ms   3.22ms    308.      3.32KB     0   </span>
+<span class="co">#&gt; 2 geos_c          4ms   4.36ms    228.      3.32KB     0   </span>
+<span class="co">#&gt; 3 sf         180.12ms  184.4ms      5.28  569.81KB    21.1 </span>
+<span class="co">#&gt; 4 wellknown   25.42ms  28.76ms     33.4     3.41MB     5.89</span></pre></div>
 <p>Read WKT + Write WKB:</p>
 <div class="sourceCode" id="cb11"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkb</a></span>(<span class="no">nc_wkt</span>),
@@ -222,10 +222,10 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           1.95ms   2.21ms     443.    53.58KB     2.04</span>
-<span class="co">#&gt; 2 geos_c       2.49ms   2.75ms     356.    49.48KB     0   </span>
-<span class="co">#&gt; 3 sf           3.39ms   3.75ms     260.   186.48KB     6.40</span>
-<span class="co">#&gt; 4 wellknown    46.6ms  47.63ms      20.5    1.31MB     8.80</span></pre></div>
+<span class="co">#&gt; 1 wk           1.89ms   2.02ms     492.    53.58KB     0   </span>
+<span class="co">#&gt; 2 geos_c        2.5ms   2.73ms     362.    49.48KB     0   </span>
+<span class="co">#&gt; 3 sf           3.32ms   3.58ms     274.   186.48KB     6.41</span>
+<span class="co">#&gt; 4 wellknown   42.73ms  45.88ms      21.9    1.31MB    12.5</span></pre></div>
 <p>Read WKT + Write WKT:</p>
 <div class="sourceCode" id="cb12"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkt</a></span>(<span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="no">nc_wkt</span>)),
@@ -238,9 +238,9 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           5.25ms   5.84ms    170.     63.76KB     2.00</span>
-<span class="co">#&gt; 2 geos_c       5.88ms   6.54ms    151.      3.32KB     0   </span>
-<span class="co">#&gt; 3 sf         191.73ms 193.06ms      5.08  232.42KB    20.3</span></pre></div>
+<span class="co">#&gt; 1 wk           5.03ms   5.49ms    178.     63.77KB      0  </span>
+<span class="co">#&gt; 2 geos_c       5.99ms   6.34ms    156.      3.32KB      0  </span>
+<span class="co">#&gt; 3 sf         188.41ms 190.96ms      5.23  230.73KB     20.9</span></pre></div>
 <p>Generate coordinates:</p>
 <div class="sourceCode" id="cb13"><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
   <span class="kw">wk_wkb</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_coords.html">wksxp_coords</a></span>(<span class="no">nc_sxp</span>),
@@ -251,9 +251,26 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk_wkb     181.53µs 207.49µs     4517.     154KB     25.3</span>
-<span class="co">#&gt; 2 sfheaders  510.61µs 576.63µs     1693.     612KB     56.2</span>
-<span class="co">#&gt; 3 sf           2.11ms   2.36ms      416.     606KB     33.9</span></pre></div>
+<span class="co">#&gt; 1 wk_wkb     160.84µs  185.1µs     5010.     131KB     29.9</span>
+<span class="co">#&gt; 2 sfheaders  502.16µs 544.86µs     1772.     612KB     56.1</span>
+<span class="co">#&gt; 3 sf           2.13ms   2.32ms      426.     606KB     33.7</span></pre></div>
+<p>Send polygons to a graphics device (note that the graphics device is the main holdup in real life):</p>
+<div class="sourceCode" id="cb14"><pre class="r"><span class="kw pkg">devoid</span><span class="kw ns">::</span><span class="fu">void_dev</span>()
+<span class="fu"><a href="reference/wkb_draw_points.html">wksxp_plot_new</a></span>(<span class="no">nc_sxp</span>)
+
+<span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(
+  <span class="kw">wk_wkb</span> <span class="kw">=</span> <span class="kw pkg">wk</span><span class="kw ns">::</span><span class="fu"><a href="reference/wkb_draw_points.html">wksxp_draw_polypath</a></span>(<span class="no">nc_sxp</span>),
+  <span class="kw">sf</span> <span class="kw">=</span> <span class="kw pkg">sf</span><span class="kw ns">:::</span><span class="fu">plot.sfc_MULTIPOLYGON</span>(<span class="no">nc_sfc</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
+  <span class="kw">check</span> <span class="kw">=</span> <span class="fl">FALSE</span>
+)
+<span class="co">#&gt; # A tibble: 2 x 6</span>
+<span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
+<span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 wk_wkb      312.7µs  336.4µs     2769.     358KB     18.2</span>
+<span class="co">#&gt; 2 sf           3.25ms   3.44ms      283.     241KB     20.7</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
+<span class="co">#&gt; quartz_off_screen </span>
+<span class="co">#&gt;                 2</span></pre></div>
 </div>
 </div>
   </div>
