@@ -64,11 +64,11 @@ usable coordinates and feature meta.
 
 ``` r
 wkt_coords("POINT ZM (1 2 3 4)")
-#>   feature_id nest_id part_id ring_id coord_id x y z m
-#> 1          1       0      NA      NA        1 1 2 3 4
+#>   feature_id part_id ring_id x y z m
+#> 1          1       1       0 1 2 3 4
 wkt_meta("POINT ZM (1 2 3 4)")
-#>   feature_id nest_id part_id type_id size srid has_z has_m
-#> 1          1       0      NA       1    1   NA  TRUE  TRUE
+#>   feature_id part_id type_id size srid has_z has_m n_coords
+#> 1          1       1       1    1   NA  TRUE  TRUE        1
 ```
 
 ## Well-known R objects?
@@ -173,9 +173,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            310µs    357µs     2759.   114.1KB    18.4 
-#> 2 geos_c        520µs    582µs     1664.    53.5KB     2.08
-#> 3 sf            383µs    440µs     2194.    99.8KB    13.9
+#> 1 wk            273µs    333µs     2966.   114.2KB    18.1 
+#> 2 geos_c        498µs    551µs     1780.    53.5KB     2.03
+#> 3 sf            370µs    413µs     2338.    99.8KB    16.6
 ```
 
 Read WKB + Write WKT:
@@ -193,10 +193,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.12ms   3.42ms    288.      3.32KB     0   
-#> 2 geos_c       3.94ms   4.37ms    225.      3.32KB     0   
-#> 3 sf         179.71ms 182.25ms      5.45  569.81KB    21.8 
-#> 4 wellknown   24.16ms  26.62ms     36.5     3.41MB     5.77
+#> 1 wk           3.03ms   3.22ms    308.      3.32KB     0   
+#> 2 geos_c          4ms   4.36ms    228.      3.32KB     0   
+#> 3 sf         180.12ms  184.4ms      5.28  569.81KB    21.1 
+#> 4 wellknown   25.42ms  28.76ms     33.4     3.41MB     5.89
 ```
 
 Read WKT + Write WKB:
@@ -212,10 +212,10 @@ bench::mark(
 #> # A tibble: 4 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.95ms   2.21ms     443.    53.58KB     2.04
-#> 2 geos_c       2.49ms   2.75ms     356.    49.48KB     0   
-#> 3 sf           3.39ms   3.75ms     260.   186.48KB     6.40
-#> 4 wellknown    46.6ms  47.63ms      20.5    1.31MB     8.80
+#> 1 wk           1.89ms   2.02ms     492.    53.58KB     0   
+#> 2 geos_c        2.5ms   2.73ms     362.    49.48KB     0   
+#> 3 sf           3.32ms   3.58ms     274.   186.48KB     6.41
+#> 4 wellknown   42.73ms  45.88ms      21.9    1.31MB    12.5
 ```
 
 Read WKT + Write WKT:
@@ -232,9 +232,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.25ms   5.84ms    170.     63.76KB     2.00
-#> 2 geos_c       5.88ms   6.54ms    151.      3.32KB     0   
-#> 3 sf         191.73ms 193.06ms      5.08  232.42KB    20.3
+#> 1 wk           5.03ms   5.49ms    178.     63.77KB      0  
+#> 2 geos_c       5.99ms   6.34ms    156.      3.32KB      0  
+#> 3 sf         188.41ms 190.96ms      5.23  230.73KB     20.9
 ```
 
 Generate coordinates:
@@ -249,7 +249,29 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     181.53µs 207.49µs     4517.     154KB     25.3
-#> 2 sfheaders  510.61µs 576.63µs     1693.     612KB     56.2
-#> 3 sf           2.11ms   2.36ms      416.     606KB     33.9
+#> 1 wk_wkb     160.84µs  185.1µs     5010.     131KB     29.9
+#> 2 sfheaders  502.16µs 544.86µs     1772.     612KB     56.1
+#> 3 sf           2.13ms   2.32ms      426.     606KB     33.7
+```
+
+Send polygons to a graphics device (note that the graphics device is the
+main holdup in real life):
+
+``` r
+devoid::void_dev()
+wksxp_plot_new(nc_sxp)
+
+bench::mark(
+  wk_wkb = wk::wksxp_draw_polypath(nc_sxp),
+  sf = sf:::plot.sfc_MULTIPOLYGON(nc_sfc, add = TRUE),
+  check = FALSE
+)
+#> # A tibble: 2 x 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk_wkb      312.7µs  336.4µs     2769.     358KB     18.2
+#> 2 sf           3.25ms   3.44ms      283.     241KB     20.7
+dev.off()
+#> quartz_off_screen 
+#>                 2
 ```

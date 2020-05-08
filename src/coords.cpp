@@ -16,12 +16,24 @@ public:
 
   WKCoordinateCounter(bool sepNA): nCoordinates(0), sepNA(sepNA), firstGeom(true) {}
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
-    this->nCoordinates += this->sepNA && !this->firstGeom && meta.size > 0;
-    this->firstGeom = false;
+    bool isSimple = meta.geometryType == WKGeometryType::Point ||
+      meta.geometryType == WKGeometryType::LineString ||
+      meta.geometryType == WKGeometryType::Polygon;
+
+    this->nCoordinates += this->sepNA &&
+      !this->firstGeom &&
+      (meta.size > 0) &&
+      isSimple;
+
+    if ((meta.size > 0) && isSimple) {
+      this->firstGeom = false;
+    }
   }
+
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->nCoordinates += this->sepNA && ringId > 0;
   }
+
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->nCoordinates++;
   }
@@ -78,11 +90,18 @@ protected:
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->lastPartId  = this->lastPartId + 1;
-    if (this->sepNA && !this->firstGeom && meta.size > 0) {
+
+    bool isSimple = meta.geometryType == WKGeometryType::Point ||
+      meta.geometryType == WKGeometryType::LineString ||
+      meta.geometryType == WKGeometryType::Polygon;
+
+    if (this->sepNA && !this->firstGeom && (meta.size > 0) && isSimple) {
       this->writeNASep();
     }
 
-    this->firstGeom = false;
+    if ((meta.size > 0) && isSimple) {
+      this->firstGeom = false;
+    }
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {

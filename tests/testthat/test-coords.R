@@ -135,4 +135,22 @@ test_that("sep_na works as intended", {
     wkt_coords(holes, sep_na = TRUE)$ring_id,
     c(rep(1L, 5), NA, rep(2L, 5), NA, rep(3L, 5), NA, rep(4L, 5))
   )
+
+  # multi-geometries should only separate between simple geoms
+  expect_identical(
+    wkt_coords("MULTIPOINT ((30 10), (0 0))", sep_na = TRUE)$part_id,
+    c(2L, NA, 3L)
+  )
+
+  # null geoms at the start shouldn't insert a separator
+  expect_identical(
+    wkt_coords(c(NA, "POINT (30 10)"), sep_na = TRUE)$feature_id,
+    2L
+  )
+
+  # empty geoms at the start shouldn't insert a separator
+  expect_identical(
+    wkt_coords(c("POINT EMPTY", "POINT (30 10)"), sep_na = TRUE)$feature_id,
+    2L
+  )
 })

@@ -192,3 +192,17 @@ bench::mark(
   check = FALSE
 )
 ```
+
+Send polygons to a graphics device (note that the graphics device is the main holdup in real life):
+
+```{r}
+devoid::void_dev()
+wksxp_plot_new(nc_sxp)
+
+bench::mark(
+  wk_wkb = wk::wksxp_draw_polypath(nc_sxp),
+  sf = sf:::plot.sfc_MULTIPOLYGON(nc_sfc, add = TRUE),
+  check = FALSE
+)
+dev.off()
+```
