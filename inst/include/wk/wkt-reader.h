@@ -31,6 +31,7 @@ protected:
 
   virtual void nextNull(size_t featureId) {
     this->handler->nextNull(featureId);
+    this->feature = std::unique_ptr<WKGeometry>(nullptr);
   }
 
   virtual void nextFeatureEnd(size_t featureId) {
