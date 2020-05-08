@@ -20,10 +20,8 @@ public:
 class WKCoordinateAssembler: public WKGeometryHandler {
 public:
   IntegerVector featureId;
-  IntegerVector nestId;
   IntegerVector partId;
   IntegerVector ringId;
-  IntegerVector coordId;
   NumericVector x;
   NumericVector y;
   NumericVector z;
@@ -31,23 +29,22 @@ public:
 
   WKCoordinateAssembler(size_t nCoordinates):
     featureId(nCoordinates),
-    nestId(nCoordinates),
     partId(nCoordinates),
     ringId(nCoordinates),
-    coordId(nCoordinates),
     x(nCoordinates),
     y(nCoordinates),
     z(nCoordinates),
     m(nCoordinates),
-    i(0) {}
+    i(0),
+    lastFeatureId(0),
+    lastPartId(0),
+    lastRingId(0) {}
 
   List assembleCoordinates()  {
     return List::create(
       _["feature_id"] = this->featureId,
-      _["nest_id"] = this->nestId,
       _["part_id"] = this->partId,
       _["ring_id"] = this->ringId,
-      _["coord_id"] = this->coordId,
       _["x"] = this->x,
       _["y"] = this->y,
       _["z"] = this->z,
@@ -57,46 +54,28 @@ public:
 
 protected:
   R_xlen_t i;
-  uint32_t lastPartId;
-  size_t lastFeatureId;
+  int lastFeatureId;
+  int lastPartId;
   int lastRingId;
-  int lastNestId;
 
   void nextFeatureStart(size_t featureId) {
-    this->lastNestId = 0;
     this->lastFeatureId = featureId + 1;
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
-    this->lastRingId = NA_INTEGER;
-    if (partId == WKReader::PART_ID_NONE) {
-      this->lastPartId = NA_INTEGER;
-    } else {
-      this->lastPartId  = partId + 1;
-    }
-
-    if (meta.geometryType == WKGeometryType::GeometryCollection) {
-      this->lastNestId++;
-    }
-  }
-
-  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
-    if (meta.geometryType == WKGeometryType::GeometryCollection) {
-      this->lastNestId--;
-    }
+    this->lastPartId  = this->lastPartId + 1;
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
-    this->lastRingId = ringId + 1;
+    this->lastRingId = this->lastRingId + 1;
   }
 
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     R_xlen_t i = this->i;
     this->featureId[i] = this->lastFeatureId;
-    this->nestId[i] = this->lastNestId;
     this->partId[i] = this->lastPartId;
     this->ringId[i] = this->lastRingId;
-    this->coordId[i] = coordId + 1;
+
     this->x[i] = coord.x;
     this->y[i] = coord.y;
     if (coord.hasZ) {
