@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -177,11 +177,11 @@ the number of child geometries.</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
-#&gt; 1          1       0      NA       1    1   NA FALSE FALSE</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
-#&gt; 1          1       0      NA       7    1   NA FALSE FALSE</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id type_id size srid has_z has_m
-#&gt; 1          1       0      NA       7    1   NA FALSE FALSE
-#&gt; 2          1       1       1       1    1   NA FALSE FALSE</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+#&gt; 1          1       1       1    1   NA FALSE FALSE        1</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+#&gt; 1          1       1       7    1   NA FALSE FALSE       NA</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+#&gt; 1          1       1       7    1   NA FALSE FALSE        0
+#&gt; 2          1       2       1    1   NA FALSE FALSE        1</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

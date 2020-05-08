@@ -40,7 +40,13 @@
 
 
 <meta property="og:title" content="Extract coordinates from well-known geometries — wkb_coords" />
-<meta property="og:description" content="Extract coordinates from well-known geometries" />
+<meta property="og:description" content="These functions are optimised for graphics output,
+which in R require flat coordinate structures. See
+graphics::points(), graphics::lines(),
+and  graphics::polypath() for how to send these
+to a graphics device, or grid::pointsGrob(),
+grid::linesGrob(), and grid::pathGrob() for how
+to create graphical objects using this output." />
 
 
 
@@ -72,7 +78,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -114,14 +120,20 @@
     </div>
 
     <div class="ref-description">
-    <p>Extract coordinates from well-known geometries</p>
+    <p>These functions are optimised for graphics output,
+which in R require flat coordinate structures. See
+<code><a href='https://rdrr.io/r/graphics/points.html'>graphics::points()</a></code>, <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code>,
+and  <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code> for how to send these
+to a graphics device, or <code><a href='https://rdrr.io/r/grid/grid.points.html'>grid::pointsGrob()</a></code>,
+<code><a href='https://rdrr.io/r/grid/grid.lines.html'>grid::linesGrob()</a></code>, and <code><a href='https://rdrr.io/r/grid/grid.path.html'>grid::pathGrob()</a></code> for how
+to create graphical objects using this output.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_coords</span>(<span class='no'>wkb</span>)
+    <pre class="usage"><span class='fu'>wkb_coords</span>(<span class='no'>wkb</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_coords</span>(<span class='no'>wkt</span>)
+<span class='fu'>wkt_coords</span>(<span class='no'>wkt</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_coords</span>(<span class='no'>wksxp</span>)</pre>
+<span class='fu'>wksxp_coords</span>(<span class='no'>wksxp</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,6 +142,13 @@
       <th>wkb</th>
       <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors, such as that
 returned by <code>sf::st_as_binary()</code>.</p></td>
+    </tr>
+    <tr>
+      <th>sep_na</th>
+      <td><p>Use <code>TRUE</code> to separate geometries and linear
+rings with a row of <code>NA</code>s. This is useful for generating
+output that can be fed directly to <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code>
+or <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code> without modification.</p></td>
     </tr>
     <tr>
       <th>wkt</th>
@@ -145,19 +164,26 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
 
     <p>A data.frame with columns:</p><ul>
 <li><p><code>feature_id</code>: The index of the top-level feature</p></li>
-<li><p><code>nest_id</code>: The recursion level (if feature is a geometry collection)</p></li>
-<li><p><code>part_id</code>: The part index (if nested within a multi-geometry or collection)</p></li>
-<li><p><code>ring_id</code>: The ring index</p></li>
-<li><p><code>coordinate_id</code>: The coordinate index</p></li>
+<li><p><code>part_id</code>: The part identifier, guaranteed to be unique for every simple geometry
+(including those contained within a multi-geometry or collection)</p></li>
+<li><p><code>ring_id</code>: The ring identifier, guaranteed to be unique for every ring.</p></li>
 <li><p><code>x</code>, <code>y</code>, <code>z</code>, <code>m</code>: Coordinaate values (both absence and <code>nan</code> are recorded
 as <code>NA</code>)</p></li>
 </ul>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_coords</span>(<span class='st'>"LINESTRING (0 1, 19 27)"</span>)</div><div class='output co'>#&gt;   feature_id nest_id part_id ring_id coord_id  x  y  z  m
-#&gt; 1          1       0      NA      NA        1  0  1 NA NA
-#&gt; 2          1       0      NA      NA        2 19 27 NA NA</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='no'>text</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"LINESTRING (0 1, 19 27)"</span>, <span class='st'>"LINESTRING (-1 -1, 4 10)"</span>)
+<span class='fu'>wkt_coords</span>(<span class='no'>text</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
+#&gt; 1          1       1       0  0  1 NA NA
+#&gt; 2          1       1       0 19 27 NA NA
+#&gt; 3          2       2       0 -1 -1 NA NA
+#&gt; 4          2       2       0  4 10 NA NA</div><div class='input'><span class='fu'>wkt_coords</span>(<span class='no'>text</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
+#&gt; 1          1       1       0  0  1 NA NA
+#&gt; 2          1       1       0 19 27 NA NA
+#&gt; 3         NA      NA      NA NA NA NA NA
+#&gt; 4          2       2       0 -1 -1 NA NA
+#&gt; 5          2       2       0  4 10 NA NA</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
