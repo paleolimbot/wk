@@ -119,3 +119,20 @@ test_that("wkt_coords() works", {
     )
   )
 })
+
+test_that("sep_na works as intended", {
+  holes <- c(
+    "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 4, 4 4, 4 2, 2 2))",
+    "POLYGON ((11 11, 20 11, 20 20, 11 20, 11 11), (12 12, 12 14, 14 14, 14 12, 12 12))"
+  )
+
+  expect_identical(
+    wkt_coords(holes, sep_na = FALSE)$ring_id,
+    c(rep(1L, 5), rep(2L, 5), rep(3L, 5), rep(4L, 5))
+  )
+
+  expect_identical(
+    wkt_coords(holes, sep_na = TRUE)$ring_id,
+    c(rep(1L, 5), NA, rep(2L, 5), NA, rep(3L, 5), NA, rep(4L, 5))
+  )
+})

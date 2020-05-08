@@ -6,15 +6,20 @@
 \alias{wksxp_coords}
 \title{Extract coordinates from well-known geometries}
 \usage{
-wkb_coords(wkb)
+wkb_coords(wkb, sep_na = FALSE)
 
-wkt_coords(wkt)
+wkt_coords(wkt, sep_na = FALSE)
 
-wksxp_coords(wksxp)
+wksxp_coords(wksxp, sep_na = FALSE)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
+
+\item{sep_na}{Use \code{TRUE} to separate geometries and linear
+rings with a row of \code{NA}s. This is useful for generating
+output that can be fed directly to \code{\link[graphics:polypath]{graphics::polypath()}}
+or \code{\link[graphics:lines]{graphics::lines()}} without modification.}
 
 \item{wkt}{A character vector containing well-known text.}
 
@@ -24,18 +29,25 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 A data.frame with columns:
 \itemize{
 \item \code{feature_id}: The index of the top-level feature
-\item \code{nest_id}: The recursion level (if feature is a geometry collection)
-\item \code{part_id}: The part index (if nested within a multi-geometry or collection)
-\item \code{ring_id}: The ring index
-\item \code{coordinate_id}: The coordinate index
+\item \code{part_id}: The part identifier, guaranteed to be unique for every simple geometry
+(including those contained within a multi-geometry or collection)
+\item \code{ring_id}: The ring identifier, guaranteed to be unique for every ring.
 \item \code{x}, \code{y}, \code{z}, \code{m}: Coordinaate values (both absence and \code{nan} are recorded
 as \code{NA})
 }
 }
 \description{
-Extract coordinates from well-known geometries
+These functions are optimised for graphics output,
+which in R require flat coordinate structures. See
+\code{\link[graphics:points]{graphics::points()}}, \code{\link[graphics:lines]{graphics::lines()}},
+and  \code{\link[graphics:polypath]{graphics::polypath()}} for how to send these
+to a graphics device, or \code{\link[grid:pointsGrob]{grid::pointsGrob()}},
+\code{\link[grid:linesGrob]{grid::linesGrob()}}, and \code{\link[grid:pathGrob]{grid::pathGrob()}} for how
+to create graphical objects using this output.
 }
 \examples{
-wkt_coords("LINESTRING (0 1, 19 27)")
+text <- c("LINESTRING (0 1, 19 27)", "LINESTRING (-1 -1, 4 10)")
+wkt_coords(text)
+wkt_coords(text, sep_na = TRUE)
 
 }

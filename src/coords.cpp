@@ -11,7 +11,17 @@ using namespace Rcpp;
 class WKCoordinateCounter: public WKGeometryHandler {
 public:
   size_t nCoordinates;
-  WKCoordinateCounter(): nCoordinates(0) {}
+  bool sepNA;
+  bool firstGeom;
+
+  WKCoordinateCounter(bool sepNA): nCoordinates(0), sepNA(sepNA), firstGeom(true) {}
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+    this->nCoordinates += this->sepNA && !this->firstGeom && meta.size > 0;
+    this->firstGeom = false;
+  }
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+    this->nCoordinates += this->sepNA && ringId > 0;
+  }
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->nCoordinates++;
   }
@@ -27,7 +37,7 @@ public:
   NumericVector z;
   NumericVector m;
 
-  WKCoordinateAssembler(size_t nCoordinates):
+  WKCoordinateAssembler(size_t nCoordinates, bool sepNA):
     featureId(nCoordinates),
     partId(nCoordinates),
     ringId(nCoordinates),
@@ -38,7 +48,9 @@ public:
     i(0),
     lastFeatureId(0),
     lastPartId(0),
-    lastRingId(0) {}
+    lastRingId(0),
+    sepNA(sepNA),
+    firstGeom(true) {}
 
   List assembleCoordinates()  {
     return List::create(
@@ -57,6 +69,8 @@ protected:
   int lastFeatureId;
   int lastPartId;
   int lastRingId;
+  bool sepNA;
+  bool firstGeom;
 
   void nextFeatureStart(size_t featureId) {
     this->lastFeatureId = featureId + 1;
@@ -64,14 +78,22 @@ protected:
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->lastPartId  = this->lastPartId + 1;
+    if (this->sepNA && !this->firstGeom && meta.size > 0) {
+      this->writeNASep();
+    }
+
+    this->firstGeom = false;
   }
 
   void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->lastRingId = this->lastRingId + 1;
+
+    if (this->sepNA && ringId > 0) {
+      this->writeNASep();
+    }
   }
 
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
-    R_xlen_t i = this->i;
     this->featureId[i] = this->lastFeatureId;
     this->partId[i] = this->lastPartId;
     this->ringId[i] = this->lastRingId;
@@ -92,10 +114,21 @@ protected:
 
     this->i++;
   }
+
+  void writeNASep() {
+    this->featureId[i] = NA_INTEGER;
+    this->partId[i] = NA_INTEGER;
+    this->ringId[i] = NA_INTEGER;
+    this->x[i] = NA_REAL;
+    this->y[i] = NA_REAL;
+    this->z[i] = NA_REAL;
+    this->m[i] = NA_REAL;
+    this->i++;
+  }
 };
 
-List cpp_coords_base(WKReader& reader) {
-  WKCoordinateCounter counter;
+List cpp_coords_base(WKReader& reader, bool sepNA) {
+  WKCoordinateCounter counter(sepNA);
   reader.setHandler(&counter);
   while (reader.hasNextFeature()) {
     checkUserInterrupt();
@@ -104,7 +137,7 @@ List cpp_coords_base(WKReader& reader) {
 
   reader.reset();
 
-  WKCoordinateAssembler assembler(counter.nCoordinates);
+  WKCoordinateAssembler assembler(counter.nCoordinates, sepNA);
   reader.setHandler(&assembler);
   while (reader.hasNextFeature()) {
     checkUserInterrupt();
@@ -115,22 +148,22 @@ List cpp_coords_base(WKReader& reader) {
 }
 
 // [[Rcpp::export]]
-List cpp_coords_wkb(List wkb) {
+List cpp_coords_wkb(List wkb, bool sepNA) {
   WKRawVectorListProvider provider(wkb);
   WKBReader reader(provider);
-  return cpp_coords_base(reader);
+  return cpp_coords_base(reader, sepNA);
 }
 
 // [[Rcpp::export]]
-List cpp_coords_wkt(CharacterVector wkt) {
+List cpp_coords_wkt(CharacterVector wkt, bool sepNA) {
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer reader(provider);
-  return cpp_coords_base(reader);
+  return cpp_coords_base(reader, sepNA);
 }
 
 // [[Rcpp::export]]
-List cpp_coords_wksxp(List wksxp) {
+List cpp_coords_wksxp(List wksxp, bool sepNA) {
   WKSEXPProvider provider(wksxp);
   WKSEXPReader reader(provider);
-  return cpp_coords_base(reader);
+  return cpp_coords_base(reader, sepNA);
 }

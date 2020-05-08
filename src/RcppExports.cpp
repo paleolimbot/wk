@@ -6,35 +6,38 @@
 using namespace Rcpp;
 
 // cpp_coords_wkb
-List cpp_coords_wkb(List wkb);
-RcppExport SEXP _wk_cpp_coords_wkb(SEXP wkbSEXP) {
+List cpp_coords_wkb(List wkb, bool sepNA);
+RcppExport SEXP _wk_cpp_coords_wkb(SEXP wkbSEXP, SEXP sepNASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type wkb(wkbSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_coords_wkb(wkb));
+    Rcpp::traits::input_parameter< bool >::type sepNA(sepNASEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_wkb(wkb, sepNA));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_coords_wkt
-List cpp_coords_wkt(CharacterVector wkt);
-RcppExport SEXP _wk_cpp_coords_wkt(SEXP wktSEXP) {
+List cpp_coords_wkt(CharacterVector wkt, bool sepNA);
+RcppExport SEXP _wk_cpp_coords_wkt(SEXP wktSEXP, SEXP sepNASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_coords_wkt(wkt));
+    Rcpp::traits::input_parameter< bool >::type sepNA(sepNASEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_wkt(wkt, sepNA));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_coords_wksxp
-List cpp_coords_wksxp(List wksxp);
-RcppExport SEXP _wk_cpp_coords_wksxp(SEXP wksxpSEXP) {
+List cpp_coords_wksxp(List wksxp, bool sepNA);
+RcppExport SEXP _wk_cpp_coords_wksxp(SEXP wksxpSEXP, SEXP sepNASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_coords_wksxp(wksxp));
+    Rcpp::traits::input_parameter< bool >::type sepNA(sepNASEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_wksxp(wksxp, sepNA));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -413,9 +416,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 1},
-    {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 1},
-    {"_wk_cpp_coords_wksxp", (DL_FUNC) &_wk_cpp_coords_wksxp, 1},
+    {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 2},
+    {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 2},
+    {"_wk_cpp_coords_wksxp", (DL_FUNC) &_wk_cpp_coords_wksxp, 2},
     {"_wk_cpp_debug_wkb", (DL_FUNC) &_wk_cpp_debug_wkb, 1},
     {"_wk_cpp_debug_wkt", (DL_FUNC) &_wk_cpp_debug_wkt, 1},
     {"_wk_cpp_debug_wkt_streamer", (DL_FUNC) &_wk_cpp_debug_wkt_streamer, 1},
