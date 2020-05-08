@@ -33,13 +33,28 @@ wkt_draw_polypath(wkt, ..., rule = "evenodd")
 
 wksxp_draw_polypath(wksxp, ..., rule = "evenodd")
 
-wkb_plot_new(wkb, ..., xlab = "", ylab = "", main = deparse(substitute(wkb)))
+wkb_plot_new(
+  wkb,
+  ...,
+  asp = 1,
+  xlab = "",
+  ylab = "",
+  main = deparse(substitute(wkb))
+)
 
-wkt_plot_new(wkt, ..., xlab = "", ylab = "", main = deparse(substitute(wkt)))
+wkt_plot_new(
+  wkt,
+  ...,
+  asp = 1,
+  xlab = "",
+  ylab = "",
+  main = deparse(substitute(wkt))
+)
 
 wksxp_plot_new(
   wksxp,
   ...,
+  asp = 1,
   xlab = "",
   ylab = "",
   main = deparse(substitute(wksxp))
@@ -58,7 +73,7 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 
 \item{rule}{Passed to \code{\link[graphics:polypath]{graphics::polypath()}}}
 
-\item{xlab, ylab, main}{Passed to \code{\link[graphics:plot]{graphics::plot()}} to
+\item{asp, xlab, ylab, main}{Passed to \code{\link[graphics:plot]{graphics::plot()}} to
 initialize a new plot.}
 }
 \value{

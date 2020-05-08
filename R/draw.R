@@ -14,7 +14,7 @@
 #' @param ... Passed to [graphics::points()],
 #'   [graphics::lines()], or [graphics::polypath()]
 #' @param rule Passed to [graphics::polypath()]
-#' @param xlab,ylab,main Passed to [graphics::plot()] to
+#' @param asp,xlab,ylab,main Passed to [graphics::plot()] to
 #'   initialize a new plot.
 #'
 #' @return The input, invisibly
@@ -91,22 +91,22 @@ wksxp_draw_polypath <- function(wksxp, ..., rule = "evenodd") {
 
 #' @rdname wkb_draw_points
 #' @export
-wkb_plot_new <- function(wkb, ..., xlab = "", ylab = "", main = deparse(substitute(wkb))) {
-  wkranges_plot_new(wkb_ranges(wkb, finite = TRUE), ..., xlab = xlab, ylab = ylab, main = main)
+wkb_plot_new <- function(wkb, ..., asp = 1, xlab = "", ylab = "", main = deparse(substitute(wkb))) {
+  wkranges_plot_new(wkb_ranges(wkb, finite = TRUE), ..., asp = asp, xlab = xlab, ylab = ylab, main = main)
   invisible(wkb)
 }
 
 #' @rdname wkb_draw_points
 #' @export
-wkt_plot_new <- function(wkt, ..., xlab = "", ylab = "", main = deparse(substitute(wkt))) {
-  wkranges_plot_new(wkt_ranges(wkt, finite = TRUE), ..., xlab = xlab, ylab = ylab, main = main)
+wkt_plot_new <- function(wkt, ..., asp = 1, xlab = "", ylab = "", main = deparse(substitute(wkt))) {
+  wkranges_plot_new(wkt_ranges(wkt, finite = TRUE), ..., asp = asp, xlab = xlab, ylab = ylab, main = main)
   invisible(wkt)
 }
 
 #' @rdname wkb_draw_points
 #' @export
-wksxp_plot_new <- function(wksxp, ..., xlab = "", ylab = "", main = deparse(substitute(wksxp))) {
-  wkranges_plot_new(wksxp_ranges(wksxp, finite = TRUE), ..., xlab = xlab, ylab = ylab, main = main)
+wksxp_plot_new <- function(wksxp, ..., asp = 1, xlab = "", ylab = "", main = deparse(substitute(wksxp))) {
+  wkranges_plot_new(wksxp_ranges(wksxp, finite = TRUE), ..., asp = asp, xlab = xlab, ylab = ylab, main = main)
   invisible(wksxp)
 }
 
@@ -125,6 +125,7 @@ wkcoords_draw_polypath <- function(coords, ..., rule = "evenodd") {
 wkranges_plot_new <- function(ranges, ..., xlab = "", ylab = "", main = "") {
   graphics::plot(
     double(), double(),
+    ...,
     xlim = c(ranges$xmin, ranges$xmax),
     ylim = c(ranges$ymin, ranges$ymax),
     xlab = xlab,
