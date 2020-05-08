@@ -34,7 +34,8 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item GEOS developers [copyright holder]
+  \item Refractions Research Inc. [copyright holder]
+  \item Vivid Solutions Inc. [copyright holder]
 }
 
 }

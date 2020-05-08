@@ -13,7 +13,8 @@ Authors@R:
               role = c("aut"),
               email = "edzer.pebesma@uni-muenster.de",
               comment = c(ORCID = "0000-0001-8049-7069")),
-        person("GEOS developers", role = "cph")
+        person("Refractions Research Inc.", role = "cph"),
+        person("Vivid Solutions Inc.", role = "cph")
     )
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides a minimal R and C++ API for parsing
