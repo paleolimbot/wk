@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include "parse-exception.h"
 #include "formatter.h"
 
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
@@ -113,7 +114,7 @@ private:
     case WKGeometryType::GeometryCollection:
       return "GEOMETRYCOLLECTION";
     default:
-      throw std::runtime_error(
+      throw WKParseException(
         Formatter() <<
           "invalid type in WKGeometryMeta::wktSimpleGeometryType(): " <<
           simpleGeometryType

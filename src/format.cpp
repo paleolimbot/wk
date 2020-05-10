@@ -37,11 +37,13 @@ public:
   bool nextError(WKParseException& error, size_t featureId) {
     if (error.code() == WKMaxCoordinatesException::CODE_HAS_MAX_COORDS) {
       this->exporter.writeConstChar("...");
-      this->nextFeatureEnd(featureId);
-      return true;
     } else {
-      return false;
+      this->exporter.writeConstChar("!!! ");
+      this->exporter.writeConstChar(error.what());
     }
+
+    this->nextFeatureEnd(featureId);
+    return true;
   }
 
 private:
