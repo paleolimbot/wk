@@ -7,7 +7,7 @@
 \alias{as_wkt.wk_wkt}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x)
+wkt(x = character())
 
 as_wkt(x, ...)
 

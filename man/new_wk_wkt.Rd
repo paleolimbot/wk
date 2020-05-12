@@ -5,7 +5,7 @@
 \alias{validate_wk_wkt}
 \title{S3 Details for wk_wkt}
 \usage{
-new_wk_wkt(x)
+new_wk_wkt(x = character())
 
 validate_wk_wkt(x)
 }

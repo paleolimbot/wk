@@ -5,7 +5,7 @@
 \alias{validate_wk_wksxp}
 \title{S3 Details for wk_wksxp}
 \usage{
-new_wk_wksxp(x)
+new_wk_wksxp(x = list())
 
 validate_wk_wksxp(x)
 }

@@ -11,7 +11,7 @@
 #' @examples
 #' wkt("POINT (20 10)")
 #'
-wkt <- function(x) {
+wkt <- function(x = character()) {
   x <- as.character(x)
   attributes(x) <- NULL
   wkt <- new_wk_wkt(x)
@@ -74,12 +74,12 @@ as_wkt.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
 #'
 #' @export
 #'
-new_wk_wkt <- function(x) {
+new_wk_wkt <- function(x = character()) {
   if (typeof(x) != "character" || !is.null(attributes(x))) {
     stop("wkt input must be a character() without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkt", "wk_vctr"))
+  structure(x, class = c("wk_wkt", "wk_vctr", "geovctr"))
 }
 
 #' @rdname new_wk_wkt
@@ -89,4 +89,11 @@ validate_wk_wkt <- function(x) {
   stop_for_problems(problems)
 
   invisible(x)
+}
+
+#' @export
+format.wk_wkt <- function(x, ..., max_coords = 3) {
+  formatted <- wkt_format(x, max_coords = max_coords)
+  formatted[is.na(formatted)] <- "<NA>"
+  formatted
 }

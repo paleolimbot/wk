@@ -9,7 +9,7 @@
 \alias{as_wksxp.wk_wkb}
 \title{Mark lists as well-known "S" expressions}
 \usage{
-wksxp(x)
+wksxp(x = list())
 
 as_wksxp(x, ...)
 

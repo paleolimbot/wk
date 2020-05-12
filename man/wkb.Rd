@@ -9,7 +9,7 @@
 \alias{as_wkt.wk_wkb}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x)
+wkb(x = list())
 
 as_wkb(x, ...)
 

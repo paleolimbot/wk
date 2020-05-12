@@ -11,7 +11,7 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x) {
+wkb <- function(x = list()) {
   attributes(x) <- NULL
   wkb <- new_wk_wkb(x)
   validate_wk_wkb(x)
@@ -70,12 +70,12 @@ as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
 #'
 #' @export
 #'
-new_wk_wkb <- function(x) {
+new_wk_wkb <- function(x = list()) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"))
+  structure(x, class = c("wk_wkb", "wk_vctr", "geovctr"))
 }
 
 #' @rdname new_wk_wkb
