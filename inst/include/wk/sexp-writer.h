@@ -80,7 +80,7 @@ protected:
 
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
               meta.geometryType
       );
@@ -121,7 +121,7 @@ protected:
 
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
               meta.geometryType
       );
@@ -158,7 +158,7 @@ protected:
       return "wk_geometrycollection";
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
               meta.geometryType
       );

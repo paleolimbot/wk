@@ -49,7 +49,7 @@ protected:
     } catch(WKParseException& e) {
       throw e;
     } catch (std::exception& e) {
-      throw WKParseException(Formatter() << "Unexpected classed object: " << e.what());
+      throw WKParseException(ErrorFormatter() << "Unexpected classed object: " << e.what());
     }
 
     this->readGeometry(item, meta, partId);
@@ -90,7 +90,7 @@ protected:
 
       default:
         throw WKParseException(
-            Formatter() <<
+            ErrorFormatter() <<
               "Unrecognized geometry type: " <<
                 meta.geometryType
         );
@@ -98,7 +98,7 @@ protected:
     } catch (WKParseException& e) {
       throw e;
     } catch(std::exception& e) {
-      throw WKParseException(Formatter() <<
+      throw WKParseException(ErrorFormatter() <<
         "Unexpected object for geometry type " << meta.geometryType << ": " <<
           e.what()
       );
@@ -110,7 +110,7 @@ protected:
   virtual void readPoint(Rcpp::NumericMatrix item, WKGeometryMeta meta) {
     if (meta.size > 1) {
       throw WKParseException(
-          Formatter() << "Expected matrix with 0 or 1 rows but found matrix with " <<
+          ErrorFormatter() << "Expected matrix with 0 or 1 rows but found matrix with " <<
             meta.size << " rows"
       );
     }
@@ -132,7 +132,7 @@ protected:
       } catch(WKParseException& e) {
         throw e;
       } catch(std::exception& e) {
-        throw WKParseException(Formatter() << "Unexpected item in polygon list: " << e.what());
+        throw WKParseException(ErrorFormatter() << "Unexpected item in polygon list: " << e.what());
       }
     }
   }
@@ -151,7 +151,7 @@ protected:
         throw e;
       } catch (std::exception& e) {
         throw WKParseException(
-            Formatter() << "Unexpected object within multipoint: " <<
+            ErrorFormatter() << "Unexpected object within multipoint: " <<
               e.what()
         );
       }
@@ -172,7 +172,7 @@ protected:
         throw e;
       } catch (std::exception& e) {
         throw WKParseException(
-            Formatter() << "Unexpected object within multilinestring: " <<
+            ErrorFormatter() << "Unexpected object within multilinestring: " <<
               e.what()
         );
       }
@@ -193,7 +193,7 @@ protected:
         throw e;
       } catch (std::exception& e) {
         throw WKParseException(
-            Formatter() << "Unexpected object within multipolygon: " <<
+            ErrorFormatter() << "Unexpected object within multipolygon: " <<
               e.what()
         );
       }
@@ -229,7 +229,7 @@ protected:
         throw e;
       } catch(std::exception& e) {
         throw WKParseException(
-            Formatter() <<
+            ErrorFormatter() <<
               "Error extracting coordinates from matrix: " <<
               e.what()
         );
@@ -278,7 +278,7 @@ private:
       meta.size = this->itemSize(item);
     } catch(std::exception& e) {
       // probably an unexpected type
-      throw WKParseException(Formatter() << "Can't calculate size: " << e.what());
+      throw WKParseException(ErrorFormatter() << "Can't calculate size: " << e.what());
     }
 
     return meta;

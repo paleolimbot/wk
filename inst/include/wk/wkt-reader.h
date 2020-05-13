@@ -7,7 +7,7 @@
 #include "wk/geometry.h"
 #include "wk/reader.h"
 #include "wk/io-string.h"
-#include "wk/formatter.h"
+#include "wk/error-formatter.h"
 #include "wk/geometry-handler.h"
 #include "wk/parse-exception.h"
 #include "wk/coord.h"
@@ -65,7 +65,7 @@ protected:
 
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
               geometry.meta.geometryType
       );
@@ -130,7 +130,7 @@ protected:
 
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
               meta.geometryType
       );

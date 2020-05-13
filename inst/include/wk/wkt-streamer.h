@@ -28,7 +28,7 @@
 
 #include "wk/reader.h"
 #include "wk/io-string.h"
-#include "wk/formatter.h"
+#include "wk/error-formatter.h"
 #include "wk/geometry-handler.h"
 #include "wk/string-tokenizer.h"
 #include "wk/parse-exception.h"
@@ -101,7 +101,7 @@ protected:
       geometryType = WKGeometryType::GeometryCollection;
 
     } else {
-      throw WKParseException(Formatter() << "Unknown type " << type);
+      throw WKParseException(ErrorFormatter() << "Unknown type " << type);
     }
 
     WKGeometryMeta meta = this->getNextEmptyOrOpener(tokenizer, geometryType);
@@ -155,7 +155,7 @@ protected:
 
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type: " <<
             meta.geometryType
       );
@@ -333,7 +333,7 @@ protected:
         coord.m = this->getNextNumber(tokenizer);
         coord.hasM = true;
       } else {
-        throw WKParseException(Formatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
+        throw WKParseException(ErrorFormatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
       }
 
       if(this->isNumberNext(tokenizer)) {
@@ -341,7 +341,7 @@ protected:
           coord.m = this->getNextNumber(tokenizer);
           coord.hasM = true;
         } else {
-          throw WKParseException(Formatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
+          throw WKParseException(ErrorFormatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
         }
       } else if (meta.hasZ && meta.hasM) {
         throw WKParseException("Expected M coordinate but foound ','  or ')'");
@@ -363,7 +363,7 @@ protected:
     case WKStringTokenizer::TT_EOL:
       throw WKParseException("Expected number but encountered end of line");
     case WKStringTokenizer::TT_WORD:
-      throw WKParseException(Formatter() << "Expected number but encountered word " << tokenizer->getSVal());
+      throw WKParseException(ErrorFormatter() << "Expected number but encountered word " << tokenizer->getSVal());
     case '(':
       throw WKParseException("Expected number but encountered '('");
     case ')':
@@ -371,7 +371,7 @@ protected:
     case ',':
       throw WKParseException("Expected number but encountered ','");
     default:
-      throw std::runtime_error(Formatter() << "getNextNumber(): Unexpected token type " << type);
+      throw std::runtime_error(ErrorFormatter() << "getNextNumber(): Unexpected token type " << type);
     }
   }
 
@@ -385,12 +385,12 @@ protected:
       if (nextWord == ";") {
         return srid;
       } else {
-        throw WKParseException(Formatter() << "Expected ';' but found " << nextWord);
+        throw WKParseException(ErrorFormatter() << "Expected ';' but found " << nextWord);
       }
     } else {
       // better error message here will require some refactoring of all the
       // errors
-      throw WKParseException(Formatter() <<  "Expected '=' and SRID");
+      throw WKParseException(ErrorFormatter() <<  "Expected '=' and SRID");
     }
   }
 
@@ -425,7 +425,7 @@ protected:
 
     } else {
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
               nextWord
       );
@@ -438,7 +438,7 @@ protected:
       return nextWord;
     }
 
-    throw  WKParseException(Formatter() << "Expected ')' or ',' but encountered" << nextWord);
+    throw  WKParseException(ErrorFormatter() << "Expected ')' or ',' but encountered" << nextWord);
   }
 
   std::string getNextCloser(WKStringTokenizer* tokenizer) {
@@ -447,7 +447,7 @@ protected:
       return nextWord;
     }
 
-    throw WKParseException(Formatter() << "Expected ')' but encountered" << nextWord);
+    throw WKParseException(ErrorFormatter() << "Expected ')' but encountered" << nextWord);
   }
 
   std::string getNextWord(WKStringTokenizer* tokenizer) {
@@ -466,7 +466,7 @@ protected:
     case WKStringTokenizer::TT_EOL:
       throw WKParseException("Expected word but encountered end of line");
     case WKStringTokenizer::TT_NUMBER:
-      throw WKParseException(Formatter() << "Expected word but encountered number" << tokenizer->getNVal());
+      throw WKParseException(ErrorFormatter() << "Expected word but encountered number" << tokenizer->getNVal());
     case '(':
       return "(";
     case ')':
@@ -478,7 +478,7 @@ protected:
     case '=':
       return "=";
     default:
-      throw std::runtime_error(Formatter() << "Unexpected token type " << type);
+      throw std::runtime_error(ErrorFormatter() << "Unexpected token type " << type);
     }
   }
 

@@ -84,7 +84,7 @@ protected:
       break;
     default:
       throw WKParseException(
-          Formatter() <<
+          ErrorFormatter() <<
             "Unrecognized geometry type in WKBReader::readGeometry(): " <<
               meta.geometryType
       );
