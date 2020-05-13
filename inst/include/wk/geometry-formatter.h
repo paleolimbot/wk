@@ -1,6 +1,6 @@
 
-#ifndef WK_FORMATTER_H
-#define WK_FORMATTER_H
+#ifndef WK_GEOMETRY_FORMATTER_H
+#define WK_GEOMETRY_FORMATTER_H
 
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"
@@ -14,9 +14,9 @@ public:
 };
 
 
-class WKFormatter: public WKTWriter {
+class WKGeometryFormatter: public WKTWriter {
 public:
-  WKFormatter(WKStringExporter& exporter, int maxCoords):
+  WKGeometryFormatter(WKStringExporter& exporter, int maxCoords):
   WKTWriter(exporter), maxCoords(maxCoords), thisFeatureCoords(0) {}
 
   void nextFeatureStart(size_t featureId) {

@@ -1,5 +1,5 @@
 
-#include "wk/formatter.h"
+#include "wk/geometry-formatter.h"
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.h"
@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 Rcpp::CharacterVector cpp_format_base(WKReader& reader, int maxCoords) {
   WKCharacterVectorExporter exporter(reader.nFeatures());
-  WKFormatter formatter(exporter, maxCoords);
+  WKGeometryFormatter formatter(exporter, maxCoords);
   reader.setHandler(&formatter);
   while (reader.hasNextFeature()) {
     checkUserInterrupt();
