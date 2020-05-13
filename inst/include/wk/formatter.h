@@ -1,6 +1,6 @@
 
-#ifndef WK_FORMAT_H
-#define WK_FORMAT_H
+#ifndef WK_FORMATTER_H
+#define WK_FORMATTER_H
 
 #include "wk/geometry-handler.h"
 #include "wk/wkb-reader.h"

@@ -1,5 +1,5 @@
 
-#include "wk/format.h"
+#include "wk/formatter.h"
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.h"
