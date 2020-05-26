@@ -2,6 +2,7 @@
 test_that("wkb class works", {
   x <- wkb(wkt_translate_wkb("POINT (40 10)", endian = 1))
   expect_is(x, "wk_wkb")
+  expect_true(is_wk_wkb(x))
   expect_is(x, "wk_vctr")
   expect_output(print(x), "wk_wkb")
   expect_match(as.character(x), "POINT")
@@ -20,6 +21,9 @@ test_that("wkb class works", {
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
   expect_length(c(x, x), 2)
+
+  x[1] <- "POINT (11 12)"
+  expect_identical(as_wkt(x[1]), wkt("POINT (11 12)"))
 })
 
 test_that("as_wkb() works", {

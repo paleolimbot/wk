@@ -3,11 +3,14 @@
 \name{new_wk_wkb}
 \alias{new_wk_wkb}
 \alias{validate_wk_wkb}
+\alias{is_wk_wkb}
 \title{S3 Details for wk_wkb}
 \usage{
 new_wk_wkb(x = list())
 
 validate_wk_wkb(x)
+
+is_wk_wkb(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wkb]{wkb()}} vector}

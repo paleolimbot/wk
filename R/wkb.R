@@ -93,6 +93,19 @@ validate_wk_wkb <- function(x) {
   invisible(x)
 }
 
+#' @rdname new_wk_wkb
+#' @export
+is_wk_wkb <- function(x) {
+  inherits(x, "wk_wkb")
+}
+
+#' @export
+`[<-.wk_wkb` <- function(x, i, value) {
+  x <- unclass(x)
+  x[i] <- as_wkb(value)
+  new_wk_wkb(x)
+}
+
 #' @export
 is.na.wk_wkb <- function(x) {
   vapply(unclass(x), is.null, logical(1))
