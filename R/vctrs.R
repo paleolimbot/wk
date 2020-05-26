@@ -8,15 +8,7 @@ vec_restore.wk_wkb <- function(x, ...) {
 }
 
 vec_cast.wk_wkb <- function(x, to, ...) {
-  UseMethod("vec_cast.wk_wkb")
-}
-
-vec_cast.wk_wkb.default <- function(x, to, ...) {
-  vctrs::vec_default_cast(x, to)
-}
-
-vec_cast.wk_wkb.wk_wkb <- function(x, to, ...) {
-  x
+  as_wkb(x)
 }
 
 # nocov start
@@ -25,8 +17,6 @@ vec_cast.wk_wkb.wk_wkb <- function(x, to, ...) {
   register_s3_method("vctrs", "vec_proxy", "wk_wkb")
   register_s3_method("vctrs", "vec_restore", "wk_wkb")
   register_s3_method("vctrs", "vec_cast", "wk_wkb")
-  register_s3_method("wk", "vec_cast.wk_wkb", "default")
-  register_s3_method("wk", "vec_cast.wk_wkb", "wk_wkb")
 }
 
 register_s3_method <- function(pkg, generic, class, fun = NULL) {
