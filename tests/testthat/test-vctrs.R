@@ -31,4 +31,3 @@ test_that("vctrs wksxp implementation works", {
   expect_identical(vctrs::vec_c(wksxp(), wksxp()), wksxp())
   expect_identical(vctrs::vec_c(wksxp(), wkt()), wksxp())
 })
-
