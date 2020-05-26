@@ -44,7 +44,15 @@ new_wk_vctr <- function(x, template) {
   structure(x, class = unique(class(template)))
 }
 
-stop_for_problems <- function(problems) {
+warn_for_problems <- function(problems) {
+  action_for_problems(problems, warning, call. = FALSE)
+}
+
+stop_for_problems <- function(problems)  {
+  action_for_problems(problems, stop, call. = FALSE)
+}
+
+action_for_problems <- function(problems, action, ...) {
   if (any(!is.na(problems))) {
     n_problems <- sum(!is.na(problems))
     summary_problems <- utils::head(which(!is.na(problems)))
@@ -60,15 +68,21 @@ stop_for_problems <- function(problems) {
       )
     }
 
-    stop(
+    action(
       sprintf(
         "Encountered %s parse problem%s:\n%s",
         n_problems,
         if (n_problems == 1) "" else "s",
         problem_summary
       ),
-      call. = FALSE
+      ...
     )
   }
-  invisible(problems)
+
+  data.frame(
+    row = which(!is.na(problems)),
+    col = rep_len(NA_integer_, sum(!is.na(problems))),
+    expected = problems[!is.na(problems)],
+    stringsAsFactors = FALSE
+  )
 }

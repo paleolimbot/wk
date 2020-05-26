@@ -2,6 +2,7 @@
 % Please edit documentation in R/wkb.R
 \name{wkb}
 \alias{wkb}
+\alias{parse_wkb}
 \alias{as_wkb}
 \alias{as_wkb.character}
 \alias{as_wkb.wk_wkb}
@@ -10,6 +11,8 @@
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
 wkb(x = list())
+
+parse_wkb(x)
 
 as_wkb(x, ...)
 
