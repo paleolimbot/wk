@@ -18,7 +18,7 @@ vec_restore.wk_wkb <- function(x, ...) {
 }
 
 #' @rdname vctrs-methods
-#' @export vec_cast.wk_wkt
+#' @export vec_cast.wk_wkb
 vec_cast.wk_wkb <- function(x, to, ...) {
   UseMethod("vec_cast.wk_wkb")
 }
