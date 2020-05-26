@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mark character vectors as well-known text — wkt • wk</title>
+<title>Vctrs methods — vctrs-methods • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Mark character vectors as well-known text — wkt" />
-<meta property="og:description" content="Mark character vectors as well-known text" />
+<meta property="og:title" content="Vctrs methods — vctrs-methods" />
+<meta property="og:description" content="Vctrs methods" />
 
 
 <meta name="robots" content="noindex">
@@ -108,109 +108,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mark character vectors as well-known text</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkt.R'><code>R/wkt.R</code></a></small>
-    <div class="hidden name"><code>wkt.Rd</code></div>
+    <h1>Vctrs methods</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/vctrs.R'><code>R/vctrs.R</code></a></small>
+    <div class="hidden name"><code>vctrs-methods.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Mark character vectors as well-known text</p>
+    <p>Vctrs methods</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkt</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>())
+    <pre class="usage"><span class='fu'>vec_cast.wk_wkb</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
 
-<span class='fu'>as_wkt</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>vec_ptype2.wk_wkb</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for character</span>
-<span class='fu'>as_wkt</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>vec_cast.wk_wkt</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+<span class='fu'>vec_ptype2.wk_wkt</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)
+<span class='fu'>vec_cast.wk_wksxp</span>(<span class='no'>x</span>, <span class='no'>to</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+<span class='fu'>vec_ptype2.wk_wksxp</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> vector containing well-known text.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Unused</p></td>
-    </tr>
-    <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
+      <th>x, y, to, ...</th>
+      <td><p>See <code><a href='https://vctrs.r-lib.org/reference/vec_cast.html'>vctrs::vec_cast()</a></code> and <code><a href='https://vctrs.r-lib.org/reference/vec_ptype2.html'>vctrs::vec_ptype2()</a></code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='new_wk_wkt.html'>new_wk_wkt()</a></code></p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt</span>(<span class='st'>"POINT (20 10)"</span>)</div><div class='output co'>#&gt; &lt;wk_wkt[1]&gt;
-#&gt; [1] POINT (20 10)</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

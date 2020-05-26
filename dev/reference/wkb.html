@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Mark lists of raw vectors as well-known binary</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb.R'><code>R/wkb.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/wkt.R'><code>R/wkt.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb.R'><code>R/wkb.R</code></a></small>
     <div class="hidden name"><code>wkb.Rd</code></div>
     </div>
 
@@ -144,15 +144,14 @@
   <span class='kw'>endian</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )
 
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'><a href='wkt.html'>as_wkt</a></span>(
+<span class='co'># S3 method for wk_wksxp</span>
+<span class='fu'>as_wkb</span>(
   <span class='no'>x</span>,
   <span class='no'>...</span>,
   <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>endian</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -194,15 +193,6 @@ is no value present in the original.</p></td>
       <th>endian</th>
       <td><p>For WKB writing, 0 for big endian, 1 for little endinan.
 Defaults to <code><a href='wkb_translate_wkt.html'>wk_platform_endian()</a></code> (slightly faster).</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
     </tr>
     </table>
 
