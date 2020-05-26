@@ -35,3 +35,16 @@ test_that("as_wkt() works", {
   expect_identical(as_wkt(wkb(wkt_translate_wkb("POINT (99 100)"))), wkt("POINT (99 100)"))
   expect_identical(as_wkt(as_wksxp("POINT (12 13)")), as_wkt("POINT (12 13)"))
 })
+
+test_that("parse_wkt() works", {
+  x <- "POINT (40 10)"
+  parsed <- expect_silent(parse_wkt(x))
+  expect_false(is.na(parsed))
+  expect_null(attr(parsed, "problems"))
+
+  x <- "POINT ENTPY"
+  parsed <- expect_warning(parse_wkt(x), "Encountered 1 parse problem")
+  expect_true(is.na(parsed))
+  expect_is(attr(parsed, "problems"), "data.frame")
+  expect_identical(nrow(attr(parsed, "problems")), 1L)
+})

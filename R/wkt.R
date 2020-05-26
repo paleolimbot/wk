@@ -21,6 +21,14 @@ wkt <- function(x = character()) {
 
 #' @rdname wkt
 #' @export
+parse_wkt <- function(x) {
+  x <- as.character(x)
+  attributes(x) <- NULL
+  parse_base(new_wk_wkt(x), wkt_problems(x))
+}
+
+#' @rdname wkt
+#' @export
 as_wkt <- function(x, ...) {
   UseMethod("as_wkt")
 }

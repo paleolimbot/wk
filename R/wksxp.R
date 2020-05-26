@@ -4,7 +4,7 @@
 #' @details
 #' The "wksxp" format is experimental, but was written as a way to
 #' make it possible for packages to generate [wkb()] vectors without
-#' needing to know C++. The format represents geometries as following:
+#' needing to use C++. The format represents geometries as following:
 #'
 #' - points are matrices with zero or one row
 #' - linestrings are matrices (one row per point)
@@ -22,7 +22,7 @@
 #' - `has_m`: use `TRUE` if there is an M coordinate
 #'    (may be omitted if false)
 #'
-#' This is similar to the [sf::sfc()] format, but the formats aren't
+#' This is similar to the [sf::st_sfc()] format, but the formats aren't
 #' interchangable.
 #'
 #' @param x A [list()] features (see details)
@@ -40,6 +40,13 @@ wksxp <- function(x = list()) {
   wksxp <- new_wk_wksxp(x)
   validate_wk_wksxp(x)
   wksxp
+}
+
+#' @rdname wksxp
+#' @export
+parse_wksxp <- function(x) {
+  attributes(x) <- NULL
+  parse_base(new_wk_wksxp(x), wksxp_problems(x))
 }
 
 #' @rdname wksxp

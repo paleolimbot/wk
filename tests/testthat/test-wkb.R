@@ -42,10 +42,12 @@ test_that("as_wkb() works", {
 test_that("parse_wkb() works", {
   x <- wkt_translate_wkb("POINT (40 10)", endian = 1)
   parsed <- expect_silent(parse_wkb(x))
+  expect_false(is.na(parsed))
   expect_null(attr(parsed, "problems"))
 
   x[[1]][2] <- as.raw(0xff)
   parsed <- expect_warning(parse_wkb(x), "Encountered 1 parse problem")
+  expect_true(is.na(parsed))
   expect_is(attr(parsed, "problems"), "data.frame")
   expect_identical(nrow(attr(parsed, "problems")), 1L)
 })

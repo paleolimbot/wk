@@ -44,8 +44,19 @@ new_wk_vctr <- function(x, template) {
   structure(x, class = unique(class(template)))
 }
 
-warn_for_problems <- function(problems) {
-  action_for_problems(problems, warning, call. = FALSE)
+parse_base <- function(x, problems) {
+  x[!is.na(problems)] <- x[NA_integer_]
+  problems_df <- action_for_problems(
+    problems,
+    function(msg) warning(paste0(msg, '\nSee attr(, "problems") for details.'), call. = FALSE)
+  )
+
+  if (nrow(problems_df) > 0) {
+    problems_df$actual <- unclass(x)[problems_df$row]
+    attr(x, "problems") <- problems_df
+  }
+
+  x
 }
 
 stop_for_problems <- function(problems)  {

@@ -2,6 +2,7 @@
 % Please edit documentation in R/wksxp.R
 \name{wksxp}
 \alias{wksxp}
+\alias{parse_wksxp}
 \alias{as_wksxp}
 \alias{as_wksxp.character}
 \alias{as_wksxp.wk_wksxp}
@@ -10,6 +11,8 @@
 \title{Mark lists as well-known "S" expressions}
 \usage{
 wksxp(x = list())
+
+parse_wksxp(x)
 
 as_wksxp(x, ...)
 
@@ -53,7 +56,7 @@ Mark lists as well-known "S" expressions
 \details{
 The "wksxp" format is experimental, but was written as a way to
 make it possible for packages to generate \code{\link[=wkb]{wkb()}} vectors without
-needing to know C++. The format represents geometries as following:
+needing to use C++. The format represents geometries as following:
 \itemize{
 \item points are matrices with zero or one row
 \item linestrings are matrices (one row per point)
@@ -73,7 +76,7 @@ encoded as attributes. The attribures that are used are:
 (may be omitted if false)
 }
 
-This is similar to the \code{\link[sf:sfc]{sf::sfc()}} format, but the formats aren't
+This is similar to the \code{\link[sf:st_sfc]{sf::st_sfc()}} format, but the formats aren't
 interchangable.
 }
 \examples{

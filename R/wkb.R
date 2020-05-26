@@ -22,16 +22,7 @@ wkb <- function(x = list()) {
 #' @export
 parse_wkb <- function(x) {
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x)
-  problems <- wkb_problems(x)
-  wkb[!is.na(problems)] <- wkb(list(NULL))
-  problems_df <- warn_for_problems(problems)
-  if (nrow(problems_df) > 0) {
-    problems_df$actual <- unclass(x)[problems_df$row]
-    attr(wkb, "problems") <- problems_df
-  }
-
-  wkb
+  parse_base(new_wk_wkb(x), wkb_problems(x))
 }
 
 #' @rdname wkb

@@ -2,6 +2,7 @@
 % Please edit documentation in R/wkt.R
 \name{wkt}
 \alias{wkt}
+\alias{parse_wkt}
 \alias{as_wkt}
 \alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
@@ -10,6 +11,8 @@
 \title{Mark character vectors as well-known text}
 \usage{
 wkt(x = character())
+
+parse_wkt(x)
 
 as_wkt(x, ...)
 
