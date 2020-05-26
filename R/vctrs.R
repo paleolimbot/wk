@@ -11,12 +11,26 @@ vec_cast.wk_wkb <- function(x, to, ...) {
   as_wkb(x)
 }
 
+vec_proxy.wk_wkt <- function(x, ...) {
+  unclass(x)
+}
+
+vec_restore.wk_wkt <- function(x, ...) {
+  new_wk_wkt(x)
+}
+
+vec_cast.wk_wkt <- function(x, to, ...) {
+  as_wkt(x)
+}
+
 # nocov start
 .onLoad <- function(...) {
   # register vctrs dependencies
-  register_s3_method("vctrs", "vec_proxy", "wk_wkb")
-  register_s3_method("vctrs", "vec_restore", "wk_wkb")
-  register_s3_method("vctrs", "vec_cast", "wk_wkb")
+  for (cls in c("wk_wkb", "wk_wkt")) {
+    register_s3_method("vctrs", "vec_proxy", cls)
+    register_s3_method("vctrs", "vec_restore", cls)
+    register_s3_method("vctrs", "vec_cast", cls)
+  }
 }
 
 register_s3_method <- function(pkg, generic, class, fun = NULL) {

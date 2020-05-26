@@ -2,10 +2,13 @@
 % Please edit documentation in R/wkt.R
 \name{new_wk_wkt}
 \alias{new_wk_wkt}
+\alias{is_wk_wkt}
 \alias{validate_wk_wkt}
 \title{S3 Details for wk_wkt}
 \usage{
 new_wk_wkt(x = character())
+
+is_wk_wkt(x)
 
 validate_wk_wkt(x)
 }

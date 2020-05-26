@@ -17,6 +17,9 @@ test_that("wkt class works", {
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
   expect_length(c(x, x), 2)
+
+  x[1] <- as_wkb("POINT (11 12)")
+  expect_identical(x[1], wkt("POINT (11 12)"))
 })
 
 test_that("as_wkt() works", {

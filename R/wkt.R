@@ -84,11 +84,24 @@ new_wk_wkt <- function(x = character()) {
 
 #' @rdname new_wk_wkt
 #' @export
+is_wk_wkt <- function(x) {
+  inherits(x, "wk_wkt")
+}
+
+#' @rdname new_wk_wkt
+#' @export
 validate_wk_wkt <- function(x) {
   problems <- wkt_problems(x)
   stop_for_problems(problems)
 
   invisible(x)
+}
+
+#' @export
+`[<-.wk_wkt` <- function(x, i, value) {
+  x <- unclass(x)
+  x[i] <- as_wkt(value)
+  new_wk_wkt(x)
 }
 
 #' @export
