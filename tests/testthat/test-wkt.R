@@ -3,6 +3,7 @@ test_that("wkt class works", {
   x <- wkt("POINT (40 10)")
   expect_is(x, "wk_wkt")
   expect_is(x, "wk_vctr")
+  expect_true(is_wk_wkt(x))
   expect_output(print(x), "wk_wkt")
   expect_is(wkt(NA), "wk_wkt")
 

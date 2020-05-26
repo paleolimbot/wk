@@ -113,12 +113,25 @@ new_wk_wksxp <- function(x = list()) {
 
 #' @rdname new_wk_wksxp
 #' @export
+is_wk_wksxp <- function(x) {
+  inherits(x, "wk_wksxp")
+}
+
+#' @rdname new_wk_wksxp
+#' @export
 validate_wk_wksxp <- function(x) {
   # types are checked in the parser
   problems <- wksxp_problems(x)
   stop_for_problems(problems)
 
   invisible(x)
+}
+
+#' @export
+`[<-.wk_wksxp` <- function(x, i, value) {
+  x <- unclass(x)
+  x[i] <- as_wksxp(value)
+  new_wk_wksxp(x)
 }
 
 #' @export

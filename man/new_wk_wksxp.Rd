@@ -2,10 +2,13 @@
 % Please edit documentation in R/wksxp.R
 \name{new_wk_wksxp}
 \alias{new_wk_wksxp}
+\alias{is_wk_wksxp}
 \alias{validate_wk_wksxp}
 \title{S3 Details for wk_wksxp}
 \usage{
 new_wk_wksxp(x = list())
+
+is_wk_wksxp(x)
 
 validate_wk_wksxp(x)
 }
