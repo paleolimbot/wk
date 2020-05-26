@@ -24,7 +24,11 @@ print.wk_vctr <- function(x, ...) {
 #' @export
 c.wk_vctr <- function(...) {
   result <- new_wk_vctr(NextMethod(), ..1)
-  validator <- match.fun(paste0("validate_", class(..1)[1]))
+  validator <- get(
+    paste0("validate_", class(..1)[1]),
+    mode = "function",
+    envir = asNamespace("wk")
+  )
   validator(result)
   result
 }
