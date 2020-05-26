@@ -52,12 +52,28 @@ as_wkt.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
   }
 }
 
-#' @rdname wkb
+#' @rdname wkt
 #' @export
 as_wkt.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
                           precision = NULL, trim = NULL) {
   new_wk_wkt(
     wkb_translate_wkt(
+      x,
+      include_z = include_z %||% NA,
+      include_m = include_m %||% NA,
+      include_srid = include_srid %||% NA,
+      precision = precision %||% 16,
+      trim = trim %||% TRUE
+    )
+  )
+}
+
+#' @rdname wkt
+#' @export
+as_wkt.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
+                            precision = NULL, trim = NULL) {
+  new_wk_wkt(
+    wksxp_translate_wkt(
       x,
       include_z = include_z %||% NA,
       include_m = include_m %||% NA,

@@ -64,6 +64,21 @@ as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
   )
 }
 
+#' @rdname wkb
+#' @export
+as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
+                            endian = NULL) {
+  new_wk_wkb(
+    wksxp_translate_wkb(
+      x,
+      include_z = include_z %||% NA,
+      include_m = include_m %||% NA,
+      include_srid = include_srid %||% NA,
+      endian = endian %||% wk_platform_endian()
+    )
+  )
+}
+
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
