@@ -134,3 +134,8 @@ format.wk_wkt <- function(x, ..., max_coords = 3) {
   formatted[is.na(formatted)] <- "<NA>"
   formatted
 }
+
+#' @export
+as.character.wk_wkt <- function(x, ...) {
+  unclass(x)
+}

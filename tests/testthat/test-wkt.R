@@ -5,6 +5,7 @@ test_that("wkt class works", {
   expect_is(x, "wk_vctr")
   expect_true(is_wk_wkt(x))
   expect_output(print(x), "wk_wkt")
+  expect_identical(as.character(x), unclass(x))
   expect_is(wkt(NA), "wk_wkt")
 
   expect_error(new_wk_wkt(structure(character(), thing = "stuff")), "must be a character")
