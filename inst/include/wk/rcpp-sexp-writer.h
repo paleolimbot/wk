@@ -1,6 +1,6 @@
 
-#ifndef WK_RCPP_SEXP_WRITER_H
-#define WK_RCPP_SEXP_WRITER_H
+#ifndef WK_SEXP_WRITER_H
+#define WK_SEXP_WRITER_H
 
 #include "wk/writer.h"
 #include "wk/rcpp-io.h"

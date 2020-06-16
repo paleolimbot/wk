@@ -1,6 +1,6 @@
 
-#ifndef WK_RCPP_SEXP_READER
-#define WK_RCPP_SEXP_READER
+#ifndef WK_SEXP_READER
+#define WK_SEXP_READER
 
 #include "wk/reader.h"
 #include <Rcpp.h>

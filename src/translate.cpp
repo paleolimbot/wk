@@ -7,8 +7,8 @@
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.h"
-#include "wk/sexp-writer.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-sexp-writer.h"
+#include "wk/rcpp-sexp-reader.h"
 using namespace Rcpp;
 
 void cpp_translate_base(WKReader& reader, WKWriter& writer,
@@ -54,7 +54,7 @@ Rcpp::List cpp_translate_base_wkb(WKReader& reader,
 Rcpp::List cpp_translate_base_wksxp(WKReader& reader,
                                      int includeZ, int includeM, int includeSRID) {
   WKSEXPExporter exporter(reader.nFeatures());
-  WKSEXPWriter writer(exporter);
+  WKRcppSEXPWriter writer(exporter);
 
   cpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 
@@ -118,7 +118,7 @@ Rcpp::List cpp_translate_wkt_wksxp(CharacterVector wkt, int includeZ, int includ
 CharacterVector cpp_translate_wksxp_wkt(List wksexp, int includeZ, int includeM,
                                          int includeSRID, int precision, bool trim) {
   WKSEXPProvider provider(wksexp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPReader reader(provider);
   return cpp_translate_base_wkt(reader, includeZ, includeM, includeSRID, precision, trim);
 }
 
@@ -126,13 +126,13 @@ CharacterVector cpp_translate_wksxp_wkt(List wksexp, int includeZ, int includeM,
 List cpp_translate_wksxp_wkb(List wksexp, int includeZ, int includeM,
                               int includeSRID, int endian, int bufferSize) {
   WKSEXPProvider provider(wksexp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPReader reader(provider);
   return cpp_translate_base_wkb(reader, includeZ, includeM, includeSRID, endian, bufferSize);
 }
 
 // [[Rcpp::export]]
 List cpp_translate_wksxp_wksxp(List wksexp, int includeZ, int includeM, int includeSRID) {
   WKSEXPProvider provider(wksexp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPReader reader(provider);
   return cpp_translate_base_wksxp(reader, includeZ, includeM, includeSRID);
 }

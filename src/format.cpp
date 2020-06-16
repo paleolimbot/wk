@@ -3,7 +3,7 @@
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-sexp-reader.h"
 using namespace Rcpp;
 
 Rcpp::CharacterVector cpp_format_base(WKReader& reader, int maxCoords) {
@@ -35,6 +35,6 @@ Rcpp::CharacterVector cpp_format_wkt(CharacterVector wkt, int maxCoords) {
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_format_wksxp(List wksxp, int maxCoords) {
   WKSEXPProvider provider(wksxp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPReader reader(provider);
   return cpp_format_base(reader, maxCoords);
 }
