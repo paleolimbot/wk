@@ -209,7 +209,7 @@ List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {
 
 // [[Rcpp::export]]
 List cpp_meta_wksxp(List wksxp, bool recursive) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_meta_base(reader, recursive);
 }

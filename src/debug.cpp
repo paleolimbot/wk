@@ -41,7 +41,7 @@ void cpp_debug_wkt_streamer(CharacterVector input) {
 
 // [[Rcpp::export]]
 void cpp_debug_wksxp(List input) {
-  WKSEXPProvider provider(input);
+  WKRcppSEXPProvider provider(input);
   WKRcppSEXPReader reader(provider);
   cpp_debug_base(reader);
 }

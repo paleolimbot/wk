@@ -182,7 +182,7 @@ List cpp_coords_wkt(CharacterVector wkt, bool sepNA) {
 
 // [[Rcpp::export]]
 List cpp_coords_wksxp(List wksxp, bool sepNA) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_coords_base(reader, sepNA);
 }

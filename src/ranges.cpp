@@ -228,7 +228,7 @@ List cpp_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite) {
 
 // [[Rcpp::export]]
 List cpp_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_ranges_base(reader, naRm, onlyFinite);
 }
@@ -270,7 +270,7 @@ List cpp_feature_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite) {
 
 // [[Rcpp::export]]
 List cpp_feature_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_feature_ranges_base(reader, naRm, onlyFinite);
 }

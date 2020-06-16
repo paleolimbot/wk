@@ -51,7 +51,7 @@ Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wksxp(List wksxp) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_problems_base(reader);
 }

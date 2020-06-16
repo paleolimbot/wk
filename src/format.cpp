@@ -34,7 +34,7 @@ Rcpp::CharacterVector cpp_format_wkt(CharacterVector wkt, int maxCoords) {
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_format_wksxp(List wksxp, int maxCoords) {
-  WKSEXPProvider provider(wksxp);
+  WKRcppSEXPProvider provider(wksxp);
   WKRcppSEXPReader reader(provider);
   return cpp_format_base(reader, maxCoords);
 }

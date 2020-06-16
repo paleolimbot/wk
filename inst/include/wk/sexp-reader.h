@@ -8,10 +8,10 @@
 
 class WKRcppSEXPReader: public WKReader {
 public:
-  WKRcppSEXPReader(WKSEXPProvider& provider): WKReader(provider), provider(provider) {}
+  WKRcppSEXPReader(WKRcppSEXPProvider& provider): WKReader(provider), provider(provider) {}
 
 protected:
-  WKSEXPProvider& provider;
+  WKRcppSEXPProvider& provider;
 
   void readFeature(size_t featureId) {
     this->handler->nextFeatureStart(featureId);

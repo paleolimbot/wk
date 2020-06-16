@@ -5,6 +5,22 @@
 
 using namespace Rcpp;
 
+// cpp_coords_point_translate_wkt
+CharacterVector cpp_coords_point_translate_wkt(NumericVector x, NumericVector y, NumericVector z, NumericVector m, int precision, bool trim);
+RcppExport SEXP _wk_cpp_coords_point_translate_wkt(SEXP xSEXP, SEXP ySEXP, SEXP zSEXP, SEXP mSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_point_translate_wkt(x, y, z, m, precision, trim));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_coords_wkb
 List cpp_coords_wkb(List wkb, bool sepNA);
 RcppExport SEXP _wk_cpp_coords_wkb(SEXP wkbSEXP, SEXP sepNASEXP) {
@@ -416,6 +432,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_wk_cpp_coords_point_translate_wkt", (DL_FUNC) &_wk_cpp_coords_point_translate_wkt, 6},
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 2},
     {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 2},
     {"_wk_cpp_coords_wksxp", (DL_FUNC) &_wk_cpp_coords_wksxp, 2},
