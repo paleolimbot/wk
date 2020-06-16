@@ -49,6 +49,15 @@ test_that("wkt_ranges() works", {
       xmax = 5, ymax = 6, zmax = -Inf, mmax = -Inf
     )
   )
+
+  expect_identical(
+    wkt_ranges(c("POINT (nan nan)", "POINT (nan nan)"), finite = TRUE),
+    wkt_ranges(character(0))
+  )
+  expect_identical(
+    wkt_ranges(c("POINT (1 2)", "POINT (nan nan)"), finite = TRUE),
+    wkt_ranges("POINT (1 2)")
+  )
 })
 
 test_that("wkb_ranges() works", {
