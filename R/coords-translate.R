@@ -20,6 +20,7 @@
 #'
 #' @examples
 #' coords_point_translate_wkt(1:3, 2:4)
+#' coords_linestring_translate_wkt(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2))
 #'
 coords_point_translate_wkt <- function(x, y, z = NA, m = NA,
                                        precision = 16, trim = TRUE) {

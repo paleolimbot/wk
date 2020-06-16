@@ -2,6 +2,7 @@
 test_that("coords_*_translate_wkt() works", {
   # point
   expect_identical(coords_point_translate_wkt(double(), double()), character(0))
+  expect_identical(coords_point_translate_wkt(NA, NA), "POINT EMPTY")
   expect_identical(
     coords_point_translate_wkt(1:3, 2:4),
     c("POINT (1 2)", "POINT (2 3)", "POINT (3 4)")
@@ -50,11 +51,19 @@ test_that("coords_*_translate_wkb() works", {
     coords_point_translate_wkb(1:3, 2:4),
     wkt_translate_wkb(c("POINT (1 2)", "POINT (2 3)", "POINT (3 4)"))
   )
+  expect_identical(
+    coords_linestring_translate_wkb(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2)),
+    wkt_translate_wkb(c("LINESTRING (1 2, 2 3, 3 4)", "LINESTRING (4 5, 5 6)"))
+  )
 })
 
 test_that("coords_*_translate_wksxp() works", {
   expect_identical(
     coords_point_translate_wksxp(1:3, 2:4),
     wkt_translate_wksxp(c("POINT (1 2)", "POINT (2 3)", "POINT (3 4)"))
+  )
+  expect_identical(
+    coords_linestring_translate_wksxp(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2)),
+    wkt_translate_wksxp(c("LINESTRING (1 2, 2 3, 3 4)", "LINESTRING (4 5, 5 6)"))
   )
 })
