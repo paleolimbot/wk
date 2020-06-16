@@ -103,9 +103,12 @@ to a larger number may result in less copying.}
 \item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
-\code{\link[=wkb_translate_wkt]{wkb_translate_wkt()}} returns a character vector of
-well-known text; \code{\link[=wkb_translate_wkb]{wkb_translate_wkb()}} returns a list
-of raw vectors.
+\verb{*_translate_wkt()} returns a character vector of
+well-known text; \verb{*_translate_wkb()} returns a list
+of raw vectors, and \verb{*_translate_wksxp()} returns an unclassed
+list of \code{\link[=wksxp]{wksxp()}} geometries. Unlike \code{\link[=as_wkb]{as_wkb()}}, \code{\link[=as_wkt]{as_wkt()}}, and
+\code{\link[=as_wksxp]{as_wksxp()}}, these functions do not attach
+a class to the output.
 }
 \description{
 Translate between WKB and WKT

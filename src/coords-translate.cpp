@@ -82,7 +82,7 @@ public:
     if (this->provider.coordEmpty()) {
       WKGeometryMeta meta(WKGeometryType::Point, 0);
       this->handler->nextGeometryStart(meta, PART_ID_NONE);
-      this->handler->nextGeometryStart(meta, PART_ID_NONE);
+      this->handler->nextGeometryEnd(meta, PART_ID_NONE);
     } else {
       WKCoord coord = this->provider.coord();
       WKGeometryMeta meta(WKGeometryType::Point, 1);
@@ -90,7 +90,7 @@ public:
       meta.hasM = coord.hasM;
       this->handler->nextGeometryStart(meta, PART_ID_NONE);
       this->handler->nextCoordinate(meta, coord, 0);
-      this->handler->nextGeometryStart(meta, PART_ID_NONE);
+      this->handler->nextGeometryEnd(meta, PART_ID_NONE);
     }
 
     this->handler->nextFeatureEnd(featureId);
@@ -107,4 +107,21 @@ CharacterVector cpp_coords_point_translate_wkt(NumericVector x, NumericVector y,
   WKRcppPointCoordProvider provider(x, y, z, m);
   WKRcppPointCoordReader reader(provider);
   return wk::translate_wkt(reader, precision, trim);
+}
+
+// [[Rcpp::export]]
+List cpp_coords_point_translate_wkb(NumericVector x, NumericVector y,
+                                    NumericVector z, NumericVector m,
+                                    int endian, int bufferSize) {
+  WKRcppPointCoordProvider provider(x, y, z, m);
+  WKRcppPointCoordReader reader(provider);
+  return wk::translate_wkb(reader, endian, bufferSize);
+}
+
+// [[Rcpp::export]]
+List cpp_coords_point_translate_wksxp(NumericVector x, NumericVector y,
+                                      NumericVector z, NumericVector m) {
+  WKRcppPointCoordProvider provider(x, y, z, m);
+  WKRcppPointCoordReader reader(provider);
+  return wk::translate_wksxp(reader);
 }

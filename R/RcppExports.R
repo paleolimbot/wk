@@ -5,6 +5,14 @@ cpp_coords_point_translate_wkt <- function(x, y, z, m, precision, trim) {
     .Call(`_wk_cpp_coords_point_translate_wkt`, x, y, z, m, precision, trim)
 }
 
+cpp_coords_point_translate_wkb <- function(x, y, z, m, endian, bufferSize) {
+    .Call(`_wk_cpp_coords_point_translate_wkb`, x, y, z, m, endian, bufferSize)
+}
+
+cpp_coords_point_translate_wksxp <- function(x, y, z, m) {
+    .Call(`_wk_cpp_coords_point_translate_wksxp`, x, y, z, m)
+}
+
 cpp_coords_wkb <- function(wkb, sepNA) {
     .Call(`_wk_cpp_coords_wkb`, wkb, sepNA)
 }

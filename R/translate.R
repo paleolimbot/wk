@@ -20,9 +20,13 @@
 #'   are calling this repeatedly with huge geometries, setting this value
 #'   to a larger number may result in less copying.
 #'
-#' @return [wkb_translate_wkt()] returns a character vector of
-#'   well-known text; [wkb_translate_wkb()] returns a list
-#'   of raw vectors.
+#' @return `*_translate_wkt()` returns a character vector of
+#'   well-known text; `*_translate_wkb()` returns a list
+#'   of raw vectors, and `*_translate_wksxp()` returns an unclassed
+#'   list of [wksxp()] geometries. Unlike [as_wkb()], [as_wkt()], and
+#'   [as_wksxp()], these functions do not attach
+#'   a class to the output.
+#'
 #' @export
 #'
 #' @examples
