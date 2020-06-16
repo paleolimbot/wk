@@ -51,6 +51,55 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_coords_linestring_translate_wkt
+CharacterVector cpp_coords_linestring_translate_wkt(NumericVector x, NumericVector y, NumericVector z, NumericVector m, IntegerVector featureId, int precision, bool trim);
+RcppExport SEXP _wk_cpp_coords_linestring_translate_wkt(SEXP xSEXP, SEXP ySEXP, SEXP zSEXP, SEXP mSEXP, SEXP featureIdSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type featureId(featureIdSEXP);
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_linestring_translate_wkt(x, y, z, m, featureId, precision, trim));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_coords_linestring_translate_wkb
+List cpp_coords_linestring_translate_wkb(NumericVector x, NumericVector y, NumericVector z, NumericVector m, IntegerVector featureId, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_coords_linestring_translate_wkb(SEXP xSEXP, SEXP ySEXP, SEXP zSEXP, SEXP mSEXP, SEXP featureIdSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type featureId(featureIdSEXP);
+    Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_linestring_translate_wkb(x, y, z, m, featureId, endian, bufferSize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_coords_linestring_translate_wksxp
+List cpp_coords_linestring_translate_wksxp(NumericVector x, NumericVector y, NumericVector z, NumericVector m, IntegerVector featureId);
+RcppExport SEXP _wk_cpp_coords_linestring_translate_wksxp(SEXP xSEXP, SEXP ySEXP, SEXP zSEXP, SEXP mSEXP, SEXP featureIdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type m(mSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type featureId(featureIdSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_coords_linestring_translate_wksxp(x, y, z, m, featureId));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_coords_wkb
 List cpp_coords_wkb(List wkb, bool sepNA);
 RcppExport SEXP _wk_cpp_coords_wkb(SEXP wkbSEXP, SEXP sepNASEXP) {
@@ -465,6 +514,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_coords_point_translate_wkt", (DL_FUNC) &_wk_cpp_coords_point_translate_wkt, 6},
     {"_wk_cpp_coords_point_translate_wkb", (DL_FUNC) &_wk_cpp_coords_point_translate_wkb, 6},
     {"_wk_cpp_coords_point_translate_wksxp", (DL_FUNC) &_wk_cpp_coords_point_translate_wksxp, 4},
+    {"_wk_cpp_coords_linestring_translate_wkt", (DL_FUNC) &_wk_cpp_coords_linestring_translate_wkt, 7},
+    {"_wk_cpp_coords_linestring_translate_wkb", (DL_FUNC) &_wk_cpp_coords_linestring_translate_wkb, 7},
+    {"_wk_cpp_coords_linestring_translate_wksxp", (DL_FUNC) &_wk_cpp_coords_linestring_translate_wksxp, 5},
     {"_wk_cpp_coords_wkb", (DL_FUNC) &_wk_cpp_coords_wkb, 2},
     {"_wk_cpp_coords_wkt", (DL_FUNC) &_wk_cpp_coords_wkt, 2},
     {"_wk_cpp_coords_wksxp", (DL_FUNC) &_wk_cpp_coords_wksxp, 2},

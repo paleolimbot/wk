@@ -2,9 +2,47 @@
 % Please edit documentation in R/coords-translate.R
 \name{coords_point_translate_wkt}
 \alias{coords_point_translate_wkt}
+\alias{coords_point_translate_wkb}
+\alias{coords_point_translate_wksxp}
+\alias{coords_linestring_translate_wkt}
+\alias{coords_linestring_translate_wkb}
+\alias{coords_linestring_translate_wksxp}
 \title{Parse coordinates into well-known formats}
 \usage{
 coords_point_translate_wkt(x, y, z = NA, m = NA, precision = 16, trim = TRUE)
+
+coords_point_translate_wkb(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  endian = wk::wk_platform_endian(),
+  buffer_size = 2048
+)
+
+coords_point_translate_wksxp(x, y, z = NA, m = NA)
+
+coords_linestring_translate_wkt(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  feature_id = 1L,
+  precision = 16,
+  trim = TRUE
+)
+
+coords_linestring_translate_wkb(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  feature_id = 1L,
+  endian = wk::wk_platform_endian(),
+  buffer_size = 2048
+)
+
+coords_linestring_translate_wksxp(x, y, z = NA, m = NA, feature_id = 1L)
 }
 \arguments{
 \item{x, y, z, m}{Vectors of coordinate values}
@@ -13,6 +51,18 @@ coords_point_translate_wkt(x, y, z = NA, m = NA, precision = 16, trim = TRUE)
 (number of decimal places).}
 
 \item{trim}{Trim unnecessary zeroes in the output?}
+
+\item{endian}{For WKB writing, 0 for big endian, 1 for little endian.
+Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
+
+\item{buffer_size}{For WKB writing, the initial buffer size to use for
+each feature, in bytes. This will be extended when needed, but if you
+are calling this repeatedly with huge geometries, setting this value
+to a larger number may result in less copying.}
+
+\item{feature_id}{An integer vector for which a change in
+sequential values indicates a new feature. Use \code{\link[=factor]{factor()}}
+to convert from a character vector.}
 }
 \value{
 \verb{*_translate_wkt()} returns a character vector of
@@ -26,6 +76,6 @@ and company: they parse vectors of coordinate values into well-known
 formats.
 }
 \examples{
-coords_point_translate_wkt
+coords_point_translate_wkt(1:3, 2:4)
 
 }
