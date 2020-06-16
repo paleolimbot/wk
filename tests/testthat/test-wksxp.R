@@ -37,4 +37,7 @@ test_that("as_wksxp() works", {
   expect_identical(as_wksxp("SRID=44;POINT (40 10)"), x)
   expect_identical(as_wksxp(wkt("SRID=44;POINT (40 10)")), x)
   expect_identical(as_wksxp(as_wkb("SRID=44;POINT (40 10)")), x)
+
+  # default method
+  expect_identical(as_wksxp.default("POINT (11 12)"), as_wksxp("POINT (11 12)"))
 })
