@@ -1,6 +1,6 @@
 
-#ifndef RCPP_TRANSLATE_H
-#define RCPP_TRANSLATE_H
+#ifndef WK_RCPP_TRANSLATE_H
+#define WK_RCPP_TRANSLATE_H
 
 #include "wk/wkt-writer.h"
 #include "wk/wkt-reader.h"
