@@ -8,7 +8,7 @@
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
-#' @param endian For WKB writing, 0 for big endian, 1 for little endinan.
+#' @param endian For WKB writing, 0 for big endian, 1 for little endian.
 #'   Defaults to [wk_platform_endian()] (slightly faster).
 #' @param include_z,include_m,include_srid Include the
 #'   values of the Z and M coordinates and/or SRID
