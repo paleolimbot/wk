@@ -35,6 +35,9 @@ test_that("as_wkt() works", {
   expect_identical(as_wkt("POINT (43 44)"), wkt("POINT (43 44)"))
   expect_identical(as_wkt(wkb(wkt_translate_wkb("POINT (99 100)"))), wkt("POINT (99 100)"))
   expect_identical(as_wkt(as_wksxp("POINT (12 13)")), as_wkt("POINT (12 13)"))
+
+  # default method
+  expect_identical(as_wkt.default("POINT (11 12)"), as_wkt("POINT (11 12)"))
 })
 
 test_that("parse_wkt() works", {

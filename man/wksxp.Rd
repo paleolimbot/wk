@@ -4,6 +4,7 @@
 \alias{wksxp}
 \alias{parse_wksxp}
 \alias{as_wksxp}
+\alias{as_wksxp.default}
 \alias{as_wksxp.character}
 \alias{as_wksxp.wk_wksxp}
 \alias{as_wksxp.wk_wkt}
@@ -15,6 +16,8 @@ wksxp(x = list())
 parse_wksxp(x)
 
 as_wksxp(x, ...)
+
+\method{as_wksxp}{default}(x, ...)
 
 \method{as_wksxp}{character}(x, ...)
 

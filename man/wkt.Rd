@@ -4,6 +4,7 @@
 \alias{wkt}
 \alias{parse_wkt}
 \alias{as_wkt}
+\alias{as_wkt.default}
 \alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
 \alias{as_wkt.wk_wkb}
@@ -15,6 +16,8 @@ wkt(x = character())
 parse_wkt(x)
 
 as_wkt(x, ...)
+
+\method{as_wkt}{default}(x, ...)
 
 \method{as_wkt}{character}(x, ...)
 

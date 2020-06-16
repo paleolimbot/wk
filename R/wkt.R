@@ -35,6 +35,12 @@ as_wkt <- function(x, ...) {
 
 #' @rdname wkt
 #' @export
+as_wkt.default <- function(x, ...) {
+  as_wkt(as_wkb(x), ...)
+}
+
+#' @rdname wkt
+#' @export
 as_wkt.character <- function(x, ...) {
   as_wkt(wkt(x), ...)
 }
