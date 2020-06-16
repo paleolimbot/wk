@@ -392,3 +392,8 @@ test_that("wkb--wkb translation works for nested collections", {
 
   expect_identical(wkb_translate_wkb(list(collection), endian  = 1), list(collection))
 })
+
+test_that("wkb_translate_* doesn't segfault on other inputs", {
+  expect_error(wkb_translate_wkt("POINT (30 10)"), class = "Rcpp::not_compatible")
+  expect_error(wkb_translate_wkt(as_wksxp("POINT (30 10)")), class = "WKParseException")
+})

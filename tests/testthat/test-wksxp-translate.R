@@ -555,3 +555,8 @@ test_that("wksxp to wkb works", {
     wkt_translate_wkb("POINT (30 10)")
   )
 })
+
+test_that("wksxp_translate_* doesn't segfault on other inputs", {
+  expect_error(wksxp_translate_wkt("POINT (30 10)"), class = "WKParseException")
+  expect_error(wksxp_translate_wkt(as_wkb("POINT (30 10)")), class = "WKParseException")
+})
