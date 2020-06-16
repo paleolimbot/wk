@@ -25,6 +25,12 @@ The goal of wk is to provide lightweight R and C++ infrastructure for packages t
 
 ## Installation
 
+You can install the released version of s2 from [CRAN](https://cran.r-project.org/) with:
+
+``` r
+install.packages("wk")
+```
+
 You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
@@ -49,16 +55,16 @@ as_wkb(wkt("POINT (30 10)"))
 
 ## Extract coordinates and meta information
 
-One of the main drawbacks to passing around geomtries in WKB is that the format is opaque to R users, who need coordinates as R object rather than binary vectors. In addition to `print()` and `plot()` methods for `wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable coordinates and feature meta.
+One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. In addition to `print()` methods for `wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable coordinates and feature meta.
 
 ```{r}
 wkt_coords("POINT ZM (1 2 3 4)")
 wkt_meta("POINT ZM (1 2 3 4)")
 ```
 
-## Well-known R objects?
+## Well-known R objects
 
-The wk package experimentally generates (and parses) well-known "s" expressions (the C name for R objects). This is similar to the format that [sf](https://r-spatial.github.io/sf) uses.
+The wk package experimentally generates (and parses) a plain R object format, which is needed because well-known binary can't natively represent the empty point and reading/writing well-known text is too slow. The format of the `wksxp()` object is designed to be as close as possible to well-known text and well-known binary to make the translation code as clean as possible.
 
 ```{r}
 wkt_translate_wksxp("POINT (30 10)")
@@ -129,11 +135,9 @@ This package was designed to stand alone and be flexible, but also happens to be
 nc_sf <- sf::read_sf(system.file("shape/nc.shp", package="sf"))
 nc_sfc <- sf::st_geometry(nc_sf)
 nc_WKB <- sf::st_as_binary(nc_sfc)
-nc_wkb <- geovctrs::new_geovctrs_wkb(unclass(nc_WKB))
-nc_wkt <- geovctrs::new_geovctrs_wkt(wkb_translate_wkt(nc_wkb))
-nc_sxp <- wkb_translate_wksxp(nc_wkb)
-wkt_ptype <- geovctrs::geo_wkt()
-wkb_ptype <- geovctrs::geo_wkb()
+nc_wkb <- wkb(nc_WKB)
+nc_wkt <- as_wkt(nc_wkb)
+nc_sxp <- as_wksxp(nc_wkb)
 ```
 
 Read WKB + Write WKB:
@@ -141,7 +145,6 @@ Read WKB + Write WKB:
 ```{r}
 bench::mark(
   wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
   sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
   check = FALSE
 )
@@ -152,9 +155,7 @@ Read WKB + Write WKT:
 ```{r}
 bench::mark(
   wk = wk:::wkb_translate_wkt(nc_wkb),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
-  wellknown = lapply(nc_wkb, wellknown::wkb_wkt),
   check = FALSE
 )
 ```
@@ -164,9 +165,7 @@ Read WKT + Write WKB:
 ```{r}
 bench::mark(
   wk = wk:::wkt_translate_wkb(nc_wkt),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkb_ptype),
   sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
-  wellknown = lapply(nc_wkt, wellknown::wkt_wkb),
   check = FALSE
 )
 ```
@@ -176,7 +175,6 @@ Read WKT + Write WKT:
 ```{r}
 bench::mark(
   wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
   check = FALSE
 )

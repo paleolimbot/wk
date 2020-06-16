@@ -23,6 +23,13 @@ readable tests and examples (WKT).
 
 ## Installation
 
+You can install the released version of s2 from
+[CRAN](https://cran.r-project.org/) with:
+
+``` r
+install.packages("wk")
+```
+
 You can install the development version from
 [GitHub](https://github.com/) with:
 
@@ -56,11 +63,11 @@ as_wkb(wkt("POINT (30 10)"))
 
 ## Extract coordinates and meta information
 
-One of the main drawbacks to passing around geomtries in WKB is that the
-format is opaque to R users, who need coordinates as R object rather
-than binary vectors. In addition to `print()` and `plot()` methods for
-`wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide
-usable coordinates and feature meta.
+One of the main drawbacks to passing around geometries in WKB is that
+the format is opaque to R users, who need coordinates as R objects
+rather than binary vectors. In addition to `print()` methods for `wkb()`
+vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable
+coordinates and feature meta.
 
 ``` r
 wkt_coords("POINT ZM (1 2 3 4)")
@@ -71,11 +78,14 @@ wkt_meta("POINT ZM (1 2 3 4)")
 #> 1          1       1       1    1   NA  TRUE  TRUE        1
 ```
 
-## Well-known R objects?
+## Well-known R objects
 
-The wk package experimentally generates (and parses) well-known “s”
-expressions (the C name for R objects). This is similar to the format
-that [sf](https://r-spatial.github.io/sf) uses.
+The wk package experimentally generates (and parses) a plain R object
+format, which is needed because well-known binary can’t natively
+represent the empty point and reading/writing well-known text is too
+slow. The format of the `wksxp()` object is designed to be as close as
+possible to well-known text and well-known binary to make the
+translation code as clean as possible.
 
 ``` r
 wkt_translate_wksxp("POINT (30 10)")
@@ -166,16 +176,14 @@ Read WKB + Write WKB:
 ``` r
 bench::mark(
   wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkb_ptype),
   sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
   check = FALSE
 )
-#> # A tibble: 3 x 6
+#> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            273µs    333µs     2966.   114.2KB    18.1 
-#> 2 geos_c        498µs    551µs     1780.    53.5KB     2.03
-#> 3 sf            370µs    413µs     2338.    99.8KB    16.6
+#> 1 wk            316µs    369µs     2620.   114.2KB     13.6
+#> 2 sf            412µs    453µs     2106.    99.8KB     13.6
 ```
 
 Read WKB + Write WKT:
@@ -183,20 +191,15 @@ Read WKB + Write WKT:
 ``` r
 bench::mark(
   wk = wk:::wkb_translate_wkt(nc_wkb),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkb, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
-  wellknown = lapply(nc_wkb, wellknown::wkb_wkt),
   check = FALSE
 )
-#> Warning: Some expressions had a GC in every iteration; so filtering is
-#> disabled.
-#> # A tibble: 4 x 6
+#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
+#> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.03ms   3.22ms    308.      3.32KB     0   
-#> 2 geos_c          4ms   4.36ms    228.      3.32KB     0   
-#> 3 sf         180.12ms  184.4ms      5.28  569.81KB    21.1 
-#> 4 wellknown   25.42ms  28.76ms     33.4     3.41MB     5.89
+#> 1 wk           3.03ms   3.52ms    282.      3.32KB      0  
+#> 2 sf         205.77ms 208.71ms      4.81  566.66KB     14.4
 ```
 
 Read WKT + Write WKB:
@@ -204,18 +207,14 @@ Read WKT + Write WKB:
 ``` r
 bench::mark(
   wk = wk:::wkt_translate_wkb(nc_wkt),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkb_ptype),
   sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
-  wellknown = lapply(nc_wkt, wellknown::wkt_wkb),
   check = FALSE
 )
-#> # A tibble: 4 x 6
+#> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.89ms   2.02ms     492.    53.58KB     0   
-#> 2 geos_c        2.5ms   2.73ms     362.    49.48KB     0   
-#> 3 sf           3.32ms   3.58ms     274.   186.48KB     6.41
-#> 4 wellknown   42.73ms  45.88ms      21.9    1.31MB    12.5
+#> 1 wk           1.91ms   2.11ms      464.    53.6KB     0   
+#> 2 sf           3.44ms   3.95ms      250.   185.7KB     4.20
 ```
 
 Read WKT + Write WKT:
@@ -223,18 +222,15 @@ Read WKT + Write WKT:
 ``` r
 bench::mark(
   wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
-  geos_c = geovctrs:::geovctrs_cpp_convert(nc_wkt, wkt_ptype),
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
   check = FALSE
 )
-#> Warning: Some expressions had a GC in every iteration; so filtering is
-#> disabled.
-#> # A tibble: 3 x 6
+#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
+#> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.03ms   5.49ms    178.     63.77KB      0  
-#> 2 geos_c       5.99ms   6.34ms    156.      3.32KB      0  
-#> 3 sf         188.41ms 190.96ms      5.23  230.73KB     20.9
+#> 1 wk           5.08ms   5.86ms    166.      63.8KB     1.98
+#> 2 sf         209.88ms 211.35ms      4.68   226.6KB    14.0
 ```
 
 Generate coordinates:
@@ -249,9 +245,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     160.84µs  185.1µs     5010.     131KB     29.9
-#> 2 sfheaders  502.16µs 544.86µs     1772.     612KB     56.1
-#> 3 sf           2.13ms   2.32ms      426.     606KB     33.7
+#> 1 wk_wkb      180.8µs 204.21µs     4643.     131KB     19.8
+#> 2 sfheaders   573.5µs 680.57µs     1431.     627KB     35.9
+#> 3 sf           2.54ms   2.76ms      359.     507KB     24.1
 ```
 
 Send polygons to a graphics device (note that the graphics device is the
@@ -269,8 +265,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb      312.7µs  336.4µs     2769.     358KB     18.2
-#> 2 sf           3.25ms   3.44ms      283.     241KB     20.7
+#> 1 wk_wkb     327.76µs 360.79µs     2577.     358KB     15.9
+#> 2 sf           3.48ms   3.85ms      254.     243KB     15.9
 dev.off()
 #> quartz_off_screen 
 #>                 2
