@@ -28,7 +28,7 @@ public:
     this->newMeta = this->getNewMeta(meta);
 
     this->writeEndian();
-    this->writeUint32(this->newMeta.ewkbType);
+    this->writeUint32(this->newMeta.ewkbType());
 
     if (this->newMeta.hasSRID) this->writeUint32(this->newMeta.srid);
     if (this->newMeta.geometryType != WKGeometryType::Point) this->writeUint32(meta.size);
