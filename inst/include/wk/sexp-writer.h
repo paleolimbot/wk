@@ -26,7 +26,7 @@ protected:
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     // make sure meta has a valid size
     if (!meta.hasSize || meta.size == WKGeometryMeta::SIZE_UNKNOWN) {
-      throw std::runtime_error("Can't write WKL wihout a valid meta.size");
+      throw std::runtime_error("Can't write WKSXP wihout a valid meta.size");
     }
 
     // make a new geometry type based on the creation options
