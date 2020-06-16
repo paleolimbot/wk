@@ -117,46 +117,49 @@
     <p>Mark character vectors as well-known text</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkt</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>())
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt</a></span>(x = <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>())
 
-<span class='fu'>parse_wkt</span>(<span class='no'>x</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>parse_wkt</a></span>(<span class='kw'>x</span>)
 
-<span class='fu'>as_wkt</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for character</span>
-<span class='fu'>as_wkt</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  include_z = <span class='kw'>NULL</span>,
+  include_m = <span class='kw'>NULL</span>,
+  include_srid = <span class='kw'>NULL</span>,
+  precision = <span class='kw'>NULL</span>,
+  trim = <span class='kw'>NULL</span>
 )
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  include_z = <span class='kw'>NULL</span>,
+  include_m = <span class='kw'>NULL</span>,
+  include_srid = <span class='kw'>NULL</span>,
+  precision = <span class='kw'>NULL</span>,
+  trim = <span class='kw'>NULL</span>
 )
 
 <span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkt</span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>include_z</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_m</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>include_srid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>precision</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>trim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  include_z = <span class='kw'>NULL</span>,
+  include_m = <span class='kw'>NULL</span>,
+  include_srid = <span class='kw'>NULL</span>,
+  precision = <span class='kw'>NULL</span>,
+  trim = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -207,12 +210,11 @@ is no value present in the original.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='new_wk_wkt.html'>new_wk_wkt()</a></code></p>
+    <p>A <code><a href='https://rdrr.io/pkg/wk/man/new_wk_wkt.html'>new_wk_wkt()</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt</span>(<span class='st'>"POINT (20 10)"</span>)</div><div class='output co'>#&gt; &lt;wk_wkt[1]&gt;
-#&gt; [1] POINT (20 10)</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt</a></span>(<span class='st'>"POINT (20 10)"</span>)</div><div class='output co'>#&gt; &lt;wk_wkt[1]&gt;
+#&gt; [1] POINT (20 10)</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

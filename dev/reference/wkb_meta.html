@@ -117,17 +117,17 @@
     <p>Extract meta information</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_meta</span>(<span class='no'>wkb</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkb_meta</a></span>(<span class='kw'>wkb</span>, recursive = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_meta</span>(<span class='no'>wkt</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkt_meta</a></span>(<span class='kw'>wkt</span>, recursive = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_streamer_meta</span>(<span class='no'>wkt</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkt_streamer_meta</a></span>(<span class='kw'>wkt</span>, recursive = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_meta</span>(<span class='no'>wksxp</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wksxp_meta</a></span>(<span class='kw'>wksxp</span>, recursive = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wk_geometry_type</span>(<span class='no'>type_id</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wk_geometry_type</a></span>(<span class='kw'>type_id</span>)
 
-<span class='fu'>wk_geometry_type_id</span>(<span class='no'>type</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wk_geometry_type_id</a></span>(<span class='kw'>type</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,7 +168,7 @@ multipolygon, geometrycollection)</p></td>
 <li><p><code>feature_id</code>: The index of the top-level feature</p></li>
 <li><p><code>nest_id</code>: The recursion level (if feature is a geometry collection)</p></li>
 <li><p><code>part_id</code>: The part index (if nested within a multi-geometry or collection)</p></li>
-<li><p><code>type_id</code>: The type identifier (see <code>wk_geometry_type()</code>)</p></li>
+<li><p><code>type_id</code>: The type identifier (see <code><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wk_geometry_type()</a></code>)</p></li>
 <li><p><code>size</code>: For points and linestrings the number of points, for polygons
 the number of rings, and for mutlti-geometries and collection types,
 the number of child geometries.</p></li>
@@ -177,12 +177,11 @@ the number of child geometries.</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
-#&gt; 1          1       1       1    1   NA FALSE FALSE        1</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
-#&gt; 1          1       1       7    1   NA FALSE FALSE       NA</div><div class='input'><span class='fu'>wkt_meta</span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkt_meta</a></span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+#&gt; 1          1       1       1    1   NA FALSE FALSE        1</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkt_meta</a></span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, recursive = <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
+#&gt; 1          1       1       7    1   NA FALSE FALSE       NA</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_meta.html'>wkt_meta</a></span>(<span class='st'>"GEOMETRYCOLLECTION (POINT (30 10))"</span>, recursive = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id type_id size srid has_z has_m n_coords
 #&gt; 1          1       1       7    1   NA FALSE FALSE        0
-#&gt; 2          1       2       1    1   NA FALSE FALSE        1</div><div class='input'>
-</div></pre>
+#&gt; 2          1       2       1    1   NA FALSE FALSE        1</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

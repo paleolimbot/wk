@@ -119,13 +119,13 @@ custom C++ handlers and debugging read problems." />
 custom C++ handlers and debugging read problems.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_debug</span>(<span class='no'>wkb</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkb_debug</a></span>(<span class='kw'>wkb</span>)
 
-<span class='fu'>wkt_debug</span>(<span class='no'>wkt</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkt_debug</a></span>(<span class='kw'>wkt</span>)
 
-<span class='fu'>wkt_streamer_debug</span>(<span class='no'>wkt</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkt_streamer_debug</a></span>(<span class='kw'>wkt</span>)
 
-<span class='fu'>wksxp_debug</span>(<span class='no'>wksxp</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wksxp_debug</a></span>(<span class='kw'>wksxp</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,7 +150,7 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
     <p>The input, invisibly</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkt_debug</a></span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
 #&gt;     nextGeometryStart(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
 #&gt;         nextGeometryStart(POLYGON [1], 0)
 #&gt;             nextLinearRingStart(POLYGON [1], 4, 0)
@@ -161,7 +161,7 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
 #&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
 #&gt;         nextGeometryEnd(POLYGON [1], 0)
 #&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkt_streamer_debug</span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
+#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkt_streamer_debug</a></span>(<span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>)</div><div class='output co'>#&gt; nextFeatureStart(0)
 #&gt;     nextGeometryStart(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
 #&gt;         nextGeometryStart(POLYGON [unknown], 0)
 #&gt;             nextLinearRingStart(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
@@ -172,8 +172,8 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
 #&gt;             nextLinearRingEnd(POLYGON [unknown], WKGeometryMeta::SIZE_UNKNOWN, 0)
 #&gt;         nextGeometryEnd(POLYGON [unknown], 0)
 #&gt;     nextGeometryEnd(MULTIPOLYGON [unknown], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'>wkb_debug</span>(
-  <span class='fu'><a href='wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(
+#&gt; nextFeatureEnd(0)</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_debug.html'>wkb_debug</a></span>(
+  <span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(
     <span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>
   )
 )</div><div class='output co'>#&gt; nextFeatureStart(0)
@@ -187,8 +187,7 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
 #&gt;             nextLinearRingEnd(POLYGON [1], 4, 0)
 #&gt;         nextGeometryEnd(POLYGON [1], 0)
 #&gt;     nextGeometryEnd(MULTIPOLYGON [1], WKReader::PART_ID_NONE)
-#&gt; nextFeatureEnd(0)</div><div class='input'>
-</div></pre>
+#&gt; nextFeatureEnd(0)</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
