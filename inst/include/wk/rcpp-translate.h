@@ -12,10 +12,6 @@
 #include "wk/rcpp-sexp-writer.h"
 #include "wk/rcpp-sexp-reader.h"
 
-#ifndef WK_ENDIAN_DEFAULT
-#define WK_ENDIAN_DEFAULT 1
-#endif
-
 namespace wk {
 
 inline void translate_base(WKReader& reader, WKWriter& writer,
@@ -34,9 +30,9 @@ inline void translate_base(WKReader& reader, WKWriter& writer,
 }
 
 inline Rcpp::List translate_wkb(WKReader& reader,
+                                int endian, int bufferSize = 2048,
                                 int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                int includeSRID = NA_INTEGER,
-                                int endian = WK_ENDIAN_DEFAULT, int bufferSize = 2048) {
+                                int includeSRID = NA_INTEGER) {
   WKRawVectorListExporter exporter(reader.nFeatures());
   exporter.setBufferSize(bufferSize);
   WKBWriter writer(exporter);
@@ -49,9 +45,9 @@ inline Rcpp::List translate_wkb(WKReader& reader,
 
 
 inline Rcpp::CharacterVector translate_wkt(WKReader& reader,
+                                           int precision = 16, bool trim = true,
                                            int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                           int includeSRID = NA_INTEGER,
-                                           int precision = 16, bool trim = true) {
+                                           int includeSRID = NA_INTEGER) {
   WKCharacterVectorExporter exporter(reader.nFeatures());
   exporter.setRoundingPrecision(precision);
   exporter.setTrim(trim);

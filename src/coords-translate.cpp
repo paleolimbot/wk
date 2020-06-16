@@ -6,6 +6,7 @@
 #include "wk/geometry-meta.h"
 
 #include <Rcpp.h>
+#include "wk/rcpp-translate.h"
 using namespace Rcpp;
 
 
@@ -99,13 +100,11 @@ protected:
   WKRcppPointCoordProvider& provider;
 };
 
-
-
-
 // [[Rcpp::export]]
 CharacterVector cpp_coords_point_translate_wkt(NumericVector x, NumericVector y,
                                                NumericVector z, NumericVector m,
                                                int precision, bool trim) {
-  return CharacterVector::create();
+  WKRcppPointCoordProvider provider(x, y, z, m);
+  WKRcppPointCoordReader reader(provider);
+  return wk::translate_wkt(reader, precision, trim);
 }
-
