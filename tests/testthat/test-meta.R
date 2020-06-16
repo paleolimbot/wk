@@ -110,16 +110,16 @@ test_that("wkt_streamer_meta() works", {
 
   # collection recursive
   expect_identical(
-    wkt_streamer_meta("GEOMETRYCOLLECTION (POINT (30 10))", recursive = TRUE),
+    wkt_streamer_meta(c("GEOMETRYCOLLECTION (POINT (30 10))", NA), recursive = TRUE),
     data.frame(
-      feature_id = c(1L, 1L),
-      part_id = c(1L, 2L),
-      type_id = c(7L, 1L),
-      size = c(NA_integer_, NA_integer_),
-      srid = c(NA_integer_, NA_integer_),
-      has_z = c(FALSE, FALSE),
-      has_m = c(FALSE, FALSE),
-      n_coords = c(0L, 1L)
+      feature_id = c(1L, 1L, 2L),
+      part_id = c(1L, 2L, NA_integer_),
+      type_id = c(7L, 1L, NA_integer_),
+      size = c(NA_integer_, NA_integer_, NA_integer_),
+      srid = c(NA_integer_, NA_integer_, NA_integer_),
+      has_z = c(FALSE, FALSE, NA),
+      has_m = c(FALSE, FALSE, NA),
+      n_coords = c(0L, 1L, NA_integer_)
     )
   )
 })

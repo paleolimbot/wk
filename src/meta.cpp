@@ -18,31 +18,15 @@ public:
 class WKMetaCounter: public WKGeometryHandler {
 public:
   size_t nMeta;
-  WKMetaCounter(bool recursive): nMeta(0), recursive(recursive) {}
+  WKMetaCounter(): nMeta(0) {}
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->nMeta++;
-    if (!this->recursive) {
-      throw WKMetaFoundException();
-    }
   }
 
   void nextNull(size_t featureId) {
     this->nMeta++;
   }
-
-  // throwing exceptions results in recursive searches being much faster
-  // for small geometries
-  bool nextError(WKParseException& error, size_t featureId) {
-    if (error.code() == WKMetaFoundException::CODE_META_FOUND) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-private:
-  bool recursive;
 };
 
 
@@ -178,7 +162,7 @@ List cpp_meta_base(WKReader& reader, bool recursive) {
   size_t nMeta;
 
   if (recursive) {
-    WKMetaCounter counter(recursive);
+    WKMetaCounter counter;
     reader.setHandler(&counter);
     while (reader.hasNextFeature()) {
       checkUserInterrupt();
