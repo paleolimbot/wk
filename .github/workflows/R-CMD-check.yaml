@@ -21,6 +21,9 @@ jobs:
           - {os: windows-latest, r: '3.6'}
           - {os: macOS-latest, r: '3.6'}
           - {os: ubuntu-18.04, r: '3.6'}
+          - {os: windows-latest, r: '4.0'}
+          - {os: macOS-latest, r: '4.0'}
+          - {os: ubuntu-18.04, r: '4.0'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
@@ -28,11 +31,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-
       - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
-
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Query dependencies
