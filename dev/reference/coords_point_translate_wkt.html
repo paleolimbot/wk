@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Translate between WKB and WKT — wkb_translate_wkt • wk</title>
+<title>Parse coordinates into well-known formats — coords_point_translate_wkt • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Translate between WKB and WKT — wkb_translate_wkt" />
-<meta property="og:description" content="Translate between WKB and WKT" />
+<meta property="og:title" content="Parse coordinates into well-known formats — coords_point_translate_wkt" />
+<meta property="og:description" content="These functions provide the reverse function of wkt_coords()
+and company: they parse vectors of coordinate values into well-known
+formats. Polygon rings are automatically closed, as
+closed rings are assumed or required by many parsers." />
 
 
 <meta name="robots" content="noindex">
@@ -108,92 +111,90 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Translate between WKB and WKT</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/translate.R'><code>R/translate.R</code></a></small>
-    <div class="hidden name"><code>wkb_translate_wkt.Rd</code></div>
+    <h1>Parse coordinates into well-known formats</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/coords-translate.R'><code>R/coords-translate.R</code></a></small>
+    <div class="hidden name"><code>coords_point_translate_wkt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Translate between WKB and WKT</p>
+    <p>These functions provide the reverse function of <code><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wkt_coords()</a></code>
+and company: they parse vectors of coordinate values into well-known
+formats. Polygon rings are automatically closed, as
+closed rings are assumed or required by many parsers.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkb_translate_wkt</a></span>(
-  <span class='kw'>wkb</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_point_translate_wkt</a></span>(<span class='kw'>x</span>, <span class='kw'>y</span>, z = <span class='fl'>NA</span>, m = <span class='fl'>NA</span>, precision = <span class='fl'>16</span>, trim = <span class='fl'>TRUE</span>)
+
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_point_translate_wkb</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  endian = <span class='kw'>wk</span>::<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
+  buffer_size = <span class='fl'>2048</span>
+)
+
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_point_translate_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>y</span>, z = <span class='fl'>NA</span>, m = <span class='fl'>NA</span>)
+
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_linestring_translate_wkt</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  feature_id = <span class='fl'>1L</span>,
   precision = <span class='fl'>16</span>,
   trim = <span class='fl'>TRUE</span>
 )
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkb_translate_wkb</a></span>(
-  <span class='kw'>wkb</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
-  endian = <span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_linestring_translate_wkb</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  feature_id = <span class='fl'>1L</span>,
+  endian = <span class='kw'>wk</span>::<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
   buffer_size = <span class='fl'>2048</span>
 )
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkb_translate_wksxp</a></span>(<span class='kw'>wkb</span>, include_z = <span class='fl'>NA</span>, include_m = <span class='fl'>NA</span>, include_srid = <span class='fl'>NA</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_linestring_translate_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>y</span>, z = <span class='fl'>NA</span>, m = <span class='fl'>NA</span>, feature_id = <span class='fl'>1L</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkt</a></span>(
-  <span class='kw'>wkt</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_polygon_translate_wkt</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  feature_id = <span class='fl'>1L</span>,
+  ring_id = <span class='fl'>1L</span>,
   precision = <span class='fl'>16</span>,
   trim = <span class='fl'>TRUE</span>
 )
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(
-  <span class='kw'>wkt</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
-  endian = <span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_polygon_translate_wkb</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  feature_id = <span class='fl'>1L</span>,
+  ring_id = <span class='fl'>1L</span>,
+  endian = <span class='kw'>wk</span>::<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
   buffer_size = <span class='fl'>2048</span>
 )
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wksxp</a></span>(<span class='kw'>wkt</span>, include_z = <span class='fl'>NA</span>, include_m = <span class='fl'>NA</span>, include_srid = <span class='fl'>NA</span>)
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wksxp_translate_wkt</a></span>(
-  <span class='kw'>wksxp</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
-  precision = <span class='fl'>16</span>,
-  trim = <span class='fl'>TRUE</span>
-)
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wksxp_translate_wkb</a></span>(
-  <span class='kw'>wksxp</span>,
-  include_z = <span class='fl'>NA</span>,
-  include_m = <span class='fl'>NA</span>,
-  include_srid = <span class='fl'>NA</span>,
-  endian = <span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>(),
-  buffer_size = <span class='fl'>2048</span>
-)
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wksxp_translate_wksxp</a></span>(<span class='kw'>wksxp</span>, include_z = <span class='fl'>NA</span>, include_m = <span class='fl'>NA</span>, include_srid = <span class='fl'>NA</span>)
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian</a></span>()</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_polygon_translate_wksxp</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>y</span>,
+  z = <span class='fl'>NA</span>,
+  m = <span class='fl'>NA</span>,
+  feature_id = <span class='fl'>1L</span>,
+  ring_id = <span class='fl'>1L</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>wkb</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors, such as that
-returned by <code>sf::st_as_binary()</code>.</p></td>
-    </tr>
-    <tr>
-      <th>include_z, include_m, include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
+      <th>x, y, z, m</th>
+      <td><p>Vectors of coordinate values</p></td>
     </tr>
     <tr>
       <th>precision</th>
@@ -217,12 +218,10 @@ are calling this repeatedly with huge geometries, setting this value
 to a larger number may result in less copying.</p></td>
     </tr>
     <tr>
-      <th>wkt</th>
-      <td><p>A character vector containing well-known text.</p></td>
-    </tr>
-    <tr>
-      <th>wksxp</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of classed objects</p></td>
+      <th>feature_id, ring_id</th>
+      <td><p>Vectors for which a change in
+sequential values indicates a new feature or ring. Use <code><a href='https://rdrr.io/r/base/factor.html'>factor()</a></code>
+to convert from a character vector.</p></td>
     </tr>
     </table>
 
@@ -231,19 +230,10 @@ to a larger number may result in less copying.</p></td>
     <p><code>*_translate_wkt()</code> returns a character vector of
 well-known text; <code>*_translate_wkb()</code> returns a list
 of raw vectors, and <code>*_translate_wksxp()</code> returns an unclassed
-list of <code><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>wksxp()</a></code> geometries. Unlike <code><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb()</a></code>, <code><a href='https://rdrr.io/pkg/wk/man/wkt.html'>as_wkt()</a></code>, and
-<code><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>as_wksxp()</a></code>, these functions do not attach
-a class to the output.</p>
+list of <code><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>wksxp()</a></code> geometries.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># translate between WKT and WKB</span>
-(<span class='kw'>wkb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(<span class='st'>"POINT (30 10)"</span>))</div><div class='output co'>#&gt; [[1]]
-#&gt;  [1] 01 01 00 00 00 00 00 00 00 00 00 3e 40 00 00 00 00 00 00 24 40
-#&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkb_translate_wkt</a></span>(<span class='kw'>wkb</span>)</div><div class='output co'>#&gt; [1] "POINT (30 10)"</div><div class='input'>
-<span class='co'># some basic creation options are also available</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkt</a></span>(<span class='st'>"POINT (30 10)"</span>, trim = <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] "POINT (30.0000000000000000 10.0000000000000000)"</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkb_translate_wkb</a></span>(<span class='kw'>wkb</span>, endian = <span class='fl'>0</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt;  [1] 00 00 00 00 01 40 3e 00 00 00 00 00 00 40 24 00 00 00 00 00 00
-#&gt; </div><div class='input'></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_point_translate_wkt</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>2</span><span class='op'>:</span><span class='fl'>4</span>)</div><div class='output co'>#&gt; [1] "POINT (1 2)" "POINT (2 3)" "POINT (3 4)"</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_linestring_translate_wkt</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>2</span><span class='op'>:</span><span class='fl'>6</span>, feature_id = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span>))</div><div class='output co'>#&gt; [1] "LINESTRING (1 2, 2 3, 3 4)" "LINESTRING (4 5, 5 6)"     </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/coords_point_translate_wkt.html'>coords_polygon_translate_wkt</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>0</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>10</span>))</div><div class='output co'>#&gt; [1] "POLYGON ((0 0, 10 0, 0 10, 0 0))"</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
