@@ -2,9 +2,9 @@
 #ifndef WK_RCPP_IO_H
 #define WK_RCPP_IO_H
 
-#include "wk/parse-exception.h"
-#include "wk/io-bytes.h"
-#include "wk/io-string.h"
+#include "wk/parse-exception.hpp"
+#include "wk/io-bytes.hpp"
+#include "wk/io-string.hpp"
 
 #include <Rcpp.h>
 

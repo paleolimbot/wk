@@ -1,6 +1,6 @@
 
 #include <Rcpp.h>
-#include "wk/rcpp-translate.h"
+#include "wk/rcpp-translate.hpp"
 using namespace Rcpp;
 
 // [[Rcpp::export]]

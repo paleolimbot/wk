@@ -1,9 +1,9 @@
 
-#include "wk/geometry-formatter.h"
+#include "wk/geometry-formatter.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/rcpp-sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 Rcpp::CharacterVector cpp_format_base(WKReader& reader, int maxCoords) {

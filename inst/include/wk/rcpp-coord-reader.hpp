@@ -3,10 +3,10 @@
 #define WK_RCPP_COORD_READER_H
 
 #include <cmath>
-#include "wk/io.h"
-#include "wk/coord.h"
-#include "wk/reader.h"
-#include "wk/geometry-meta.h"
+#include "wk/io.hpp"
+#include "wk/coord.hpp"
+#include "wk/reader.hpp"
+#include "wk/geometry-meta.hpp"
 #include <Rcpp.h>
 
 

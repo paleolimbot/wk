@@ -4,8 +4,8 @@
 
 #include <cstdint>
 #include <string>
-#include "parse-exception.h"
-#include "error-formatter.h"
+#include "parse-exception.hpp"
+#include "error-formatter.hpp"
 
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
 // https://github.com/r-spatial/sf/blob/master/src/wkb.cpp

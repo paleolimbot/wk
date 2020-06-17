@@ -2,15 +2,15 @@
 #ifndef WK_RCPP_TRANSLATE_H
 #define WK_RCPP_TRANSLATE_H
 
-#include "wk/wkt-writer.h"
-#include "wk/wkt-reader.h"
-#include "wk/wkb-writer.h"
-#include "wk/wkb-reader.h"
+#include "wk/wkt-writer.hpp"
+#include "wk/wkt-reader.hpp"
+#include "wk/wkb-writer.hpp"
+#include "wk/wkb-reader.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/rcpp-sexp-writer.h"
-#include "wk/rcpp-sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-writer.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 
 namespace wk {
 

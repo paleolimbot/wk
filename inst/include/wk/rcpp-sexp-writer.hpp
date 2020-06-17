@@ -2,8 +2,8 @@
 #ifndef WK_SEXP_WRITER_H
 #define WK_SEXP_WRITER_H
 
-#include "wk/writer.h"
-#include "wk/rcpp-io.h"
+#include "wk/writer.hpp"
+#include "wk/rcpp-io.hpp"
 
 
 class WKRcppSEXPWriter: public WKWriter {

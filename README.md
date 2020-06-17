@@ -114,8 +114,8 @@ anything useful.
 // [[Rcpp::depends(wk)]]
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/wkt-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/wkt-reader.hpp"
 using namespace Rcpp;
 
 class CustomHandler: public WKGeometryHandler {

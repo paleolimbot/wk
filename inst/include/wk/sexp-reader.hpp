@@ -2,9 +2,9 @@
 #ifndef WK_RCPP_SEXP_READER
 #define WK_RCPP_SEXP_READER
 
-#include "wk/reader.h"
+#include "wk/reader.hpp"
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
+#include "wk/rcpp-io.hpp"
 
 class WKRcppSEXPReader: public WKReader {
 public:

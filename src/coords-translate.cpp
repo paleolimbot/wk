@@ -1,7 +1,7 @@
 
 #include <Rcpp.h>
-#include "wk/rcpp-translate.h"
-#include "wk/rcpp-coord-reader.h"
+#include "wk/rcpp-translate.hpp"
+#include "wk/rcpp-coord-reader.hpp"
 using namespace Rcpp;
 
 

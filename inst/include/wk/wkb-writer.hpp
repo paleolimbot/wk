@@ -2,10 +2,10 @@
 #ifndef WK_WKB_WRITER_H
 #define WK_WKB_WRITER_H
 
-#include "wk/geometry-handler.h"
-#include "wk/io-bytes.h"
-#include "wk/writer.h"
-#include "wk/wkb-reader.h"
+#include "wk/geometry-handler.hpp"
+#include "wk/io-bytes.hpp"
+#include "wk/writer.hpp"
+#include "wk/wkb-reader.hpp"
 
 class WKBWriter: public WKWriter {
 public:

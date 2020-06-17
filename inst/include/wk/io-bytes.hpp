@@ -3,7 +3,7 @@
 #define WK_IO_BYTES_H
 
 #include <cstdint>
-#include "wk/io.h"
+#include "wk/io.hpp"
 
 class WKBytesUtils {
 public:
