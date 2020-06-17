@@ -25,6 +25,18 @@ cpp_coords_linestring_translate_wksxp <- function(x, y, z, m, featureId) {
     .Call(`_wk_cpp_coords_linestring_translate_wksxp`, x, y, z, m, featureId)
 }
 
+cpp_coords_polygon_translate_wkt <- function(x, y, z, m, featureId, ringId, precision, trim) {
+    .Call(`_wk_cpp_coords_polygon_translate_wkt`, x, y, z, m, featureId, ringId, precision, trim)
+}
+
+cpp_coords_polygon_translate_wkb <- function(x, y, z, m, featureId, ringId, endian, bufferSize) {
+    .Call(`_wk_cpp_coords_polygon_translate_wkb`, x, y, z, m, featureId, ringId, endian, bufferSize)
+}
+
+cpp_coords_polygon_translate_wksxp <- function(x, y, z, m, featureId, ringId) {
+    .Call(`_wk_cpp_coords_polygon_translate_wksxp`, x, y, z, m, featureId, ringId)
+}
+
 cpp_coords_wkb <- function(wkb, sepNA) {
     .Call(`_wk_cpp_coords_wkb`, wkb, sepNA)
 }

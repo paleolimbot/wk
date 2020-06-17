@@ -44,6 +44,52 @@ test_that("coords_*_translate_wkt() works", {
     c("LINESTRING (1 2, 2 3, 3 4)", "LINESTRING (4 5, 5 6)")
   )
 
+  # polygon
+  expect_identical(coords_polygon_translate_wkt(double(), double()), character(0))
+  expect_identical(
+    coords_polygon_translate_wkt(c(0, 10, 0), c(0, 0, 10)),
+    "POLYGON ((0 0, 10 0, 0 10, 0 0))"
+  )
+  expect_identical(
+    coords_polygon_translate_wkt(c(0, 10, 0, 0), c(0, 0, 10, 0)),
+    "POLYGON ((0 0, 10 0, 0 10, 0 0))"
+  )
+
+  expect_identical(
+    coords_polygon_translate_wkt(
+      c(20, 10, 10, 30, 45, 30, 20, 20),
+      c(35, 30, 10, 5, 20, 20, 15, 25),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2)
+    ),
+    "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))"
+  )
+
+  expect_identical(
+    coords_polygon_translate_wkt(
+      c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+      c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1)
+    ),
+    c(
+      "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+      "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+    )
+  )
+
+  expect_identical(
+    coords_polygon_translate_wkt(
+      c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+      c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      # new ring should be detected on new feature_id
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2)
+    ),
+    c(
+      "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+      "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+    )
+  )
 })
 
 test_that("coords_*_translate_wkb() works", {
@@ -55,6 +101,20 @@ test_that("coords_*_translate_wkb() works", {
     coords_linestring_translate_wkb(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2)),
     wkt_translate_wkb(c("LINESTRING (1 2, 2 3, 3 4)", "LINESTRING (4 5, 5 6)"))
   )
+  expect_identical(
+    coords_polygon_translate_wkb(
+      c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+      c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1)
+    ),
+    wkt_translate_wkb(
+      c(
+        "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+        "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+      )
+    )
+  )
 })
 
 test_that("coords_*_translate_wksxp() works", {
@@ -65,5 +125,19 @@ test_that("coords_*_translate_wksxp() works", {
   expect_identical(
     coords_linestring_translate_wksxp(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2)),
     wkt_translate_wksxp(c("LINESTRING (1 2, 2 3, 3 4)", "LINESTRING (4 5, 5 6)"))
+  )
+  expect_identical(
+    coords_polygon_translate_wksxp(
+      c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+      c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1)
+    ),
+    wkt_translate_wksxp(
+      c(
+        "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+        "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+      )
+    )
   )
 })

@@ -7,6 +7,9 @@
 \alias{coords_linestring_translate_wkt}
 \alias{coords_linestring_translate_wkb}
 \alias{coords_linestring_translate_wksxp}
+\alias{coords_polygon_translate_wkt}
+\alias{coords_polygon_translate_wkb}
+\alias{coords_polygon_translate_wksxp}
 \title{Parse coordinates into well-known formats}
 \usage{
 coords_point_translate_wkt(x, y, z = NA, m = NA, precision = 16, trim = TRUE)
@@ -43,6 +46,37 @@ coords_linestring_translate_wkb(
 )
 
 coords_linestring_translate_wksxp(x, y, z = NA, m = NA, feature_id = 1L)
+
+coords_polygon_translate_wkt(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  feature_id = 1L,
+  ring_id = 1L,
+  precision = 16,
+  trim = TRUE
+)
+
+coords_polygon_translate_wkb(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  feature_id = 1L,
+  ring_id = 1L,
+  endian = wk::wk_platform_endian(),
+  buffer_size = 2048
+)
+
+coords_polygon_translate_wksxp(
+  x,
+  y,
+  z = NA,
+  m = NA,
+  feature_id = 1L,
+  ring_id = 1L
+)
 }
 \arguments{
 \item{x, y, z, m}{Vectors of coordinate values}
@@ -60,8 +94,8 @@ each feature, in bytes. This will be extended when needed, but if you
 are calling this repeatedly with huge geometries, setting this value
 to a larger number may result in less copying.}
 
-\item{feature_id}{An integer vector for which a change in
-sequential values indicates a new feature. Use \code{\link[=factor]{factor()}}
+\item{feature_id, ring_id}{Vectors for which a change in
+sequential values indicates a new feature or ring. Use \code{\link[=factor]{factor()}}
 to convert from a character vector.}
 }
 \value{
@@ -73,10 +107,12 @@ list of \code{\link[=wksxp]{wksxp()}} geometries.
 \description{
 These functions provide the reverse function of \code{\link[=wkt_coords]{wkt_coords()}}
 and company: they parse vectors of coordinate values into well-known
-formats.
+formats. Polygon rings are automatically closed, as
+closed rings are assumed or required by many parsers.
 }
 \examples{
 coords_point_translate_wkt(1:3, 2:4)
 coords_linestring_translate_wkt(1:5, 2:6, feature_id = c(1, 1, 1, 2, 2))
+coords_polygon_translate_wkt(c(0, 10, 0), c(0, 0, 10))
 
 }
