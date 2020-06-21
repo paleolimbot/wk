@@ -73,7 +73,7 @@ returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
 
 \item{rule}{Passed to \code{\link[graphics:polypath]{graphics::polypath()}}}
 
-\item{asp, xlab, ylab, main}{Passed to \code{\link[graphics:plot]{graphics::plot()}} to
+\item{asp, xlab, ylab, main}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}} to
 initialize a new plot.}
 }
 \value{

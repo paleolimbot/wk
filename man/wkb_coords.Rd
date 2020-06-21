@@ -41,8 +41,8 @@ These functions are optimised for graphics output,
 which in R require flat coordinate structures. See
 \code{\link[graphics:points]{graphics::points()}}, \code{\link[graphics:lines]{graphics::lines()}},
 and  \code{\link[graphics:polypath]{graphics::polypath()}} for how to send these
-to a graphics device, or \code{\link[grid:pointsGrob]{grid::pointsGrob()}},
-\code{\link[grid:linesGrob]{grid::linesGrob()}}, and \code{\link[grid:pathGrob]{grid::pathGrob()}} for how
+to a graphics device, or \code{\link[grid:grid.points]{grid::pointsGrob()}},
+\code{\link[grid:grid.lines]{grid::linesGrob()}}, and \code{\link[grid:grid.path]{grid::pathGrob()}} for how
 to create graphical objects using this output.
 }
 \examples{
