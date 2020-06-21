@@ -23,7 +23,7 @@ readable tests and examples (WKT).
 
 ## Installation
 
-You can install the released version of s2 from
+You can install the released version of wk from
 [CRAN](https://cran.r-project.org/) with:
 
 ``` r
@@ -182,8 +182,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            316µs    369µs     2620.   114.2KB     13.6
-#> 2 sf            412µs    453µs     2106.    99.8KB     13.6
+#> 1 wk            301µs    353µs     2789.   114.2KB     15.7
+#> 2 sf            412µs    454µs     2106.    99.8KB     11.1
 ```
 
 Read WKB + Write WKT:
@@ -198,8 +198,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.03ms   3.52ms    282.      3.32KB      0  
-#> 2 sf         205.77ms 208.71ms      4.81  566.66KB     14.4
+#> 1 wk           3.11ms   3.54ms    275.      3.32KB      0  
+#> 2 sf          204.1ms 224.05ms      4.58  566.66KB     15.3
 ```
 
 Read WKT + Write WKB:
@@ -213,8 +213,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.91ms   2.11ms      464.    53.6KB     0   
-#> 2 sf           3.44ms   3.95ms      250.   185.7KB     4.20
+#> 1 wk            1.9ms   2.09ms      465.    53.6KB     0   
+#> 2 sf           3.45ms   3.98ms      246.   185.7KB     4.21
 ```
 
 Read WKT + Write WKT:
@@ -229,8 +229,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.08ms   5.86ms    166.      63.8KB     1.98
-#> 2 sf         209.88ms 211.35ms      4.68   226.6KB    14.0
+#> 1 wk            5.3ms   5.76ms    172.      63.8KB      0  
+#> 2 sf          209.7ms 218.59ms      4.62   226.6KB     15.4
 ```
 
 Generate coordinates:
@@ -245,9 +245,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb      180.8µs 204.21µs     4643.     131KB     19.8
-#> 2 sfheaders   573.5µs 680.57µs     1431.     627KB     35.9
-#> 3 sf           2.54ms   2.76ms      359.     507KB     24.1
+#> 1 wk_wkb     176.17µs 198.72µs     4734.     131KB     22.4
+#> 2 sfheaders  541.98µs 678.16µs     1440.     627KB     35.7
+#> 3 sf           2.49ms   2.74ms      361.     507KB     24.0
 ```
 
 Send polygons to a graphics device (note that the graphics device is the
@@ -265,8 +265,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     327.76µs 360.79µs     2577.     358KB     15.9
-#> 2 sf           3.48ms   3.85ms      254.     243KB     15.9
+#> 1 wk_wkb      324.4µs  357.3µs     2559.     358KB     15.1
+#> 2 sf           3.21ms   3.53ms      276.     243KB     15.6
 dev.off()
 #> quartz_off_screen 
 #>                 2
