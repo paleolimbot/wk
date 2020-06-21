@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -133,25 +133,37 @@
       <tr>
         
         <td>
-          <p><code><a href="new_wk_wkb.html">new_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">validate_wk_wkb()</a></code> </p>
+          <p><code><a href="coords_point_translate_wkt.html">coords_point_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_point_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_point_translate_wksxp()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wksxp()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wksxp()</a></code> </p>
+        </td>
+        <td><p>Parse coordinates into well-known formats</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="new_wk_wkb.html">new_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">validate_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">is_wk_wkb()</a></code> </p>
         </td>
         <td><p>S3 Details for wk_wkb</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="new_wk_wksxp.html">new_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">validate_wk_wksxp()</a></code> </p>
+          <p><code><a href="new_wk_wksxp.html">new_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">is_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">validate_wk_wksxp()</a></code> </p>
         </td>
         <td><p>S3 Details for wk_wksxp</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="new_wk_wkt.html">new_wk_wkt()</a></code> <code><a href="new_wk_wkt.html">validate_wk_wkt()</a></code> </p>
+          <p><code><a href="new_wk_wkt.html">new_wk_wkt()</a></code> <code><a href="new_wk_wkt.html">is_wk_wkt()</a></code> <code><a href="new_wk_wkt.html">validate_wk_wkt()</a></code> </p>
         </td>
         <td><p>S3 Details for wk_wkt</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> <code><a href="wkb.html">as_wkt(<i>&lt;wk_wkb&gt;</i>)</a></code> </p>
+          <p><code><a href="vctrs-methods.html">vec_cast.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wksxp()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wksxp()</a></code> </p>
+        </td>
+        <td><p>Vctrs methods</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">parse_wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> </p>
         </td>
         <td><p>Mark lists of raw vectors as well-known binary</p></td>
       </tr><tr>
@@ -205,13 +217,13 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="wksxp.html">wksxp()</a></code> <code><a href="wksxp.html">as_wksxp()</a></code> </p>
+          <p><code><a href="wksxp.html">wksxp()</a></code> <code><a href="wksxp.html">parse_wksxp()</a></code> <code><a href="wksxp.html">as_wksxp()</a></code> </p>
         </td>
         <td><p>Mark lists as well-known "S" expressions</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkt.html">wkt()</a></code> <code><a href="wkt.html">as_wkt()</a></code> </p>
+          <p><code><a href="wkt.html">wkt()</a></code> <code><a href="wkt.html">parse_wkt()</a></code> <code><a href="wkt.html">as_wkt()</a></code> </p>
         </td>
         <td><p>Mark character vectors as well-known text</p></td>
       </tr>

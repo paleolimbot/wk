@@ -79,7 +79,7 @@ extent of all coordinates in the vector." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -131,49 +131,49 @@ the <code>wk*_plot_new()</code> functions to initialize a plot using the
 extent of all coordinates in the vector.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_draw_points</span>(<span class='no'>wkb</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkb_draw_points</a></span>(<span class='kw'>wkb</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wkt_draw_points</span>(<span class='no'>wkt</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_points</a></span>(<span class='kw'>wkt</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wksxp_draw_points</span>(<span class='no'>wksxp</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wksxp_draw_points</a></span>(<span class='kw'>wksxp</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wkb_draw_lines</span>(<span class='no'>wkb</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkb_draw_lines</a></span>(<span class='kw'>wkb</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wkt_draw_lines</span>(<span class='no'>wkt</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_lines</a></span>(<span class='kw'>wkt</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wksxp_draw_lines</span>(<span class='no'>wksxp</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wksxp_draw_lines</a></span>(<span class='kw'>wksxp</span>, <span class='kw'>...</span>)
 
-<span class='fu'>wkb_draw_polypath</span>(<span class='no'>wkb</span>, <span class='no'>...</span>, <span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"evenodd"</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkb_draw_polypath</a></span>(<span class='kw'>wkb</span>, <span class='kw'>...</span>, rule = <span class='st'>"evenodd"</span>)
 
-<span class='fu'>wkt_draw_polypath</span>(<span class='no'>wkt</span>, <span class='no'>...</span>, <span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"evenodd"</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_polypath</a></span>(<span class='kw'>wkt</span>, <span class='kw'>...</span>, rule = <span class='st'>"evenodd"</span>)
 
-<span class='fu'>wksxp_draw_polypath</span>(<span class='no'>wksxp</span>, <span class='no'>...</span>, <span class='kw'>rule</span> <span class='kw'>=</span> <span class='st'>"evenodd"</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wksxp_draw_polypath</a></span>(<span class='kw'>wksxp</span>, <span class='kw'>...</span>, rule = <span class='st'>"evenodd"</span>)
 
-<span class='fu'>wkb_plot_new</span>(
-  <span class='no'>wkb</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>asp</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='no'>wkb</span>))
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkb_plot_new</a></span>(
+  <span class='kw'>wkb</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  main = <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='kw'>wkb</span>))
 )
 
-<span class='fu'>wkt_plot_new</span>(
-  <span class='no'>wkt</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>asp</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='no'>wkt</span>))
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_plot_new</a></span>(
+  <span class='kw'>wkt</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  main = <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='kw'>wkt</span>))
 )
 
-<span class='fu'>wksxp_plot_new</span>(
-  <span class='no'>wksxp</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>asp</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='no'>wksxp</span>))
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wksxp_plot_new</a></span>(
+  <span class='kw'>wksxp</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  main = <span class='fu'><a href='https://rdrr.io/r/base/deparse.html'>deparse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/substitute.html'>substitute</a></span>(<span class='kw'>wksxp</span>))
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -213,10 +213,9 @@ initialize a new plot.</p></td>
     <p>The input, invisibly</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='st'>"POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"</span>
+    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='st'>"POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"</span>
 
-<span class='fu'>wkt_plot_new</span>(<span class='no'>x</span>)</div><div class='input'><span class='fu'>wkt_draw_polypath</span>(<span class='no'>x</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"grey90"</span>)</div><div class='input'><span class='fu'>wkt_draw_lines</span>(<span class='no'>x</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='input'><span class='fu'>wkt_draw_points</span>(<span class='no'>x</span>)</div><div class='img'><img src='wkb_draw_points-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_plot_new</a></span>(<span class='kw'>x</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_polypath</a></span>(<span class='kw'>x</span>, col = <span class='st'>"grey90"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_lines</a></span>(<span class='kw'>x</span>, col = <span class='st'>"red"</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_draw_points.html'>wkt_draw_points</a></span>(<span class='kw'>x</span>)</div><div class='img'><img src='wkb_draw_points-1.png' alt='' width='700' height='433' /></div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

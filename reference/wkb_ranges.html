@@ -73,7 +73,7 @@ minimum and maximum x, y, z, and m coordinate values." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -119,17 +119,17 @@ minimum and maximum x, y, z, and m coordinate values." />
 minimum and maximum x, y, z, and m coordinate values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_ranges</span>(<span class='no'>wkb</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wkb_ranges</a></span>(<span class='kw'>wkb</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_ranges</span>(<span class='no'>wkt</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wkt_ranges</a></span>(<span class='kw'>wkt</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_ranges</span>(<span class='no'>wksxp</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wksxp_ranges</a></span>(<span class='kw'>wksxp</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkb_feature_ranges</span>(<span class='no'>wkb</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wkb_feature_ranges</a></span>(<span class='kw'>wkb</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_feature_ranges</span>(<span class='no'>wkt</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wkt_feature_ranges</a></span>(<span class='kw'>wkt</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_feature_ranges</span>(<span class='no'>wksxp</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>finite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wksxp_feature_ranges</a></span>(<span class='kw'>wksxp</span>, na.rm = <span class='fl'>FALSE</span>, finite = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,9 +167,8 @@ returned by <code>sf::st_as_binary()</code>.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt_ranges</span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   xmin ymin zmin mmin xmax ymax zmax mmax
-#&gt; 1   30   10  Inf  Inf   30   10 -Inf -Inf</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wkt_ranges</a></span>(<span class='st'>"POINT (30 10)"</span>)</div><div class='output co'>#&gt;   xmin ymin zmin mmin xmax ymax zmax mmax
+#&gt; 1   30   10  Inf  Inf   30   10 -Inf -Inf</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

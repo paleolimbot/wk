@@ -78,7 +78,7 @@ to create graphical objects using this output." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -129,11 +129,11 @@ to a graphics device, or <code><a href='https://rdrr.io/r/grid/grid.points.html'
 to create graphical objects using this output.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_coords</span>(<span class='no'>wkb</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wkb_coords</a></span>(<span class='kw'>wkb</span>, sep_na = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wkt_coords</span>(<span class='no'>wkt</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wkt_coords</a></span>(<span class='kw'>wkt</span>, sep_na = <span class='fl'>FALSE</span>)
 
-<span class='fu'>wksxp_coords</span>(<span class='no'>wksxp</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wksxp_coords</a></span>(<span class='kw'>wksxp</span>, sep_na = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,18 +173,17 @@ as <code>NA</code>)</p></li>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>text</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"LINESTRING (0 1, 19 27)"</span>, <span class='st'>"LINESTRING (-1 -1, 4 10)"</span>)
-<span class='fu'>wkt_coords</span>(<span class='no'>text</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
+    <pre class="examples"><div class='input'><span class='kw'>text</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"LINESTRING (0 1, 19 27)"</span>, <span class='st'>"LINESTRING (-1 -1, 4 10)"</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wkt_coords</a></span>(<span class='kw'>text</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
 #&gt; 1          1       1       0  0  1 NA NA
 #&gt; 2          1       1       0 19 27 NA NA
 #&gt; 3          2       2       0 -1 -1 NA NA
-#&gt; 4          2       2       0  4 10 NA NA</div><div class='input'><span class='fu'>wkt_coords</span>(<span class='no'>text</span>, <span class='kw'>sep_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
+#&gt; 4          2       2       0  4 10 NA NA</div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_coords.html'>wkt_coords</a></span>(<span class='kw'>text</span>, sep_na = <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;   feature_id part_id ring_id  x  y  z  m
 #&gt; 1          1       1       0  0  1 NA NA
 #&gt; 2          1       1       0 19 27 NA NA
 #&gt; 3         NA      NA      NA NA NA NA NA
 #&gt; 4          2       2       0 -1 -1 NA NA
-#&gt; 5          2       2       0  4 10 NA NA</div><div class='input'>
-</div></pre>
+#&gt; 5          2       2       0  4 10 NA NA</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
