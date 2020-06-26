@@ -121,7 +121,7 @@ new_wk_wksxp <- function(x = list()) {
     stop("wksxp input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wksxp", "wk_vctr", "geovctr"))
+  structure(x, class = c("wk_wksxp", "wk_vctr"))
 }
 
 #' @rdname new_wk_wksxp

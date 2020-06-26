@@ -36,7 +36,7 @@ as_wkt <- function(x, ...) {
 #' @rdname wkt
 #' @export
 as_wkt.default <- function(x, ...) {
-  as_wkt(as_wkb(x), ...)
+  as_wkt(as_wksxp(x), ...)
 }
 
 #' @rdname wkt
@@ -109,7 +109,7 @@ new_wk_wkt <- function(x = character()) {
     stop("wkt input must be a character() without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkt", "wk_vctr", "geovctr"))
+  structure(x, class = c("wk_wkt", "wk_vctr"))
 }
 
 #' @rdname new_wk_wkt
