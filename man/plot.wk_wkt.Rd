@@ -40,7 +40,7 @@
 )
 }
 \arguments{
-\item{x}{A \code{\link[=wkt]{wkt()}},  \code{\link[=wkb]{wkb()}}, or \code{\link[=wksxp]{wksxp()}} vector.}
+\item{x}{A \code{\link[=wkt]{wkt()}}, \code{\link[=wkb]{wkb()}}, or \code{\link[=wksxp]{wksxp()}} vector.}
 
 \item{...}{Passed to plotting functions for features: \code{\link[graphics:points]{graphics::points()}}
 for point and multipoint geometries, \code{\link[graphics:lines]{graphics::lines()}} for linestring
@@ -60,7 +60,8 @@ existing plot?}
 \code{x}, invisibly
 }
 \description{
-Plot well-known geometry vectors
+These plot functions are intended to help debug geometry vectors,
+and are not intended to be high-performance.
 }
 \examples{
 plot(wkt("POINT (30 10)"))
