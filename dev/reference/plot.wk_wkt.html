@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mark lists of raw vectors as well-known binary — wkb • wk</title>
+<title>Plot well-known geometry vectors — plot.wk_wkt • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Mark lists of raw vectors as well-known binary — wkb" />
-<meta property="og:description" content="Mark lists of raw vectors as well-known binary" />
+<meta property="og:title" content="Plot well-known geometry vectors — plot.wk_wkt" />
+<meta property="og:description" content="These plot functions are intended to help debug geometry vectors,
+and are not intended to be high-performance." />
 
 
 <meta name="robots" content="noindex">
@@ -108,115 +109,91 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mark lists of raw vectors as well-known binary</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb.R'><code>R/wkb.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/wksxp.R'><code>R/wksxp.R</code></a></small>
-    <div class="hidden name"><code>wkb.Rd</code></div>
+    <h1>Plot well-known geometry vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>plot.wk_wkt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Mark lists of raw vectors as well-known binary</p>
+    <p>These plot functions are intended to help debug geometry vectors,
+and are not intended to be high-performance.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb</a></span>(x = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>parse_wkb</a></span>(<span class='kw'>x</span>)
-
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for character</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+    <pre class="usage"><span class='co'># S3 method for wk_wkt</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  endian = <span class='kw'>NULL</span>
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
 )
 
-<span class='co'># S3 method for wk_wkt</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+<span class='co'># S3 method for wk_wkb</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  endian = <span class='kw'>NULL</span>
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
 )
 
 <span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  endian = <span class='kw'>NULL</span>
-)
-
-<span class='co'># S3 method for blob</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for WKB</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for blob</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for WKB</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors or <code>NULL</code>.</p></td>
+      <td><p>A <code><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt()</a></code>, <code><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb()</a></code>, or <code><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>wksxp()</a></code> vector.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Unused</p></td>
+      <td><p>Passed to plotting functions for features: <code><a href='https://rdrr.io/r/graphics/points.html'>graphics::points()</a></code>
+for point and multipoint geometries, <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code> for linestring
+and multilinestring geometries, and <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code> for polygon
+and multipolygon geometries.</p></td>
     </tr>
     <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
+      <th>asp, xlab, ylab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
     </tr>
     <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
+      <th>bbox</th>
+      <td><p>The limits of the plot in the form returned by <code><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wksxp_ranges()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
+      <th>rule</th>
+      <td><p>The rule to use for filling polygons (see <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code>)</p></td>
     </tr>
     <tr>
-      <th>endian</th>
-      <td><p>For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to <code><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian()</a></code> (slightly faster).</p></td>
+      <th>add</th>
+      <td><p>Should a new plot be created, or should <code>x</code> be added to the
+existing plot?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='https://rdrr.io/pkg/wk/man/new_wk_wkb.html'>new_wk_wkb()</a></code></p>
+    <p><code>x</code>, invisibly</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(<span class='st'>"POINT (20 10)"</span>))</div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
-#&gt; [1] &lt;POINT (20 10)&gt;</div><div class='input'></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt</a></span>(<span class='st'>"POINT (30 10)"</span>))</div><div class='img'><img src='plot.wk_wkt-1.png' alt='' width='700' height='433' /></div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
