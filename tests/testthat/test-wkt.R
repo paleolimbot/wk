@@ -38,6 +38,16 @@ test_that("as_wkt() works", {
 
   # default method
   expect_identical(as_wkt.default("POINT (11 12)"), as_wkt("POINT (11 12)"))
+
+  # blob and WKB (via default method)
+  expect_identical(
+    as_wkt(structure(wkt_translate_wkb("POINT (11 12)"), class = "blob")),
+    as_wkt("POINT (11 12)")
+  )
+  expect_identical(
+    as_wkt(structure(wkt_translate_wkb("POINT (11 12)"), class = "WKB")),
+    as_wkt("POINT (11 12)")
+  )
 })
 
 test_that("parse_wkt() works", {

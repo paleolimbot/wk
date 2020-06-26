@@ -40,4 +40,14 @@ test_that("as_wksxp() works", {
 
   # default method
   expect_identical(as_wksxp.default("POINT (11 12)"), as_wksxp("POINT (11 12)"))
+
+  # blob and WKB methods
+  expect_identical(
+    as_wksxp(structure(wkt_translate_wkb("POINT (11 12)"), class = "blob")),
+    as_wksxp("POINT (11 12)")
+  )
+  expect_identical(
+    as_wksxp(structure(wkt_translate_wkb("POINT (11 12)"), class = "WKB")),
+    as_wksxp("POINT (11 12)")
+  )
 })

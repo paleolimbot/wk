@@ -86,6 +86,18 @@ as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_
   )
 }
 
+#' @rdname wkb
+#' @export
+as_wkb.blob <- function(x, ...) {
+  as_wkb(wkb(x), ...)
+}
+
+#' @rdname wkb
+#' @export
+as_wkb.WKB <- function(x, ...) {
+  as_wkb(wkb(x), ...)
+}
+
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector

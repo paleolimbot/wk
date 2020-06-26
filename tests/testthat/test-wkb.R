@@ -37,6 +37,16 @@ test_that("as_wkb() works", {
   expect_identical(as_wkb("POINT (40 10)", endian = 1), x)
   expect_identical(as_wkb(wkt("POINT (40 10)"), endian = 1), x)
   expect_identical(as_wkb(as_wksxp("POINT (40 10)")), as_wkb("POINT (40 10)"))
+
+  # blob and WKB methods
+  expect_identical(
+    as_wkb(structure(wkt_translate_wkb("POINT (11 12)"), class = "blob")),
+    as_wkb("POINT (11 12)")
+  )
+  expect_identical(
+    as_wkb(structure(wkt_translate_wkb("POINT (11 12)"), class = "WKB")),
+    as_wkb("POINT (11 12)")
+  )
 })
 
 test_that("parse_wkb() works", {
