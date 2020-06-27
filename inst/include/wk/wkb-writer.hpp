@@ -38,6 +38,12 @@ public:
     if (this->newMeta.geometryType == WKGeometryType::Point && this->newMeta.size == 0) {
       this->writeDouble(NAN);
       this->writeDouble(NAN);
+      if (this->newMeta.hasZ) {
+        this->writeDouble(NAN);
+      }
+      if (this->newMeta.hasM) {
+        this->writeDouble(NAN);
+      }
     }
   }
 
