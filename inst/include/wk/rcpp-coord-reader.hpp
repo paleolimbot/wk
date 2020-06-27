@@ -18,7 +18,7 @@ public:
     x(x), y(y), z(z), m(m), index(-1) {}
 
   void readFeature(WKGeometryHandler* handler) {
-    if (this->index >= this->nFeatures() || this->index < 0) {
+    if (((size_t) this->index) >= this->nFeatures() || this->index < 0) {
       throw std::runtime_error("attempt to access index out of range");
     }
 
