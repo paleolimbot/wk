@@ -61,7 +61,7 @@ inline Rcpp::CharacterVector translate_wkt(WKReader& reader,
 inline Rcpp::List translate_wksxp(WKReader& reader,
                                   int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
                                   int includeSRID = NA_INTEGER) {
-  WKSEXPExporter exporter(reader.nFeatures());
+  WKRcppSEXPExporter exporter(reader.nFeatures());
   WKRcppSEXPWriter writer(exporter);
 
   translate_base(reader, writer, includeZ, includeM, includeSRID);

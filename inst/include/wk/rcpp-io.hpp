@@ -39,11 +39,11 @@ public:
   }
 };
 
-class WKSEXPExporter: public WKExporter {
+class WKRcppSEXPExporter: public WKExporter {
 public:
   Rcpp::List output;
   R_xlen_t index;
-  WKSEXPExporter(size_t size): WKExporter(size), output(size), index(0) {}
+  WKRcppSEXPExporter(size_t size): WKExporter(size), output(size), index(0) {}
 
   void prepareNextFeature() {}
 
@@ -57,7 +57,7 @@ public:
 
   void writeNextFeature() {
     if (this->index >= output.size()) {
-      Rcpp::stop("Attempt to set index out of range (WKSEXPExporter)");
+      Rcpp::stop("Attempt to set index out of range (WKRcppSEXPExporter)");
     }
 
     this->output[this->index] = this->item;
