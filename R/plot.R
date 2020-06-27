@@ -62,6 +62,7 @@ plot_wk <- function(x, ranges_fun, meta_fun, coords_fun, ...,
                     asp = 1, bbox = NULL, xlab = "", ylab = "",
                     rule = "evenodd", add = FALSE) {
   if (!add) {
+    bbox <- unclass(bbox)
     bbox <- bbox %||% ranges_fun(x, finite = TRUE)
     xlim <- c(bbox$xmin, bbox$xmax)
     ylim <- c(bbox$ymin, bbox$ymax)
