@@ -1,0 +1,43 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+name: test-coverage
+
+jobs:
+  revdeps:
+    runs-on: macOS-latest
+    name: ${{ matrix.config.repository }}@${{ matrix.config.ref }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {repository: paleolimbot/geovctrs, ref: master}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: 'wk'
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ matrix.config.repository }}
+          ref: ${{ matrix.config.ref }}
+          path: 'pkg'
+      - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Install dependencies
+        run: |
+          install.packages("remotes")
+          remotes::install_deps("wk")
+          remotes::install_deps("pkg", dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Check
+        run: rcmdcheck::rcmdcheck("pkg", args = "--no-manual", error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
