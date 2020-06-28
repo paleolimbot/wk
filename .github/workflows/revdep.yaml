@@ -2,11 +2,8 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
-name: test-coverage
+name: revdeps
 
 jobs:
   revdeps:
@@ -32,11 +29,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          install.packages("remotes")
+          install.packages(c("remotes", "rcmdcheck", "pkgbuild"))
           remotes::install_deps("wk")
           remotes::install_deps("pkg", dependencies = TRUE)
-          remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
+
+      - name: Build and install wk
+        run: |
+          Rscript -e 'pkgbuild::build("wk", dest_path = "wk.tar.gz")'
+          R CMD install wk.tar.gz
 
       - name: Check
         run: rcmdcheck::rcmdcheck("pkg", args = "--no-manual", error_on = "warning", check_dir = "check")
