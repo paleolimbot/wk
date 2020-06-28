@@ -14,6 +14,7 @@ jobs:
       matrix:
         config:
           - {repository: paleolimbot/geovctrs, ref: master}
+          - {repository: r-spatial/s2, ref: master}
 
     steps:
       - uses: actions/checkout@v2
@@ -36,8 +37,8 @@ jobs:
 
       - name: Build and install wk
         run: |
-          Rscript -e 'pkgbuild::build("wk", dest_path = "wk.tar.gz")'
-          R CMD install wk.tar.gz
+          Rscript -e 'pkgbuild::build("wk", dest_path = "wk_built")'
+          R CMD install wk_built
 
       - name: Check
         run: rcmdcheck::rcmdcheck("pkg", args = "--no-manual", error_on = "warning", check_dir = "check")
