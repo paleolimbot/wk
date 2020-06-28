@@ -11,7 +11,7 @@ CharacterVector cpp_coords_point_translate_wkt(NumericVector x, NumericVector y,
                                                int precision, bool trim) {
   WKRcppPointCoordProvider provider(x, y, z, m);
   WKRcppPointCoordReader reader(provider);
-  return wk::translate_wkt(reader, precision, trim);
+  return wk::rcpp_translate_wkt(reader, precision, trim);
 }
 
 // [[Rcpp::export]]
@@ -20,7 +20,7 @@ List cpp_coords_point_translate_wkb(NumericVector x, NumericVector y,
                                     int endian, int bufferSize) {
   WKRcppPointCoordProvider provider(x, y, z, m);
   WKRcppPointCoordReader reader(provider);
-  return wk::translate_wkb(reader, endian, bufferSize);
+  return wk::rcpp_translate_wkb(reader, endian, bufferSize);
 }
 
 // [[Rcpp::export]]
@@ -28,7 +28,7 @@ List cpp_coords_point_translate_wksxp(NumericVector x, NumericVector y,
                                       NumericVector z, NumericVector m) {
   WKRcppPointCoordProvider provider(x, y, z, m);
   WKRcppPointCoordReader reader(provider);
-  return wk::translate_wksxp(reader);
+  return wk::rcpp_translate_wksxp(reader);
 }
 
 // [[Rcpp::export]]
@@ -38,7 +38,7 @@ CharacterVector cpp_coords_linestring_translate_wkt(NumericVector x, NumericVect
                                                     int precision, bool trim) {
   WKRcppLinestringCoordProvider provider(x, y, z, m, featureId);
   WKRcppLinestringCoordReader reader(provider);
-  return wk::translate_wkt(reader, precision, trim);
+  return wk::rcpp_translate_wkt(reader, precision, trim);
 }
 
 // [[Rcpp::export]]
@@ -48,7 +48,7 @@ List cpp_coords_linestring_translate_wkb(NumericVector x, NumericVector y,
                                          int endian, int bufferSize) {
   WKRcppLinestringCoordProvider provider(x, y, z, m, featureId);
   WKRcppLinestringCoordReader reader(provider);
-  return wk::translate_wkb(reader, endian, bufferSize);
+  return wk::rcpp_translate_wkb(reader, endian, bufferSize);
 }
 
 // [[Rcpp::export]]
@@ -57,7 +57,7 @@ List cpp_coords_linestring_translate_wksxp(NumericVector x, NumericVector y,
                                            IntegerVector featureId) {
   WKRcppLinestringCoordProvider provider(x, y, z, m, featureId);
   WKRcppLinestringCoordReader reader(provider);
-  return wk::translate_wksxp(reader);
+  return wk::rcpp_translate_wksxp(reader);
 }
 
 // [[Rcpp::export]]
@@ -67,7 +67,7 @@ CharacterVector cpp_coords_polygon_translate_wkt(NumericVector x, NumericVector 
                                                  int precision, bool trim) {
   WKRcppPolygonCoordProvider provider(x, y, z, m, featureId, ringId);
   WKRcppPolygonCoordReader reader(provider);
-  return wk::translate_wkt(reader, precision, trim);
+  return wk::rcpp_translate_wkt(reader, precision, trim);
 }
 
 // [[Rcpp::export]]
@@ -77,7 +77,7 @@ List cpp_coords_polygon_translate_wkb(NumericVector x, NumericVector y,
                                       int endian, int bufferSize) {
   WKRcppPolygonCoordProvider provider(x, y, z, m, featureId, ringId);
   WKRcppPolygonCoordReader reader(provider);
-  return wk::translate_wkb(reader, endian, bufferSize);
+  return wk::rcpp_translate_wkb(reader, endian, bufferSize);
 }
 
 // [[Rcpp::export]]
@@ -86,5 +86,5 @@ List cpp_coords_polygon_translate_wksxp(NumericVector x, NumericVector y,
                                         IntegerVector featureId, IntegerVector ringId) {
   WKRcppPolygonCoordProvider provider(x, y, z, m, featureId, ringId);
   WKRcppPolygonCoordReader reader(provider);
-  return wk::translate_wksxp(reader);
+  return wk::rcpp_translate_wksxp(reader);
 }

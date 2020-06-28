@@ -14,9 +14,9 @@
 
 namespace wk {
 
-inline void translate_base(WKReader& reader, WKWriter& writer,
-                           int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                           int includeSRID = NA_INTEGER) {
+inline void rcpp_translate_base(WKReader& reader, WKWriter& writer,
+                                int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
+                                int includeSRID = NA_INTEGER) {
   writer.setIncludeZ(includeZ);
   writer.setIncludeM(includeM);
   writer.setIncludeSRID(includeSRID);
@@ -29,42 +29,42 @@ inline void translate_base(WKReader& reader, WKWriter& writer,
   }
 }
 
-inline Rcpp::List translate_wkb(WKReader& reader,
-                                int endian, int bufferSize = 2048,
-                                int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                int includeSRID = NA_INTEGER) {
+inline Rcpp::List rcpp_translate_wkb(WKReader& reader,
+                                    int endian, int bufferSize = 2048,
+                                    int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
+                                    int includeSRID = NA_INTEGER) {
   WKRawVectorListExporter exporter(reader.nFeatures());
   exporter.setBufferSize(bufferSize);
   WKBWriter writer(exporter);
   writer.setEndian(endian);
 
-  translate_base(reader, writer, includeZ, includeM, includeSRID);
+  rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 
   return exporter.output;
 }
 
 
-inline Rcpp::CharacterVector translate_wkt(WKReader& reader,
-                                           int precision = 16, bool trim = true,
-                                           int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                           int includeSRID = NA_INTEGER) {
+inline Rcpp::CharacterVector rcpp_translate_wkt(WKReader& reader,
+                                                int precision = 16, bool trim = true,
+                                                int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
+                                                int includeSRID = NA_INTEGER) {
   WKCharacterVectorExporter exporter(reader.nFeatures());
   exporter.setRoundingPrecision(precision);
   exporter.setTrim(trim);
   WKTWriter writer(exporter);
 
-  translate_base(reader, writer, includeZ, includeM, includeSRID);
+  rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 
   return exporter.output;
 }
 
-inline Rcpp::List translate_wksxp(WKReader& reader,
-                                  int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                  int includeSRID = NA_INTEGER) {
+inline Rcpp::List rcpp_translate_wksxp(WKReader& reader,
+                                       int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
+                                       int includeSRID = NA_INTEGER) {
   WKRcppSEXPExporter exporter(reader.nFeatures());
   WKRcppSEXPWriter writer(exporter);
 
-  translate_base(reader, writer, includeZ, includeM, includeSRID);
+  rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 
   return exporter.output;
 }
