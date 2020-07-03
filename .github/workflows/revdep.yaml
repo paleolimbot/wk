@@ -18,6 +18,7 @@ jobs:
         config:
           - {repository: paleolimbot/geovctrs, ref: master}
           - {repository: r-spatial/s2, ref: master}
+          - {repository: paleolimbot/wkutils, ref: master}
 
     steps:
       - uses: actions/checkout@v2
