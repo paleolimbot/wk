@@ -120,9 +120,10 @@ On our example point, this prints the following:
 wkt_read_custom("POINT (30 10)")
 ```
 
-The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using `wkb|wkt_debug()` functions.
+The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using `wkutils::wkb|wkt_debug()` functions.
 
 ```{r}
+library(wkutils) # remotes::install_github("paleolimbot/wkutils")
 wkt_debug("POINT (30 10)")
 ```
 

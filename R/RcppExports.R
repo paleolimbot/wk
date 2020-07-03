@@ -49,22 +49,6 @@ cpp_coords_wksxp <- function(wksxp, sepNA) {
     .Call(`_wk_cpp_coords_wksxp`, wksxp, sepNA)
 }
 
-cpp_debug_wkb <- function(wkb) {
-    invisible(.Call(`_wk_cpp_debug_wkb`, wkb))
-}
-
-cpp_debug_wkt <- function(input) {
-    invisible(.Call(`_wk_cpp_debug_wkt`, input))
-}
-
-cpp_debug_wkt_streamer <- function(input) {
-    invisible(.Call(`_wk_cpp_debug_wkt_streamer`, input))
-}
-
-cpp_debug_wksxp <- function(input) {
-    invisible(.Call(`_wk_cpp_debug_wksxp`, input))
-}
-
 cpp_format_wkb <- function(wkb, maxCoords) {
     .Call(`_wk_cpp_format_wkb`, wkb, maxCoords)
 }

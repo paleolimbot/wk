@@ -155,9 +155,15 @@ wkt_read_custom("POINT (30 10)")
 The full handler interface includes methods for the start and end of
 features, geometries (which may be nested), linear rings, coordinates,
 and parse errors. You can preview what will get called for a given
-geometry using `wkb|wkt_debug()` functions.
+geometry using `wkutils::wkb|wkt_debug()` functions.
 
 ``` r
+library(wkutils) # remotes::install_github("paleolimbot/wkutils")
+#> 
+#> Attaching package: 'wkutils'
+#> The following objects are masked from 'package:wk':
+#> 
+#>     wkb_debug, wksxp_debug, wkt_debug, wkt_streamer_debug
 wkt_debug("POINT (30 10)")
 #> nextFeatureStart(0)
 #>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
@@ -182,8 +188,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            301µs    353µs     2789.   114.2KB     15.7
-#> 2 sf            412µs    454µs     2106.    99.8KB     11.1
+#> 1 wk            294µs    346µs     2870.   114.2KB     18.4
+#> 2 sf            435µs    477µs     2015.    99.8KB     11.2
 ```
 
 Read WKB + Write WKT:
@@ -198,8 +204,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.11ms   3.54ms    275.      3.32KB      0  
-#> 2 sf          204.1ms 224.05ms      4.58  566.66KB     15.3
+#> 1 wk           3.02ms   3.43ms    288.      3.32KB      0  
+#> 2 sf         203.37ms  208.8ms      4.82  566.66KB     17.7
 ```
 
 Read WKT + Write WKB:
@@ -213,8 +219,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            1.9ms   2.09ms      465.    53.6KB     0   
-#> 2 sf           3.45ms   3.98ms      246.   185.7KB     4.21
+#> 1 wk           1.89ms   2.06ms      475.    53.6KB     0   
+#> 2 sf           3.44ms   3.97ms      246.   185.7KB     4.21
 ```
 
 Read WKT + Write WKT:
@@ -229,8 +235,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            5.3ms   5.76ms    172.      63.8KB      0  
-#> 2 sf          209.7ms 218.59ms      4.62   226.6KB     15.4
+#> 1 wk           5.03ms   5.83ms    173.      63.8KB      0  
+#> 2 sf         206.91ms 212.52ms      4.71   235.7KB     17.3
 ```
 
 Generate coordinates:
@@ -245,9 +251,9 @@ bench::mark(
 #> # A tibble: 3 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     176.17µs 198.72µs     4734.     131KB     22.4
-#> 2 sfheaders  541.98µs 678.16µs     1440.     627KB     35.7
-#> 3 sf           2.49ms   2.74ms      361.     507KB     24.0
+#> 1 wk_wkb     183.32µs  211.7µs     4490.     131KB     22.5
+#> 2 sfheaders  607.04µs  707.8µs     1372.     627KB     39.1
+#> 3 sf           2.52ms    2.8ms      353.     507KB     26.2
 ```
 
 Send polygons to a graphics device (note that the graphics device is the
@@ -265,8 +271,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb      324.4µs  357.3µs     2559.     358KB     15.1
-#> 2 sf           3.21ms   3.53ms      276.     243KB     15.6
+#> 1 wk_wkb     332.59µs 364.17µs     2524.     358KB     15.8
+#> 2 sf           3.09ms   3.54ms      271.     243KB     17.9
 dev.off()
 #> quartz_off_screen 
 #>                 2
