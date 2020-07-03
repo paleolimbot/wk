@@ -60,31 +60,31 @@ public:
   }
 
   virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
-    this->metaReplacement[&meta] = this->newGeometryMeta(meta, partId);
-    this->handler.nextGeometryStart(this->metaReplacement[&meta], partId);
+    this->metaReplacement[meta.id()] = this->newGeometryMeta(meta, partId);
+    this->handler.nextGeometryStart(this->metaReplacement[meta.id()], partId);
   }
 
   virtual void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
-    this->handler.nextGeometryEnd(this->metaReplacement[&meta], partId);
+    this->handler.nextGeometryEnd(this->metaReplacement[meta.id()], partId);
   }
 
   virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
-    this->handler.nextLinearRingStart(this->metaReplacement[&meta], size, ringId);
+    this->handler.nextLinearRingStart(this->metaReplacement[meta.id()], size, ringId);
   }
 
   virtual void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
-    this->handler.nextLinearRingEnd(this->metaReplacement[&meta], size, ringId);
+    this->handler.nextLinearRingEnd(this->metaReplacement[meta.id()], size, ringId);
   }
 
   virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
-    this->handler.nextCoordinate(this->metaReplacement[&meta], coord, coordId);
+    this->handler.nextCoordinate(this->metaReplacement[meta.id()], coord, coordId);
   }
 
 private:
   // using a hash map to keep track of meta, because it's important to make sure that
-  // identical meta objects (at the same address) are used for identical geometry
-  // objects (used in s2 and elsewhere to help handle nested collections)
-  std::unordered_map<const WKGeometryMeta*, WKGeometryMeta> metaReplacement;
+  // identical meta objects are used for identical geometry
+  // objects (used in s2 and elsewhere to handle nested collections)
+  std::unordered_map<uintptr_t, WKGeometryMeta> metaReplacement;
 };
 
 #endif

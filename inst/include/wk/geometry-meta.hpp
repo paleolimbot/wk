@@ -88,6 +88,12 @@ public:
     return f;
   }
 
+  // this is easier to store than a const WKGeometryMeta&, and safer than
+  // casting to WKGeometryMeta* for testing identical geometryMeta objects
+  uintptr_t id() const {
+    return (uintptr_t) this;
+  }
+
 private:
   static uint32_t calcEWKBType(int simpleGeometryType, bool hasZ, bool hasM, bool hasSRID) {
     uint32_t out = simpleGeometryType;
