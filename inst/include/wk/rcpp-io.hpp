@@ -176,10 +176,10 @@ public:
 
     if (this->featureNull) {
       this->output[this->index] = R_NilValue;
-    } else if (this->offset == 0) {
-      this->output[this->index] = Rcpp::RawVector::create();
     } else {
-      this->output[this->index] = this->buffer[Rcpp::Range(0, this->offset - 1)];
+      Rcpp::RawVector item(this->offset);
+      memcpy(&(item[0]), &(this->buffer[0]), this->offset);
+      this->output[this->index] = item;
     }
 
     this->index++;
@@ -200,10 +200,7 @@ public:
     }
 
     Rcpp::RawVector newBuffer = Rcpp::RawVector(bufferSize);
-    for (size_t i=0; i < this->offset; i++) {
-      newBuffer[i] = this->buffer[i];
-    }
-
+    memcpy(&newBuffer[0], &(this->buffer[0]), this->offset);
     this->buffer = newBuffer;
   }
 
