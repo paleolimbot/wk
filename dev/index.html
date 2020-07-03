@@ -185,9 +185,15 @@
 <span class="co">#&gt; Do something before feature 0</span>
 <span class="co">#&gt; Do something after feature 0</span>
 </pre></div>
-<p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkb|wkt_debug()</code> functions.</p>
+<p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkutils::wkb|wkt_debug()</code> functions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="reference/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">wkutils</span>) <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'wkutils'</span>
+<span class="co">#&gt; The following objects are masked from 'package:wk':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     wkb_debug, wksxp_debug, wkt_debug, wkt_streamer_debug</span>
+<span class="fu">wkt_debug</span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
 <span class="co">#&gt;         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)</span>
@@ -209,8 +215,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            301µs    353µs     2789.   114.2KB     15.7</span>
-<span class="co">#&gt; 2 sf            412µs    454µs     2106.    99.8KB     11.1</span>
+<span class="co">#&gt; 1 wk            294µs    346µs     2870.   114.2KB     18.4</span>
+<span class="co">#&gt; 2 sf            435µs    477µs     2015.    99.8KB     11.2</span>
 </pre></div>
 <p>Read WKB + Write WKT:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
@@ -223,8 +229,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           3.11ms   3.54ms    275.      3.32KB      0  </span>
-<span class="co">#&gt; 2 sf          204.1ms 224.05ms      4.58  566.66KB     15.3</span>
+<span class="co">#&gt; 1 wk           3.02ms   3.43ms    288.      3.32KB      0  </span>
+<span class="co">#&gt; 2 sf         203.37ms  208.8ms      4.82  566.66KB     17.7</span>
 </pre></div>
 <p>Read WKT + Write WKB:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
@@ -236,8 +242,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            1.9ms   2.09ms      465.    53.6KB     0   </span>
-<span class="co">#&gt; 2 sf           3.45ms   3.98ms      246.   185.7KB     4.21</span>
+<span class="co">#&gt; 1 wk           1.89ms   2.06ms      475.    53.6KB     0   </span>
+<span class="co">#&gt; 2 sf           3.44ms   3.97ms      246.   185.7KB     4.21</span>
 </pre></div>
 <p>Read WKT + Write WKT:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
@@ -250,8 +256,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            5.3ms   5.76ms    172.      63.8KB      0  </span>
-<span class="co">#&gt; 2 sf          209.7ms 218.59ms      4.62   226.6KB     15.4</span>
+<span class="co">#&gt; 1 wk           5.03ms   5.83ms    173.      63.8KB      0  </span>
+<span class="co">#&gt; 2 sf         206.91ms 212.52ms      4.71   235.7KB     17.3</span>
 </pre></div>
 <p>Generate coordinates:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit">
@@ -264,9 +270,9 @@
 <span class="co">#&gt; # A tibble: 3 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk_wkb     176.17µs 198.72µs     4734.     131KB     22.4</span>
-<span class="co">#&gt; 2 sfheaders  541.98µs 678.16µs     1440.     627KB     35.7</span>
-<span class="co">#&gt; 3 sf           2.49ms   2.74ms      361.     507KB     24.0</span>
+<span class="co">#&gt; 1 wk_wkb     183.32µs  211.7µs     4490.     131KB     22.5</span>
+<span class="co">#&gt; 2 sfheaders  607.04µs  707.8µs     1372.     627KB     39.1</span>
+<span class="co">#&gt; 3 sf           2.52ms    2.8ms      353.     507KB     26.2</span>
 </pre></div>
 <p>Send polygons to a graphics device (note that the graphics device is the main holdup in real life):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit">
@@ -281,8 +287,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk_wkb      324.4µs  357.3µs     2559.     358KB     15.1</span>
-<span class="co">#&gt; 2 sf           3.21ms   3.53ms      276.     243KB     15.6</span>
+<span class="co">#&gt; 1 wk_wkb     332.59µs 364.17µs     2524.     358KB     15.8</span>
+<span class="co">#&gt; 2 sf           3.09ms   3.54ms      271.     243KB     17.9</span>
 <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
 <span class="co">#&gt; quartz_off_screen </span>
 <span class="co">#&gt;                 2</span>
