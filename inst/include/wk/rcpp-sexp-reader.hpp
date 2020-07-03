@@ -55,7 +55,7 @@ protected:
     this->readGeometry(item, meta, partId);
   }
 
-  virtual void readGeometry(SEXP item, const WKGeometryMeta meta, uint32_t partId) {
+  virtual void readGeometry(SEXP item, const WKGeometryMeta& meta, uint32_t partId) {
     this->handler->nextGeometryStart(meta, partId);
 
     try {
@@ -107,7 +107,7 @@ protected:
     this->handler->nextGeometryEnd(meta, partId);
   }
 
-  virtual void readPoint(Rcpp::NumericMatrix item, WKGeometryMeta meta) {
+  virtual void readPoint(Rcpp::NumericMatrix item, const WKGeometryMeta& meta) {
     if (meta.size > 1) {
       throw WKParseException(
           ErrorFormatter() << "Expected matrix with 0 or 1 rows but found matrix with " <<
@@ -118,11 +118,11 @@ protected:
     this->readCoordinates(item, meta);
   }
 
-  virtual void readLinestring(Rcpp::NumericMatrix item, const WKGeometryMeta meta) {
+  virtual void readLinestring(Rcpp::NumericMatrix item, const WKGeometryMeta& meta) {
     this->readCoordinates(item, meta);
   }
 
-  virtual void readPolygon(Rcpp::List item, const WKGeometryMeta meta) {
+  virtual void readPolygon(Rcpp::List item, const WKGeometryMeta& meta) {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       try {
         Rcpp::NumericMatrix ring = item[i];
@@ -137,7 +137,7 @@ protected:
     }
   }
 
-  virtual void readMultiPoint(Rcpp::List item, const WKGeometryMeta meta)  {
+  virtual void readMultiPoint(Rcpp::List item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -158,7 +158,7 @@ protected:
     }
   }
 
-  virtual void readMultiLineString(Rcpp::List item, const WKGeometryMeta meta)  {
+  virtual void readMultiLineString(Rcpp::List item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -179,7 +179,7 @@ protected:
     }
   }
 
-  virtual void readMultiPolygon(Rcpp::List item, const WKGeometryMeta meta)  {
+  virtual void readMultiPolygon(Rcpp::List item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -200,13 +200,13 @@ protected:
     }
   }
 
-  virtual void readCollection(Rcpp::List item, const WKGeometryMeta meta) {
+  virtual void readCollection(Rcpp::List item, const WKGeometryMeta& meta) {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       this->readClassedGeometry(item[i], i);
     }
   }
 
-  virtual void readCoordinates(Rcpp::NumericMatrix coords, const WKGeometryMeta meta) {
+  virtual void readCoordinates(Rcpp::NumericMatrix coords, const WKGeometryMeta& meta) {
     WKCoord coord;
     coord.hasZ = meta.hasZ;
     coord.hasM = meta.hasM;

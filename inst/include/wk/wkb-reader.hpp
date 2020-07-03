@@ -93,18 +93,18 @@ protected:
     this->handler->nextGeometryEnd(meta, partId);
   }
 
-  void readPoint(const WKGeometryMeta meta) {
+  void readPoint(const WKGeometryMeta& meta) {
     this->readCoordinate(meta, 0);
   }
 
-  void readLineString(const WKGeometryMeta meta) {
+  void readLineString(const WKGeometryMeta& meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
   }
 
-  void readPolygon(WKGeometryMeta meta) {
+  void readPolygon(WKGeometryMeta& meta) {
     uint32_t ringSize;
     for (uint32_t i=0; i < meta.size; i++) {
       this->ringId = i;
@@ -113,7 +113,7 @@ protected:
     }
   }
 
-  void readLinearRing(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+  void readLinearRing(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->handler->nextLinearRingStart(meta, size, ringId);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
@@ -122,14 +122,14 @@ protected:
     this->handler->nextLinearRingEnd(meta, size, ringId);
   }
 
-  void readCollection(WKGeometryMeta meta) {
+  void readCollection(const WKGeometryMeta& meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->partId = i;
       this->readGeometry(i);
     }
   }
 
-  void readCoordinate(WKGeometryMeta meta, uint32_t coordId) {
+  void readCoordinate(const WKGeometryMeta& meta, uint32_t coordId) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 
