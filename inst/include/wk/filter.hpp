@@ -80,7 +80,7 @@ public:
     this->handler.nextCoordinate(this->metaReplacement[meta.id()], coord, coordId);
   }
 
-private:
+protected:
   // using a hash map to keep track of meta, because it's important to make sure that
   // identical meta objects are used for identical geometry
   // objects (used in s2 and elsewhere to handle nested collections)
