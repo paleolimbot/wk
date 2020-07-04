@@ -53,15 +53,6 @@ wkt("POINT (30 10)")
 as_wkb(wkt("POINT (30 10)"))
 ```
 
-## Extract coordinates and meta information
-
-One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. In addition to `print()` methods for `wkb()` vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable coordinates and feature meta.
-
-```{r}
-wkt_coords("POINT ZM (1 2 3 4)")
-wkt_meta("POINT ZM (1 2 3 4)")
-```
-
 ## Well-known R objects
 
 The wk package experimentally generates (and parses) a plain R object format, which is needed because well-known binary can't natively represent the empty point and reading/writing well-known text is too slow. The format of the `wksxp()` object is designed to be as close as possible to well-known text and well-known binary to make the translation code as clean as possible.
@@ -69,6 +60,18 @@ The wk package experimentally generates (and parses) a plain R object format, wh
 ```{r}
 wkt_translate_wksxp("POINT (30 10)")
 ```
+
+## wkutils
+
+To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the [wkutils package](https://paleolimbot.github.io/wkutils). One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()` functions (among others) to extract usable coordinates and feature meta.
+
+```{r}
+wkutils::wkt_coords("POINT ZM (1 2 3 4)")
+wkutils::wkt_meta("POINT ZM (1 2 3 4)")
+wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
+wkutils::coords_point_translate_wkt(1, 2, 3, 4)
+```
+
 
 ## Dependencies
 
@@ -179,29 +182,4 @@ bench::mark(
   sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
   check = FALSE
 )
-```
-
-Generate coordinates:
-
-```{r}
-bench::mark(
-  wk_wkb = wk::wksxp_coords(nc_sxp),
-  sfheaders = sfheaders::sfc_to_df(nc_sfc),
-  sf = sf::st_coordinates(nc_sfc),
-  check = FALSE
-)
-```
-
-Send polygons to a graphics device (note that the graphics device is the main holdup in real life):
-
-```{r}
-devoid::void_dev()
-wksxp_plot_new(nc_sxp)
-
-bench::mark(
-  wk_wkb = wk::wksxp_draw_polypath(nc_sxp),
-  sf = sf:::plot.sfc_MULTIPOLYGON(nc_sfc, add = TRUE),
-  check = FALSE
-)
-dev.off()
 ```
