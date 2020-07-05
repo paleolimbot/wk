@@ -24,17 +24,17 @@ public:
 
 protected:
 
-  virtual void nextFeatureStart(size_t featureId) {
+  void nextFeatureStart(size_t featureId) {
     this->stack.clear();
     this->handler->nextFeatureStart(featureId);
   }
 
-  virtual void nextNull(size_t featureId) {
+  void nextNull(size_t featureId) {
     this->handler->nextNull(featureId);
     this->feature = std::unique_ptr<WKGeometry>(nullptr);
   }
 
-  virtual void nextFeatureEnd(size_t featureId) {
+  void nextFeatureEnd(size_t featureId) {
     if (this->feature) {
       this->readGeometry(*feature, PART_ID_NONE);
     }
@@ -74,19 +74,19 @@ protected:
     this->handler->nextGeometryEnd(geometry.meta, partId);
   }
 
-  virtual void readPoint(const WKPoint& geometry)  {
+  void readPoint(const WKPoint& geometry)  {
     for (uint32_t i=0; i < geometry.coords.size(); i++) {
       this->handler->nextCoordinate(geometry.meta, geometry.coords[i], i);
     }
   }
 
-  virtual void readLinestring(const WKLineString& geometry)  {
+  void readLinestring(const WKLineString& geometry)  {
     for (uint32_t i=0; i < geometry.coords.size(); i++) {
       this->handler->nextCoordinate(geometry.meta, geometry.coords[i], i);
     }
   }
 
-  virtual void readPolygon(const WKPolygon& geometry)  {
+  void readPolygon(const WKPolygon& geometry)  {
     uint32_t nRings = geometry.rings.size();
     for (uint32_t i=0; i < nRings; i++) {
       uint32_t ringSize = geometry.rings[i].size();
@@ -100,7 +100,7 @@ protected:
     }
   }
 
-  virtual void readCollection(const WKCollection& geometry)  {
+  void readCollection(const WKCollection& geometry)  {
     for (uint32_t i=0; i < geometry.meta.size; i++) {
       this->readGeometry(*geometry.geometries[i], i);
     }

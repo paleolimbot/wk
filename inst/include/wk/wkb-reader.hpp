@@ -24,7 +24,7 @@ public:
     this->endian = ENDIAN_NONE;
   }
 
-  virtual void iterateFeature() {
+  void iterateFeature() {
     this->endian = ENDIAN_NONE;
     WKReader::iterateFeature();
   }
@@ -33,7 +33,7 @@ protected:
   WKBytesProvider& provider;
   unsigned char endian;
 
-  virtual void readFeature(size_t featureId) {
+  void readFeature(size_t featureId) {
     this->handler->nextFeatureStart(featureId);
 
     if (this->provider.featureIsNull()) {
