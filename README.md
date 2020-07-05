@@ -197,8 +197,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            291µs    340µs     2901.   114.2KB     20.7
-#> 2 sf            418µs    473µs     2046.    99.8KB     13.7
+#> 1 wk            243µs    295µs     3292.   110.1KB     18.6
+#> 2 sf            389µs    456µs     2088.    99.8KB     13.8
 ```
 
 Read WKB + Write WKT:
@@ -213,8 +213,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.23ms   3.51ms    281.      3.32KB      0  
-#> 2 sf         209.12ms 215.53ms      4.63  566.66KB     18.5
+#> 1 wk           3.02ms   3.38ms    291.      3.32KB      0  
+#> 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8
 ```
 
 Read WKT + Write WKB:
@@ -228,8 +228,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.99ms   2.09ms      466.    53.6KB     2.03
-#> 2 sf           3.63ms   3.99ms      244.   185.7KB     4.18
+#> 1 wk           1.87ms   2.06ms      476.    49.5KB     0   
+#> 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18
 ```
 
 Read WKT + Write WKT:
@@ -244,6 +244,6 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.27ms   5.95ms    167.      63.8KB     1.99
-#> 2 sf         215.39ms 224.42ms      4.51   231.3KB    18.0
+#> 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98
+#> 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5
 ```

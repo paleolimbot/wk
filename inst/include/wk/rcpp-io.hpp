@@ -104,10 +104,12 @@ public:
 
     if (item == R_NilValue) {
       this->featureNull = true;
-      this->data = Rcpp::RawVector::create();
+      this->data = nullptr;
+      this->dataSize = 0;
     } else {
       this->featureNull = false;
-      this->data = (Rcpp::RawVector)item;
+      this->data = RAW(item);
+      this->dataSize = Rf_xlength(item);
     }
 
     this->offset = 0;
@@ -125,14 +127,15 @@ public:
 private:
   const Rcpp::List& container;
   R_xlen_t index;
-  Rcpp::RawVector data;
+  unsigned char* data;
+  size_t dataSize;
   size_t offset;
   bool featureNull;
 
   template<typename T>
   T readBinary() {
     // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
-    if ((this->offset + sizeof(T)) > ((size_t) this->data.size())) {
+    if ((this->offset + sizeof(T)) > this->dataSize) {
       throw WKParseException("Reached end of RawVector input");
     }
 
