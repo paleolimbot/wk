@@ -46,24 +46,7 @@ protected:
   }
 
   void readGeometry(uint32_t partId) {
-    this->endian = this->readChar();
-    this->swapEndian = ((int)endian != (int)WKBytesUtils::nativeEndian());
-
-    WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
-
-    if (meta.hasSRID) {
-      meta.srid = this->readUint32();
-      this->srid = meta.srid;
-    }
-
-    if (meta.geometryType == WKGeometryType::Point) {
-      meta.hasSize = true;
-      meta.size = 1;
-    } else {
-      meta.hasSize = true;
-      meta.size = this->readUint32();
-    }
-
+    WKGeometryMeta meta = this->readMeta();
     this->handler->nextGeometryStart(meta, partId);
 
     switch (meta.geometryType) {
@@ -91,6 +74,28 @@ protected:
     }
 
     this->handler->nextGeometryEnd(meta, partId);
+  }
+
+  WKGeometryMeta readMeta() {
+    this->endian = this->readChar();
+    this->swapEndian = ((int)endian != (int)WKBytesUtils::nativeEndian());
+
+    WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
+
+    if (meta.hasSRID) {
+      meta.srid = this->readUint32();
+      this->srid = meta.srid;
+    }
+
+    if (meta.geometryType == WKGeometryType::Point) {
+      meta.hasSize = true;
+      meta.size = 1;
+    } else {
+      meta.hasSize = true;
+      meta.size = this->readUint32();
+    }
+
+    return meta;
   }
 
   void readPoint(const WKGeometryMeta& meta) {
