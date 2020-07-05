@@ -10,10 +10,10 @@
 
 class WKRcppSEXPProvider: public WKProvider {
 public:
-  Rcpp::List input;
+  const Rcpp::List& input;
   R_xlen_t index;
 
-  WKRcppSEXPProvider(Rcpp::List input): input(input) {
+  WKRcppSEXPProvider(const Rcpp::List& input): input(input) {
     this->reset();
   }
 
@@ -72,7 +72,7 @@ private:
 class WKRawVectorListProvider: public WKBytesProvider {
 public:
 
-  WKRawVectorListProvider(Rcpp::List container): container(container) {
+  WKRawVectorListProvider(const Rcpp::List& container): container(container) {
     this->reset();
   }
 
@@ -123,7 +123,7 @@ public:
   }
 
 private:
-  Rcpp::List container;
+  const Rcpp::List& container;
   R_xlen_t index;
   Rcpp::RawVector data;
   size_t offset;
@@ -146,18 +146,17 @@ private:
 class WKRawVectorListExporter: public WKBytesExporter {
 public:
   Rcpp::List output;
-  Rcpp::RawVector buffer;
+  std::vector<unsigned char> buffer;
   bool featureNull;
 
   R_xlen_t index;
   size_t offset;
 
-  WKRawVectorListExporter(size_t size): WKBytesExporter(size) {
+  WKRawVectorListExporter(size_t size): WKBytesExporter(size), buffer(2048) {
     this->featureNull = false;
     this->index = 0;
     this->offset = 0;
     output = Rcpp::List(size);
-    this->setBufferSize(2048);
   }
 
   void prepareNextFeature() {
@@ -190,8 +189,7 @@ public:
       throw std::runtime_error("Attempt to set zero or negative buffer size");
     }
 
-    Rcpp::RawVector newBuffer = Rcpp::RawVector(bufferSize);
-    this->buffer = newBuffer;
+    this->buffer = std::vector<unsigned char>(bufferSize);
   }
 
   void extendBufferSize(R_xlen_t bufferSize) {
@@ -199,7 +197,7 @@ public:
       throw std::runtime_error("Attempt to shrink RawVector buffer size");
     }
 
-    Rcpp::RawVector newBuffer = Rcpp::RawVector(bufferSize);
+    std::vector<unsigned char> newBuffer(bufferSize);
     memcpy(&newBuffer[0], &(this->buffer[0]), this->offset);
     this->buffer = newBuffer;
   }
@@ -232,12 +230,12 @@ public:
 
 class WKCharacterVectorProvider: public WKStringProvider {
 public:
-  Rcpp::CharacterVector container;
+  const Rcpp::CharacterVector& container;
   R_xlen_t index;
   bool featureNull;
   std::string data;
 
-  WKCharacterVectorProvider(Rcpp::CharacterVector container): container(container) {
+  WKCharacterVectorProvider(const Rcpp::CharacterVector& container): container(container) {
     this->reset();
   }
 
