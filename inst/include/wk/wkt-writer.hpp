@@ -13,33 +13,33 @@ public:
 
   WKTWriter(WKStringExporter& exporter): WKWriter(exporter), exporter(exporter) {}
 
-  virtual void nextFeatureStart(size_t featureId) {
+  void nextFeatureStart(size_t featureId) {
     this->stack.clear();
     WKWriter::nextFeatureStart(featureId);
   }
 
-  virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->stack.push_back(meta);
     this->newMeta = this->getNewMeta(meta);
     this->writeGeometrySep(this->newMeta, partId, this->newMeta.srid);
     this->writeGeometryOpen(meta.size);
   }
 
-  virtual void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
+  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
     this->writeGeometryClose(meta.size);
     this->stack.pop_back();
   }
 
-  virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->writeRingSep(ringId);
     this->exporter.writeConstChar("(");
   }
 
-  virtual void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingEnd(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->exporter.writeConstChar(")");
   }
 
-  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writeCoordSep(coordId);
     this->exporter.writeDouble(coord.x);
     this->exporter.writeConstChar(" ");

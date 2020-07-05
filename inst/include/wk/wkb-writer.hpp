@@ -9,16 +9,14 @@
 
 class WKBWriter: public WKWriter {
 public:
-  WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter) {
-
-  }
+  WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter) {}
 
   void setEndian(unsigned char endian) {
     this->endian = endian;
     this->swapEndian = WKBytesUtils::nativeEndian() != endian;
   }
 
-  virtual void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+  void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     // make sure meta has a valid size
     if (!meta.hasSize || meta.size == WKGeometryMeta::SIZE_UNKNOWN) {
       throw std::runtime_error("Can't write WKB wihout a valid meta.size");
@@ -47,11 +45,11 @@ public:
     }
   }
 
-  virtual void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
+  void nextLinearRingStart(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->writeUint32(size);
   }
 
-  virtual void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
+  void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
     this->writeDouble(coord.x);
     this->writeDouble(coord.y);
     if (this->newMeta.hasZ && coord.hasZ) {
