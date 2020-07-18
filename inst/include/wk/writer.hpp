@@ -72,11 +72,10 @@ protected:
 
   bool actuallyInclude(int flag, bool hasValue, const char* label) {
     if (flag == 1 && !hasValue) {
-      throw std::runtime_error(
-        ErrorFormatter() << "Can't include " <<  label <<
-          " values in a geometry for which " <<
-          label << " values are not defined"
-      );
+      std::stringstream err;
+      err << "Can't include " <<  label << " values in a geometry for which " <<
+        label << " values are not defined";
+      throw std::runtime_error(err.str());
     }
 
     return flag && hasValue;

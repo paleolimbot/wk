@@ -4,8 +4,8 @@
 
 #include <cstdint>
 #include <string>
+#include <sstream>
 #include "parse-exception.hpp"
-#include "error-formatter.hpp"
 
 // https://github.com/postgis/postgis/blob/2.1.0/doc/ZMSgeoms.txt
 // https://github.com/r-spatial/sf/blob/master/src/wkb.cpp
@@ -71,7 +71,7 @@ public:
   }
 
   std::string wktType() const {
-    ErrorFormatter f;
+    std::stringstream f;
     f << wktSimpleGeometryType(this->geometryType);
 
     if (this->hasZ || this->hasM) {
@@ -85,7 +85,7 @@ public:
       f << "M";
     }
 
-    return f;
+    return f.str();
   }
 
   // this is easier to store than a const WKGeometryMeta&, and safer than
@@ -120,11 +120,11 @@ private:
     case WKGeometryType::GeometryCollection:
       return "GEOMETRYCOLLECTION";
     default:
-      throw WKParseException(
-        ErrorFormatter() <<
-          "invalid type in WKGeometryMeta::wktSimpleGeometryType(): " <<
-          simpleGeometryType
-      );
+      // # nocov start
+      std::stringstream err;
+      err << "Invalid integer geometry type: " << simpleGeometryType;
+      throw WKParseException(err.str());
+      // # nocov end
     }
   }
 };

@@ -13,6 +13,9 @@
 class WKStringProvider: public WKProvider {
 public:
   virtual const std::string featureString() = 0;
+  virtual const char* featureChars() {
+    return this->featureString().c_str();
+  }
 };
 
 class WKStringExporter: public WKExporter {

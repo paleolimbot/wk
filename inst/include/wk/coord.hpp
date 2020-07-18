@@ -33,6 +33,23 @@ public:
     return true;
   }
 
+  double& operator[](std::size_t idx) {
+    switch (idx) {
+    case 0: return x;
+    case 1: return y;
+    case 2:
+      if (hasZ) {
+        return z;
+      } else if (hasM) {
+        return m;
+      }
+    case 3:
+      if (hasM) return m;
+    default:
+      throw std::runtime_error("Coordinate subscript out of range");
+    }
+  }
+
   const double& operator[](std::size_t idx) const {
     switch (idx) {
     case 0: return x;

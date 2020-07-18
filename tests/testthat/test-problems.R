@@ -9,7 +9,7 @@ test_that("wkb_problems() reports parsing errors", {
 
   point_bad_type <- point
   point_bad_type[2] <- as.raw(0xff)
-  expect_match(wkb_problems(list(point_bad_type)), "Unrecognized geometry type")
+  expect_match(wkb_problems(list(point_bad_type)), "Invalid integer geometry type")
 })
 
 test_that("wkt_problems() reports parsing errors", {

@@ -66,11 +66,11 @@ protected:
       this->readCollection(meta);
       break;
     default:
-      throw WKParseException(
-          ErrorFormatter() <<
-            "Unrecognized geometry type in WKBReader::readGeometry(): " <<
-              meta.geometryType
-      );
+      // # nocov start
+      std::stringstream err;
+      err << "Invalid integer geometry type: " << meta.geometryType;
+      throw WKParseException(err.str());
+      // # nocov end
     }
 
     this->handler->nextGeometryEnd(meta, partId);
