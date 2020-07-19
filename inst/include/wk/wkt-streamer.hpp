@@ -96,7 +96,18 @@ public:
 
   // Returns true if the next character is most likely to be a number
   bool isNumber() {
-    return this->isOneOf("-0123456789");
+    // complicated by nan and inf
+    if (this->isOneOf("-nNiI")) {
+      std::string text = this->peekUntilSep();
+      try {
+        std::stod(text);
+        return true;
+      } catch(std::exception& e) {
+        return false;
+      }
+    } else {
+      return this->isOneOf("-0123456789");
+    }
   }
 
   // Returns true if the next character is a letter
@@ -308,15 +319,23 @@ private:
   }
 
   static std::string quote(std::string input) {
-    std::stringstream stream;
-    stream << "'" << input << "'";
-    return stream.str();
+    if (input.size() == 0) {
+      return "end of input";
+    } else {
+      std::stringstream stream;
+      stream << "'" << input << "'";
+      return stream.str();
+    }
   }
 
   static std::string quote(char input) {
-    std::stringstream stream;
-    stream << "'" << input << "'";
-    return stream.str();
+    if (input == '\0') {
+      return "end of input";
+    } else {
+      std::stringstream stream;
+      stream << "'" << input << "'";
+      return stream.str();
+    }
   }
 };
 
@@ -426,6 +445,7 @@ public:
       std::string str = this->provider.featureString();
       WKTString s(str.c_str());
       this->readGeometryWithType(s, PART_ID_NONE);
+      s.assertFinished();
     }
 
     this->handler->nextFeatureEnd(featureId);
