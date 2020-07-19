@@ -445,7 +445,10 @@ public:
       std::string str = this->provider.featureString();
       WKTString s(str.c_str());
       this->readGeometryWithType(s, PART_ID_NONE);
-      s.assertFinished();
+      // we probably want to assert finished here, but
+      // keeping this commented-out until all examples of this
+      // are removed from downstream packages (notably, s2)
+      // s.assertFinished();
     }
 
     this->handler->nextFeatureEnd(featureId);
