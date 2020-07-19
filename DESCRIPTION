@@ -12,9 +12,7 @@ Authors@R:
               family = "Pebesma",
               role = c("aut"),
               email = "edzer.pebesma@uni-muenster.de",
-              comment = c(ORCID = "0000-0001-8049-7069")),
-        person("Refractions Research Inc.", role = "cph"),
-        person("Vivid Solutions Inc.", role = "cph")
+              comment = c(ORCID = "0000-0001-8049-7069"))
     )
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides a minimal R and C++ API for parsing
@@ -26,8 +24,7 @@ Description: Provides a minimal R and C++ API for parsing
   useful in R if the information they contain can be 
   accessed in R, for which high-performance functions 
   are provided here.
-License: LGPL (>= 2.1)
-Copyright: file COPYRIGHTS
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
