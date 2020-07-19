@@ -14,7 +14,7 @@ test_that("wkb_problems() reports parsing errors", {
 
 test_that("wkt_problems() reports parsing errors", {
   expect_identical(wkt_problems("POINT (30 10)"), NA_character_)
-  expect_match(wkt_problems("sss"), "Unknown type")
+  expect_match(wkt_problems("sss"), "Expected geometry type or")
 })
 
 test_that("wksxp_problems() reports parsing errors", {

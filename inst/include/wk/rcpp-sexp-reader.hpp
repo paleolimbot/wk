@@ -3,6 +3,7 @@
 #define WK_SEXP_READER
 
 #include "wk/reader.hpp"
+#include "wk/error-formatter.hpp"
 #include <Rcpp.h>
 #include "wk/rcpp-io.hpp"
 

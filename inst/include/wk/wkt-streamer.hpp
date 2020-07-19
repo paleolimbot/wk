@@ -1,51 +1,413 @@
-/**********************************************************************
- *
- * {wk} for R borrowed this code from...
- * GEOS - Geometry Engine Open Source
- * http://geos.osgeo.org
- *
- * Copyright (C) 2005-2006 Refractions Research Inc.
- * Copyright (C) 2001-2002 Vivid Solutions Inc.
- *
- * This is free software; you can redistribute and/or modify it under
- * the terms of the GNU Lesser General Public Licence as published
- * by the Free Software Foundation.
- * See the COPYING file for more information.
- *
- **********************************************************************
- *
- * Last port: io/WKTReader.java rev. 1.1 (JTS-1.7)
- * Modifications for {wk}: make self-contained, don't use namespace std,
- *   modify for event-based parse style.
- *
- **********************************************************************/
 
 #ifndef WK_WKT_STREAMER_H
 #define WK_WKT_STREAMER_H
 
-#include <string>
 #include <clocale>
-
+#include <cstring>
 #include "wk/reader.hpp"
-#include "wk/io-string.hpp"
-#include "wk/error-formatter.hpp"
 #include "wk/geometry-handler.hpp"
-#include "wk/string-tokenizer.hpp"
-#include "wk/parse-exception.hpp"
-#include "wk/coord.hpp"
+#include "wk/io-string.hpp"
+#include <Rcpp.h>
+using namespace Rcpp;
+
+class WKParseableStringException: public WKParseException {
+public:
+  WKParseableStringException(std::string expected, std::string found, const char* src, size_t pos):
+  WKParseException(makeError(expected, found, src, pos)),
+  expected(expected), found(found), src(src), pos(pos) {}
+
+  std::string expected;
+  std::string found;
+  std::string src;
+  size_t pos;
+
+  static std::string makeError(std::string expected, std::string found, const char* src, size_t pos) {
+    std::stringstream stream;
+    stream << "Expected " << expected << " but found " << found << " (:" << pos << ")";
+    return stream.str().c_str();
+  }
+};
+
+
+class WKParseableString {
+public:
+  WKParseableString(const char* str, const char* whitespace, const char* sep):
+  str(str), length(strlen(str)), offset(0), whitespace(whitespace), sep(sep) {}
+
+  // Change the position of the cursor
+  size_t seek(size_t position) {
+    if (position > this->length) {
+      position = this->length;
+    } else if (position < 0) {
+      position = 0;
+    }
+
+    size_t delta = position - this->offset;
+    this->offset = position;
+    return delta;
+  }
+
+  void advance() {
+    if (this->offset < this->length) {
+      this->offset++;
+    }
+  }
+
+  void advance(int n) {
+    if ((this->offset + n) <= this->length) {
+      this->offset += n;
+    } else {
+      this->offset = this->length;
+    }
+  }
+
+  bool finished() {
+    return this->offset >= this->length;
+  }
+
+  // Returns the character at the cursor and advances the cursor
+  // by one
+  char readChar() {
+    char out = this->peekChar();
+    this->advance();
+    return out;
+  }
+
+  // Returns the character currently ahead of the cursor
+  // without advancing the cursor (skips whitespace)
+  char peekChar() {
+    this->skipWhitespace();
+    if (this->offset < this->length) {
+      return this->str[this->offset];
+    } else {
+      return '\0';
+    }
+  }
+
+  // Returns true if the next character is one of `chars`
+  bool is(char c) {
+    return c == this->peekChar();
+  }
+
+  // Returns true if the next character is one of `chars`
+  bool isOneOf(const char* chars) {
+    return strchr(chars, this->peekChar()) != nullptr;
+  }
+
+  // Returns true if the next character is most likely to be a number
+  bool isNumber() {
+    return this->isOneOf("-0123456789");
+  }
+
+  // Returns true if the next character is a letter
+  bool isLetter() {
+    char found = this->peekChar();
+    return (found >= 'a' && found <= 'z') || (found >= 'A' && found <= 'Z');
+  }
+
+  std::string assertWord() {
+    std::string text = this->peekUntilSep();
+    if (!this->isLetter()) {
+      this->error("a word", quote(text));
+    }
+
+    this->advance(text.size());
+    return text;
+  }
+
+  // Returns the integer currently ahead of the cursor,
+  // throwing an exception if whatever is ahead of the
+  // cursor cannot be parsed into an integer
+  uint32_t assertInteger() {
+    std::string text = this->peekUntilSep();
+    try {
+      uint32_t out = std::stoul(text);
+      this->advance(text.size());
+      return out;
+    } catch (std::exception& e) {
+      if (this->finished()) {
+        this->error("an integer", "end of input");
+      } else {
+        this->error("an integer", quote(text));
+      }
+    }
+  }
+
+  // Returns the double currently ahead of the cursor,
+  // throwing an exception if whatever is ahead of the
+  // cursor cannot be parsed into a double. This will
+  // accept "inf", "-inf", and "nan".
+  double assertNumber() {
+    std::string text = this->peekUntilSep();
+    try {
+      double out = std::stod(text);
+      this->advance(text.size());
+      return out;
+    } catch (std::exception& e) {
+      if (this->finished()) {
+        this->error("a number", "end of input");
+      } else {
+        this->error("a number", quote(text));
+      }
+    }
+  }
+
+  // Asserts that the character at the cursor is whitespace, and
+  // returns a std::string of whitespace characters, advancing the
+  // cursor to the end of the whitespace.
+  std::string assertWhitespace() {
+    if (this->finished()) {
+      this->error("whitespace", "end of input");
+    }
+
+    char found = this->str[this->offset];
+    if (strchr(this->whitespace, found) == nullptr) {
+      this->error("whitespace", quote(this->peekUntilSep()));
+    }
+
+    size_t offset0 = this->offset;
+    size_t nWhitespaceChars = this->skipWhitespace();
+    return std::string(&(this->str[offset0]), nWhitespaceChars);
+  }
+
+  void assert_(char c) {
+    char found = this->peekChar();
+    if (found != c) {
+      this->error(quote(c), quote(found));
+    }
+    this->advance();
+  }
+
+  // Asserts the that the character at the cursor is one of `chars`
+  // and advances the cursor by one (throwing an exception otherwise).
+  char assertOneOf(const char* chars) {
+    char found = this->peekChar();
+
+    if ((strlen(chars) > 0) && this->finished()) {
+      this->error(expectedFromChars(chars), "end of input");
+    } else if (strchr(chars, found) == nullptr) {
+      this->error(expectedFromChars(chars), quote(this->peekUntilSep()));
+    }
+
+    this->advance();
+    return found;
+  }
+
+  // Asserts that the cursor is at the end of the input
+  void assertFinished() {
+    this->assertOneOf("");
+  }
+
+  // Returns the text between the cursor and the next separator,
+  // which is defined to be whitespace or the following characters: =;,()
+  // advancing the cursor. If we are at the end of the string, this will
+  // return std::string("")
+  std::string readUntilSep() {
+    this->skipWhitespace();
+    size_t wordLen = peekUntil(this->sep);
+    bool finished = this->finished();
+    if (wordLen == 0 && !finished) {
+      wordLen = 1;
+    }
+    std::string out(&(this->str[this->offset]), wordLen);
+    this->advance(wordLen);
+    return out;
+  }
+
+  // Returns the text between the cursor and the next separator
+  // (" \r\n\t,();=") without advancing the cursor.
+  std::string peekUntilSep() {
+    this->skipWhitespace();
+    size_t wordLen = peekUntil(this->sep);
+    if (wordLen == 0 && !this->finished()) {
+      wordLen = 1;
+    }
+    return std::string(&(this->str[this->offset]), wordLen);
+  }
+
+  // Advances the cursor past any whitespace, returning the
+  // number of characters skipped.
+  size_t skipWhitespace() {
+    return this->skipChars(this->whitespace);
+  }
+
+  // Skips all of the characters in `chars`, returning the number of
+  // characters skipped.
+  size_t skipChars(const char* chars) {
+    size_t offset0 = this->offset;
+    char c = this->str[this->offset];
+    while ((c != '\0') && strchr(chars, c)) {
+      this->offset++;
+      if (this->offset >= this->length) {
+        break;
+      }
+
+      c = this->str[this->offset];
+    }
+
+    return this->offset - offset0;
+  }
+
+  // Returns the number of characters until one of `chars` is encountered,
+  // which may be 0.
+  size_t peekUntil(const char* chars) {
+    size_t offset0 = this->offset;
+    size_t offseti = this->offset;
+    char c = this->str[offseti];
+    while ((c != '\0') && !strchr(chars, c)) {
+      offseti++;
+      if (offseti >= this->length) {
+        break;
+      }
+
+      c = this->str[offseti];
+    }
+
+    return offseti - offset0;
+  }
+
+  [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
+    throw WKParseableStringException(expected, quote(found), this->str, this->offset - found.size());
+  }
+
+  [[noreturn]] void error(std::string expected, std::string found) {
+    throw WKParseableStringException(expected, found, this->str, this->offset);
+  }
+
+  [[noreturn]] void error(std::string expected) {
+    throw WKParseableStringException(expected, quote(this->peekUntilSep()), this->str, this->offset);
+  }
+
+private:
+  const char* str;
+  size_t length;
+  size_t offset;
+  const char* whitespace;
+  const char* sep;
+
+  static std::string expectedFromChars(const char* chars) {
+    size_t nChars = strlen(chars);
+    if (nChars == 0) {
+      return "end of input";
+    } else if (nChars == 1) {
+      return quote(chars);
+    }
+
+    std::stringstream stream;
+    for (size_t i = 0; i < nChars; i++) {
+      if (nChars > 2) {
+        stream << ",";
+      }
+      if (i > 0) {
+        stream << " or ";
+      }
+      stream << quote(chars[i]);
+    }
+
+    return stream.str();
+  }
+
+  static std::string quote(std::string input) {
+    std::stringstream stream;
+    stream << "'" << input << "'";
+    return stream.str();
+  }
+
+  static std::string quote(char input) {
+    std::stringstream stream;
+    stream << "'" << input << "'";
+    return stream.str();
+  }
+};
+
+
+class WKTString: public WKParseableString {
+public:
+  WKTString(const char* str): WKParseableString(str, " \r\n\t", " \r\n\t,();=") {}
+
+  WKGeometryMeta assertGeometryMeta() {
+    WKGeometryMeta meta;
+    std::string geometryType = this->assertWord();
+
+    if (geometryType == "SRID") {
+      this->assert_('=');
+      meta.srid = this->assertInteger();
+      meta.hasSRID = true;
+      this->assert_(';');
+      geometryType = this->assertWord();
+    }
+
+    if (this->is('Z')) {
+      this->assert_('Z');
+      meta.hasZ = true;
+    }
+
+    if (this->is('M')) {
+      this->assert_('M');
+      meta.hasM = true;
+    }
+
+    if (this->isEMPTY()) {
+      meta.hasSize = true;
+      meta.size = 0;
+    }
+
+    meta.geometryType = this->geometryTypeFromString(geometryType);
+    return meta;
+  }
+
+  int geometryTypeFromString(std::string geometryType) {
+    if (geometryType == "POINT") {
+      return WKGeometryType::Point;
+    } else if(geometryType == "LINESTRING") {
+      return WKGeometryType::LineString;
+    } else if(geometryType == "POLYGON") {
+      return WKGeometryType::Polygon;
+    } else if(geometryType == "MULTIPOINT") {
+      return WKGeometryType::MultiPoint;
+    } else if(geometryType == "MULTILINESTRING") {
+      return WKGeometryType::MultiLineString;
+    } else if(geometryType == "MULTIPOLYGON") {
+      return WKGeometryType::MultiPolygon;
+    } else if(geometryType == "GEOMETRYCOLLECTION") {
+      return WKGeometryType::GeometryCollection;
+    } else {
+      this->errorBefore("geometry type or 'SRID='", geometryType);
+    }
+  }
+
+  bool isEMPTY() {
+    return this->peekUntilSep() == "EMPTY";
+  }
+
+  bool assertEMPTYOrOpen() {
+    if (this->isLetter()) {
+      std::string word = this->assertWord();
+      if (word != "EMPTY") {
+        this->errorBefore("'(' or 'EMPTY'", word);
+      }
+
+      return true;
+    } else if (this->is('(')) {
+      this->assert_('(');
+      return false;
+    } else {
+      this->error("'(' or 'EMPTY'");
+    }
+  }
+};
 
 
 class WKTStreamer: public WKReader {
 public:
 
   WKTStreamer(WKStringProvider& provider): WKReader(provider), provider(provider) {
-    // TODO evaluate if we need this if we use C++11's double parser
+    // constructor and deleter set the thread locale while the object is in use
 #ifdef _MSC_VER
-    // Avoid multithreading issues caused by setlocale
     _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
 #endif
     char* p = std::setlocale(LC_NUMERIC, nullptr);
-    if(nullptr != p) {
+    if(p != nullptr) {
       this->saved_locale = p;
     }
     std::setlocale(LC_NUMERIC, "C");
@@ -61,9 +423,9 @@ public:
     if (this->provider.featureIsNull()) {
       this->handler->nextNull(featureId);
     } else {
-      const std::string& wellKnownText = this->provider.featureString();
-      WKStringTokenizer tokenizer(wellKnownText);
-      this->readGeometryTaggedText(&tokenizer, PART_ID_NONE, SRID_UNKNOWN);
+      std::string str = this->provider.featureString();
+      WKTString s(str.c_str());
+      this->readGeometryWithType(s, PART_ID_NONE);
     }
 
     this->handler->nextFeatureEnd(featureId);
@@ -72,424 +434,224 @@ public:
 protected:
   WKStringProvider& provider;
 
-  void readGeometryTaggedText(WKStringTokenizer* tokenizer, uint32_t partId, uint32_t srid) {
-    std::string type = this->getNextWord(tokenizer);
-    int geometryType;
-
-    if (type == "SRID" && srid == SRID_UNKNOWN) {
-      this->readGeometryTaggedText(tokenizer, partId, this->getSRID(tokenizer));
-      return;
-    } else if(type == "POINT") {
-      geometryType = WKGeometryType::Point;
-
-    } else if(type == "LINESTRING") {
-      geometryType = WKGeometryType::LineString;
-
-    } else if(type == "POLYGON") {
-      geometryType = WKGeometryType::Polygon;
-
-    } else if(type == "MULTIPOINT") {
-      geometryType = WKGeometryType::MultiPoint;
-
-    } else if(type == "MULTILINESTRING") {
-      geometryType = WKGeometryType::MultiLineString;
-
-    } else if(type == "MULTIPOLYGON") {
-      geometryType = WKGeometryType::MultiPolygon;
-
-    } else if(type == "GEOMETRYCOLLECTION") {
-      geometryType = WKGeometryType::GeometryCollection;
-
-    } else {
-      throw WKParseException(ErrorFormatter() << "Unknown type " << type);
-    }
-
-    WKGeometryMeta meta = this->getNextEmptyOrOpener(tokenizer, geometryType);
-    if (srid != SRID_UNKNOWN) {
-      meta.hasSRID = true;
-      meta.srid = srid;
-    }
-
-    this->readGeometry(tokenizer, meta, partId);
-  }
-
-  void readGeometry(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta, uint32_t partId) {
+  void readGeometryWithType(WKTString& s, uint32_t partId) {
+    WKGeometryMeta meta = s.assertGeometryMeta();
     this->handler->nextGeometryStart(meta, partId);
-
-    // if empty, calling read* functions will fail because
-    // the empty token has been consumed
-    if (meta.size == 0) {
-      this->handler->nextGeometryEnd(meta, partId);
-      return;
-    }
 
     switch (meta.geometryType) {
 
     case WKGeometryType::Point:
-      this->readPointText(tokenizer, meta);
+      this->readPoint(s, meta);
       break;
 
     case WKGeometryType::LineString:
-      this->readLineStringText(tokenizer, meta);
+      this->readLineString(s, meta);
       break;
 
     case WKGeometryType::Polygon:
-      this->readPolygonText(tokenizer, meta);
+      this->readPolygon(s, meta);
       break;
 
     case WKGeometryType::MultiPoint:
-      this->readMultiPointText(tokenizer, meta);
+      this->readMultiPoint(s, meta);
       break;
 
     case WKGeometryType::MultiLineString:
-      this->readMultiLineStringText(tokenizer, meta);
+      this->readMultiLineString(s, meta);
       break;
 
     case WKGeometryType::MultiPolygon:
-      this->readMultiPolygonText(tokenizer, meta);
+      this->readMultiPolygon(s, meta);
       break;
 
     case WKGeometryType::GeometryCollection:
-      this->readGeometryCollectionText(tokenizer, meta);
+      this->readGeometryCollection(s, meta);
       break;
 
     default:
-      throw WKParseException(
-          ErrorFormatter() <<
-            "Unrecognized geometry type: " <<
-            meta.geometryType
-      );
+      throw WKParseException("Unknown geometry type integer"); // # nocov
     }
 
     this->handler->nextGeometryEnd(meta, partId);
   }
 
-  void readPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    this->readCoordinate(tokenizer, meta, 0);
-    this->getNextCloser(tokenizer);
+  void readPoint(WKTString& s, const WKGeometryMeta& meta) {
+    if (!s.assertEMPTYOrOpen()) {
+      this->readPointCoordinate(s, meta);
+      s.assert_(')');
+    }
   }
 
-  void readLineStringText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    this->readCoordinates(tokenizer, meta);
+  void readLineString(WKTString& s, const WKGeometryMeta& meta) {
+    this->readCoordinates(s, meta);
   }
 
-  void readPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    uint32_t ringId = 0;
-    std::string nextToken;
-    do {
-      this->readLinearRingText(tokenizer, meta, ringId);
-      ringId++;
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    } while (nextToken == ",");
+  void readPolygon(WKTString& s, const WKGeometryMeta& meta)  {
+    this->readLinearRings(s, meta);
   }
 
-  void readLinearRingText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta, uint32_t ringId) {
-    this->handler->nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
-    this->getNextEmptyOrOpener(tokenizer, 0);
-    this->readCoordinates(tokenizer, meta);
-    this->handler->nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
-  }
-
-  void readMultiPointText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-
-    int tok = tokenizer->peekNextToken();
-
-    // the next token can be EMPTY, which we only
-    // deal with as the 'correct' multipoint form
-    std::string nextWord;
-    if (tok == WKStringTokenizer::TT_WORD) {
-      nextWord = tokenizer->getSVal();
+  uint32_t readMultiPoint(WKTString& s, const WKGeometryMeta& meta) {
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
     }
 
-    if (tok == WKStringTokenizer::TT_NUMBER) {
-      // Try to parse deprecated form "MULTIPOINT(0 0, 1 1)"
-      std::string nextToken;
-      uint32_t partId = 0;
+    WKGeometryMeta childMeta;
+    uint32_t partId = 0;
+
+    if (s.isNumber()) { // (0 0, 1 1)
       do {
-        WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
-        childMeta.srid = meta.srid;
+        childMeta = this->childMeta(s, meta, WKGeometryType::Point);
 
         this->handler->nextGeometryStart(childMeta, partId);
-        this->readCoordinate(tokenizer, meta, 0);
+        if (s.isEMPTY()) {
+          s.assertWord();
+        } else {
+          this->readPointCoordinate(s, childMeta);
+        }
+        this->handler->nextGeometryEnd(childMeta, partId);
+
+        partId++;
+      } while (s.assertOneOf(",)") != ')');
+
+    } else { // ((0 0), (1 1))
+      do {
+        childMeta = this->childMeta(s, meta, WKGeometryType::Point);
+        this->handler->nextGeometryStart(childMeta, partId);
+        this->readPoint(s, childMeta);
         this->handler->nextGeometryEnd(childMeta, partId);
         partId++;
-
-        nextToken = this->getNextCloserOrComma(tokenizer);
-      } while (nextToken == ",");
-
-    } else if(tok == '(' || (tok == WKStringTokenizer::TT_WORD && nextWord == "EMPTY")) {
-      // Try to parse correct form "MULTIPOINT((0 0), (1 1))"
-      std::string nextToken;
-      uint32_t partId = 0;
-      do {
-        WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::Point);
-        childMeta.hasZ = meta.hasZ;
-        childMeta.hasM = meta.hasM;
-        childMeta.srid = meta.srid;
-
-        this->readGeometry(tokenizer, childMeta, partId);
-        partId++;
-
-        nextToken = getNextCloserOrComma(tokenizer);
-      } while (nextToken == ",");
-
-    } else {
-      std::stringstream err;
-      err << "Unexpected token: ";
-      switch(tok) {
-      case WKStringTokenizer::TT_WORD:
-        err << "WORD " << nextWord;
-        break;
-      case WKStringTokenizer::TT_NUMBER:
-        err << "NUMBER " << tokenizer->getNVal();
-        break;
-      case WKStringTokenizer::TT_EOF:
-      case WKStringTokenizer::TT_EOL:
-        err << "EOF or EOL";
-        break;
-      case '(':
-        err << "(";
-        break;
-      case ')':
-        err << ")";
-        break;
-      case ',':
-        err << ",";
-        break;
-      default:
-        err << "??";
-      break;
-      }
-
-      err << std::endl;
-      throw WKParseException(err.str());
+      } while (s.assertOneOf(",)") != ')');
     }
+
+    return partId;
   }
 
-  void readMultiLineStringText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    std::string nextToken;
+  uint32_t readMultiLineString(WKTString& s, const WKGeometryMeta& meta) {
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
+    }
+
+    WKGeometryMeta childMeta;
     uint32_t partId = 0;
     do {
-      WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::LineString);
-      childMeta.hasZ = meta.hasZ;
-      childMeta.hasM = meta.hasM;
-      childMeta.srid = meta.srid;
-
-      this->readGeometry(tokenizer, childMeta, partId);
+      childMeta = this->childMeta(s, meta, WKGeometryType::LineString);
+      this->handler->nextGeometryStart(childMeta, partId);
+      this->readLineString(s, childMeta);
+      this->handler->nextGeometryEnd(childMeta, partId);
       partId++;
+    } while (s.assertOneOf(",)") != ')');
 
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    } while (nextToken == ",");
+    return partId;
   }
 
-  void readMultiPolygonText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    std::string nextToken;
+  uint32_t readMultiPolygon(WKTString& s, const WKGeometryMeta& meta) {
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
+    }
+
+    WKGeometryMeta childMeta;
     uint32_t partId = 0;
     do {
-      WKGeometryMeta childMeta = this->getNextEmptyOrOpener(tokenizer, WKGeometryType::Polygon);
-      childMeta.hasZ = meta.hasZ;
-      childMeta.hasM = meta.hasM;
-      childMeta.srid = meta.srid;
-
-      this->readGeometry(tokenizer, childMeta, partId);
+      childMeta = this->childMeta(s, meta, WKGeometryType::Polygon);
+      this->handler->nextGeometryStart(childMeta, partId);
+      this->readPolygon(s, childMeta);
+      this->handler->nextGeometryEnd(childMeta, partId);
       partId++;
+    } while (s.assertOneOf(",)") != ')');
 
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    } while (nextToken == ",");
+    return partId;
   }
 
-  void readGeometryCollectionText(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
-    std::string nextToken;
+  uint32_t readGeometryCollection(WKTString& s, const WKGeometryMeta& meta) {
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
+    }
 
     uint32_t partId = 0;
     do {
-      this->readGeometryTaggedText(tokenizer, partId, SRID_UNKNOWN);
+      this->readGeometryWithType(s, partId);
       partId++;
+    } while (s.assertOneOf(",)") != ')');
 
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    } while (nextToken == ",");
+    return partId;
   }
 
-  void readCoordinates(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta) {
+  uint32_t readLinearRings(WKTString& s, const WKGeometryMeta& meta) {
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
+    }
+
+    uint32_t ringId = 0;
+    do {
+      this->handler->nextLinearRingStart(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
+      this->readCoordinates(s, meta);
+      this->handler->nextLinearRingEnd(meta, WKGeometryMeta::SIZE_UNKNOWN, ringId);
+      ringId++;
+    } while (s.assertOneOf(",)") != ')');
+
+    return ringId;
+  }
+
+  // Point coordinates are special in that there can only be one
+  // coordinate (and reading more than one might cause errors since
+  // writers are unlikely to expect a point geometry with many coordinates).
+  // This assumes that `s` has already been checked for EMPTY or an opener
+  // since this is different for POINT (...) and MULTIPOINT (.., ...)
+  uint32_t readPointCoordinate(WKTString& s, const WKGeometryMeta& meta) {
+    WKCoord coord = this->childCoordinate(meta);
+    this->readCoordinate(s, coord);
+    handler->nextCoordinate(meta, coord, 0);
+    return 1;
+  }
+
+  uint32_t readCoordinates(WKTString& s, const WKGeometryMeta& meta) {
+    WKCoord coord = this->childCoordinate(meta);
+
+    if (s.assertEMPTYOrOpen()) {
+      return 0;
+    }
+
     uint32_t coordId = 0;
-    std::string nextToken;
     do {
-      this->readCoordinate(tokenizer, meta, coordId);
+      this->readCoordinate(s, coord);
+      handler->nextCoordinate(meta, coord, coordId);
       coordId++;
-      nextToken = this->getNextCloserOrComma(tokenizer);
-    } while (nextToken == ",");
+    } while (s.assertOneOf(",)") != ')');
+
+    return coordId;
   }
 
-  void readCoordinate(WKStringTokenizer* tokenizer, const WKGeometryMeta& meta, uint32_t coordId) {
+  void readCoordinate(WKTString& s, WKCoord& coord) {
+    coord[0] = s.assertNumber();
+    for (size_t i = 1; i < coord.size(); i++) {
+      s.assertWhitespace();
+      coord[i] = s.assertNumber();
+    }
+  }
+
+  WKCoord childCoordinate(const WKGeometryMeta& meta) {
     WKCoord coord;
-    coord.x = this->getNextNumber(tokenizer);
-    coord.y = this->getNextNumber(tokenizer);
-
-    if (this->isNumberNext(tokenizer)) {
-      if (meta.hasZ) {
-        coord.z = this->getNextNumber(tokenizer);
-        coord.hasZ = true;
-      } else if (meta.hasM) {
-        coord.m = this->getNextNumber(tokenizer);
-        coord.hasM = true;
-      } else {
-        throw WKParseException(ErrorFormatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
-      }
-
-      if(this->isNumberNext(tokenizer)) {
-        if (meta.hasM) {
-          coord.m = this->getNextNumber(tokenizer);
-          coord.hasM = true;
-        } else {
-          throw WKParseException(ErrorFormatter() << "Found unexpected coordiate " << this->getNextNumber(tokenizer));
-        }
-      } else if (meta.hasZ && meta.hasM) {
-        throw WKParseException("Expected M coordinate but foound ','  or ')'");
-      }
-    } else if (meta.hasZ || meta.hasM) {
-      throw WKParseException("Expected Z or M coordinate");
-    }
-
-    this->handler->nextCoordinate(meta, coord, coordId);
+    coord.hasZ = meta.hasZ;
+    coord.hasM = meta.hasM;
+    return coord;
   }
 
-  double getNextNumber(WKStringTokenizer* tokenizer) {
-    int type = tokenizer->nextToken();
-    switch(type) {
-    case WKStringTokenizer::TT_NUMBER:
-      return tokenizer->getNVal();
-    case WKStringTokenizer::TT_EOF:
-      throw WKParseException("Expected number but encountered end of stream");
-    case WKStringTokenizer::TT_EOL:
-      throw WKParseException("Expected number but encountered end of line");
-    case WKStringTokenizer::TT_WORD:
-      throw WKParseException(ErrorFormatter() << "Expected number but encountered word " << tokenizer->getSVal());
-    case '(':
-      throw WKParseException("Expected number but encountered '('");
-    case ')':
-      throw WKParseException("Expected number but encountered ')'");
-    case ',':
-      throw WKParseException("Expected number but encountered ','");
-    default:
-      throw std::runtime_error(ErrorFormatter() << "getNextNumber(): Unexpected token type " << type);
-    }
-  }
-
-  int getSRID(WKStringTokenizer* tokenizer) {
-    int nextToken = tokenizer->peekNextToken();
-    if (nextToken == '=') {
-      // consume the "="
-      this->getNextWord(tokenizer);
-      int srid = this->getNextNumber(tokenizer);
-      std::string nextWord = this->getNextWord(tokenizer);
-      if (nextWord == ";") {
-        return srid;
-      } else {
-        throw WKParseException(ErrorFormatter() << "Expected ';' but found " << nextWord);
-      }
+  WKGeometryMeta childMeta(WKTString& s, const WKGeometryMeta& parent, int geometryType) {
+    WKGeometryMeta childMeta(parent);
+    childMeta.geometryType = geometryType;
+    if (s.isEMPTY()) {
+      childMeta.hasSize = true;
+      childMeta.size = 0;
     } else {
-      // better error message here will require some refactoring of all the
-      // errors
-      throw WKParseException(ErrorFormatter() <<  "Expected '=' and SRID");
-    }
-  }
-
-  WKGeometryMeta getNextEmptyOrOpener(WKStringTokenizer* tokenizer, int geometryType) {
-    std::string nextWord = this->getNextWord(tokenizer);
-
-    bool hasZ = false;
-    bool hasM = false;
-    bool hasSRID = false;
-
-    // Parse the Z, M or ZM of an SF1.2 3/4 dim coordinate.
-    if (nextWord == "Z") {
-      hasZ = true;
-      nextWord = this->getNextWord(tokenizer);
-    } else if (nextWord == "M") {
-      hasM = true;
-      nextWord = this->getNextWord(tokenizer);
-    } else if (nextWord == "ZM") {
-      hasZ = true;
-      hasM = true;
-      nextWord = this->getNextWord(tokenizer);
+      childMeta.hasSize = false;
+      childMeta.size = WKGeometryMeta::SIZE_UNKNOWN;
     }
 
-    WKGeometryMeta meta = WKGeometryMeta(geometryType, hasZ, hasM, hasSRID);
-    if(nextWord == "EMPTY") {
-      meta.hasSize = true;
-      meta.size = 0;
-      return meta;
-
-    } else if (nextWord == "(") {
-      return meta;
-
-    } else {
-      throw WKParseException(
-          ErrorFormatter() <<
-            "Expected 'Z', 'M', 'ZM', 'EMPTY' or '(' but encountered " <<
-              nextWord
-      );
-    }
-  }
-
-  std::string getNextCloserOrComma(WKStringTokenizer* tokenizer) {
-    std::string nextWord = this->getNextWord(tokenizer);
-    if(nextWord == "," || nextWord == ")") {
-      return nextWord;
-    }
-
-    throw  WKParseException(ErrorFormatter() << "Expected ')' or ',' but encountered" << nextWord);
-  }
-
-  std::string getNextCloser(WKStringTokenizer* tokenizer) {
-    std::string nextWord = getNextWord(tokenizer);
-    if(nextWord == ")") {
-      return nextWord;
-    }
-
-    throw WKParseException(ErrorFormatter() << "Expected ')' but encountered" << nextWord);
-  }
-
-  std::string getNextWord(WKStringTokenizer* tokenizer) {
-    int type = tokenizer->nextToken();
-    switch(type) {
-    case WKStringTokenizer::TT_WORD: {
-      std::string word = tokenizer->getSVal();
-      int i = static_cast<int>(word.size());
-      while(--i >= 0) {
-        word[i] = static_cast<char>(toupper(word[i]));
-      }
-      return word;
-    }
-    case WKStringTokenizer::TT_EOF:
-      throw WKParseException("Expected word but encountered end of stream");
-    case WKStringTokenizer::TT_EOL:
-      throw WKParseException("Expected word but encountered end of line");
-    case WKStringTokenizer::TT_NUMBER:
-      throw WKParseException(ErrorFormatter() << "Expected word but encountered number" << tokenizer->getNVal());
-    case '(':
-      return "(";
-    case ')':
-      return ")";
-    case ',':
-      return ",";
-    case ';':
-      return ";";
-    case '=':
-      return "=";
-    default:
-      throw std::runtime_error(ErrorFormatter() << "Unexpected token type " << type);
-    }
-  }
-
-  bool isNumberNext(WKStringTokenizer* tokenizer) {
-    return tokenizer->peekNextToken() == WKStringTokenizer::TT_NUMBER;
+    return childMeta;
   }
 
 private:
   std::string saved_locale;
-  const static uint32_t SRID_UNKNOWN = UINT32_MAX;
-
 };
 
 #endif
