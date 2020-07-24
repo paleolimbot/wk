@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.1.9000</span>
       </span>
     </div>
 
@@ -86,6 +86,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -117,17 +120,17 @@
     <p>Mark lists of raw vectors as well-known binary</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb</a></span>(x = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
+    <pre class="usage"><span class='fu'>wkb</span>(x = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>parse_wkb</a></span>(<span class='kw'>x</span>)
+<span class='fu'>parse_wkb</span>(<span class='kw'>x</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+<span class='fu'>as_wkb</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for character</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+<span class='fu'>as_wkb</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+<span class='fu'>as_wkb</span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
   include_z = <span class='kw'>NULL</span>,
@@ -137,7 +140,7 @@
 )
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+<span class='fu'>as_wkb</span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
   include_z = <span class='kw'>NULL</span>,
@@ -147,7 +150,7 @@
 )
 
 <span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(
+<span class='fu'>as_wkb</span>(
   <span class='kw'>x</span>,
   <span class='kw'>...</span>,
   include_z = <span class='kw'>NULL</span>,
@@ -157,16 +160,16 @@
 )
 
 <span class='co'># S3 method for blob</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+<span class='fu'>as_wkb</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for WKB</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>as_wkb</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+<span class='fu'>as_wkb</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for blob</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
+<span class='fu'><a href='wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for WKB</span>
-<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'><a href='wksxp.html'>as_wksxp</a></span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -206,16 +209,16 @@ is no value present in the original.</p></td>
     <tr>
       <th>endian</th>
       <td><p>For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to <code><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wk_platform_endian()</a></code> (slightly faster).</p></td>
+Defaults to <code><a href='wkb_translate_wkt.html'>wk_platform_endian()</a></code> (slightly faster).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='https://rdrr.io/pkg/wk/man/new_wk_wkb.html'>new_wk_wkb()</a></code></p>
+    <p>A <code><a href='new_wk_wkb.html'>new_wk_wkb()</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(<span class='st'>"POINT (20 10)"</span>))</div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
+    <pre class="examples"><div class='input'><span class='fu'>wkb</span>(<span class='fu'><a href='wkb_translate_wkt.html'>wkt_translate_wkb</a></span>(<span class='st'>"POINT (20 10)"</span>))</div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
 #&gt; [1] &lt;POINT (20 10)&gt;</div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

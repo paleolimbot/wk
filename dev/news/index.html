@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mark character vectors as well-known text — wkt • wk</title>
+<title>Changelog • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,7 @@
 
 
 
-<meta property="og:title" content="Mark character vectors as well-known text — wkt" />
-<meta property="og:description" content="Mark character vectors as well-known text" />
+<meta property="og:title" content="Changelog" />
 
 
 <meta name="robots" content="noindex">
@@ -59,7 +58,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,119 +110,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mark character vectors as well-known text</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkt.R'><code>R/wkt.R</code></a></small>
-    <div class="hidden name"><code>wkt.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/paleolimbot/wk/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    <p>Mark character vectors as well-known text</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>wkt</span>(x = <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>())
-
-<span class='fu'>parse_wkt</span>(<span class='kw'>x</span>)
-
-<span class='fu'>as_wkt</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>as_wkt</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for character</span>
-<span class='fu'>as_wkt</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)
-
-<span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkt</span>(
-  <span class='kw'>x</span>,
-  <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  precision = <span class='kw'>NULL</span>,
-  trim = <span class='kw'>NULL</span>
-)
-
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkt</span>(
-  <span class='kw'>x</span>,
-  <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  precision = <span class='kw'>NULL</span>,
-  trim = <span class='kw'>NULL</span>
-)
-
-<span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkt</span>(
-  <span class='kw'>x</span>,
-  <span class='kw'>...</span>,
-  include_z = <span class='kw'>NULL</span>,
-  include_m = <span class='kw'>NULL</span>,
-  include_srid = <span class='kw'>NULL</span>,
-  precision = <span class='kw'>NULL</span>,
-  trim = <span class='kw'>NULL</span>
-)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> vector containing well-known text.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Unused</p></td>
-    </tr>
-    <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
-    </tr>
-    </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A <code><a href='new_wk_wkt.html'>new_wk_wkt()</a></code></p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkt</span>(<span class='st'>"POINT (20 10)"</span>)</div><div class='output co'>#&gt; &lt;wk_wkt[1]&gt;
-#&gt; [1] POINT (20 10)</div><div class='input'></div></pre>
+    <div id="wk-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#wk-development-version" class="anchor"></a>wk (development version)<small> Unreleased </small>
+</h1>
+</div>
+    <div id="wk-031" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.1">
+<a href="#wk-031" class="anchor"></a>wk 0.3.1<small> 2020-07-21 </small>
+</h1>
+<ul>
+<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 
