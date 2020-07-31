@@ -79,7 +79,7 @@ encoded as attributes. The attribures that are used are:
 (may be omitted if false)
 }
 
-This is similar to the \code{\link[sf:sfc]{sf::st_sfc()}} format, but the formats aren't
+This is similar to the \code{sf::st_sfc()} format, but the formats aren't
 interchangable.
 }
 \examples{

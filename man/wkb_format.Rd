@@ -14,7 +14,7 @@ wksxp_format(wksxp, max_coords = 3)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
-returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
+returned by \code{sf::st_as_binary()}.}
 
 \item{max_coords}{The maximum number of coordinates to include
 in the output.}

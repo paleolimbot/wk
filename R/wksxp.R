@@ -22,7 +22,7 @@
 #' - `has_m`: use `TRUE` if there is an M coordinate
 #'    (may be omitted if false)
 #'
-#' This is similar to the [sf::st_sfc()] format, but the formats aren't
+#' This is similar to the `sf::st_sfc()` format, but the formats aren't
 #' interchangable.
 #'
 #' @param x A [list()] features (see details)

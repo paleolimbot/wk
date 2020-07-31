@@ -2,7 +2,7 @@
 #' Translate between WKB and WKT
 #'
 #' @param wkb A `list()` of [raw()] vectors, such as that
-#'   returned by [sf::st_as_binary()].
+#'   returned by `sf::st_as_binary()`.
 #' @param wkt A character vector containing well-known text.
 #' @param wksxp A `list()` of classed objects
 #' @param trim Trim unnecessary zeroes in the output?

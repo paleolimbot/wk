@@ -77,7 +77,7 @@ wk_platform_endian()
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
-returned by \code{\link[sf:st_as_binary]{sf::st_as_binary()}}.}
+returned by \code{sf::st_as_binary()}.}
 
 \item{include_z, include_m, include_srid}{Include the
 values of the Z and M coordinates and/or SRID
