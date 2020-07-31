@@ -355,6 +355,10 @@ test_that("wkb--wkb translation works with include SRID, include M, and include 
   )
 })
 
+test_that("wkb writer only includes SRID for top-level geometry", {
+  expect_length(wkt_translate_wkb("SRID=4326;MULTIPOINT (0 0, 1 1)")[[1]], 55)
+})
+
 test_that("wkb--wkb translation works for nested collections", {
   collection <- as.raw(c(0x01, 0x07, 0x00, 0x00, 0x00, 0x06, 0x00,
                          0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

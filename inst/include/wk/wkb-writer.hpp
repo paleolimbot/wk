@@ -9,7 +9,12 @@
 
 class WKBWriter: public WKWriter {
 public:
-  WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter) {}
+  WKBWriter(WKBytesExporter& exporter): WKWriter(exporter), exporter(exporter), level(0) {}
+
+  void nextFeatureStart(size_t featureId) {
+    WKWriter::nextFeatureStart(featureId);
+    this->level = 0;
+  }
 
   void setEndian(unsigned char endian) {
     this->endian = endian;
@@ -17,6 +22,8 @@ public:
   }
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
+    this->level++;
+
     // make sure meta has a valid size
     if (!meta.hasSize || meta.size == WKGeometryMeta::SIZE_UNKNOWN) {
       throw std::runtime_error("Can't write WKB wihout a valid meta.size");
@@ -24,6 +31,12 @@ public:
 
     // make a new geometry type based on the creation options
     this->newMeta = this->getNewMeta(meta);
+
+    // never include SRID if not a top-level geometry
+    if (this->level > 1) {
+      this->newMeta.srid = WKGeometryMeta::SRID_NONE;
+      this->newMeta.hasSRID = false;
+    }
 
     this->writeEndian();
     this->writeUint32(this->newMeta.ewkbType());
@@ -60,10 +73,15 @@ public:
     }
   }
 
+  void nextGeometryEnd(const WKGeometryMeta& meta, uint32_t partId) {
+    this->level--;
+  }
+
 private:
   bool swapEndian;
   unsigned char endian;
   WKBytesExporter& exporter;
+  int level;
 
   size_t writeEndian() {
     return this->writeChar(this->endian);
