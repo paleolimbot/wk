@@ -286,6 +286,10 @@ test_that("wkt_translate_wkb() works with nested collections", {
 })
 
 test_that("wkt_translate_* has reasonable error messages", {
+  # different versions of Rcpp may treat exceptions differently on
+  # e.g., MacOS 3.6.2/CRAN, so skip these checks on CRAN
+  skip_on_cran()
+
   # close enough to inf to trigger the parse check
   expect_error(wkt_translate_wkt("MULTIPOINT (iambic 3)"), class = "WKParseException")
   expect_error(wkt_translate_wkt(""), class = "WKParseException")
