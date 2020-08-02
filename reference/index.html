@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -85,6 +85,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -133,12 +136,6 @@
       <tr>
         
         <td>
-          <p><code><a href="coords_point_translate_wkt.html">coords_point_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_point_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_point_translate_wksxp()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_linestring_translate_wksxp()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wkt()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wkb()</a></code> <code><a href="coords_point_translate_wkt.html">coords_polygon_translate_wksxp()</a></code> </p>
-        </td>
-        <td><p>Parse coordinates into well-known formats</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="new_wk_wkb.html">new_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">validate_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">is_wk_wkb()</a></code> </p>
         </td>
         <td><p>S3 Details for wk_wkb</p></td>
@@ -157,33 +154,21 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkt&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkb&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wksxp&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot well-known geometry vectors</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="vctrs-methods.html">vec_cast.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wksxp()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wksxp()</a></code> </p>
         </td>
         <td><p>Vctrs methods</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">parse_wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> </p>
+          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">parse_wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> <code><a href="wkb.html">as_wksxp(<i>&lt;blob&gt;</i>)</a></code> <code><a href="wkb.html">as_wksxp(<i>&lt;WKB&gt;</i>)</a></code> </p>
         </td>
         <td><p>Mark lists of raw vectors as well-known binary</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wkb_coords.html">wkb_coords()</a></code> <code><a href="wkb_coords.html">wkt_coords()</a></code> <code><a href="wkb_coords.html">wksxp_coords()</a></code> </p>
-        </td>
-        <td><p>Extract coordinates from well-known geometries</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wkb_debug.html">wkb_debug()</a></code> <code><a href="wkb_debug.html">wkt_debug()</a></code> <code><a href="wkb_debug.html">wkt_streamer_debug()</a></code> <code><a href="wkb_debug.html">wksxp_debug()</a></code> </p>
-        </td>
-        <td><p>Debug well-known geometry</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wkb_draw_points.html">wkb_draw_points()</a></code> <code><a href="wkb_draw_points.html">wkt_draw_points()</a></code> <code><a href="wkb_draw_points.html">wksxp_draw_points()</a></code> <code><a href="wkb_draw_points.html">wkb_draw_lines()</a></code> <code><a href="wkb_draw_points.html">wkt_draw_lines()</a></code> <code><a href="wkb_draw_points.html">wksxp_draw_lines()</a></code> <code><a href="wkb_draw_points.html">wkb_draw_polypath()</a></code> <code><a href="wkb_draw_points.html">wkt_draw_polypath()</a></code> <code><a href="wkb_draw_points.html">wksxp_draw_polypath()</a></code> <code><a href="wkb_draw_points.html">wkb_plot_new()</a></code> <code><a href="wkb_draw_points.html">wkt_plot_new()</a></code> <code><a href="wkb_draw_points.html">wksxp_plot_new()</a></code> </p>
-        </td>
-        <td><p>Draw well-known geometries</p></td>
       </tr><tr>
         
         <td>
@@ -193,21 +178,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_meta.html">wkb_meta()</a></code> <code><a href="wkb_meta.html">wkt_meta()</a></code> <code><a href="wkb_meta.html">wkt_streamer_meta()</a></code> <code><a href="wkb_meta.html">wksxp_meta()</a></code> <code><a href="wkb_meta.html">wk_geometry_type()</a></code> <code><a href="wkb_meta.html">wk_geometry_type_id()</a></code> </p>
-        </td>
-        <td><p>Extract meta information</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="wkb_problems.html">wkb_problems()</a></code> <code><a href="wkb_problems.html">wkt_problems()</a></code> <code><a href="wkb_problems.html">wksxp_problems()</a></code> </p>
         </td>
         <td><p>Validate well-known binary and well-known text</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="wkb_ranges.html">wkb_ranges()</a></code> <code><a href="wkb_ranges.html">wkt_ranges()</a></code> <code><a href="wkb_ranges.html">wksxp_ranges()</a></code> <code><a href="wkb_ranges.html">wkb_feature_ranges()</a></code> <code><a href="wkb_ranges.html">wkt_feature_ranges()</a></code> <code><a href="wkb_ranges.html">wksxp_feature_ranges()</a></code> </p>
-        </td>
-        <td><p>Extract ranges information</p></td>
       </tr><tr>
         
         <td>

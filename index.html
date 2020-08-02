@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -110,30 +113,41 @@
 <span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span>
 </pre></div>
 </div>
-<div id="extract-coordinates-and-meta-information" class="section level2">
-<h2 class="hasAnchor">
-<a href="#extract-coordinates-and-meta-information" class="anchor"></a>Extract coordinates and meta information</h2>
-<p>One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. In addition to <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> methods for <code><a href="reference/wkb.html">wkb()</a></code> vectors, the <code>wk*_meta()</code> and <code>wk*_coords()</code> functions provide usable coordinates and feature meta.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="reference/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
-<span class="co">#&gt;   feature_id part_id ring_id x y z m</span>
-<span class="co">#&gt; 1          1       1       0 1 2 3 4</span>
-<span class="fu"><a href="reference/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
-<span class="co">#&gt;   feature_id part_id type_id size srid has_z has_m n_coords</span>
-<span class="co">#&gt; 1          1       1       1    1   NA  TRUE  TRUE        1</span>
-</pre></div>
-</div>
 <div id="well-known-r-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#well-known-r-objects" class="anchor"></a>Well-known R objects</h2>
 <p>The wk package experimentally generates (and parses) a plain R object format, which is needed because well-known binary can’t natively represent the empty point and reading/writing well-known text is too slow. The format of the <code><a href="reference/wksxp.html">wksxp()</a></code> object is designed to be as close as possible to well-known text and well-known binary to make the translation code as clean as possible.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
+<div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]   30   10</span>
 <span class="co">#&gt; attr(,"class")</span>
 <span class="co">#&gt; [1] "wk_point"</span>
+</pre></div>
+</div>
+<div id="wkutils" class="section level2">
+<h2 class="hasAnchor">
+<a href="#wkutils" class="anchor"></a>wkutils</h2>
+<p>To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the <a href="https://paleolimbot.github.io/wkutils">wkutils package</a>. One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides <code>wk*_meta()</code> and <code>wk*_coords()</code> functions (among others) to extract usable coordinates and feature meta.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="co">#&gt; # A tibble: 1 x 7</span>
+<span class="co">#&gt;   feature_id part_id ring_id     x     y     z     m</span>
+<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1          1       1       0     1     2     3     4</span>
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="co">#&gt; # A tibble: 1 x 8</span>
+<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m n_coords</span>
+<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;    &lt;int&gt;</span>
+<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE         1</span>
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_ranges.html">wkt_ranges</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="co">#&gt; # A tibble: 1 x 8</span>
+<span class="co">#&gt;    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     1     2     3     4     1     2     3     4</span>
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/coords_point_translate_wkt.html">coords_point_translate_wkt</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>)
+<span class="co">#&gt; [1] "POINT ZM (1 2 3 4)"</span>
 </pre></div>
 </div>
 <div id="dependencies" class="section level2">
@@ -184,9 +198,10 @@
 <span class="co">#&gt; Do something before feature 0</span>
 <span class="co">#&gt; Do something after feature 0</span>
 </pre></div>
-<p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkb|wkt_debug()</code> functions.</p>
+<p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkutils::wkb|wkt_debug()</code> functions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="reference/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://paleolimbot.github.io/wkutils">wkutils</a></span>) <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
+<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
 <span class="co">#&gt;         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)</span>
@@ -208,8 +223,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            301µs    353µs     2789.   114.2KB     15.7</span>
-<span class="co">#&gt; 2 sf            412µs    454µs     2106.    99.8KB     11.1</span>
+<span class="co">#&gt; 1 wk            243µs    295µs     3292.   110.1KB     18.6</span>
+<span class="co">#&gt; 2 sf            389µs    456µs     2088.    99.8KB     13.8</span>
 </pre></div>
 <p>Read WKB + Write WKT:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
@@ -222,8 +237,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           3.11ms   3.54ms    275.      3.32KB      0  </span>
-<span class="co">#&gt; 2 sf          204.1ms 224.05ms      4.58  566.66KB     15.3</span>
+<span class="co">#&gt; 1 wk           3.02ms   3.38ms    291.      3.32KB      0  </span>
+<span class="co">#&gt; 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8</span>
 </pre></div>
 <p>Read WKT + Write WKB:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
@@ -235,8 +250,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            1.9ms   2.09ms      465.    53.6KB     0   </span>
-<span class="co">#&gt; 2 sf           3.45ms   3.98ms      246.   185.7KB     4.21</span>
+<span class="co">#&gt; 1 wk           1.87ms   2.06ms      476.    49.5KB     0   </span>
+<span class="co">#&gt; 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18</span>
 </pre></div>
 <p>Read WKT + Write WKT:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
@@ -249,42 +264,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            5.3ms   5.76ms    172.      63.8KB      0  </span>
-<span class="co">#&gt; 2 sf          209.7ms 218.59ms      4.62   226.6KB     15.4</span>
-</pre></div>
-<p>Generate coordinates:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk_wkb = <span class="kw">wk</span>::<span class="fu"><a href="reference/wkb_coords.html">wksxp_coords</a></span>(<span class="kw">nc_sxp</span>),
-  sfheaders = <span class="kw">sfheaders</span>::<span class="fu">sfc_to_df</span>(<span class="kw">nc_sfc</span>),
-  sf = <span class="kw">sf</span>::<span class="fu">st_coordinates</span>(<span class="kw">nc_sfc</span>),
-  check = <span class="fl">FALSE</span>
-)
-<span class="co">#&gt; # A tibble: 3 x 6</span>
-<span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
-<span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk_wkb     176.17µs 198.72µs     4734.     131KB     22.4</span>
-<span class="co">#&gt; 2 sfheaders  541.98µs 678.16µs     1440.     627KB     35.7</span>
-<span class="co">#&gt; 3 sf           2.49ms   2.74ms      361.     507KB     24.0</span>
-</pre></div>
-<p>Send polygons to a graphics device (note that the graphics device is the main holdup in real life):</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="kw">devoid</span>::<span class="fu">void_dev</span>()
-<span class="fu"><a href="reference/wkb_draw_points.html">wksxp_plot_new</a></span>(<span class="kw">nc_sxp</span>)
-
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk_wkb = <span class="kw">wk</span>::<span class="fu"><a href="reference/wkb_draw_points.html">wksxp_draw_polypath</a></span>(<span class="kw">nc_sxp</span>),
-  sf = <span class="kw">sf</span>:::<span class="fu">plot.sfc_MULTIPOLYGON</span>(<span class="kw">nc_sfc</span>, add = <span class="fl">TRUE</span>),
-  check = <span class="fl">FALSE</span>
-)
-<span class="co">#&gt; # A tibble: 2 x 6</span>
-<span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
-<span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk_wkb      324.4µs  357.3µs     2559.     358KB     15.1</span>
-<span class="co">#&gt; 2 sf           3.21ms   3.53ms      276.     243KB     15.6</span>
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-<span class="co">#&gt; quartz_off_screen </span>
-<span class="co">#&gt;                 2</span>
+<span class="co">#&gt; 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98</span>
+<span class="co">#&gt; 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5</span>
 </pre></div>
 </div>
 </div>
@@ -306,7 +287,7 @@
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small>LGPL (&gt;= 2.1)</small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="developers">
@@ -314,7 +295,6 @@
 <ul class="list-unstyled">
 <li>Dewey Dunnington <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9415-4582" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Edzer Pebesma <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8049-7069" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
 

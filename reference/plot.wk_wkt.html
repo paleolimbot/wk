@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vctrs methods — vctrs-methods • wk</title>
+<title>Plot well-known geometry vectors — plot.wk_wkt • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Vctrs methods — vctrs-methods" />
-<meta property="og:description" content="Vctrs methods" />
+<meta property="og:title" content="Plot well-known geometry vectors — plot.wk_wkt" />
+<meta property="og:description" content="Plot well-known geometry vectors" />
 
 
 
@@ -111,37 +111,99 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Vctrs methods</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/vctrs.R'><code>R/vctrs.R</code></a></small>
-    <div class="hidden name"><code>vctrs-methods.Rd</code></div>
+    <h1>Plot well-known geometry vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>plot.wk_wkt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Vctrs methods</p>
+    <p>Plot well-known geometry vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vec_cast.wk_wkb</span>(<span class='kw'>x</span>, <span class='kw'>to</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='co'># S3 method for wk_wkt</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
+)
 
-<span class='fu'>vec_ptype2.wk_wkb</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>...</span>)
+<span class='co'># S3 method for wk_wkb</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
+)
 
-<span class='fu'>vec_cast.wk_wkt</span>(<span class='kw'>x</span>, <span class='kw'>to</span>, <span class='kw'>...</span>)
-
-<span class='fu'>vec_ptype2.wk_wkt</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>...</span>)
-
-<span class='fu'>vec_cast.wk_wksxp</span>(<span class='kw'>x</span>, <span class='kw'>to</span>, <span class='kw'>...</span>)
-
-<span class='fu'>vec_ptype2.wk_wksxp</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>...</span>)</pre>
+<span class='co'># S3 method for wk_wksxp</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(
+  <span class='kw'>x</span>,
+  <span class='kw'>...</span>,
+  asp = <span class='fl'>1</span>,
+  bbox = <span class='kw'>NULL</span>,
+  xlab = <span class='st'>""</span>,
+  ylab = <span class='st'>""</span>,
+  rule = <span class='st'>"evenodd"</span>,
+  add = <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, y, to, ...</th>
-      <td><p>See <code><a href='https://vctrs.r-lib.org/reference/vec_cast.html'>vctrs::vec_cast()</a></code> and <code><a href='https://vctrs.r-lib.org/reference/vec_ptype2.html'>vctrs::vec_ptype2()</a></code>.</p></td>
+      <th>x</th>
+      <td><p>A <code><a href='wkt.html'>wkt()</a></code>, <code><a href='wkb.html'>wkb()</a></code>, or <code><a href='wksxp.html'>wksxp()</a></code> vector.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Passed to plotting functions for features: <code><a href='https://rdrr.io/r/graphics/points.html'>graphics::points()</a></code>
+for point and multipoint geometries, <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code> for linestring
+and multilinestring geometries, and <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code> for polygon
+and multipolygon geometries.</p></td>
+    </tr>
+    <tr>
+      <th>asp</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>bbox</th>
+      <td><p>The limits of the plot in the form returned by <code><a href='https://rdrr.io/pkg/wkutils/man/wkb_ranges.html'>wksxp_ranges()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>ylab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>rule</th>
+      <td><p>The rule to use for filling polygons (see <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>Should a new plot be created, or should <code>x</code> be added to the
+existing plot?</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>The input, invisibly.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wkt.html'>as_wkt</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wkb.html'>as_wkb</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))</div><div class='img'><img src='plot.wk_wkt-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wksxp.html'>as_wksxp</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
