@@ -35,6 +35,7 @@ Imports:
     Rcpp
 Suggests: 
     testthat,
-    vctrs (>= 0.3.0)
+    vctrs (>= 0.3.0),
+    wkutils
 URL: https://paleolimbot.github.io/wk, https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
