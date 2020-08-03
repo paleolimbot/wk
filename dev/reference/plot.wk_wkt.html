@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="Plot well-known geometry vectors — plot.wk_wkt" />
-<meta property="og:description" content="These plot functions are intended to help debug geometry vectors,
-and are not intended to be high-performance." />
+<meta property="og:description" content="Plot well-known geometry vectors" />
 
 
 <meta name="robots" content="noindex">
@@ -73,7 +72,7 @@ and are not intended to be high-performance." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
       </span>
     </div>
 
@@ -87,6 +86,9 @@ and are not intended to be high-performance." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -115,8 +117,7 @@ and are not intended to be high-performance." />
     </div>
 
     <div class="ref-description">
-    <p>These plot functions are intended to help debug geometry vectors,
-and are not intended to be high-performance.</p>
+    <p>Plot well-known geometry vectors</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for wk_wkt</span>
@@ -160,7 +161,7 @@ and are not intended to be high-performance.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt()</a></code>, <code><a href='https://rdrr.io/pkg/wk/man/wkb.html'>wkb()</a></code>, or <code><a href='https://rdrr.io/pkg/wk/man/wksxp.html'>wksxp()</a></code> vector.</p></td>
+      <td><p>A <code><a href='wkt.html'>wkt()</a></code>, <code><a href='wkb.html'>wkb()</a></code>, or <code><a href='wksxp.html'>wksxp()</a></code> vector.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -170,12 +171,20 @@ and multilinestring geometries, and <code><a href='https://rdrr.io/r/graphics/po
 and multipolygon geometries.</p></td>
     </tr>
     <tr>
-      <th>asp, xlab, ylab</th>
+      <th>asp</th>
       <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
     </tr>
     <tr>
       <th>bbox</th>
-      <td><p>The limits of the plot in the form returned by <code><a href='https://rdrr.io/pkg/wk/man/wkb_ranges.html'>wksxp_ranges()</a></code>.</p></td>
+      <td><p>The limits of the plot in the form returned by <code><a href='https://rdrr.io/pkg/wkutils/man/wkb_ranges.html'>wksxp_ranges()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>ylab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
     </tr>
     <tr>
       <th>rule</th>
@@ -190,10 +199,11 @@ existing plot?</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>x</code>, invisibly</p>
+    <p>The input, invisibly.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/wk/man/wkt.html'>wkt</a></span>(<span class='st'>"POINT (30 10)"</span>))</div><div class='img'><img src='plot.wk_wkt-1.png' alt='' width='700' height='433' /></div><div class='input'></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wkt.html'>as_wkt</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wkb.html'>as_wkb</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))</div><div class='img'><img src='plot.wk_wkt-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fu'><a href='wksxp.html'>as_wksxp</a></span>(<span class='st'>"LINESTRING (0 0, 1 1)"</span>))
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

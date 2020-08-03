@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">wk</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.1.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.2.9000</span>
       </span>
     </div>
 
@@ -132,22 +132,22 @@
 <a href="#wkutils" class="anchor"></a>wkutils</h2>
 <p>To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the <a href="https://paleolimbot.github.io/wkutils">wkutils package</a>. One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides <code>wk*_meta()</code> and <code>wk*_coords()</code> functions (among others) to extract usable coordinates and feature meta.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">wkutils</span>::<span class="fu">wkt_coords</span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
 <span class="co">#&gt; # A tibble: 1 x 7</span>
 <span class="co">#&gt;   feature_id part_id ring_id     x     y     z     m</span>
 <span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1          1       1       0     1     2     3     4</span>
-<span class="kw">wkutils</span>::<span class="fu">wkt_meta</span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m n_coords</span>
 <span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;    &lt;int&gt;</span>
 <span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE         1</span>
-<span class="kw">wkutils</span>::<span class="fu">wkt_ranges</span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_ranges.html">wkt_ranges</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax</span>
 <span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1     1     2     3     4     1     2     3     4</span>
-<span class="kw">wkutils</span>::<span class="fu">coords_point_translate_wkt</span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>)
+<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/coords_point_translate_wkt.html">coords_point_translate_wkt</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>)
 <span class="co">#&gt; [1] "POINT ZM (1 2 3 4)"</span>
 </pre></div>
 </div>
@@ -201,8 +201,8 @@
 </pre></div>
 <p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkutils::wkb|wkt_debug()</code> functions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">wkutils</span>) <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
-<span class="fu">wkt_debug</span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://paleolimbot.github.io/wkutils">wkutils</a></span>) <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
+<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
 <span class="co">#&gt;         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)</span>
