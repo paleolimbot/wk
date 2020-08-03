@@ -1,3 +1,5 @@
+# wk (development version)
+
 # wk 0.3.2
 
 * Fixed EWKB output for collections and multi-geometries
