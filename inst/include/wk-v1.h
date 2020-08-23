@@ -84,6 +84,10 @@ typedef struct {
   void* userData = NULL;
 } WKV1_Handler;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 inline char WKV1_handler_void_vector_start(WKV1_GeometryMeta* meta, void* userData) {
   return 0;
 }
@@ -133,7 +137,10 @@ inline void WKV1_handler_destroy(WKV1_Handler* handler) {
   free(handler);
 }
 
+
 #ifdef __cplusplus
+
+} // extern "C" {
 
 #include <string.h>
 
@@ -221,13 +228,15 @@ public:
   static SEXP sexp_handler(HandlerType* userData) {
     WKV1_Handler* handler = c_handler(userData);
     SEXP xptr = R_MakeExternalPtr(handler, R_NilValue, R_NilValue);
-    R_RegisterCFinalizerEx(xptr, &deleteUserDataXPtr, TRUE);
+    R_RegisterCFinalizerEx(xptr, &deleteSEXPHandler, TRUE);
     return xptr;
   }
 
 private:
-  static void deleteUserDataXPtr(SEXP xptr) {
-    deleteUserData(R_ExternalPtrAddr(xptr));
+  static void deleteSEXPHandler(SEXP xptr) {
+    WKV1_Handler* handler = (WKV1_Handler*) R_ExternalPtrAddr(xptr);
+    deleteUserData(handler->userData);
+    WKV1_handler_destroy(handler);
   }
 
   static void deleteUserData(HandlerType* userData) {
