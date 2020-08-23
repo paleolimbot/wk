@@ -38,19 +38,36 @@ typedef union {
 } WKV1_Coord;
 
 typedef struct {
-  int geometryType;
-  int recursiveLevel;
-  char hasZ;
-  char hasM;
-  char hasSrid;
-  char hasSize;
-  char hasBounds;
+  int geometryType = WKV1_InvalidGeometryType;
+  int recursiveLevel = 0;
+  char hasZ = 0;
+  char hasM = 0;
+  char hasSrid = 0;
+  char hasSize  = 0;
+  char hasBounds = 0;
   unsigned int size;
   unsigned int srid;
   WKV1_Coord boundsMin;
   WKV1_Coord boundsMax;
-  void* userData;
+  void* userData = NULL;
 } WKV1_GeometryMeta;
+
+#define WKV1_META_RESET(meta, geometryType_)                   \
+  meta.geometryType = geometryType_;                           \
+  meta.recursiveLevel = 0;                                     \
+  meta.hasZ = 0;                                               \
+  meta.hasM = 0;                                               \
+  meta.hasSrid = 0;                                            \
+  meta.hasSize = 0;                                            \
+  meta.hasBounds = 0;
+
+#define WKV1_META_SET_SIZE(meta, size_)                        \
+  meta.hasSize = 1;                                            \
+  meta.size = size_;
+
+#define WKV1_META_SET_SRID(meta, srid_)                        \
+  meta.hasSrid = 1;                                            \
+  meta.srid = srid_;
 
 typedef struct {
   int WKAPIVersion = 1;
