@@ -89,8 +89,6 @@ SEXP WKV1_handler_create_xptr(WKV1_Handler* handler, SEXP tag, SEXP prot);
 
 } // extern "C" {
 
-#include <string.h>
-
 class WKV1_HandlerClass {
 public:
   char vectorStart(WKV1_GeometryMeta* meta) {
@@ -133,16 +131,9 @@ public:
     return R_NilValue;
   }
 
-  std::string lastErrorMessage() {
-    return lastErrorMessage_;
+  char error(R_xlen_t featureId, const char* message) {
+    return 1;
   }
-
-  void setLastErrorMesssage(std::string message) {
-    this->lastErrorMessage_ = message;
-  }
-
-private:
-  std::string lastErrorMessage_;
 };
 
 
@@ -151,7 +142,7 @@ class WKV1_HandlerFactory {
 public:
 
   static WKV1_Handler* c_handler(HandlerType* userData) {
-    WKV1_Handler* handler = WKV1_handler_create_void();
+    WKV1_Handler* handler = WKV1_handler_create();
     handler->userData = userData;
 
     handler->vectorStart = &vectorStart;
@@ -168,6 +159,8 @@ public:
     handler->ringEnd = &ringEnd;
 
     handler->coord = &coord;
+
+    handler->error = &error;
 
     return handler;
   }
@@ -186,99 +179,122 @@ private:
     WKV1_handler_destroy(handler);
   }
 
-  static void deleteUserData(HandlerType* userData) {
+  static void deleteUserData(void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     if (userData != NULL) {
       delete userData;
     }
   }
 
-  static char vectorStart(WKV1_GeometryMeta* meta, HandlerType* userData) {
+  static char vectorStart(WKV1_GeometryMeta* meta, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->vectorStart(meta);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(-1, e.what());
       return 1;
     }
   }
 
-  static char featureStart(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
+  static char featureStart(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->featureStart(meta, nFeatures, featureId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(featureId, e.what());
       return 1;
     }
   }
 
-  static char nullFeature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
+  static char nullFeature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->nullFeature(meta, nFeatures, featureId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(featureId, e.what());
       return 1;
     }
   }
 
-  static char geometryStart(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, HandlerType* userData) {
+  static char geometryStart(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->geometryStart(meta, nParts, partId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  static char ringStart(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, HandlerType* userData) {
+  static char ringStart(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->ringStart(meta, nRings, ringId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  static char coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, HandlerType* userData) {
+  static char coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->coord(meta, coord, nCoords, coordId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  static char ringEnd(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, HandlerType* userData) {
+  static char ringEnd(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->ringEnd(meta, nRings, ringId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  static char geometryEnd(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, HandlerType* userData) {
+  static char geometryEnd(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->geometryEnd(meta, nParts, partId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  static char featureEnd(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
+  static char featureEnd(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->featureEnd(meta, nFeatures, featureId);
     } catch (std::exception& e) {
-      userData->setLastErrorMessage(e.what());
+      userData->error(e.what());
       return 1;
     }
   }
 
-  SEXP vectorEnd(WKV1_GeometryMeta* meta, HandlerType* userData) {
+  static SEXP vectorEnd(WKV1_GeometryMeta* meta, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
     try {
       return userData->vectorEnd(meta);
     } catch (std::exception& e) {
-      Rf_error(e.what());
-      return R_NilValue;
+      if (userData->error(-1, e.what()) != 0) {
+        Rf_error(e.what());
+      } else {
+        return R_NilValue;
+      }
+    }
+  }
+
+  static char error(R_xlen_t featureId, const char* message, void* userDataPtr) {
+    HandlerType* userData = (HandlerType*) userDataPtr;
+    try {
+      return userData->error(featureId, message);
+    } catch (std::exception& e) {
+      return 1;
     }
   }
 };
