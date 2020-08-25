@@ -4,15 +4,6 @@
 
 #include <Rinternals.h>
 
-#ifndef __cplusplus
-# include <stddef.h> /* for size_t definition */
-#else
-# include <cstddef>
-using std::size_t;
-#endif
-
-#define WKV1_BUFFER_SIZE 1024
-
 enum WKV1_GeometryType {
   WKV1_InvalidGeometryType = 0,
   WKV1_Point = 1,
@@ -38,18 +29,18 @@ typedef union {
 } WKV1_Coord;
 
 typedef struct {
-  int geometryType = WKV1_InvalidGeometryType;
-  int recursiveLevel = 0;
-  char hasZ = 0;
-  char hasM = 0;
-  char hasSrid = 0;
-  char hasSize  = 0;
-  char hasBounds = 0;
+  int geometryType;
+  int recursiveLevel;
+  char hasZ;
+  char hasM;
+  char hasSrid;
+  char hasSize;
+  char hasBounds;
   unsigned int size;
   unsigned int srid;
   WKV1_Coord boundsMin;
   WKV1_Coord boundsMax;
-  void* userData = NULL;
+  void* userData;
 } WKV1_GeometryMeta;
 
 #define WKV1_META_RESET(meta, geometryType_)                   \
@@ -70,73 +61,29 @@ typedef struct {
   meta.srid = srid_;
 
 typedef struct {
-  int WKAPIVersion = 1;
+  int WKAPIVersion;
+  void* userData;
   char (*vectorStart)(WKV1_GeometryMeta* meta, void* userData);
-  char (*featureStart)(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, void* userData);
-  char (*nullFeature)(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, void* userData);
+  char (*featureStart)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
+  char (*nullFeature)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   char (*geometryStart)(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData);
   char (*ringStart)(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData);
   char (*coord)(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData);
   char (*ringEnd)(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData);
   char (*geometryEnd)(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData);
-  char (*featureEnd)(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, void* userData);
+  char (*featureEnd)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   SEXP (*vectorEnd)(WKV1_GeometryMeta* meta, void* userData);
-  void* userData = NULL;
+  char (*error)(R_xlen_t featureId, const char* message, void* userData);
 } WKV1_Handler;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-inline char WKV1_handler_void_vector_start(WKV1_GeometryMeta* meta, void* userData) {
-  return 0;
-}
-
-inline SEXP WKV1_handler_void_vector_end(WKV1_GeometryMeta* meta, void* userData) {
-  return R_NilValue;
-}
-
-inline char WKV1_handler_void_feature(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, void* userData) {
-  return 0;
-}
-
-inline char WKV1_handler_void_geometry(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData) {
-  return 0;
-}
-
-inline char WKV1_handler_void_ring(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData) {
-  return 0;
-}
-
-inline char WKV1_handler_void_coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData) {
-  return 0;
-}
-
-inline WKV1_Handler* WKV1_handler_create_void() {
-  WKV1_Handler* handler = (WKV1_Handler*) malloc(sizeof(WKV1_Handler));
-
-  handler->vectorStart = &WKV1_handler_void_vector_start;
-  handler->vectorEnd = &WKV1_handler_void_vector_end;
-
-  handler->featureStart = &WKV1_handler_void_feature;
-  handler->nullFeature = &WKV1_handler_void_feature;
-  handler->featureEnd = &WKV1_handler_void_feature;
-
-  handler->geometryStart = &WKV1_handler_void_geometry;
-  handler->geometryEnd = &WKV1_handler_void_geometry;
-
-  handler->ringStart = &WKV1_handler_void_ring;
-  handler->ringEnd = &WKV1_handler_void_ring;
-
-  handler->coord = &WKV1_handler_void_coord;
-
-  return handler;
-}
-
-inline void WKV1_handler_destroy(WKV1_Handler* handler) {
-  free(handler);
-}
-
+WKV1_Handler* WKV1_handler_create();
+void WKV1_handler_destroy(WKV1_Handler* handler);
+void WKV1_handler_destroy_xptr(SEXP xptr);
+SEXP WKV1_handler_create_xptr(WKV1_Handler* handler, SEXP tag, SEXP prot);
 
 #ifdef __cplusplus
 
@@ -150,11 +97,11 @@ public:
     return 0;
   }
 
-  char featureStart(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId) {
+  char featureStart(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
     return 0;
   }
 
-  char nullFeature(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId) {
+  char nullFeature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
     return 0;
   }
 
@@ -178,7 +125,7 @@ public:
     return 0;
   }
 
-  char featureEnd(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId) {
+  char featureEnd(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
     return 0;
   }
 
@@ -254,7 +201,7 @@ private:
     }
   }
 
-  static char featureStart(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, HandlerType* userData) {
+  static char featureStart(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
     try {
       return userData->featureStart(meta, nFeatures, featureId);
     } catch (std::exception& e) {
@@ -263,7 +210,7 @@ private:
     }
   }
 
-  static char nullFeature(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, HandlerType* userData) {
+  static char nullFeature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
     try {
       return userData->nullFeature(meta, nFeatures, featureId);
     } catch (std::exception& e) {
@@ -317,7 +264,7 @@ private:
     }
   }
 
-  static char featureEnd(WKV1_GeometryMeta* meta, size_t nFeatures, size_t featureId, HandlerType* userData) {
+  static char featureEnd(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, HandlerType* userData) {
     try {
       return userData->featureEnd(meta, nFeatures, featureId);
     } catch (std::exception& e) {
@@ -330,12 +277,8 @@ private:
     try {
       return userData->vectorEnd(meta);
     } catch (std::exception& e) {
-      SEXP tryError = PROTECT(Rf_allocVector(STRSXP, 1));
-      SET_STRING_ELT(tryError, 0, Rf_mkChar(e.what()));
-      Rf_setAttrib(tryError, Rf_install("class"), Rf_mkString("wk_v1_error"));
-      userData->setLastErrorMessage(e.what());
-      UNPROTECT(1);
-      return tryError;
+      Rf_error(e.what());
+      return R_NilValue;
     }
   }
 };
