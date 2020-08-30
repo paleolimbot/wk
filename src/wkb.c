@@ -100,7 +100,7 @@ char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer,
   meta.hasSize = 1;
   if (meta.geometryType == WKV1_Point) {
     meta.size = 1;
-  } else if (wkb_read_uint(handler, buffer, &(meta.srid)) != WKV1_CONTINUE) {
+  } else if (wkb_read_uint(handler, buffer, &(meta.size)) != WKV1_CONTINUE) {
     return WKV1_STOP;
   }
 
@@ -130,7 +130,7 @@ char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer,
         return WKV1_STOP;
       }
 
-      if (handler->ringStart(&meta, meta.size, i, handler->userData) != WKV1_CONTINUE) {
+      if (handler->ringEnd(&meta, meta.size, i, handler->userData) != WKV1_CONTINUE) {
         return WKV1_STOP;
       }
     }

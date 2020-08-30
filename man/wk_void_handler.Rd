@@ -4,13 +4,19 @@
 \alias{wk_void_handler}
 \alias{wk_debug_handler}
 \alias{new_wk_handler}
+\alias{wk_finish_default}
+\alias{wk_finish_invisible}
 \title{Test handlers}
 \usage{
 wk_void_handler()
 
 wk_debug_handler()
 
-new_wk_handler(x, subclass = character())
+new_wk_handler(x, subclass = character(), finisher = wk_finish_default)
+
+wk_finish_default(result, x)
+
+wk_finish_invisible(result, x)
 }
 \arguments{
 \item{x}{An external pointer to a newly created WK handler}
