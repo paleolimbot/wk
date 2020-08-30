@@ -16,7 +16,7 @@ typedef struct {
   char swapEndian;
 } WKBBuffer;
 
-char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t nParts, uint32_t partId, int recuriveLevel);
+char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t nParts, uint32_t partId, int recursiveLevel);
 
 char wkb_read_endian(const WKV1_Handler* handler, WKBBuffer* buffer);
 char wkb_read_uint(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t* value);
