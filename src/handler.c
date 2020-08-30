@@ -84,7 +84,7 @@ char wk_handler_debug_vector_start(WKV1_GeometryMeta* meta, void* userData) {
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
   wk_handler_debug_indent(userData);
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 SEXP wk_handler_debug_vector_end(WKV1_GeometryMeta* meta, void* userData) {
@@ -102,7 +102,7 @@ char wk_handler_debug_feature_start(WKV1_GeometryMeta* meta, R_xlen_t nFeatures,
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
   wk_handler_debug_indent(userData);
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_feature_null(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
@@ -110,7 +110,7 @@ char wk_handler_debug_feature_null(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, 
   REprintf("nullFeature: ");
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_feature_end(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
@@ -119,7 +119,7 @@ char wk_handler_debug_feature_end(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R
   REprintf("featureEnd: ");
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_geometry_start(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData) {
@@ -128,7 +128,7 @@ char wk_handler_debug_geometry_start(WKV1_GeometryMeta* meta, unsigned int nPart
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
   wk_handler_debug_indent(userData);
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_geometry_end(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData) {
@@ -137,7 +137,7 @@ char wk_handler_debug_geometry_end(WKV1_GeometryMeta* meta, unsigned int nParts,
   REprintf("geometryEnd: ");
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_ring_start(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData) {
@@ -146,7 +146,7 @@ char wk_handler_debug_ring_start(WKV1_GeometryMeta* meta, unsigned int nRings, u
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
   wk_handler_debug_indent(userData);
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_ring_end(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData) {
@@ -155,7 +155,7 @@ char wk_handler_debug_ring_end(WKV1_GeometryMeta* meta, unsigned int nRings, uns
   REprintf("ringEnd: ");
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData) {
@@ -163,13 +163,13 @@ char wk_handler_debug_coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned 
   REprintf("coord: ");
   wk_handler_debug_print_meta(meta);
   REprintf("\n");
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char wk_handler_debug_error(R_xlen_t featureId, const char* message, void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("error [i=%d]: %s\n", featureId, message);
-  return 1;
+  return WKV1_STOP;
 }
 
 SEXP wk_c_handler_debug_new() {

@@ -17,8 +17,19 @@ wk_debug_handler <- function() {
 
 #' @rdname wk_void_handler
 #' @export
-new_wk_handler <- function(x, subclass = character()) {
-  structure(x, class = union(subclass, "wk_handler"))
+new_wk_handler <- function(x, subclass = character(), finisher = wk_handler_default_finisher) {
+  stopifnot(is.function(finisher))
+  structure(x, class = union(subclass, "wk_handler"), finisher = finisher)
+}
+
+#' @rdname wk_void_handler
+#' @export
+wk_handler_default_finisher <- function(result, x) {
+  if (inherits(result, "wk_error_sentinel")) {
+    stop(result$message, call. = FALSE)
+  } else {
+    result
+  }
 }
 
 #' @export

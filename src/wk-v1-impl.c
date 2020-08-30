@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 char WKV1_handler_void_vector_start(WKV1_GeometryMeta* meta, void* userData) {
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 SEXP WKV1_handler_void_vector_end(WKV1_GeometryMeta* meta, void* userData) {
@@ -11,23 +11,27 @@ SEXP WKV1_handler_void_vector_end(WKV1_GeometryMeta* meta, void* userData) {
 }
 
 char WKV1_handler_void_feature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char WKV1_handler_void_geometry(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData) {
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char WKV1_handler_void_ring(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData) {
-  return 0;
+  return WKV1_CONTINUE;
 }
 
 char WKV1_handler_void_coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData) {
-  return 0;
+  return WKV1_CONTINUE;
 }
 
-char WKV1_handler_void_error(R_xlen_t featureId, const char* message, void* userData) {
-  return 1;
+char WKV1_handler_void_error(R_xlen_t featureId, int code, const char* message, void* userData) {
+  return WKV1_STOP;
+}
+
+void WKV1_handler_void_finalizer(void* userData) {
+
 }
 
 WKV1_Handler* WKV1_handler_create() {
@@ -51,6 +55,7 @@ WKV1_Handler* WKV1_handler_create() {
   handler->coord = &WKV1_handler_void_coord;
 
   handler->error = &WKV1_handler_void_error;
+  handler->finalizer = &WKV1_handler_void_finalizer;
 
   return handler;
 }
@@ -69,4 +74,17 @@ SEXP WKV1_handler_create_xptr(WKV1_Handler* handler, SEXP tag, SEXP prot) {
   SEXP xptr = R_MakeExternalPtr(handler, tag, prot);
   R_RegisterCFinalizerEx(xptr, &WKV1_handler_destroy_xptr, TRUE);
   return xptr;
+}
+
+SEXP WKV1_error_sentinel(int code, const char* message) {
+  const char* names[] = {"code", "message", ""};
+  SEXP sentinel = PROTECT(Rf_mkNamed(VECSXP, names));
+  Rf_setAttrib(sentinel, Rf_install("class"), Rf_mkString("wk_error_sentinel"));
+  SEXP codeSEXP = PROTECT(Rf_allocVector(INTSXP, 1));
+  INTEGER(codeSEXP)[0] = code;
+  SET_VECTOR_ELT(sentinel, 0, codeSEXP);
+
+  SET_VECTOR_ELT(sentinel, 1, Rf_mkString(message));
+  UNPROTECT(2);
+  return sentinel;
 }
