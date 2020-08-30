@@ -216,6 +216,7 @@ END_RCPP
 RcppExport SEXP wk_c_handler_addr();
 RcppExport SEXP wk_c_handler_debug_new();
 RcppExport SEXP wk_c_handler_void_new();
+RcppExport SEXP wk_c_read_wkb(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 2},
@@ -236,6 +237,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_handler_addr",      (DL_FUNC) &wk_c_handler_addr,      0},
     {"wk_c_handler_debug_new", (DL_FUNC) &wk_c_handler_debug_new, 0},
     {"wk_c_handler_void_new",  (DL_FUNC) &wk_c_handler_void_new,  0},
+    {"wk_c_read_wkb",          (DL_FUNC) &wk_c_read_wkb,          2},
     {NULL, NULL, 0}
 };
 

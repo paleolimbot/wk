@@ -2,27 +2,27 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-char WKV1_handler_void_vector_start(WKV1_GeometryMeta* meta, void* userData) {
+char WKV1_handler_void_vector_start(const WKV1_GeometryMeta* meta, void* userData) {
   return WKV1_CONTINUE;
 }
 
-SEXP WKV1_handler_void_vector_end(WKV1_GeometryMeta* meta, void* userData) {
+SEXP WKV1_handler_void_vector_end(const WKV1_GeometryMeta* meta, void* userData) {
   return R_NilValue;
 }
 
-char WKV1_handler_void_feature(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
+char WKV1_handler_void_feature(const WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
   return WKV1_CONTINUE;
 }
 
-char WKV1_handler_void_geometry(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData) {
+char WKV1_handler_void_geometry(const WKV1_GeometryMeta* meta, uint32_t nParts, uint32_t partId, void* userData) {
   return WKV1_CONTINUE;
 }
 
-char WKV1_handler_void_ring(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData) {
+char WKV1_handler_void_ring(const WKV1_GeometryMeta* meta, uint32_t nRings, uint32_t ringId, void* userData) {
   return WKV1_CONTINUE;
 }
 
-char WKV1_handler_void_coord(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData) {
+char WKV1_handler_void_coord(const WKV1_GeometryMeta* meta, const WKV1_Coord coord, uint32_t nCoords, uint32_t coordId, void* userData) {
   return WKV1_CONTINUE;
 }
 

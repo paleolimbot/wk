@@ -2,12 +2,14 @@
 #ifndef WK_V1_H_INCLUDED
 #define WK_V1_H_INCLUDED
 
+#include <stdint.h> // for uint_32_t
 #include <Rinternals.h>
 
 #define WKV1_CONTINUE 0
 #define WKV1_STOP 1
 #define WKV1_DEFAULT_ERROR_CODE 0
 #define WKV1_NO_ERROR_CODE -1
+#define WKV1_PART_ID_NONE UINT32_MAX
 
 enum WKV1_GeometryType {
   WKV1_InvalidGeometryType = 0,
@@ -41,8 +43,8 @@ typedef struct {
   char hasSrid;
   char hasSize;
   char hasBounds;
-  unsigned int size;
-  unsigned int srid;
+  uint32_t size;
+  uint32_t srid;
   WKV1_Coord boundsMin;
   WKV1_Coord boundsMax;
   void* userData;
@@ -68,16 +70,16 @@ typedef struct {
 typedef struct {
   int WKAPIVersion;
   void* userData;
-  char (*vectorStart)(WKV1_GeometryMeta* meta, void* userData);
-  char (*featureStart)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*nullFeature)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*geometryStart)(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData);
-  char (*ringStart)(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData);
-  char (*coord)(WKV1_GeometryMeta* meta, WKV1_Coord coord, unsigned int nCoords, unsigned int coordId, void* userData);
-  char (*ringEnd)(WKV1_GeometryMeta* meta, unsigned int nRings, unsigned int ringId, void* userData);
-  char (*geometryEnd)(WKV1_GeometryMeta* meta, unsigned int nParts, unsigned int partId, void* userData);
-  char (*featureEnd)(WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  SEXP (*vectorEnd)(WKV1_GeometryMeta* meta, void* userData);
+  char (*vectorStart)(const WKV1_GeometryMeta* meta, void* userData);
+  char (*featureStart)(const WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
+  char (*nullFeature)(const WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
+  char (*geometryStart)(const WKV1_GeometryMeta* meta, uint32_t nParts, uint32_t partId, void* userData);
+  char (*ringStart)(const WKV1_GeometryMeta* meta, uint32_t nRings, uint32_t ringId, void* userData);
+  char (*coord)(const WKV1_GeometryMeta* meta, const WKV1_Coord coord, uint32_t nCoords, uint32_t coordId, void* userData);
+  char (*ringEnd)(const WKV1_GeometryMeta* meta, uint32_t nRings, uint32_t ringId, void* userData);
+  char (*geometryEnd)(const WKV1_GeometryMeta* meta, uint32_t nParts, uint32_t partId, void* userData);
+  char (*featureEnd)(const WKV1_GeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
+  SEXP (*vectorEnd)(const WKV1_GeometryMeta* meta, void* userData);
   char (*error)(R_xlen_t featureId, int code, const char* message, void* userData);
   void (*finalizer)(void* userData);
 } WKV1_Handler;
