@@ -4,12 +4,6 @@
 #include <stdint.h>
 #include <Rinternals.h>
 
-#define SWAP_UINT32(x) (((x) >> 24) | (((x) & 0x00FF0000) >> 8) | (((x) & 0x0000FF00) << 8) | ((x) << 24))
-#define SWAP_UINT64(x)                                         \
-x = (x & 0x00000000FFFFFFFF) << 32 | (x & 0xFFFFFFFF00000000) >> 32;\
-x = (x & 0x0000FFFF0000FFFF) << 16 | (x & 0xFFFF0000FFFF0000) >> 16;\
-x = (x & 0x00FF00FF00FF00FF) << 8  | (x & 0xFF00FF00FF00FF00) >> 8;\
-
 #define EWKB_Z_BIT    0x80000000
 #define EWKB_M_BIT    0x40000000
 #define EWKB_SRID_BIT 0x20000000
@@ -29,6 +23,7 @@ char wkb_read_uint(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t* val
 char wkb_read_coordinates(const WKV1_Handler* handler, WKBBuffer* buffer, const WKV1_GeometryMeta* meta, uint32_t nCoords);
 char wkb_check_buffer(const WKV1_Handler* handler, WKBBuffer* buffer, size_t bytes);
 unsigned char wkb_platform_endian();
+void memcpyrev(void* dst, unsigned char* src, size_t n);
 
 SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
   R_xlen_t nFeatures = Rf_xlength(data);
@@ -171,10 +166,12 @@ inline char wkb_read_endian(const WKV1_Handler* handler, WKBBuffer* buffer) {
 
 inline char wkb_read_uint(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t* value) {
   if (wkb_check_buffer(handler, buffer, sizeof(uint32_t)) == WKV1_CONTINUE) {
-    memcpy(value, &(buffer->buffer[buffer->offset]), sizeof(uint32_t));
-    buffer->offset += sizeof(uint32_t);
     if (buffer->swapEndian) {
-      SWAP_UINT32(*value);
+      memcpyrev(value, &(buffer->buffer[buffer->offset]), sizeof(uint32_t));
+      buffer->offset += sizeof(uint32_t);
+    } else {
+      memcpy(value, &(buffer->buffer[buffer->offset]), sizeof(uint32_t));
+      buffer->offset += sizeof(uint32_t);
     }
 
     return WKV1_CONTINUE;
@@ -195,14 +192,9 @@ inline char wkb_read_coordinates(const WKV1_Handler* handler, WKBBuffer* buffer,
 
   if (buffer->swapEndian) {
     for (uint32_t i = 0; i < nCoords; i++) {
-      memcpy(&coord, &(buffer->buffer[buffer->offset]), coordSize);
-      buffer->offset += coordSize;
-
       for (int j = 0; j < nDim; j++) {
-        uint64_t val;
-        memcpy(&val, &(coord.v[j]), sizeof(double));
-        SWAP_UINT64(val);
-        memcpy(&(coord.v[j]), &val, sizeof(double));
+        memcpyrev(&(coord.v[j]), &(buffer->buffer[buffer->offset]), sizeof(double));
+        buffer->offset += sizeof(double);
       }
 
       if (handler->coord(meta, coord, nCoords, i, handler->userData) != WKV1_CONTINUE) {
@@ -239,4 +231,11 @@ inline unsigned char wkb_platform_endian() {
   const int one = 1;
   unsigned char *cp = (unsigned char *) &one;
   return (char) *cp;
+}
+
+inline void memcpyrev(void* dst, unsigned char* src, size_t n) {
+  unsigned char* dstChar = (unsigned char*) dst;
+  for (size_t i = 0; i < n; i++) {
+    memcpy(&(dstChar[n - i - 1]), &(src[i]), 1);
+  }
 }
