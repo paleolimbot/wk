@@ -2,6 +2,7 @@
 #include "wk-v1.h"
 #include <memory.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include <Rinternals.h>
 
 #define EWKB_Z_BIT    0x80000000
@@ -14,7 +15,17 @@ typedef struct {
   size_t size;
   size_t offset;
   char swapEndian;
+  int errorCode;
+  char errorMessage[1024];
 } WKBBuffer;
+
+void wkb_set_errorf(WKBBuffer* buffer, const char* errorMessage, ...) {
+  buffer->errorCode = WKV1_DEFAULT_ERROR_CODE;
+  va_list args;
+  va_start(args, errorMessage);
+  sprintf(buffer->errorMessage, errorMessage, args);
+  va_end(args);
+}
 
 char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer, uint32_t nParts, uint32_t partId, int recursiveLevel);
 
@@ -53,7 +64,15 @@ SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
       buffer.buffer = RAW(item);
       buffer.size = Rf_xlength(item);
       buffer.offset = 0;
-      if (wkb_read_geometry(handler, &buffer, WKV1_PART_ID_NONE, WKV1_PART_ID_NONE, 0) != WKV1_CONTINUE) {
+      buffer.errorCode = WKV1_NO_ERROR_CODE;
+      memset(buffer.errorMessage, 0, 1024);
+
+      // return code of outermost geometry doesn't matter, as at this point we've already
+      // stopped parsing the feature
+      wkb_read_geometry(handler, &buffer, WKV1_PART_ID_NONE, WKV1_PART_ID_NONE, 0);
+
+      if ((buffer.errorCode != WKV1_NO_ERROR_CODE) &&
+          (handler->error(i, buffer.errorCode, buffer.errorMessage, handler->userData) != WKV1_CONTINUE)) {
         break;
       }
 
@@ -141,12 +160,8 @@ char wkb_read_geometry(const WKV1_Handler* handler, WKBBuffer* buffer,
     }
     break;
   default:
-    return handler->error(
-        buffer->featureId,
-        WKV1_DEFAULT_ERROR_CODE,
-        "Unrecognized geometry type code",
-        handler->userData
-    );
+    wkb_set_errorf(buffer, "Unrecognized geometry type code: %d", meta.geometryType);
+    return WKV1_STOP;
   }
 
   return handler->geometryEnd(&meta, WKV1_PART_ID_NONE, WKV1_PART_ID_NONE, handler->userData);
@@ -180,7 +195,8 @@ inline char wkb_read_uint(const WKV1_Handler* handler, WKBBuffer* buffer, uint32
   }
 }
 
-inline char wkb_read_coordinates(const WKV1_Handler* handler, WKBBuffer* buffer, const WKV1_GeometryMeta* meta, uint32_t nCoords) {
+inline char wkb_read_coordinates(const WKV1_Handler* handler, WKBBuffer* buffer,
+                                 const WKV1_GeometryMeta* meta, uint32_t nCoords) {
   int nDim = 2 + (meta->hasZ != 0) + (meta->hasM != 0);
   size_t coordSize = nDim * sizeof(double);
 
@@ -218,12 +234,8 @@ inline char wkb_check_buffer(const WKV1_Handler* handler, WKBBuffer* buffer, siz
   if ((buffer->offset + bytes) <= buffer->size) {
     return WKV1_CONTINUE;
   } else {
-    return handler->error(
-        buffer->featureId,
-        WKV1_DEFAULT_ERROR_CODE,
-        "Unexpected end of buffer",
-        handler->userData
-    );
+    wkb_set_errorf(buffer, "Unexpected end of buffer (%d/%d)", buffer->offset + bytes, buffer->size);
+    return WKV1_STOP;
   }
 }
 
