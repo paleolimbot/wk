@@ -49,9 +49,9 @@ public:
     srid(SRID_NONE) {}
 
   WKGeometryMeta(uint32_t geometryType, uint32_t size = SIZE_UNKNOWN):
-    geometryType(geometryType & 0x000000ff),
-    hasZ(geometryType & EWKB_Z_BIT),
-    hasM(geometryType & EWKB_M_BIT),
+    geometryType(wkbSimpleGeometryType(geometryType)),
+    hasZ(wkbTypeHasZ(geometryType)),
+    hasM(wkbTypeHasM(geometryType)),
     hasSRID(geometryType & EWKB_SRID_BIT),
     hasSize(size != SIZE_UNKNOWN),
     size(size),
@@ -125,6 +125,42 @@ private:
       err << "Invalid integer geometry type: " << simpleGeometryType;
       throw WKParseException(err.str());
       // # nocov end
+    }
+  }
+
+  // the 1000 + simpleGeometryType and 3000 + simpleGeometryType
+  // series both have Z values as well as those marked with the
+  // EWKB_Z_BIT
+  static bool wkbTypeHasZ(uint32_t geometryType) {
+    if (geometryType & EWKB_Z_BIT) {
+      return true;
+    }
+
+    geometryType = geometryType & 0x0000ffff;
+    return (geometryType >= 1000 && geometryType < 2000) ||
+      (geometryType > 3000);
+  }
+
+  static bool wkbTypeHasM(uint32_t geometryType) {
+    if (geometryType & EWKB_M_BIT) {
+      return true;
+    }
+
+    geometryType = geometryType & 0x0000ffff;
+    return geometryType >= 2000;
+  }
+
+  // has to deal with both EWKB flags and the 1000-style WKB types
+  static uint32_t wkbSimpleGeometryType(uint32_t geometryType) {
+    geometryType = geometryType & 0x0000ffff;
+    if (geometryType >= 3000) {
+      return geometryType - 3000;
+    } else  if (geometryType >= 2000) {
+      return geometryType - 2000;
+    } else if (geometryType >= 1000) {
+      return geometryType - 1000;
+    } else {
+      return geometryType;
     }
   }
 };
