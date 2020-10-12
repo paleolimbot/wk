@@ -244,3 +244,87 @@ vec_cast.wk_xy.default <- function(x, to, ...) {
 vec_ptype2.wk_xy <- function(x, y, ...) {
   UseMethod("vec_ptype2.wk_xy", y)
 }
+
+# xyz() --------
+
+vec_proxy.wk_xyz <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xyz <- function(x, ...) {
+  new_wk_xyz(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xyz
+vec_cast.wk_xyz <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xyz")
+}
+
+#' @method vec_cast.wk_xyz default
+#' @export
+vec_cast.wk_xyz.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xyz
+vec_ptype2.wk_xyz <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xyz", y)
+}
+
+# xym() --------
+
+vec_proxy.wk_xym <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xym <- function(x, ...) {
+  new_wk_xym(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xym
+vec_cast.wk_xym <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xym")
+}
+
+#' @method vec_cast.wk_xym default
+#' @export
+vec_cast.wk_xym.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xym
+vec_ptype2.wk_xym <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xym", y)
+}
+
+# xyzm() --------
+
+vec_proxy.wk_xyzm <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xyzm <- function(x, ...) {
+  new_wk_xyzm(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xyzm
+vec_cast.wk_xyzm <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xyzm")
+}
+
+#' @method vec_cast.wk_xyzm default
+#' @export
+vec_cast.wk_xyzm.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xyzm
+vec_ptype2.wk_xyzm <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xyzm", y)
+}
