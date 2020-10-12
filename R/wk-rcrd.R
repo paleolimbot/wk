@@ -11,11 +11,15 @@ new_wk_rcrd <- function(x, template) {
 }
 
 validate_wk_rcrd <- function(x) {
+  x_bare <- unclass(x)
   stopifnot(
-    is.list(x),
-    !is.null(names(x)),
-    all(names(x) != "")
+    typeof(x) == "list",
+    !is.null(names(x_bare)),
+    all(names(x_bare) != ""),
+    all(vapply(x_bare, is.double, logical(1)))
   )
+
+  invisible(x)
 }
 
 #' @export
@@ -25,7 +29,7 @@ print.wk_rcrd <- function(x, ...) {
     return(invisible(x))
   }
 
-  out <- stats::setNames(format(x), names(x))
+  out <- format(x)
   print(out, quote = FALSE)
   invisible(x)
 }
@@ -38,6 +42,20 @@ print.wk_rcrd <- function(x, ...) {
 #' @export
 `[[.wk_rcrd` <- function(x, i) {
   x[i]
+}
+
+#' @export
+names.wk_rcrd <- function(x) {
+  NULL
+}
+
+#' @export
+`names<-.wk_rcrd` <- function(x, value) {
+  if (is.null(value)) {
+    x
+  } else {
+    stop("Names of a 'wk_rcrd' must be NULL.")
+  }
 }
 
 #' @export
@@ -73,4 +91,21 @@ c.wk_rcrd <- function(...) {
   )
   validator(result)
   result
+}
+
+#' @export
+as.data.frame.wk_rcrd <- function(x, ...) {
+  new_data_frame(unclass(x))
+}
+
+#' @export
+as.matrix.wk_rcrd <- function(x, ...) {
+  x_bare <- unclass(x)
+  matrix(
+    do.call(c, x_bare),
+    nrow = length(x),
+    ncol = length(x_bare),
+    byrow = FALSE,
+    dimnames = list(NULL, c("x", "y"))
+  )
 }
