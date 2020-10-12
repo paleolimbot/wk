@@ -216,7 +216,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
   wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span><span class="op">(</span><span class="va">nc_wkb</span><span class="op">)</span>,
-  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">st_as_text.sfc</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu">st_as_sfc.WKB</span><span class="op">(</span><span class="va">nc_WKB</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text.sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.WKB</a></span><span class="op">(</span><span class="va">nc_WKB</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
   check <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="co">#&gt; Warning: Some expressions had a GC in every iteration; so filtering is disabled.</span>
@@ -229,7 +229,7 @@
 <div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
   wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkb</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span>,
-  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">CPL_write_wkb</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu">st_as_sfc.character</span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">CPL_write_wkb</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.character</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   check <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
@@ -241,7 +241,7 @@
 <div class="sourceCode" id="cb13"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
   wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkt</a></span><span class="op">(</span><span class="fu">wk</span><span class="fu">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span><span class="op">)</span>,
-  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">st_as_text.sfc</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu">st_as_sfc.character</span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text.sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.character</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span><span class="op">)</span>,
   check <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span>
 <span class="co">#&gt; Warning: Some expressions had a GC in every iteration; so filtering is disabled.</span>
