@@ -38,5 +38,5 @@ Suggests:
     vctrs (>= 0.3.0),
     wkutils,
     sf
-URL: https://paleolimbot.github.io/wk, https://github.com/paleolimbot/wk
+URL: https://paleolimbot.github.io/wk/, https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
