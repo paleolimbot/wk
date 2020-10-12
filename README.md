@@ -97,10 +97,10 @@ wkutils::wkt_coords("POINT ZM (1 2 3 4)")
 #>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
 #> 1          1       1       0     1     2     3     4
 wkutils::wkt_meta("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 8
-#>   feature_id part_id type_id  size  srid has_z has_m n_coords
-#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>    <int>
-#> 1          1       1       1     1    NA TRUE  TRUE         1
+#> # A tibble: 1 x 7
+#>   feature_id part_id type_id  size  srid has_z has_m
+#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>
+#> 1          1       1       1     1    NA TRUE  TRUE
 wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
 #> # A tibble: 1 x 8
 #>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
@@ -173,6 +173,7 @@ geometry using `wkutils::wkb|wkt_debug()` functions.
 
 ``` r
 library(wkutils) # remotes::install_github("paleolimbot/wkutils")
+#> Warning: package 'wkutils' was built under R version 4.0.2
 wkt_debug("POINT (30 10)")
 #> nextFeatureStart(0)
 #>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
@@ -197,8 +198,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            243µs    295µs     3292.   110.1KB     18.6
-#> 2 sf            389µs    456µs     2088.    99.8KB     13.8
+#> 1 wk            252µs    313µs     2958.   110.1KB     18.8
+#> 2 sf            420µs    504µs     1500.    99.1KB     12.5
 ```
 
 Read WKB + Write WKT:
@@ -213,8 +214,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.02ms   3.38ms    291.      3.32KB      0  
-#> 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8
+#> 1 wk           3.02ms   4.29ms    214.      3.32KB      0  
+#> 2 sf         230.83ms 241.29ms      4.15  566.67KB     19.3
 ```
 
 Read WKT + Write WKB:
@@ -228,8 +229,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.87ms   2.06ms      476.    49.5KB     0   
-#> 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18
+#> 1 wk            2.1ms   2.35ms      396.    49.5KB     0   
+#> 2 sf           3.42ms   4.45ms      198.   185.7KB     6.60
 ```
 
 Read WKT + Write WKT:
@@ -244,6 +245,6 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98
-#> 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5
+#> 1 wk           5.23ms   7.02ms    137.      63.8KB     1.98
+#> 2 sf         235.94ms 253.21ms      4.03   229.8KB    17.5
 ```
