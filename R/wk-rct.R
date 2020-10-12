@@ -1,0 +1,88 @@
+
+#' 2D rectangle vectors
+#'
+#' @param xmin,ymin,xmax,ymax Rectangle bounds.
+#' @param x An object to be converted to a [rct()].
+#' @param ... Extra arguments passed to `as_rct()`.
+#'
+#' @return A vector along the recycled length of bounds.
+#' @export
+#'
+#' @examples
+#' rct(1, 2, 3, 4)
+#'
+rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double()) {
+  vec <- new_wk_rct(
+    recycle_common(
+      xmin = as.double(xmin),
+      ymin = as.double(ymin),
+      xmax = as.double(xmax),
+      ymax = as.double(ymax)
+    )
+  )
+
+  validate_wk_rct(vec)
+  vec
+}
+
+#' @rdname rct
+#' @export
+as_rct <- function(x, ...) {
+  UseMethod("as_rct")
+}
+
+#' @rdname rct
+#' @export
+as_rct.rct <- function(x, ...) {
+  x
+}
+
+#' @rdname rct
+#' @export
+as_rct.matrix <- function(x, ...) {
+  if (ncol(x) == 4) {
+    colnames(x) <- c("xmin", "ymin", "xmax", "ymax")
+  }
+
+  as_rct(as.data.frame(x), ...)
+}
+
+#' @rdname rct
+#' @export
+as_rct.data.frame <- function(x, ...) {
+  stopifnot(all(c("xmin", "ymin", "xmax", "ymax") %in% names(x)))
+  new_wk_rct(lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double))
+}
+
+validate_wk_rct <- function(x) {
+  validate_wk_rcrd(x)
+  stopifnot(
+    identical(names(unclass(x)), c("xmin", "ymin", "xmax", "ymax"))
+  )
+  invisible(x)
+}
+
+#' S3 details for rct objects
+#'
+#' @param x A [rct()]
+#'
+#' @export
+#'
+new_wk_rct <- function(x) {
+  structure(x, class = c("wk_rct", "wk_rcrd"))
+}
+
+#' @export
+format.wk_rct <- function(x, ...) {
+  x <- unclass(x)
+  sprintf(
+    "[%s %s %s %s]",
+    format(x$xmin, ...), format(x$ymin, ...),
+    format(x$xmax, ...), format(x$ymax, ...)
+  )
+}
+
+#' @export
+`[<-.wk_rct` <- function(x, i, value) {
+
+}

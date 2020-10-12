@@ -7,9 +7,17 @@ test_that("wk_rcrd works", {
     structure(list(x = 2, y = 2), class = "wk_rcrd")
   )
   expect_identical(xy_rcrd[[2]], xy_rcrd[2])
+  expect_error(xy_rcrd$x, "is not meaningful")
+
   expect_identical(names(xy_rcrd), NULL)
+  expect_identical(is.na(xy_rcrd), c(FALSE, FALSE, FALSE))
+  expect_identical(is.na(xy_rcrd[NA_integer_]), TRUE)
+  expect_identical(is.na(xy_rcrd[integer(0)]), logical(0))
+
   expect_identical(expect_output(print(xy_rcrd), "wk_rcrd"), xy_rcrd)
   expect_output(print(xy_rcrd[integer(0)]), "wk_rcrd")
+  expect_length(format(xy_rcrd), 2)
+  expect_length(as.character(xy_rcrd), 2)
 
   xy_rcrd2 <- xy_rcrd
   names(xy_rcrd2) <- NULL

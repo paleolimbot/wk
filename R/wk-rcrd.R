@@ -23,6 +23,11 @@ validate_wk_rcrd <- function(x) {
 }
 
 #' @export
+format.wk_rcrd <- function(x, ...) {
+  vapply(x, function(item) paste0(format(unclass(item), ...), collapse = "\n"), character(1))
+}
+
+#' @export
 print.wk_rcrd <- function(x, ...) {
   cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
   if (length(x) == 0) {
@@ -35,6 +40,17 @@ print.wk_rcrd <- function(x, ...) {
 }
 
 #' @export
+as.character.wk_rcrd <- function(x, ...) {
+  format(x, ...)
+}
+
+#' @export
+is.na.wk_rcrd <- function(x, ...) {
+  is_na <- lapply(unclass(x), is.na)
+  Reduce("&", is_na)
+}
+
+#' @export
 `[.wk_rcrd` <- function(x, i) {
   new_wk_rcrd(lapply(unclass(x), "[", i), x)
 }
@@ -42,6 +58,11 @@ print.wk_rcrd <- function(x, ...) {
 #' @export
 `[[.wk_rcrd` <- function(x, i) {
   x[i]
+}
+
+#' @export
+`$.wk_rcrd` <- function(x, i) {
+  stop("`$` is not meaningful for 'wk_rcrd' objects", call. = FALSE)
 }
 
 #' @export
@@ -85,7 +106,7 @@ c.wk_rcrd <- function(...) {
 
   result <- new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
   validator <- get(
-    paste0("validate_", classes[1]),
+    paste0("validate_", classes[[1]][1]),
     mode = "function",
     envir = asNamespace("wk")
   )

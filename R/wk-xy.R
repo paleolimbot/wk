@@ -141,9 +141,8 @@ fill_missing_dims <- function(x, dims, len) {
 
 #' S3 details for xy objects
 #'
-#' @param x A bare named list.
+#' @param x A [xy()] object.
 #'
-#' @return A vector of class 'wk_xy(zm)'
 #' @export
 #'
 new_wk_xy <- function(x = list(x = double(), y = double())) {

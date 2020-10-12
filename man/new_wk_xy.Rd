@@ -28,10 +28,7 @@ validate_wk_xym(x)
 validate_wk_xyzm(x)
 }
 \arguments{
-\item{x}{A bare named list.}
-}
-\value{
-A vector of class 'wk_xy(zm)'
+\item{x}{A \code{\link[=xy]{xy()}} object.}
 }
 \description{
 S3 details for xy objects
