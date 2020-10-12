@@ -133,10 +133,10 @@
 <span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1          1       1       0     1     2     3     4</span>
 <span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_meta.html">wkt_meta</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m n_coords</span>
-<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;    &lt;int&gt;</span>
-<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE         1</span>
+<span class="co">#&gt; # A tibble: 1 x 7</span>
+<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m</span>
+<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE</span>
 <span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_ranges.html">wkt_ranges</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax</span>
@@ -195,6 +195,7 @@
 <p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkutils::wkb|wkt_debug()</code> functions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wkutils">wkutils</a></span><span class="op">)</span> <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
+<span class="co">#&gt; Warning: package 'wkutils' was built under R version 4.0.2</span>
 <span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_debug.html">wkt_debug</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
@@ -216,8 +217,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            243µs    295µs     3292.   110.1KB     18.6</span>
-<span class="co">#&gt; 2 sf            389µs    456µs     2088.    99.8KB     13.8</span></pre></div>
+<span class="co">#&gt; 1 wk            252µs    313µs     2958.   110.1KB     18.8</span>
+<span class="co">#&gt; 2 sf            420µs    504µs     1500.    99.1KB     12.5</span></pre></div>
 <p>Read WKB + Write WKT:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
@@ -229,8 +230,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           3.02ms   3.38ms    291.      3.32KB      0  </span>
-<span class="co">#&gt; 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8</span></pre></div>
+<span class="co">#&gt; 1 wk           3.02ms   4.29ms    214.      3.32KB      0  </span>
+<span class="co">#&gt; 2 sf         230.83ms 241.29ms      4.15  566.67KB     19.3</span></pre></div>
 <p>Read WKT + Write WKB:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
@@ -241,8 +242,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           1.87ms   2.06ms      476.    49.5KB     0   </span>
-<span class="co">#&gt; 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18</span></pre></div>
+<span class="co">#&gt; 1 wk            2.1ms   2.35ms      396.    49.5KB     0   </span>
+<span class="co">#&gt; 2 sf           3.42ms   4.45ms      198.   185.7KB     6.60</span></pre></div>
 <p>Read WKT + Write WKT:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
@@ -254,8 +255,8 @@
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98</span>
-<span class="co">#&gt; 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5</span></pre></div>
+<span class="co">#&gt; 1 wk           5.23ms   7.02ms    137.      63.8KB     1.98</span>
+<span class="co">#&gt; 2 sf         235.94ms 253.21ms      4.03   229.8KB    17.5</span></pre></div>
 </div>
 </div>
   </div>
