@@ -8,9 +8,12 @@
 #' @export
 #'
 #' @examples
-#' plot(as_wkt("LINESTRING (0 0, 1 1)"))
-#' plot(as_wkb("LINESTRING (0 0, 1 1)"))
-#' plot(as_wksxp("LINESTRING (0 0, 1 1)"))
+#' # requires the wkutils package
+#' if (requireNamespace("wkutils")) {
+#'   plot(as_wkt("LINESTRING (0 0, 1 1)"))
+#'   plot(as_wkb("LINESTRING (0 0, 1 1)"))
+#'   plot(as_wksxp("LINESTRING (0 0, 1 1)"))
+#' }
 #'
 plot.wk_wkt <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
                         rule = "evenodd", add = FALSE) {
