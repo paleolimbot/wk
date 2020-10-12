@@ -17,6 +17,7 @@ test_that("wkt class works", {
   expect_identical(x[[1]], x[1])
   expect_is(c(x, x), "wk_wkt")
   expect_identical(rep(x, 2), c(x, x))
+  expect_identical(rep(wkt(), 1), wkt())
   expect_identical(rep_len(x, 2), c(x, x))
   expect_length(c(x, x), 2)
 

@@ -20,6 +20,7 @@ test_that("wksxp class works", {
   expect_is(c(x, x), "wk_wksxp")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
+  expect_identical(rep(wksxp(), 5), wksxp())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"

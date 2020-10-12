@@ -20,6 +20,7 @@ test_that("wkb class works", {
   expect_is(c(x, x), "wk_wkb")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
+  expect_identical(rep(wkb(), 3), wkb())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"
