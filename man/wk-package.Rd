@@ -19,7 +19,7 @@ Provides a minimal R and C++ API for parsing
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://paleolimbot.github.io/wk}
+  \item \url{https://paleolimbot.github.io/wk/}
   \item \url{https://github.com/paleolimbot/wk}
   \item Report bugs at \url{https://github.com/paleolimbot/wk/issues}
 }
