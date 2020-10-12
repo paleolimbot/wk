@@ -79,3 +79,45 @@ test_that("wk_xyzm class works", {
   expect_identical(as_xy(xyzm(1, 2, 3, 4), dims = c("x", "y", "m")), xym(1, 2, 4))
   expect_identical(as_xy(xyzm(1, 2, 3, 4), dims = c("x", "y", "z", "m")), xyzm(1, 2, 3, 4))
 })
+
+test_that("wk_xy* are vctrs", {
+  expect_true(vctrs::vec_is(xy()))
+  expect_true(vctrs::vec_is(xyz()))
+  expect_true(vctrs::vec_is(xym()))
+  expect_true(vctrs::vec_is(xyzm()))
+})
+
+test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
+  expect_identical(as_xy(data.frame(x = 1, y = 2, z = 3, m = 4), dims = NULL), xyzm(1, 2, 3, 4))
+  expect_identical(as_xy(data.frame(x = 1, y = 2, z = 3, m = 4), dims = c("x", "y")), xy(1, 2))
+  expect_identical(as_xy(data.frame(x = 1, y = 2, z = 3, m = 4), dims = c("x", "y", "z")), xyz(1, 2, 3))
+  expect_identical(as_xy(data.frame(x = 1, y = 2, z = 3, m = 4), dims = c("x", "y", "m")), xym(1, 2, 4))
+  expect_identical(as_xy(data.frame(x = 1, y = 2, z = 3, m = 4), dims = c("x", "y", "z", "m")), xyzm(1, 2, 3, 4))
+
+  expect_identical(as_xy(data.frame(x = 1, y = 2), dims = NULL), xy(1, 2))
+  expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y")), xy(1, 2))
+  expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "z")), xyz(1, 2, NA))
+  expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "m")), xym(1, 2, NA))
+  expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "z", "m")), xyzm(1, 2, NA, NA))
+
+  expect_identical(
+    as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4)), dims = NULL),
+    xyzm(1, 2, 3, 4)
+  )
+  expect_identical(
+    as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4)), dims = c("x", "y")),
+    xy(1, 2)
+  )
+  expect_identical(
+    as_xy(matrix(1:2, nrow = 1)),
+    xy(1, 2)
+  )
+  expect_identical(
+    as_xy(matrix(1:3, nrow = 1)),
+    xyz(1, 2, 3)
+  )
+  expect_identical(
+    as_xy(matrix(1:4, nrow = 1)),
+    xyzm(1, 2, 3, 4)
+  )
+})

@@ -85,13 +85,58 @@ as_xy.wk_xy <- function(x, ..., dims = NULL) {
   }
 }
 
+#' @rdname xy
+#' @export
+as_xy.matrix <- function(x, ..., dims = NULL) {
+  if (is.null(colnames(x))) {
+    if (ncol(x) == 2) {
+      colnames(x) <- c("x", "y")
+    } else if (ncol(x) == 4) {
+      colnames(x) <- c("x", "y", "z", "m")
+    } else if (ncol(x) == 3) {
+      colnames(x) <- c("x", "y", "z")
+    } else {
+      stop(
+        sprintf("Can't guess column names of matrix with %s columns", ncol(x)),
+        call. = FALSE
+      )
+    }
+  }
+
+  as_xy(as.data.frame(x), ..., dims = dims)
+}
+
+#' @rdname xy
+#' @export
+as_xy.data.frame <- function(x, ..., dims = NULL) {
+  if (is.null(dims)) {
+    dims <- intersect(c("x", "y", "z", "m"), names(x))
+  }
+
+  if (setequal(dims, c("x", "y"))) {
+    new_wk_xy(fill_missing_dims(unclass(x), c("x", "y"), nrow(x)))
+
+  } else if (setequal(dims, c("x", "y", "z"))) {
+    new_wk_xyz(fill_missing_dims(unclass(x), c("x", "y", "z"), nrow(x)))
+
+  } else if (setequal(dims, c("x", "y", "m"))) {
+    new_wk_xym(fill_missing_dims(unclass(x), c("x", "y", "m"), nrow(x)))
+
+  } else if (setequal(dims, c("x", "y", "z", "m"))) {
+    new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), nrow(x)))
+
+  } else {
+    stop("Unkown dims in as_xy.data.frame().", call. = FALSE)
+  }
+}
+
 fill_missing_dims <- function(x, dims, len) {
   missing_dims <- setdiff(dims, names(x))
   x[missing_dims] <- lapply(
     stats::setNames(missing_dims, missing_dims),
     function(x) rep_len(NA_real_, len)
   )
-  x[dims]
+  lapply(x[dims], as.double)
 }
 
 #' S3 details for xy objects

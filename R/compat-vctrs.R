@@ -23,7 +23,7 @@ vec_cast.wk_wkb <- function(x, to, ...) {
   UseMethod("vec_cast.wk_wkb")
 }
 
-#' @method vec_cast.wk_wkt default
+#' @method vec_cast.wk_wkb default
 #' @export
 vec_cast.wk_wkb.default <- function(x, to, ...) {
   vctrs::vec_default_cast(x, to) # nocov
@@ -215,4 +215,32 @@ vec_ptype2.wk_wksxp.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @export
 vec_ptype2.wk_wksxp.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wksxp()
+}
+
+# xy() --------
+
+vec_proxy.wk_xy <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xy <- function(x, ...) {
+  new_wk_xy(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xy
+vec_cast.wk_xy <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xy")
+}
+
+#' @method vec_cast.wk_xy default
+#' @export
+vec_cast.wk_xy.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xy
+vec_ptype2.wk_xy <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xy", y)
 }

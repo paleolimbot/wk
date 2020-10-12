@@ -8,6 +8,8 @@
 \alias{xy_dims}
 \alias{as_xy}
 \alias{as_xy.wk_xy}
+\alias{as_xy.matrix}
+\alias{as_xy.data.frame}
 \title{Efficient point vectors}
 \usage{
 xy(x = double(), y = double())
@@ -23,6 +25,10 @@ xy_dims(x)
 as_xy(x, ...)
 
 \method{as_xy}{wk_xy}(x, ..., dims = NULL)
+
+\method{as_xy}{matrix}(x, ..., dims = NULL)
+
+\method{as_xy}{data.frame}(x, ..., dims = NULL)
 }
 \arguments{
 \item{x, y, z, m}{Coordinate values.}

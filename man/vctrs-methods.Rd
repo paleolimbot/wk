@@ -8,6 +8,8 @@
 \alias{vec_ptype2.wk_wkt}
 \alias{vec_cast.wk_wksxp}
 \alias{vec_ptype2.wk_wksxp}
+\alias{vec_cast.wk_xy}
+\alias{vec_ptype2.wk_xy}
 \title{Vctrs methods}
 \usage{
 vec_cast.wk_wkb(x, to, ...)
@@ -21,6 +23,10 @@ vec_ptype2.wk_wkt(x, y, ...)
 vec_cast.wk_wksxp(x, to, ...)
 
 vec_ptype2.wk_wksxp(x, y, ...)
+
+vec_cast.wk_xy(x, to, ...)
+
+vec_ptype2.wk_xy(x, y, ...)
 }
 \arguments{
 \item{x, y, to, ...}{See \code{\link[vctrs:vec_cast]{vctrs::vec_cast()}} and \code{\link[vctrs:vec_ptype2]{vctrs::vec_ptype2()}}.}
