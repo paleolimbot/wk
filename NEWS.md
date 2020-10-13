@@ -1,5 +1,15 @@
 # wk (development version)
 
+* Fixed WKB import of ZM geometries that do not use EWKB
+* Added `xy()`, `xyz()`, `xym()` and `xyzm()` classes
+  to efficiently store point geometries.
+* Added the `rct()` vector class to efficiently store
+  two-dimensional rectangles.
+* Fixed the CRAN check  failure caused by a circular
+  dependency with  the wkutils package.
+* Added S3 methods to coerce sf objects to and from
+  `wkt()`, `wkb()` and `wksxp()`.
+
 # wk 0.3.2
 
 * Fixed EWKB output for collections and multi-geometries
