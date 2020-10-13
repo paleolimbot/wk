@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -88,67 +88,61 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of wk from <a href="https://cran.r-project.org/">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"wk"</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"wk"</span><span class="op">)</span></pre></div>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># install.packages("remotes")</span>
-<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"paleolimbot/wk"</span>)
-</pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"paleolimbot/wk"</span><span class="op">)</span></pre></div>
 <p>If you can load the package, you’re good to go!</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://paleolimbot.github.io/wk">wk</a></span>)
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wk/">wk</a></span><span class="op">)</span></pre></div>
 </div>
 <div id="basic-vector-classes-for-wkt-and-wkb" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-vector-classes-for-wkt-and-wkb" class="anchor"></a>Basic vector classes for WKT and WKB</h2>
 <p>Use <code><a href="reference/wkt.html">wkt()</a></code> to mark a character vector as containing well-known text, or <code><a href="reference/wkb.html">wkb()</a></code> to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in <code><a href="https://rdrr.io/r/base/format.html">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> methods.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="reference/wkt.html">wkt</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu"><a href="reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_wkt[1]&gt;</span>
 <span class="co">#&gt; [1] POINT (30 10)</span>
-<span class="fu"><a href="reference/wkb.html">as_wkb</a></span>(<span class="fu"><a href="reference/wkt.html">wkt</a></span>(<span class="st">"POINT (30 10)"</span>))
+<span class="fu"><a href="reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="fu"><a href="reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_wkb[1]&gt;</span>
-<span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span>
-</pre></div>
+<span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span></pre></div>
 </div>
 <div id="well-known-r-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#well-known-r-objects" class="anchor"></a>Well-known R objects</h2>
 <p>The wk package experimentally generates (and parses) a plain R object format, which is needed because well-known binary can’t natively represent the empty point and reading/writing well-known text is too slow. The format of the <code><a href="reference/wksxp.html">wksxp()</a></code> object is designed to be as close as possible to well-known text and well-known binary to make the translation code as clean as possible.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
 <span class="co">#&gt;      [,1] [,2]</span>
 <span class="co">#&gt; [1,]   30   10</span>
 <span class="co">#&gt; attr(,"class")</span>
-<span class="co">#&gt; [1] "wk_point"</span>
-</pre></div>
+<span class="co">#&gt; [1] "wk_point"</span></pre></div>
 </div>
 <div id="wkutils" class="section level2">
 <h2 class="hasAnchor">
 <a href="#wkutils" class="anchor"></a>wkutils</h2>
-<p>To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the <a href="https://paleolimbot.github.io/wkutils">wkutils package</a>. One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides <code>wk*_meta()</code> and <code>wk*_coords()</code> functions (among others) to extract usable coordinates and feature meta.</p>
+<p>To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the <a href="https://paleolimbot.github.io/wkutils/">wkutils package</a>. One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides <code>wk*_meta()</code> and <code>wk*_coords()</code> functions (among others) to extract usable coordinates and feature meta.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_coords.html">wkt_coords</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_coords.html">wkt_coords</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 7</span>
 <span class="co">#&gt;   feature_id part_id ring_id     x     y     z     m</span>
 <span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1          1       1       0     1     2     3     4</span>
-<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_meta.html">wkt_meta</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m n_coords</span>
-<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;    &lt;int&gt;</span>
-<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE         1</span>
-<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_ranges.html">wkt_ranges</a></span>(<span class="st">"POINT ZM (1 2 3 4)"</span>)
+<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_meta.html">wkt_meta</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 1 x 7</span>
+<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m</span>
+<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE</span>
+<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_ranges.html">wkt_ranges</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 8</span>
 <span class="co">#&gt;    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax</span>
 <span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1     1     2     3     4     1     2     3     4</span>
-<span class="kw">wkutils</span>::<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/coords_point_translate_wkt.html">coords_point_translate_wkt</a></span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>)
-<span class="co">#&gt; [1] "POINT ZM (1 2 3 4)"</span>
-</pre></div>
+<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/coords_point_translate_wkt.html">coords_point_translate_wkt</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
+<span class="co">#&gt; [1] "POINT ZM (1 2 3 4)"</span></pre></div>
 </div>
 <div id="dependencies" class="section level2">
 <h2 class="hasAnchor">
@@ -194,20 +188,19 @@
 <span id="cb7-33"><a href="#cb7-33"></a>}</span></code></pre></div>
 <p>On our example point, this prints the following:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu">wkt_read_custom</span>(<span class="st">"POINT (30 10)"</span>)
+<span class="fu">wkt_read_custom</span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; Do something before feature 0</span>
-<span class="co">#&gt; Do something after feature 0</span>
-</pre></div>
+<span class="co">#&gt; Do something after feature 0</span></pre></div>
 <p>The full handler interface includes methods for the start and end of features, geometries (which may be nested), linear rings, coordinates, and parse errors. You can preview what will get called for a given geometry using <code>wkutils::wkb|wkt_debug()</code> functions.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://paleolimbot.github.io/wkutils">wkutils</a></span>) <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
-<span class="fu"><a href="https://rdrr.io/pkg/wkutils/man/wkb_debug.html">wkt_debug</a></span>(<span class="st">"POINT (30 10)"</span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wkutils">wkutils</a></span><span class="op">)</span> <span class="co"># remotes::install_github("paleolimbot/wkutils")</span>
+<span class="co">#&gt; Warning: package 'wkutils' was built under R version 4.0.2</span>
+<span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_debug.html">wkt_debug</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; nextFeatureStart(0)</span>
 <span class="co">#&gt;     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)</span>
 <span class="co">#&gt;         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)</span>
 <span class="co">#&gt;     nextGeometryEnd(POINT [1], WKReader::PART_ID_NONE)</span>
-<span class="co">#&gt; nextFeatureEnd(0)</span>
-</pre></div>
+<span class="co">#&gt; nextFeatureEnd(0)</span></pre></div>
 </div>
 <div id="performance" class="section level2">
 <h2 class="hasAnchor">
@@ -215,58 +208,54 @@
 <p>This package was designed to stand alone and be flexible, but also happens to be really fast for some common operations.</p>
 <p>Read WKB + Write WKB:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk = <span class="kw">wk</span>:::<span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkb</a></span>(<span class="kw">wk</span>:::<span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wksxp</a></span>(<span class="kw">nc_wkb</span>)),
-  sf = <span class="kw">sf</span>:::<span class="fu">CPL_read_wkb</span>(<span class="kw">sf</span>:::<span class="fu">CPL_write_wkb</span>(<span class="kw">nc_sfc</span>, EWKB = <span class="fl">TRUE</span>), EWKB = <span class="fl">TRUE</span>),
-  check = <span class="fl">FALSE</span>
-)
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkb</a></span><span class="op">(</span><span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wksxp</a></span><span class="op">(</span><span class="va">nc_wkb</span><span class="op">)</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">CPL_read_wkb</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu">CPL_write_wkb</span><span class="op">(</span><span class="va">nc_sfc</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  check <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk            243µs    295µs     3292.   110.1KB     18.6</span>
-<span class="co">#&gt; 2 sf            389µs    456µs     2088.    99.8KB     13.8</span>
-</pre></div>
+<span class="co">#&gt; 1 wk            236µs    300µs     3072.   110.1KB     21.3</span>
+<span class="co">#&gt; 2 sf            425µs    548µs     1523.    99.1KB     12.4</span></pre></div>
 <p>Read WKB + Write WKT:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk = <span class="kw">wk</span>:::<span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span>(<span class="kw">nc_wkb</span>),
-  sf = <span class="kw">sf</span>:::<span class="fu">st_as_text.sfc</span>(<span class="kw">sf</span>:::<span class="fu">st_as_sfc.WKB</span>(<span class="kw">nc_WKB</span>, EWKB = <span class="fl">TRUE</span>)),
-  check = <span class="fl">FALSE</span>
-)
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkb_translate_wkt</a></span><span class="op">(</span><span class="va">nc_wkb</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text.sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.WKB</a></span><span class="op">(</span><span class="va">nc_WKB</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
+  check <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span>
 <span class="co">#&gt; Warning: Some expressions had a GC in every iteration; so filtering is disabled.</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           3.02ms   3.38ms    291.      3.32KB      0  </span>
-<span class="co">#&gt; 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8</span>
-</pre></div>
+<span class="co">#&gt; 1 wk           3.13ms   4.63ms    209.      3.32KB      0  </span>
+<span class="co">#&gt; 2 sf         246.44ms 255.17ms      3.92  566.67KB     17.6</span></pre></div>
 <p>Read WKT + Write WKB:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk = <span class="kw">wk</span>:::<span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkb</a></span>(<span class="kw">nc_wkt</span>),
-  sf = <span class="kw">sf</span>:::<span class="fu">CPL_write_wkb</span>(<span class="kw">sf</span>:::<span class="fu">st_as_sfc.character</span>(<span class="kw">nc_wkt</span>), EWKB = <span class="fl">TRUE</span>),
-  check = <span class="fl">FALSE</span>
-)
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">:::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wkb</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu">CPL_write_wkb</span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.character</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span>, EWKB <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  check <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           1.87ms   2.06ms      476.    49.5KB     0   </span>
-<span class="co">#&gt; 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18</span>
-</pre></div>
+<span class="co">#&gt; 1 wk           2.12ms   2.38ms      387.    49.5KB     2.03</span>
+<span class="co">#&gt; 2 sf           3.67ms   5.71ms      165.   185.7KB     4.24</span></pre></div>
 <p>Read WKT + Write WKT:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw">bench</span>::<span class="fu">mark</span>(
-  wk = <span class="kw">wk</span>::<span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkt</a></span>(<span class="kw">wk</span>::<span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span>(<span class="kw">nc_wkt</span>)),
-  sf = <span class="kw">sf</span>:::<span class="fu">st_as_text.sfc</span>(<span class="kw">sf</span>:::<span class="fu">st_as_sfc.character</span>(<span class="kw">nc_wkt</span>)),
-  check = <span class="fl">FALSE</span>
-)
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  wk <span class="op">=</span> <span class="fu">wk</span><span class="fu">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wksxp_translate_wkt</a></span><span class="op">(</span><span class="fu">wk</span><span class="fu">::</span><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span><span class="op">)</span>,
+  sf <span class="op">=</span> <span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text.sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">:::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc.character</a></span><span class="op">(</span><span class="va">nc_wkt</span><span class="op">)</span><span class="op">)</span>,
+  check <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span>
 <span class="co">#&gt; Warning: Some expressions had a GC in every iteration; so filtering is disabled.</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
 <span class="co">#&gt;   expression      min   median `itr/sec` mem_alloc `gc/sec`</span>
 <span class="co">#&gt;   &lt;bch:expr&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98</span>
-<span class="co">#&gt; 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5</span>
-</pre></div>
+<span class="co">#&gt; 1 wk           5.26ms    6.9ms    123.      63.8KB     1.99</span>
+<span class="co">#&gt; 2 sf         254.41ms  254.5ms      3.93   234.9KB    17.7</span></pre></div>
 </div>
 </div>
   </div>
@@ -315,7 +304,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
