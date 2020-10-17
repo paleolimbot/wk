@@ -65,6 +65,26 @@ test_that("conversion from sf to wksxp works", {
   )
 })
 
+test_that("conversion from sf to xy works", {
+  skip_if_not_installed("sf")
+
+  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)))
+  expect_is(as_xy(sfc), "wk_xy")
+  expect_identical(as_xy(sfc), xy(c(NA, 0), c(NA, 1)))
+
+  sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
+  expect_identical(as_xy(sf), xy(c(NA, 0), c(NA, 1)))
+
+  expect_identical(as_xy(sf::st_sfc()), xy())
+  expect_error(as_xy(sf::st_sfc(sf::st_linestring())), "Can't create xy")
+
+  # check all dimensions
+  expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2, 3, 4), dim = "XYZM"))), xyzm(1, 2, 3, 4))
+  expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2, 3), dim = "XYZ"))), xyz(1, 2, 3))
+  expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2, 3), dim = "XYM"))), xym(1, 2, 3))
+  expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2)))), xy(1, 2))
+})
+
 test_that("conversion to sf works", {
   skip_if_not_installed("sf")
 
@@ -80,4 +100,8 @@ test_that("conversion to sf works", {
   expect_equal(sf::st_as_sfc(wkt), sfc)
   expect_equal(sf::st_as_sf(wksxp), sf)
   expect_equal(sf::st_as_sfc(wksxp), sfc)
+
+  # xy has no SRID
+  expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1))), sf::st_set_crs(sf, NA))
+  expect_equal(sf::st_as_sfc(xy(c(NA, 0), c(NA, 1))), sf::st_set_crs(sfc, NA))
 })

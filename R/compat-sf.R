@@ -26,6 +26,55 @@ as_wksxp.sfc <- function(x, ..., include_srid = FALSE) {
 }
 
 #' @export
+as_xy.sfc <- function(x, ...) {
+  if (length(x) == 0) {
+    xy()
+  } else if (inherits(x, "sfc_POINT")) {
+    coords <- sf::st_coordinates(x)
+    dims <- colnames(coords)
+    dimnames(coords) <- NULL
+
+    if (identical(dims, c("X", "Y"))) {
+      new_wk_xy(
+        list(
+          x = coords[, 1, drop = TRUE],
+          y = coords[, 2, drop = TRUE]
+        )
+      )
+    } else if (identical(dims, c("X", "Y", "Z"))) {
+      new_wk_xyz(
+        list(
+          x = coords[, 1, drop = TRUE],
+          y = coords[, 2, drop = TRUE],
+          z = coords[, 3, drop = TRUE]
+        )
+      )
+    } else if (identical(dims, c("X", "Y", "M"))) {
+      new_wk_xym(
+        list(
+          x = coords[, 1, drop = TRUE],
+          y = coords[, 2, drop = TRUE],
+          m = coords[, 3, drop = TRUE]
+        )
+      )
+    } else if (identical(dims, c("X", "Y", "Z", "M"))) {
+      new_wk_xyzm(
+        list(
+          x = coords[, 1, drop = TRUE],
+          y = coords[, 2, drop = TRUE],
+          z = coords[, 3, drop = TRUE],
+          m = coords[, 4, drop = TRUE]
+        )
+      )
+    } else {
+      stop("Unknown dimensions.", call. = FALSE) # nocov
+    }
+  } else {
+    stop(sprintf("Can't create xy() from sfc with class %s", class(x)[1]), call. = FALSE)
+  }
+}
+
+#' @export
 as_wkb.sf <- function(x, ..., include_srid = FALSE) {
   as_wkb(sf::st_geometry(x), ..., include_srid = include_srid)
 }
@@ -36,8 +85,13 @@ as_wkt.sf <- function(x, ..., include_srid = FALSE) {
 }
 
 #' @export
-as_wksxp.sf <- function(x, ..., include_srid = FALSE) {
-  as_wksxp(sf::st_geometry(x), ..., include_srid = include_srid)
+as_wksxp.sf <- function(x, ..., dims = NULL) {
+  as_wksxp(sf::st_geometry(x), ..., dims = dims)
+}
+
+#' @export
+as_xy.sf <- function(x, ..., dims = NULL) {
+  as_xy(sf::st_geometry(x), ..., dims = dims)
 }
 
 # dynamically exported
@@ -76,3 +130,40 @@ st_as_sf.wk_wksxp <- function(x, ...) {
     )
   )
 }
+
+st_as_sfc.wk_xy <- function(x, ...) {
+  sf::st_as_sfc(as_wkb(x), ...)
+}
+
+st_as_sf.wk_xy <- function(x, ...) {
+  sf::st_as_sf(
+    new_data_frame(
+      list(geometry = st_as_sfc.wk_xy(x, ...))
+    )
+  )
+}
+
+st_as_sfc.wk_xy <- function(x, ...) {
+  sf::st_as_sfc(as_wkb(x), ...)
+}
+
+st_as_sf.wk_xy <- function(x, ...) {
+  sf::st_as_sf(
+    new_data_frame(
+      list(geometry = st_as_sfc.wk_xy(x, ...))
+    )
+  )
+}
+
+st_as_sfc.wk_rct <- function(x, ...) {
+  sf::st_as_sfc(as_wkb(x), ...)
+}
+
+st_as_sf.wk_rct <- function(x, ...) {
+  sf::st_as_sf(
+    new_data_frame(
+      list(geometry = st_as_sfc.wk_rct(x, ...))
+    )
+  )
+}
+

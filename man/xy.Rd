@@ -26,7 +26,7 @@ as_xy(x, ...)
 
 \method{as_xy}{wk_xy}(x, ..., dims = NULL)
 
-\method{as_xy}{matrix}(x, ..., dims = NULL)
+\method{as_xy}{matrix}(x, ...)
 
 \method{as_xy}{data.frame}(x, ..., dims = NULL)
 }

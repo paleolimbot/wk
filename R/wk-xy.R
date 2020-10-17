@@ -87,23 +87,69 @@ as_xy.wk_xy <- function(x, ..., dims = NULL) {
 
 #' @rdname xy
 #' @export
-as_xy.matrix <- function(x, ..., dims = NULL) {
-  if (is.null(colnames(x))) {
-    if (ncol(x) == 2) {
-      colnames(x) <- c("x", "y")
-    } else if (ncol(x) == 4) {
-      colnames(x) <- c("x", "y", "z", "m")
-    } else if (ncol(x) == 3) {
-      colnames(x) <- c("x", "y", "z")
-    } else {
+as_xy.matrix <- function(x, ...) {
+  x[] <- as.numeric(x)
+  colnames(x) <- tolower(colnames(x))
+  cols <- colnames(x)
+
+  if (!is.null(cols)) {
+    dim_cols <- intersect(c("x", "y", "z", "m"), cols)
+    if (length(dim_cols) == 0) {
       stop(
-        sprintf("Can't guess column names of matrix with %s columns", ncol(x)),
+        paste0(
+          "Can't guess dimensions of matrix with column names\n",
+          paste0("'", cols, "'", collapse = ", ")
+        ),
         call. = FALSE
       )
     }
+
+    if (!identical(dim_cols, colnames(x))) {
+      x <- x[, dim_cols, drop = FALSE]
+    }
   }
 
-  as_xy(as.data.frame(x), ..., dims = dims)
+  # prevent named subsets
+  dimnames(x) <- NULL
+
+  if (ncol(x) == 2) {
+    new_wk_xy(
+      list(
+        x = x[, 1, drop = TRUE],
+        y = x[, 2, drop = TRUE]
+      )
+    )
+  } else if (ncol(x) == 4) {
+    new_wk_xyzm(
+      list(
+        x = x[, 1, drop = TRUE],
+        y = x[, 2, drop = TRUE],
+        z = x[, 3, drop = TRUE],
+        m = x[, 4, drop = TRUE]
+      )
+    )
+  } else if (identical(cols, c("x", "y", "m"))) {
+    new_wk_xym(
+      list(
+        x = x[, 1, drop = TRUE],
+        y = x[, 2, drop = TRUE],
+        m = x[, 3, drop = TRUE]
+      )
+    )
+  } else if (ncol(x) == 3) {
+    new_wk_xyz(
+      list(
+        x = x[, 1, drop = TRUE],
+        y = x[, 2, drop = TRUE],
+        z = x[, 3, drop = TRUE]
+      )
+    )
+  } else {
+    stop(
+      sprintf("Can't guess dimensions of matrix with %s columns", ncol(x)),
+      call. = FALSE
+    )
+  }
 }
 
 #' @rdname xy

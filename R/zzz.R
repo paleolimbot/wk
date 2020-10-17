@@ -2,20 +2,19 @@
 # nocov start
 .onLoad <- function(...) {
 
-  # Register S3 methods for suggests
-  s3_register("sf::st_as_sfc", "wk_wkb")
-  s3_register("sf::st_as_sf", "wk_wkb")
-  s3_register("sf::st_as_sfc", "wk_wkt")
-  s3_register("sf::st_as_sf", "wk_wkt")
-  s3_register("sf::st_as_sfc", "wk_wksxp")
-  s3_register("sf::st_as_sf", "wk_wksxp")
-
+  # Register S3 methods for Suggests
   for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp",
                 "wk_xy", "wk_xyz", "wk_xym", "wk_xyzm", "wk_rct")) {
     s3_register("vctrs::vec_proxy", cls)
     s3_register("vctrs::vec_restore", cls)
     s3_register("vctrs::vec_cast", cls)
     s3_register("vctrs::vec_ptype2", cls)
+
+  }
+
+  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp", "wk_xy")) {
+    s3_register("sf::st_as_sfc", cls)
+    s3_register("sf::st_as_sf", cls)
   }
 }
 
