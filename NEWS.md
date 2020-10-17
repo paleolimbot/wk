@@ -2,7 +2,7 @@
 
 # wk 0.3.3
 
-* Fixed WKB import of ZM geometries that do not use EWKB
+* Fixed WKB import of ZM geometries that do not use EWKB.
 * Added `xy()`, `xyz()`, `xym()` and `xyzm()` classes
   to efficiently store point geometries.
 * Added the `rct()` vector class to efficiently store
