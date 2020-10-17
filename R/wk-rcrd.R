@@ -114,9 +114,14 @@ c.wk_rcrd <- function(...) {
   result
 }
 
+# data.frame() will call as.data.frame() with optional = TRUE
 #' @export
-as.data.frame.wk_rcrd <- function(x, ...) {
-  new_data_frame(unclass(x))
+as.data.frame.wk_rcrd <- function(x, ..., optional = FALSE) {
+  if (!optional) {
+    new_data_frame(unclass(x))
+  } else {
+    new_data_frame(list(x))
+  }
 }
 
 #' @export

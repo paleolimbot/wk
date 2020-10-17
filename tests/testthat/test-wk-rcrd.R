@@ -50,4 +50,9 @@ test_that("wk_rcrd works", {
     as.data.frame(xy_rcrd),
     data.frame(x = c(1, 2, 3), y = c(2, 2, 2))
   )
+
+  expect_identical(
+    data.frame(col_name = xy_rcrd),
+    new_data_frame(list(col_name = xy_rcrd))
+  )
 })

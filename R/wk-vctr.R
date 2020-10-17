@@ -44,6 +44,16 @@ rep_len.wk_vctr <- function(x, ...) {
   new_wk_vctr(NextMethod(), x)
 }
 
+# data.frame() will call as.data.frame() with optional = TRUE
+#' @export
+as.data.frame.wk_vctr <- function(x, ..., optional = FALSE) {
+  if (!optional) {
+    NextMethod()
+  } else {
+    new_data_frame(list(x))
+  }
+}
+
 new_wk_vctr <- function(x, template) {
   structure(x, class = unique(class(template)))
 }
