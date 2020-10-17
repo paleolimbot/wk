@@ -139,6 +139,48 @@ fill_missing_dims <- function(x, dims, len) {
   lapply(x[dims], as.double)
 }
 
+#' @export
+as_xy.wk_wkt <- function(x, ..., dims = NULL) {
+  as_xy_wkx(x, translator = wkt_translate_xyzm, dims = dims)
+}
+
+#' @export
+as_xy.wk_wkb <- function(x, ..., dims = NULL) {
+  as_xy_wkx(x, translator = wkb_translate_xyzm, dims = dims)
+}
+
+#' @export
+as_xy.wk_wksxp <- function(x, ..., dims = NULL) {
+  as_xy_wkx(x, translator = wksxp_translate_xyzm, dims = dims)
+}
+
+as_xy_wkx <- function(x, translator, dims) {
+  if (is.null(dims)) {
+    result <- translator(x, include_z = NA, include_m = NA)
+    dims <- names(result)
+  } else {
+    result <- translator(x, include_z = TRUE, include_m = TRUE)
+    dims <- intersect(c("x", "y", "z", "m"), dims)
+  }
+
+  if (setequal(dims, c("x", "y"))) {
+    new_wk_xy(result[dims])
+
+  } else if (setequal(dims, c("x", "y", "z"))) {
+    new_wk_xyz(result[dims])
+
+  } else if (setequal(dims, c("x", "y", "m"))) {
+    new_wk_xym(result[dims])
+
+  } else if (setequal(dims, c("x", "y", "z", "m"))) {
+    new_wk_xyzm(result[dims])
+
+  } else {
+    stop("Unkown dimensions.", call. = FALSE)
+  }
+}
+
+
 #' S3 details for xy objects
 #'
 #' @param x A [xy()] object.
