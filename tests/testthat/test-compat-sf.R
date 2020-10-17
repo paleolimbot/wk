@@ -104,4 +104,10 @@ test_that("conversion to sf works", {
   # xy has no SRID
   expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1))), sf::st_set_crs(sf, NA))
   expect_equal(sf::st_as_sfc(xy(c(NA, 0), c(NA, 1))), sf::st_set_crs(sfc, NA))
+
+  # rct can only generate rectangles
+  expect_equal(
+    sf::st_as_sfc(rct(1, 2, 3, 4)),
+    sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4)))
+  )
 })

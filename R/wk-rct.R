@@ -62,6 +62,21 @@ validate_wk_rct <- function(x) {
   invisible(x)
 }
 
+#' @export
+as_wkt.wk_rct <- function(x, ...) {
+  new_wk_wkt(rct_translate_wkt(x, ...))
+}
+
+#' @export
+as_wkb.wk_rct <- function(x, ...) {
+  new_wk_wkb(rct_translate_wkb(x, ...))
+}
+
+#' @export
+as_wksxp.wk_rct <- function(x, ...) {
+  new_wk_wksxp(rct_translate_wksxp(x))
+}
+
 #' S3 details for rct objects
 #'
 #' @param x A [rct()]

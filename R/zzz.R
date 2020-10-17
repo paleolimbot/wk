@@ -12,7 +12,7 @@
 
   }
 
-  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp", "wk_xy")) {
+  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp", "wk_xy", "wk_rct")) {
     s3_register("sf::st_as_sfc", cls)
     s3_register("sf::st_as_sf", cls)
   }

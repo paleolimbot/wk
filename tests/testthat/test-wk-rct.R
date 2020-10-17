@@ -16,3 +16,20 @@ test_that("rct class works", {
     rct(1, 2, 3, 4)
   )
 })
+
+test_that("coercion to and from wk* classes works", {
+  expect_identical(
+    as_wkt(rct(1, 2, 3, 4)),
+    wkt("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
+  )
+
+  expect_identical(
+    as_wkb(rct(1, 2, 3, 4)),
+    as_wkb("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
+  )
+
+  expect_identical(
+    as_wksxp(rct(1, 2, 3, 4)),
+    as_wksxp("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
+  )
+})
