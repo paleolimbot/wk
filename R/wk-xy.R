@@ -200,6 +200,21 @@ validate_wk_xyzm <- function(x) {
 }
 
 #' @export
+as_wkt.wk_xy <- function(x, ...) {
+  new_wk_wkt(xyzm_translate_wkt(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+}
+
+#' @export
+as_wkb.wk_xy <- function(x, ...) {
+  new_wk_wkb(xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+}
+
+#' @export
+as_wksxp.wk_xy <- function(x, ...) {
+  new_wk_wksxp(xyzm_translate_wksxp(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+}
+
+#' @export
 format.wk_xy <- function(x, ...) {
   x <- unclass(x)
   sprintf("(%s %s)", format(x$x, ...), format(x$y, ...))

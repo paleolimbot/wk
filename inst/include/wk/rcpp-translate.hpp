@@ -1,16 +1,49 @@
 
-#ifndef WK_RCPP_TRANSLATE_H
-#define WK_RCPP_TRANSLATE_H
+#ifndef WK_RCPP_TRANSLATE_HPP
+#define WK_RCPP_TRANSLATE_HPP
 
 #include "wk/wkt-writer.hpp"
 #include "wk/wkt-reader.hpp"
 #include "wk/wkb-writer.hpp"
 #include "wk/wkb-reader.hpp"
 
+#include "wk/xyzm.hpp"
+#include "wk/rct.hpp"
+
 #include <Rcpp.h>
 #include "wk/rcpp-io.hpp"
 #include "wk/rcpp-sexp-writer.hpp"
 #include "wk/rcpp-sexp-reader.hpp"
+
+class RcppWKFieldsProvider: public WKFieldsProvider<List> {
+public:
+  RcppWKFieldsProvider(const List& container):
+  WKFieldsProvider<List>(container, Rf_xlength(container[0])) {}
+};
+
+class RcppFieldsExporter: public WKFieldsExporter<List> {
+public:
+  RcppFieldsExporter(const List& container):
+  WKFieldsExporter<List>(container, Rf_xlength(container[0])) {}
+};
+
+class RcppXYZMReader: public WKXYZMReader<List, NumericVector> {
+public:
+  RcppXYZMReader(RcppWKFieldsProvider& provider):
+  WKXYZMReader<List, NumericVector>(provider) {}
+};
+
+class RcppXYZMWriter: public WKXYZMWriter<List, NumericVector> {
+public:
+  RcppXYZMWriter(RcppFieldsExporter& exporter):
+  WKXYZMWriter<List, NumericVector>(exporter) {}
+};
+
+class RcppWKRctReader: public WKRctReader<List, NumericVector> {
+public:
+  RcppWKRctReader(RcppWKFieldsProvider& provider):
+  WKRctReader<List, NumericVector>(provider) {}
+};
 
 namespace wk {
 
@@ -67,6 +100,20 @@ inline Rcpp::List rcpp_translate_wksxp(WKReader& reader,
   rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 
   return exporter.output;
+}
+
+Rcpp::List rcpp_translate_xyzm(WKReader& reader, int includeZ = NA_INTEGER, int includeM = NA_INTEGER) {
+  Rcpp::List xyzm = List::create(
+    _["x"] = NumericVector(reader.nFeatures()),
+    _["y"] = NumericVector(reader.nFeatures()),
+    _["z"] = NumericVector(reader.nFeatures()),
+    _["m"] = NumericVector(reader.nFeatures())
+  );
+
+  RcppFieldsExporter exporter(xyzm);
+  RcppXYZMWriter writer(exporter);
+  rcpp_translate_base(reader, writer, includeZ, includeM, false);
+  return xyzm;
 }
 
 } // namespace wk

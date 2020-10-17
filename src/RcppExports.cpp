@@ -212,6 +212,113 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_translate_xyzm_wkt
+CharacterVector cpp_translate_xyzm_wkt(List xy, int precision, int trim);
+RcppExport SEXP _wk_cpp_translate_xyzm_wkt(SEXP xySEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xy(xySEXP);
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< int >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_xyzm_wkt(xy, precision, trim));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_xyzm_wkb
+List cpp_translate_xyzm_wkb(List xy, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_translate_xyzm_wkb(SEXP xySEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xy(xySEXP);
+    Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_xyzm_wkb(xy, endian, bufferSize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_xyzm_wksxp
+List cpp_translate_xyzm_wksxp(List xy);
+RcppExport SEXP _wk_cpp_translate_xyzm_wksxp(SEXP xySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type xy(xySEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_xyzm_wksxp(xy));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_wkt_xyzm
+List cpp_translate_wkt_xyzm(CharacterVector wkt);
+RcppExport SEXP _wk_cpp_translate_wkt_xyzm(SEXP wktSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkt_xyzm(wkt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_wkb_xyzm
+List cpp_translate_wkb_xyzm(List wkb);
+RcppExport SEXP _wk_cpp_translate_wkb_xyzm(SEXP wkbSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wkb(wkbSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wkb_xyzm(wkb));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_wksxp_xyzm
+List cpp_translate_wksxp_xyzm(List wksxp);
+RcppExport SEXP _wk_cpp_translate_wksxp_xyzm(SEXP wksxpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_wksxp_xyzm(wksxp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_rct_wkt
+CharacterVector cpp_translate_rct_wkt(List rct, int precision, int trim);
+RcppExport SEXP _wk_cpp_translate_rct_wkt(SEXP rctSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type rct(rctSEXP);
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< int >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_rct_wkt(rct, precision, trim));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_rct_wkb
+List cpp_translate_rct_wkb(List rct, int endian, int bufferSize);
+RcppExport SEXP _wk_cpp_translate_rct_wkb(SEXP rctSEXP, SEXP endianSEXP, SEXP bufferSizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type rct(rctSEXP);
+    Rcpp::traits::input_parameter< int >::type endian(endianSEXP);
+    Rcpp::traits::input_parameter< int >::type bufferSize(bufferSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_rct_wkb(rct, endian, bufferSize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_translate_rct_wksxp
+List cpp_translate_rct_wksxp(List rct);
+RcppExport SEXP _wk_cpp_translate_rct_wksxp(SEXP rctSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type rct(rctSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_translate_rct_wksxp(rct));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 2},
@@ -229,6 +336,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_wksxp_translate_wkt", (DL_FUNC) &_wk_cpp_wksxp_translate_wkt, 6},
     {"_wk_cpp_wksxp_translate_wkb", (DL_FUNC) &_wk_cpp_wksxp_translate_wkb, 6},
     {"_wk_cpp_wksxp_translate_wksxp", (DL_FUNC) &_wk_cpp_wksxp_translate_wksxp, 4},
+    {"_wk_cpp_translate_xyzm_wkt", (DL_FUNC) &_wk_cpp_translate_xyzm_wkt, 3},
+    {"_wk_cpp_translate_xyzm_wkb", (DL_FUNC) &_wk_cpp_translate_xyzm_wkb, 3},
+    {"_wk_cpp_translate_xyzm_wksxp", (DL_FUNC) &_wk_cpp_translate_xyzm_wksxp, 1},
+    {"_wk_cpp_translate_wkt_xyzm", (DL_FUNC) &_wk_cpp_translate_wkt_xyzm, 1},
+    {"_wk_cpp_translate_wkb_xyzm", (DL_FUNC) &_wk_cpp_translate_wkb_xyzm, 1},
+    {"_wk_cpp_translate_wksxp_xyzm", (DL_FUNC) &_wk_cpp_translate_wksxp_xyzm, 1},
+    {"_wk_cpp_translate_rct_wkt", (DL_FUNC) &_wk_cpp_translate_rct_wkt, 3},
+    {"_wk_cpp_translate_rct_wkb", (DL_FUNC) &_wk_cpp_translate_rct_wkb, 3},
+    {"_wk_cpp_translate_rct_wksxp", (DL_FUNC) &_wk_cpp_translate_rct_wksxp, 1},
     {NULL, NULL, 0}
 };
 

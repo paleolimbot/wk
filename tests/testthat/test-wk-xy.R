@@ -121,3 +121,9 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
     xyzm(1, 2, 3, 4)
   )
 })
+
+test_that("coercion to wk* vectors works", {
+  expect_identical(as_wkt(xy(1, 2)), wkt("POINT (1 2)"))
+  expect_identical(as_wkb(xy(1, 2)), as_wkb("POINT (1 2)"))
+  expect_identical(as_wksxp(xy(1, 2)), as_wksxp("POINT (1 2)"))
+})
