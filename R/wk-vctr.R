@@ -24,10 +24,13 @@ print.wk_vctr <- function(x, ...) {
 #' @export
 c.wk_vctr <- function(...) {
   result <- new_wk_vctr(NextMethod(), ..1)
+  out_class <- class(..1)[1]
+  validator_name <- paste0("validate_", out_class)
+  validator_package <- strsplit(out_class, "_")[[1]][1]
   validator <- get(
-    paste0("validate_", class(..1)[1]),
+    validator_name,
     mode = "function",
-    envir = asNamespace("wk")
+    envir = asNamespace(validator_package)
   )
   validator(result)
   result
