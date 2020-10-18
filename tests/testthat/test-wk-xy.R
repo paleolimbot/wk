@@ -149,3 +149,9 @@ test_that("coercion from wk* vectors works", {
 
   expect_error(as_xy(wkt("POINT (1 2)"), dims = "L"), "Unknown dimensions")
 })
+
+test_that("subset-assign works for wk_xy", {
+  x <- xyzm(1:2, 2, 3, 4)
+  x[2] <- xy(10, 20)
+  expect_identical(x[2], xyzm(10, 20, NA, NA))
+})

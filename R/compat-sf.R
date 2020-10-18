@@ -75,6 +75,12 @@ as_xy.sfc <- function(x, ...) {
 }
 
 #' @export
+as_rct.bbox <- function(x, ...) {
+  x <- unclass(x)
+  new_wk_rct(as.list(x[c("xmin", "ymin", "xmax", "ymax")]))
+}
+
+#' @export
 as_wkb.sf <- function(x, ..., include_srid = FALSE) {
   as_wkb(sf::st_geometry(x), ..., include_srid = include_srid)
 }

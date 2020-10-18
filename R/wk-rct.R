@@ -33,7 +33,7 @@ as_rct <- function(x, ...) {
 
 #' @rdname rct
 #' @export
-as_rct.rct <- function(x, ...) {
+as_rct.wk_rct <- function(x, ...) {
   x
 }
 
@@ -99,5 +99,8 @@ format.wk_rct <- function(x, ...) {
 
 #' @export
 `[<-.wk_rct` <- function(x, i, value) {
-
+  replacement <- as_rct(value)
+  result <- Map("[<-", unclass(x), i, unclass(replacement))
+  names(result) <- c("xmin", "ymin", "xmax", "ymax")
+  new_wk_rct(result)
 }

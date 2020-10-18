@@ -85,6 +85,13 @@ test_that("conversion from sf to xy works", {
   expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2)))), xy(1, 2))
 })
 
+test_that("conversion from bbox to rct works", {
+  skip_if_not_installed("sf")
+
+  sfc <- sf::st_sfc(sf::st_point(c(2, 3)), sf::st_point(c(0, 1)))
+  expect_identical(as_rct(sf::st_bbox(sfc)), rct(0, 1, 2, 3))
+})
+
 test_that("conversion to sf works", {
   skip_if_not_installed("sf")
 

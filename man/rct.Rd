@@ -3,7 +3,7 @@
 \name{rct}
 \alias{rct}
 \alias{as_rct}
-\alias{as_rct.rct}
+\alias{as_rct.wk_rct}
 \alias{as_rct.matrix}
 \alias{as_rct.data.frame}
 \title{2D rectangle vectors}
@@ -12,7 +12,7 @@ rct(xmin = double(), ymin = double(), xmax = double(), ymax = double())
 
 as_rct(x, ...)
 
-\method{as_rct}{rct}(x, ...)
+\method{as_rct}{wk_rct}(x, ...)
 
 \method{as_rct}{matrix}(x, ...)
 

@@ -325,3 +325,17 @@ format.wk_xyzm <- function(x, ...) {
   x <- unclass(x)
   sprintf("ZM (%s %s %s %s)", format(x$x, ...), format(x$y, ...), format(x$z, ...), format(x$m, ...))
 }
+
+#' @export
+`[<-.wk_xy` <- function(x, i, value) {
+  replacement <- as_xy(value)
+  result <- Map(
+    "[<-",
+    unclass(x),
+    i,
+    fill_missing_dims(unclass(replacement), xy_dims(x), length(replacement))
+  )
+
+  names(result) <- names(unclass(x))
+  structure(result, class = class(x))
+}
