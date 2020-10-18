@@ -100,6 +100,8 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
   expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "m")), xym(1, 2, NA))
   expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "z", "m")), xyzm(1, 2, NA, NA))
 
+  expect_error(as_xy(data.frame(x = 1, y = 2), dims = "L"), "Unknown dims")
+
   expect_identical(
     as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4))),
     xyzm(1, 2, 3, 4)
@@ -116,6 +118,17 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
     as_xy(matrix(1:4, nrow = 1)),
     xyzm(1, 2, 3, 4)
   )
+
+  expect_identical(
+    as_xy(matrix(1:2, nrow = 1, dimnames = list(NULL, c("x", "y")))),
+    xy(1, 2)
+  )
+  expect_identical(
+    as_xy(matrix(1:3, nrow = 1, dimnames = list(NULL, c("x", "y", "m")))),
+    xym(1, 2, 3)
+  )
+
+  expect_error(as_xy(matrix(1:10, nrow = 1)), "Can't guess dimensions")
 })
 
 test_that("coercion to wk* vectors works", {
@@ -133,4 +146,6 @@ test_that("coercion from wk* vectors works", {
 
   expect_identical(as_xy(as_wkb("POINT (1 2)")), xy(1, 2))
   expect_identical(as_xy(as_wksxp("POINT (1 2)")), xy(1, 2))
+
+  expect_error(as_xy(wkt("POINT (1 2)"), dims = "L"), "Unknown dimensions")
 })

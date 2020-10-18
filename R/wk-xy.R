@@ -81,7 +81,7 @@ as_xy.wk_xy <- function(x, ..., dims = NULL) {
     new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x)))
 
   } else {
-    stop("Unkown dims in as_xy().", call. = FALSE)
+    stop("Unknown dims in as_xy().", call. = FALSE)
   }
 }
 
@@ -172,7 +172,7 @@ as_xy.data.frame <- function(x, ..., dims = NULL) {
     new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), nrow(x)))
 
   } else {
-    stop("Unkown dims in as_xy.data.frame().", call. = FALSE)
+    stop("Unknown dims in as_xy.data.frame().", call. = FALSE)
   }
 }
 
@@ -209,20 +209,20 @@ as_xy_wkx <- function(x, translator, dims) {
     dims <- intersect(c("x", "y", "z", "m"), dims)
   }
 
-  if (setequal(dims, c("x", "y"))) {
+  if (identical(dims, c("x", "y"))) {
     new_wk_xy(result[dims])
 
-  } else if (setequal(dims, c("x", "y", "z"))) {
+  } else if (identical(dims, c("x", "y", "z"))) {
     new_wk_xyz(result[dims])
 
-  } else if (setequal(dims, c("x", "y", "m"))) {
+  } else if (identical(dims, c("x", "y", "m"))) {
     new_wk_xym(result[dims])
 
-  } else if (setequal(dims, c("x", "y", "z", "m"))) {
+  } else if (identical(dims, c("x", "y", "z", "m"))) {
     new_wk_xyzm(result[dims])
 
   } else {
-    stop("Unkown dimensions.", call. = FALSE)
+    stop("Unknown dimensions.", call. = FALSE)
   }
 }
 
