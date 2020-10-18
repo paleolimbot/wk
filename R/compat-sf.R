@@ -138,15 +138,23 @@ st_as_sf.wk_wksxp <- function(x, ...) {
 }
 
 st_as_sfc.wk_xy <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x), ...)
+  if (all(!is.na(x))) {
+    st_as_sf.wk_xy(x, ...)$geometry
+  } else {
+    sf::st_as_sfc(as_wkb(x), ...)
+  }
 }
 
 st_as_sf.wk_xy <- function(x, ...) {
-  sf::st_as_sf(
-    new_data_frame(
-      list(geometry = st_as_sfc.wk_xy(x, ...))
+  if (all(!is.na(x))) {
+    sf::st_as_sf(as.data.frame(x), coords = xy_dims(x))
+  } else {
+    sf::st_as_sf(
+      new_data_frame(
+        list(geometry = sf::st_as_sfc(as_wkb(x), ...))
+      )
     )
-  )
+  }
 }
 
 st_as_sfc.wk_rct <- function(x, ...) {
