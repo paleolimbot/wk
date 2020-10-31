@@ -23,10 +23,11 @@
 #'    (may be omitted if false)
 #'
 #' This is similar to the `sf::st_sfc()` format, but the formats aren't
-#' interchangable.
+#' interchangeable.
 #'
 #' @param x A [list()] features (see details)
 #' @inheritParams wkb_translate_wkt
+#' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'
 #' @return A [new_wk_wksxp()]
@@ -35,18 +36,18 @@
 #' @examples
 #' wksxp(wkt_translate_wksxp("POINT (20 10)"))
 #'
-wksxp <- function(x = list()) {
+wksxp <- function(x = list(), crs = NULL) {
   attributes(x) <- NULL
-  wksxp <- new_wk_wksxp(x)
+  wksxp <- new_wk_wksxp(x, crs = crs)
   validate_wk_wksxp(x)
   wksxp
 }
 
 #' @rdname wksxp
 #' @export
-parse_wksxp <- function(x) {
+parse_wksxp <- function(x, crs = NULL) {
   attributes(x) <- NULL
-  parse_base(new_wk_wksxp(x), wksxp_problems(x))
+  parse_base(new_wk_wksxp(x, crs = crs), wksxp_problems(x))
 }
 
 #' @rdname wksxp
@@ -79,7 +80,8 @@ as_wksxp.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, includ
         include_z = include_z %||% NA,
         include_m = include_m %||% NA,
         include_srid = include_srid %||% NA
-      )
+      ),
+      crs = attr(x, "crs", exact = TRUE)
     )
   }
 }
@@ -93,7 +95,8 @@ as_wksxp.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_
       include_z = include_z %||% NA,
       include_m = include_m %||% NA,
       include_srid = include_srid %||% NA
-    )
+    ),
+    crs = attr(x, "crs", exact = TRUE)
   )
 }
 
@@ -106,7 +109,8 @@ as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_
       include_z = include_z %||% NA,
       include_m = include_m %||% NA,
       include_srid = include_srid %||% NA
-    )
+    ),
+    crs = attr(x, "crs", exact = TRUE)
   )
 }
 
@@ -125,15 +129,16 @@ as_wksxp.WKB <- function(x, ...) {
 #' S3 Details for wk_wksxp
 #'
 #' @param x A (possibly) [wksxp()] vector
+#' @inheritParams new_wk_wkb
 #'
 #' @export
 #'
-new_wk_wksxp <- function(x = list()) {
+new_wk_wksxp <- function(x = list(), crs = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wksxp input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wksxp", "wk_vctr"))
+  structure(x, class = c("wk_wksxp", "wk_vctr"), crs = crs)
 }
 
 #' @rdname new_wk_wksxp
@@ -155,8 +160,17 @@ validate_wk_wksxp <- function(x) {
 #' @export
 `[<-.wk_wksxp` <- function(x, i, value) {
   x <- unclass(x)
-  x[i] <- as_wksxp(value)
-  new_wk_wksxp(x)
+  value <- as_wksxp(value)
+  x[i] <- value
+  x_crs <- attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  new_wk_wksxp(
+    x,
+    crs = wk_crs_output(
+      x_crs,
+      attr(value, "crs", exact = TRUE)
+    )
+  )
 }
 
 #' @export

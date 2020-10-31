@@ -52,3 +52,16 @@ test_that("as_wksxp() works", {
     as_wksxp("POINT (11 12)")
   )
 })
+
+test_that("wkt() propagates CRS", {
+  x <- as_wksxp("POINT (1 2)")
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wksxp(x, crs = NULL), "are not equal")
+  x[1] <- wksxp(x, crs = 1234L)
+  expect_identical(wk_crs(x), 1234)
+})

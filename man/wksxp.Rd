@@ -11,9 +11,9 @@
 \alias{as_wksxp.wk_wkb}
 \title{Mark lists as well-known "S" expressions}
 \usage{
-wksxp(x = list())
+wksxp(x = list(), crs = NULL)
 
-parse_wksxp(x)
+parse_wksxp(x, crs = NULL)
 
 as_wksxp(x, ...)
 
@@ -29,6 +29,8 @@ as_wksxp(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} features (see details)}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Unused}
 
@@ -80,7 +82,7 @@ encoded as attributes. The attribures that are used are:
 }
 
 This is similar to the \code{sf::st_sfc()} format, but the formats aren't
-interchangable.
+interchangeable.
 }
 \examples{
 wksxp(wkt_translate_wksxp("POINT (20 10)"))

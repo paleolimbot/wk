@@ -64,7 +64,7 @@ test_that("parse_wkt() works", {
   expect_identical(nrow(attr(parsed, "problems")), 1L)
 })
 
-test_that("wkb() propagates CRS", {
+test_that("wkt() propagates CRS", {
   x <- wkt("POINT (1 2)")
   wk_crs(x) <- 1234
 
