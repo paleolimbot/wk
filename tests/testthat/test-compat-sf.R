@@ -1,4 +1,11 @@
 
+test_that("sf CRS objects can be compared", {
+  expect_true(wk_crs_equal(sf::st_crs(4326), 4326))
+  expect_true(wk_crs_equal(sf::st_crs(4326), 4326L))
+  expect_true(wk_crs_equal(sf::st_crs(NA), NULL))
+  expect_true(wk_crs_equal(NULL, sf::st_crs(NA)))
+})
+
 test_that("conversion from sf to wkt works", {
   skip_if_not_installed("sf")
 

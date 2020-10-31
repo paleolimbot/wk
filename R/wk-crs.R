@@ -1,4 +1,57 @@
 
+#' Set and get vector CRS
+#'
+#' The wk package doesn't operate on CRS objects, but does propagate them
+#' through subsetting and concatenation. A CRS object can be any R object,
+#' and x can be any object whose 'crs' attribute carries a CRS. These functions
+#' are S3 generics to keep them from being used
+#' on objects that do not use this system of CRS propagation.
+#'
+#' @param x An objects whose "crs" attribute is used to carry a CRS.
+#' @param crs,value An object that can be interpreted as a CRS
+#'
+#' @export
+#'
+wk_crs <- function(x) {
+  UseMethod("wk_crs")
+}
+
+#' @rdname wk_crs
+#' @export
+wk_crs.wk_vctr <- function(x) {
+  attr(x, "crs", exact = TRUE)
+}
+
+#' @rdname wk_crs
+#' @export
+wk_crs.wk_rcrd <- function(x) {
+  attr(x, "crs", exact = TRUE)
+}
+
+#' @rdname wk_crs
+#' @export
+`wk_crs<-` <- function(x, value) {
+  wk_set_crs(x, value)
+}
+
+#' @rdname wk_crs
+#' @export
+wk_set_crs <- function(x, crs) {
+  UseMethod("wk_set_crs")
+}
+
+#' @export
+wk_set_crs.wk_vctr <- function(x, crs) {
+  attr(x, "crs") <- crs
+  x
+}
+
+#' @export
+wk_set_crs.wk_rcrd <- function(x, crs) {
+  attr(x, "crs") <- crs
+  x
+}
+
 #' Compare CRS objects
 #'
 #' The [wk_crs_equal()] function uses special S3 dispatch on [wk_crs_equal_generic()]

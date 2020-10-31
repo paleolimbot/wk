@@ -1,4 +1,26 @@
 
+test_that("crs setting and getting works on wk_vctr",  {
+  x <- new_wk_wkt()
+  expect_null(wk_crs(x))
+
+  x <- wk_set_crs(x, 4326)
+  expect_identical(wk_crs(x), 4326)
+
+  wk_crs(x) <- 26920
+  expect_identical(wk_crs(x), 26920)
+})
+
+test_that("crs setting and getting works on wk_rcrd",  {
+  x <- new_wk_xy()
+  expect_null(wk_crs(x))
+
+  x <- wk_set_crs(x, 4326)
+  expect_identical(wk_crs(x), 4326)
+
+  wk_crs(x) <- 26920
+  expect_identical(wk_crs(x), 26920)
+})
+
 test_that("crs comparison works", {
   expect_true(wk_crs_equal(NULL, NULL))
   expect_false(wk_crs_equal(NULL, "something"))

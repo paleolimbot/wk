@@ -1,5 +1,10 @@
 
 #' @export
+wk_crs_equal_generic.crs <- function(x, y, ...) {
+  x == sf::st_crs(y)
+}
+
+#' @export
 as_wkb.sfc <- function(x, ..., include_srid = FALSE) {
   as_wkb(sf::st_as_binary(x, ..., precision = 0, EWKB = include_srid))
 }
