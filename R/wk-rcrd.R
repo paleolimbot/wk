@@ -7,7 +7,7 @@ new_wk_rcrd <- function(x, template) {
     all(names(x) != "")
   )
 
-  structure(x, class = unique(class(template)))
+  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
 }
 
 validate_wk_rcrd <- function(x) {

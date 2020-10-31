@@ -58,7 +58,7 @@ as.data.frame.wk_vctr <- function(x, ..., optional = FALSE) {
 }
 
 new_wk_vctr <- function(x, template) {
-  structure(x, class = unique(class(template)))
+  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
 }
 
 parse_base <- function(x, problems) {

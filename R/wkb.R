@@ -3,6 +3,7 @@
 #'
 #' @param x A [list()] of [raw()] vectors or `NULL`.
 #' @inheritParams wkb_translate_wkt
+#' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'
 #' @return A [new_wk_wkb()]
@@ -11,9 +12,9 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x = list()) {
+wkb <- function(x = list(), crs = NULL) {
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x)
+  wkb <- new_wk_wkb(x, crs = crs)
   validate_wk_wkb(x)
   wkb
 }
@@ -33,7 +34,7 @@ as_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.character <- function(x, ...) {
+as_wkb.character <- function(x, ..., crs = NULL) {
   as_wkb(wkt(x), ...)
 }
 
@@ -51,7 +52,8 @@ as_wkb.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
         include_m = include_m %||% NA,
         include_srid = include_srid %||% NA,
         endian = endian %||% wk_platform_endian()
-      )
+      ),
+      crs = attr(x, "crs", exact = TRUE)
     )
   }
 }
@@ -67,7 +69,8 @@ as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_sr
       include_m = include_m %||% NA,
       include_srid = include_srid %||% NA,
       endian = endian %||% wk_platform_endian()
-    )
+    ),
+    crs = attr(x, "crs", exact = TRUE)
   )
 }
 
@@ -82,7 +85,8 @@ as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_
       include_m = include_m %||% NA,
       include_srid = include_srid %||% NA,
       endian = endian %||% wk_platform_endian()
-    )
+    ),
+    crs = attr(x, "crs", exact = TRUE)
   )
 }
 
@@ -101,15 +105,16 @@ as_wkb.WKB <- function(x, ...) {
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
+#' @param crs A value to be propagated as the CRS for this vector.
 #'
 #' @export
 #'
-new_wk_wkb <- function(x = list()) {
+new_wk_wkb <- function(x = list(), crs = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"))
+  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs)
 }
 
 #' @rdname new_wk_wkb
@@ -136,8 +141,17 @@ is_wk_wkb <- function(x) {
 #' @export
 `[<-.wk_wkb` <- function(x, i, value) {
   x <- unclass(x)
-  x[i] <- as_wkb(value)
-  new_wk_wkb(x)
+  value <- as_wkb(value)
+  x[i] <- value
+  x_crs <- attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  new_wk_wkb(
+    x,
+    crs = wk_crs_output(
+      x_crs,
+      attr(value, "crs", exact = TRUE)
+    )
+  )
 }
 
 #' @export

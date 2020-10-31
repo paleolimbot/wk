@@ -83,7 +83,7 @@ wk_crs_output <- function(x, y) {
   } else if (wk_crs_equal(x, y)) {
     x
   } else {
-    stop(sprintf("Can't compare CRS objects '%s' and '%s'.", x, y), call. = FALSE)
+    stop(sprintf("CRS objects '%s' and '%s' are not equal.", format(x), format(y)), call. = FALSE)
   }
 }
 

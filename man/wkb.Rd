@@ -14,13 +14,13 @@
 \alias{as_wksxp.WKB}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x = list())
+wkb(x = list(), crs = NULL)
 
 parse_wkb(x)
 
 as_wkb(x, ...)
 
-\method{as_wkb}{character}(x, ...)
+\method{as_wkb}{character}(x, ..., crs = NULL)
 
 \method{as_wkb}{wk_wkb}(
   x,
@@ -59,6 +59,8 @@ as_wkb(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Unused}
 

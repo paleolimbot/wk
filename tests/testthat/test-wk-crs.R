@@ -40,5 +40,5 @@ test_that("crs output computing works", {
   expect_identical(wk_crs_output(NULL, wk_crs_inherit()), NULL)
   expect_identical(wk_crs_output(wk_crs_inherit(), NULL), NULL)
   expect_identical(wk_crs_output(wk_crs_inherit(), wk_crs_inherit()), wk_crs_inherit())
-  expect_error(wk_crs_output(1, 2), "Can't compare CRS objects")
+  expect_error(wk_crs_output(1, 2), "are not equal")
 })
