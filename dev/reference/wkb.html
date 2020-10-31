@@ -120,14 +120,14 @@
     <p>Mark lists of raw vectors as well-known binary</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wkb</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>parse_wkb</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>parse_wkb</span><span class='op'>(</span><span class='va'>x</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for character</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
 <span class='fu'>as_wkb</span><span class='op'>(</span>
@@ -177,6 +177,10 @@
     <tr>
       <th>x</th>
       <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors or <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>crs</th>
+      <td><p>A value to be propagated as the CRS for this vector.</p></td>
     </tr>
     <tr>
       <th>...</th>

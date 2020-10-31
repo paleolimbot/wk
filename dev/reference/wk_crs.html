@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>S3 Details for wk_wksxp — new_wk_wksxp • wk</title>
+<title>Set and get vector CRS — wk_crs • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,12 @@
 
 
 
-<meta property="og:title" content="S3 Details for wk_wksxp — new_wk_wksxp" />
-<meta property="og:description" content="S3 Details for wk_wksxp" />
+<meta property="og:title" content="Set and get vector CRS — wk_crs" />
+<meta property="og:description" content="The wk package doesn't operate on CRS objects, but does propagate them
+through subsetting and concatenation. A CRS object can be any R object,
+and x can be any object whose 'crs' attribute carries a CRS. These functions
+are S3 generics to keep them from being used
+on objects that do not use this system of CRS propagation." />
 
 
 <meta name="robots" content="noindex">
@@ -111,31 +115,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>S3 Details for wk_wksxp</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wksxp.R'><code>R/wksxp.R</code></a></small>
-    <div class="hidden name"><code>new_wk_wksxp.Rd</code></div>
+    <h1>Set and get vector CRS</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wk-crs.R'><code>R/wk-crs.R</code></a></small>
+    <div class="hidden name"><code>wk_crs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>S3 Details for wk_wksxp</p>
+    <p>The wk package doesn't operate on CRS objects, but does propagate them
+through subsetting and concatenation. A CRS object can be any R object,
+and x can be any object whose 'crs' attribute carries a CRS. These functions
+are S3 generics to keep them from being used
+on objects that do not use this system of CRS propagation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>new_wk_wksxp</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
-<span class='fu'>is_wk_wksxp</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S3 method for wk_vctr</span>
+<span class='fu'>wk_crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
-<span class='fu'>validate_wk_wksxp</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for wk_rcrd</span>
+<span class='fu'>wk_crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>wk_crs</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>value</span>
+
+<span class='fu'>wk_set_crs</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>crs</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A (possibly) <code><a href='wksxp.html'>wksxp()</a></code> vector</p></td>
+      <td><p>An objects whose "crs" attribute is used to carry a CRS.</p></td>
     </tr>
     <tr>
-      <th>crs</th>
-      <td><p>A value to be propagated as the CRS for this vector.</p></td>
+      <th>crs, value</th>
+      <td><p>An object that can be interpreted as a CRS</p></td>
     </tr>
     </table>
 
