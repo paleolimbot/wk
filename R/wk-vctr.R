@@ -23,10 +23,21 @@ print.wk_vctr <- function(x, ...) {
 
 #' @export
 c.wk_vctr <- function(...) {
-  result <- new_wk_vctr(NextMethod(), ..1)
-  out_class <- class(..1)[1]
-  validator_name <- paste0("validate_", out_class)
-  validator_package <- strsplit(out_class, "_")[[1]][1]
+  dots <- list(...)
+  classes <- lapply(dots, class)
+  first_class <- classes[[1]]
+  if (!all(vapply(classes, identical, first_class, FUN.VALUE = logical(1)))) {
+    stop("Can't combine 'wk_vctr' objects that do not have identical classes.", call. = FALSE)
+  }
+
+  # check CRS compatibility
+  crses <- lapply(dots, attr, "crs", exact = TRUE)
+  Reduce(wk_crs_output, crses)
+
+  result <- new_wk_vctr(NextMethod(), dots[[1]])
+
+  validator_name <- paste0("validate_", first_class)
+  validator_package <- strsplit(first_class, "_")[[1]][1]
   validator <- get(
     validator_name,
     mode = "function",

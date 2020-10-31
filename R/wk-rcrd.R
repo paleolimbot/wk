@@ -104,6 +104,10 @@ c.wk_rcrd <- function(...) {
     stop("Can't combine 'wk_rcrd' objects that do not have identical classes.", call. = FALSE)
   }
 
+  # check CRS compatibility
+  crses <- lapply(dots, attr, "crs", exact = TRUE)
+  Reduce(wk_crs_output, crses)
+
   result <- new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 
   validator_name <- paste0("validate_", first_class)
