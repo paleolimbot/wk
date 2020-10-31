@@ -11,15 +11,15 @@
 \alias{as_wkt.wk_wksxp}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x = character())
+wkt(x = character(), crs = NULL)
 
-parse_wkt(x)
+parse_wkt(x, crs = NULL)
 
 as_wkt(x, ...)
 
 \method{as_wkt}{default}(x, ...)
 
-\method{as_wkt}{character}(x, ...)
+\method{as_wkt}{character}(x, ..., crs = NULL)
 
 \method{as_wkt}{wk_wkt}(
   x,
@@ -53,6 +53,8 @@ as_wkt(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=character]{character()}} vector containing well-known text.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Unused}
 

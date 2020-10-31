@@ -21,9 +21,9 @@ wkb <- function(x = list(), crs = NULL) {
 
 #' @rdname wkb
 #' @export
-parse_wkb <- function(x) {
+parse_wkb <- function(x, crs = NULL) {
   attributes(x) <- NULL
-  parse_base(new_wk_wkb(x), wkb_problems(x))
+  parse_base(new_wk_wkb(x, crs = crs), wkb_problems(x))
 }
 
 #' @rdname wkb
@@ -35,7 +35,7 @@ as_wkb <- function(x, ...) {
 #' @rdname wkb
 #' @export
 as_wkb.character <- function(x, ..., crs = NULL) {
-  as_wkb(wkt(x), ...)
+  as_wkb(wkt(x, crs = crs), ...)
 }
 
 #' @rdname wkb

@@ -16,7 +16,7 @@
 \usage{
 wkb(x = list(), crs = NULL)
 
-parse_wkb(x)
+parse_wkb(x, crs = NULL)
 
 as_wkb(x, ...)
 
