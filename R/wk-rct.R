@@ -11,14 +11,15 @@
 #' @examples
 #' rct(1, 2, 3, 4)
 #'
-rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double()) {
+rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(), crs = NULL) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
       ymin = as.double(ymin),
       xmax = as.double(xmax),
       ymax = as.double(ymax)
-    )
+    ),
+    crs = crs
   )
 
   validate_wk_rct(vec)
@@ -39,19 +40,19 @@ as_rct.wk_rct <- function(x, ...) {
 
 #' @rdname rct
 #' @export
-as_rct.matrix <- function(x, ...) {
+as_rct.matrix <- function(x, ..., crs = NULL) {
   if (ncol(x) == 4) {
     colnames(x) <- c("xmin", "ymin", "xmax", "ymax")
   }
 
-  as_rct(as.data.frame(x), ...)
+  as_rct(as.data.frame(x), ..., crs = crs)
 }
 
 #' @rdname rct
 #' @export
-as_rct.data.frame <- function(x, ...) {
+as_rct.data.frame <- function(x, ..., crs = NULL) {
   stopifnot(all(c("xmin", "ymin", "xmax", "ymax") %in% names(x)))
-  new_wk_rct(lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double))
+  new_wk_rct(lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double), crs = crs)
 }
 
 validate_wk_rct <- function(x) {
@@ -64,17 +65,17 @@ validate_wk_rct <- function(x) {
 
 #' @export
 as_wkt.wk_rct <- function(x, ...) {
-  new_wk_wkt(rct_translate_wkt(x, ...))
+  new_wk_wkt(rct_translate_wkt(x, ...), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @export
 as_wkb.wk_rct <- function(x, ...) {
-  new_wk_wkb(rct_translate_wkb(x, ...))
+  new_wk_wkb(rct_translate_wkb(x, ...), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @export
 as_wksxp.wk_rct <- function(x, ...) {
-  new_wk_wksxp(rct_translate_wksxp(x))
+  new_wk_wksxp(rct_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' S3 details for rct objects
@@ -83,8 +84,8 @@ as_wksxp.wk_rct <- function(x, ...) {
 #'
 #' @export
 #'
-new_wk_rct <- function(x) {
-  structure(x, class = c("wk_rct", "wk_rcrd"))
+new_wk_rct <- function(x, crs = NULL) {
+  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs)
 }
 
 #' @export
@@ -102,5 +103,8 @@ format.wk_rct <- function(x, ...) {
   replacement <- as_rct(value)
   result <- Map("[<-", unclass(x), i, unclass(replacement))
   names(result) <- c("xmin", "ymin", "xmax", "ymax")
-  new_wk_rct(result)
+  new_wk_rct(
+    result,
+    crs = wk_crs_output(attr(x, "crs", exact = TRUE), attr(replacement, "crs", exact =  TRUE))
+  )
 }

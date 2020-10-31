@@ -89,12 +89,6 @@ wk_crs_output <- function(x, y) {
 
 #' @rdname wk_crs_equal
 #' @export
-wk_crs_inherit <- function() {
-  structure(list(), class = "wk_crs_inherit")
-}
-
-#' @rdname wk_crs_equal
-#' @export
 wk_crs_equal_generic <- function(x, y, ...) {
   UseMethod("wk_crs_equal_generic")
 }
@@ -112,4 +106,20 @@ wk_crs_equal_generic.integer <- function(x, y, ...) {
 #' @export
 wk_crs_equal_generic.double <- function(x, y, ...) {
   isTRUE(x == y)
+}
+
+#' @rdname wk_crs_equal
+#' @export
+wk_crs_inherit <- function() {
+  structure(list(), class = "wk_crs_inherit")
+}
+
+#' @export
+format.wk_crs_inherit <- function(x, ...) {
+  format("wk_crs_inherit()", ...)
+}
+
+#' @export
+print.wk_crs_inherit <- function(x, ...) {
+  cat("<wk_crs_inherit>\n")
 }

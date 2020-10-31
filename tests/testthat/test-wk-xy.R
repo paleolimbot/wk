@@ -155,3 +155,16 @@ test_that("subset-assign works for wk_xy", {
   x[2] <- xy(10, 20)
   expect_identical(x[2], xyzm(10, 20, NA, NA))
 })
+
+test_that("xy() propagates CRS", {
+  x <- xy(1, 2)
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wk_set_crs(x, NULL), "are not equal")
+  x[1] <- wk_set_crs(x, 1234L)
+  expect_identical(wk_crs(x), 1234)
+})

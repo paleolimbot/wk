@@ -3,17 +3,17 @@
 \name{wk_crs_equal}
 \alias{wk_crs_equal}
 \alias{wk_crs_output}
-\alias{wk_crs_inherit}
 \alias{wk_crs_equal_generic}
+\alias{wk_crs_inherit}
 \title{Compare CRS objects}
 \usage{
 wk_crs_equal(x, y)
 
 wk_crs_output(x, y)
 
-wk_crs_inherit()
-
 wk_crs_equal_generic(x, y, ...)
+
+wk_crs_inherit()
 }
 \arguments{
 \item{x, y}{Objects stored in the \code{crs} attribute of a vector.}

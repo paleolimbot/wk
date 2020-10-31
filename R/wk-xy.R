@@ -337,5 +337,9 @@ format.wk_xyzm <- function(x, ...) {
   )
 
   names(result) <- names(unclass(x))
-  structure(result, class = class(x))
+  structure(
+    result,
+    class = class(x),
+    crs = wk_crs_output(attr(x, "crs", exact = TRUE), attr(replacement, "crs", exact =  TRUE))
+  )
 }

@@ -40,3 +40,16 @@ test_that("subset-assign works for rct", {
   x[1] <- rct(NA, NA, NA, NA)
   expect_identical(x, c(rct(NA, NA, NA, NA), rct(2, 3, 4, 5)))
 })
+
+test_that("rct() propagates CRS", {
+  x <- rct(1, 2, 3, 4)
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wk_set_crs(x, NULL), "are not equal")
+  x[1] <- wk_set_crs(x, 1234L)
+  expect_identical(wk_crs(x), 1234)
+})

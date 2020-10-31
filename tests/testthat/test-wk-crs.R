@@ -42,3 +42,8 @@ test_that("crs output computing works", {
   expect_identical(wk_crs_output(wk_crs_inherit(), wk_crs_inherit()), wk_crs_inherit())
   expect_error(wk_crs_output(1, 2), "are not equal")
 })
+
+test_that("wk_crs_inherit() prints as expected", {
+  expect_match(format(wk_crs_inherit()), "wk_crs_inherit")
+  expect_output(print(wk_crs_inherit()), "wk_crs_inherit")
+})

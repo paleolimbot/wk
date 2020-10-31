@@ -6,6 +6,7 @@ test_that("wk_vctr class works", {
   expect_output(print(x), "wk_vctr")
   expect_output(print(stats::setNames(x, as.character(1:5))), "wk_vctr")
   expect_output(print(x[0]), "wk_vctr")
+  expect_output(print(wk_set_crs(x, 1234)), "CRS=1234")
 
   expect_identical(
     data.frame(col_name = x),
