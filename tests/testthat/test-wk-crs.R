@@ -36,11 +36,18 @@ test_that("crs comparison works", {
 })
 
 test_that("crs output computing works", {
-  expect_identical(wk_crs_output(NULL, NULL), NULL)
-  expect_identical(wk_crs_output(NULL, wk_crs_inherit()), NULL)
-  expect_identical(wk_crs_output(wk_crs_inherit(), NULL), NULL)
-  expect_identical(wk_crs_output(wk_crs_inherit(), wk_crs_inherit()), wk_crs_inherit())
-  expect_error(wk_crs_output(1, 2), "are not equal")
+  x <- wkt("POINT (0 0)", crs = NULL)
+
+  expect_identical(wk_crs_output(x, x), NULL)
+  expect_identical(wk_crs_output(x, wk_set_crs(x, wk_crs_inherit())), NULL)
+  expect_identical(wk_crs_output(wk_set_crs(x, wk_crs_inherit()), x), NULL)
+  expect_identical(
+    wk_crs_output(wk_set_crs(x, wk_crs_inherit()), wk_set_crs(x, wk_crs_inherit())),
+    wk_crs_inherit()
+  )
+  expect_identical(wk_crs_output(wk_set_crs(x, 1), x[integer(0)]), 1)
+  expect_identical(wk_crs_output(x[integer(0)], wk_set_crs(x, 1)), 1)
+  expect_error(wk_crs_output(wk_set_crs(x, 1), wk_set_crs(x, 2)), "are not equal")
 })
 
 test_that("wk_crs_inherit() prints as expected", {

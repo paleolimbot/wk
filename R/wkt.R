@@ -134,18 +134,12 @@ validate_wk_wkt <- function(x) {
 
 #' @export
 `[<-.wk_wkt` <- function(x, i, value) {
+  replacement <- as_wkt(value)
+  crs_out <- wk_crs_output(x, replacement)
   x <- unclass(x)
-  value <- as_wkt(value)
-  x[i] <- value
-  x_crs <- attr(x, "crs", exact = TRUE)
+  x[i] <- replacement
   attr(x, "crs") <- NULL
-  new_wk_wkt(
-    x,
-    crs = wk_crs_output(
-      x_crs,
-      attr(value, "crs", exact = TRUE)
-    )
-  )
+  new_wk_wkt(x, crs = crs_out)
 }
 
 #' @export

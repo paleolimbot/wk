@@ -111,8 +111,7 @@ c.wk_rcrd <- function(...) {
   }
 
   # check CRS compatibility
-  crses <- lapply(dots, attr, "crs", exact = TRUE)
-  Reduce(wk_crs_output, crses)
+  Reduce(wk_crs_output, dots)
 
   new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }

@@ -12,13 +12,13 @@
 \alias{as_xy.data.frame}
 \title{Efficient point vectors}
 \usage{
-xy(x = double(), y = double())
+xy(x = double(), y = double(), crs = NULL)
 
-xyz(x = double(), y = double(), z = double())
+xyz(x = double(), y = double(), z = double(), crs = NULL)
 
-xym(x = double(), y = double(), m = double())
+xym(x = double(), y = double(), m = double(), crs = NULL)
 
-xyzm(x = double(), y = double(), z = double(), m = double())
+xyzm(x = double(), y = double(), z = double(), m = double(), crs = NULL)
 
 xy_dims(x)
 
@@ -32,6 +32,8 @@ as_xy(x, ...)
 }
 \arguments{
 \item{x, y, z, m}{Coordinate values.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Passed to methods.}
 

@@ -4,6 +4,7 @@
 #' @param x,y,z,m Coordinate values.
 #' @param dims A set containing one or more of `c("x", "y", "z", "m")`.
 #' @param ... Passed to methods.
+#' @inheritParams new_wk_wkb
 #'
 #' @return A vector of coordinate values.
 #' @export
@@ -14,38 +15,39 @@
 #' xym(1:5, 1:5, 10)
 #' xyzm(1:5, 1:5, 10, 12)
 #'
-xy <- function(x = double(), y = double()) {
-  vec <- new_wk_xy(recycle_common(x = as.double(x), y = as.double(y)))
+xy <- function(x = double(), y = double(), crs = NULL) {
+  vec <- new_wk_xy(recycle_common(x = as.double(x), y = as.double(y)), crs = crs)
   validate_wk_xy(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xyz <- function(x = double(), y = double(), z = double()) {
-  vec <- new_wk_xyz(recycle_common(x = as.double(x), y = as.double(y), z = as.double(z)))
+xyz <- function(x = double(), y = double(), z = double(), crs = NULL) {
+  vec <- new_wk_xyz(recycle_common(x = as.double(x), y = as.double(y), z = as.double(z)), crs = crs)
   validate_wk_xyz(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xym <- function(x = double(), y = double(), m = double()) {
-  vec <- new_wk_xym(recycle_common(x = as.double(x), y = as.double(y), m = as.double(m)))
+xym <- function(x = double(), y = double(), m = double(), crs = NULL) {
+  vec <- new_wk_xym(recycle_common(x = as.double(x), y = as.double(y), m = as.double(m)), crs = NULL)
   validate_wk_xym(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xyzm <- function(x = double(), y = double(), z = double(), m = double()) {
+xyzm <- function(x = double(), y = double(), z = double(), m = double(), crs = NULL) {
   vec <- new_wk_xyzm(
     recycle_common(
       x = as.double(x),
       y = as.double(y),
       z = as.double(z),
       m = as.double(m)
-    )
+    ),
+    crs = crs
   )
   validate_wk_xyzm(vec)
   vec
@@ -230,29 +232,30 @@ as_xy_wkx <- function(x, translator, dims) {
 #' S3 details for xy objects
 #'
 #' @param x A [xy()] object.
+#' @inheritParams new_wk_wkb
 #'
 #' @export
 #'
-new_wk_xy <- function(x = list(x = double(), y = double())) {
-  structure(x, class = c("wk_xy", "wk_rcrd"))
+new_wk_xy <- function(x = list(x = double(), y = double()), crs = NULL) {
+  structure(x, class = c("wk_xy", "wk_rcrd"), crs = crs)
 }
 
 #' @rdname new_wk_xy
 #' @export
-new_wk_xyz <- function(x = list(x = double(), y = double(), z = double())) {
-  structure(x, class = c("wk_xyz", "wk_xy", "wk_rcrd"))
+new_wk_xyz <- function(x = list(x = double(), y = double(), z = double()), crs = NULL) {
+  structure(x, class = c("wk_xyz", "wk_xy", "wk_rcrd"), crs = crs)
 }
 
 #' @rdname new_wk_xy
 #' @export
-new_wk_xym <- function(x = list(x = double(), y = double(), m = double())) {
-  structure(x, class = c("wk_xym", "wk_xy", "wk_rcrd"))
+new_wk_xym <- function(x = list(x = double(), y = double(), m = double()), crs = NULL) {
+  structure(x, class = c("wk_xym", "wk_xy", "wk_rcrd"), crs = crs)
 }
 
 #' @rdname new_wk_xy
 #' @export
-new_wk_xyzm <- function(x = list(x = double(), y = double(), z = double(), m = double())) {
-  structure(x, class = c("wk_xyzm", "wk_xyz", "wk_xym", "wk_xy", "wk_rcrd"))
+new_wk_xyzm <- function(x = list(x = double(), y = double(), z = double(), m = double()), crs = NULL) {
+  structure(x, class = c("wk_xyzm", "wk_xyz", "wk_xym", "wk_xy", "wk_rcrd"), crs = crs)
 }
 
 #' @rdname new_wk_xy
@@ -289,17 +292,26 @@ validate_wk_xyzm <- function(x) {
 
 #' @export
 as_wkt.wk_xy <- function(x, ...) {
-  new_wk_wkt(xyzm_translate_wkt(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+  new_wk_wkt(
+    xyzm_translate_wkt(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
+    crs = wk_crs(x)
+  )
 }
 
 #' @export
 as_wkb.wk_xy <- function(x, ...) {
-  new_wk_wkb(xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+  new_wk_wkb(
+    xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
+    crs = wk_crs(x)
+  )
 }
 
 #' @export
 as_wksxp.wk_xy <- function(x, ...) {
-  new_wk_wksxp(xyzm_translate_wksxp(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))))
+  new_wk_wksxp(
+    xyzm_translate_wksxp(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
+    crs = wk_crs(x)
+  )
 }
 
 #' @export
@@ -337,9 +349,5 @@ format.wk_xyzm <- function(x, ...) {
   )
 
   names(result) <- names(unclass(x))
-  structure(
-    result,
-    class = class(x),
-    crs = wk_crs_output(attr(x, "crs", exact = TRUE), attr(replacement, "crs", exact =  TRUE))
-  )
+  structure(result, class = class(x), crs = wk_crs_output(x, replacement))
 }

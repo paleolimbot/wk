@@ -6,6 +6,7 @@
 \alias{wk_crs.wk_rcrd}
 \alias{wk_crs<-}
 \alias{wk_set_crs}
+\alias{wk_crs_output}
 \title{Set and get vector CRS}
 \usage{
 wk_crs(x)
@@ -17,9 +18,11 @@ wk_crs(x)
 wk_crs(x) <- value
 
 wk_set_crs(x, crs)
+
+wk_crs_output(x, y)
 }
 \arguments{
-\item{x}{An objects whose "crs" attribute is used to carry a CRS.}
+\item{x, y}{An objects whose "crs" attribute is used to carry a CRS.}
 
 \item{crs, value}{An object that can be interpreted as a CRS}
 }

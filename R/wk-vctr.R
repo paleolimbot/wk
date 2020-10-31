@@ -37,8 +37,7 @@ c.wk_vctr <- function(...) {
   }
 
   # check CRS compatibility
-  crses <- lapply(dots, attr, "crs", exact = TRUE)
-  Reduce(wk_crs_output, crses)
+  Reduce(wk_crs_output, dots)
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }

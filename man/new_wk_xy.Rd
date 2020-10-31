@@ -11,13 +11,16 @@
 \alias{validate_wk_xyzm}
 \title{S3 details for xy objects}
 \usage{
-new_wk_xy(x = list(x = double(), y = double()))
+new_wk_xy(x = list(x = double(), y = double()), crs = NULL)
 
-new_wk_xyz(x = list(x = double(), y = double(), z = double()))
+new_wk_xyz(x = list(x = double(), y = double(), z = double()), crs = NULL)
 
-new_wk_xym(x = list(x = double(), y = double(), m = double()))
+new_wk_xym(x = list(x = double(), y = double(), m = double()), crs = NULL)
 
-new_wk_xyzm(x = list(x = double(), y = double(), z = double(), m = double()))
+new_wk_xyzm(
+  x = list(x = double(), y = double(), z = double(), m = double()),
+  crs = NULL
+)
 
 validate_wk_xy(x)
 
@@ -29,6 +32,8 @@ validate_wk_xyzm(x)
 }
 \arguments{
 \item{x}{A \code{\link[=xy]{xy()}} object.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 }
 \description{
 S3 details for xy objects

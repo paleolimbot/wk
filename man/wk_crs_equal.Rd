@@ -2,14 +2,11 @@
 % Please edit documentation in R/wk-crs.R
 \name{wk_crs_equal}
 \alias{wk_crs_equal}
-\alias{wk_crs_output}
 \alias{wk_crs_equal_generic}
 \alias{wk_crs_inherit}
 \title{Compare CRS objects}
 \usage{
 wk_crs_equal(x, y)
-
-wk_crs_output(x, y)
 
 wk_crs_equal_generic(x, y, ...)
 

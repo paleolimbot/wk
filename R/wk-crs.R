@@ -7,7 +7,7 @@
 #' are S3 generics to keep them from being used
 #' on objects that do not use this system of CRS propagation.
 #'
-#' @param x An objects whose "crs" attribute is used to carry a CRS.
+#' @param x,y An objects whose "crs" attribute is used to carry a CRS.
 #' @param crs,value An object that can be interpreted as a CRS
 #'
 #' @export
@@ -52,6 +52,23 @@ wk_set_crs.wk_rcrd <- function(x, crs) {
   x
 }
 
+#' @rdname wk_crs
+#' @export
+wk_crs_output <- function(x, y) {
+  x <- if (length(x) == 0) wk_crs_inherit() else wk_crs(x)
+  y <- if (length(y) == 0) wk_crs_inherit() else wk_crs(y)
+
+  if (inherits(y, "wk_crs_inherit")) {
+    x
+  } else if (inherits(x, "wk_crs_inherit")) {
+    y
+  } else if (wk_crs_equal(x, y)) {
+    x
+  } else {
+    stop(sprintf("CRS objects '%s' and '%s' are not equal.", format(x), format(y)), call. = FALSE)
+  }
+}
+
 #' Compare CRS objects
 #'
 #' The [wk_crs_equal()] function uses special S3 dispatch on [wk_crs_equal_generic()]
@@ -70,20 +87,6 @@ wk_crs_equal <- function(x, y) {
     wk_crs_equal_generic(y, x)
   } else {
     wk_crs_equal_generic(x, y)
-  }
-}
-
-#' @rdname wk_crs_equal
-#' @export
-wk_crs_output <- function(x, y) {
-  if (inherits(y, "wk_crs_inherit")) {
-    x
-  } else if (inherits(x, "wk_crs_inherit")) {
-    y
-  } else if (wk_crs_equal(x, y)) {
-    x
-  } else {
-    stop(sprintf("CRS objects '%s' and '%s' are not equal.", format(x), format(y)), call. = FALSE)
   }
 }
 

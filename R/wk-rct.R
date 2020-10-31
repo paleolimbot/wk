@@ -4,6 +4,7 @@
 #' @param xmin,ymin,xmax,ymax Rectangle bounds.
 #' @param x An object to be converted to a [rct()].
 #' @param ... Extra arguments passed to `as_rct()`.
+#' @inheritParams new_wk_wkb
 #'
 #' @return A vector along the recycled length of bounds.
 #' @export
@@ -81,6 +82,7 @@ as_wksxp.wk_rct <- function(x, ...) {
 #' S3 details for rct objects
 #'
 #' @param x A [rct()]
+#' @inheritParams new_wk_wkb
 #'
 #' @export
 #'
@@ -103,8 +105,5 @@ format.wk_rct <- function(x, ...) {
   replacement <- as_rct(value)
   result <- Map("[<-", unclass(x), i, unclass(replacement))
   names(result) <- c("xmin", "ymin", "xmax", "ymax")
-  new_wk_rct(
-    result,
-    crs = wk_crs_output(attr(x, "crs", exact = TRUE), attr(replacement, "crs", exact =  TRUE))
-  )
+  new_wk_rct(result, crs = wk_crs_output(x, replacement))
 }
