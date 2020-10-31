@@ -108,17 +108,7 @@ c.wk_rcrd <- function(...) {
   crses <- lapply(dots, attr, "crs", exact = TRUE)
   Reduce(wk_crs_output, crses)
 
-  result <- new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
-
-  validator_name <- paste0("validate_", first_class)
-  validator_package <- strsplit(first_class, "_")[[1]][1]
-  validator <- get(
-    validator_name,
-    mode = "function",
-    envir = asNamespace(validator_package)
-  )
-  validator(result)
-  result
+  new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }
 
 # data.frame() will call as.data.frame() with optional = TRUE

@@ -34,17 +34,7 @@ c.wk_vctr <- function(...) {
   crses <- lapply(dots, attr, "crs", exact = TRUE)
   Reduce(wk_crs_output, crses)
 
-  result <- new_wk_vctr(NextMethod(), dots[[1]])
-
-  validator_name <- paste0("validate_", first_class)
-  validator_package <- strsplit(first_class, "_")[[1]][1]
-  validator <- get(
-    validator_name,
-    mode = "function",
-    envir = asNamespace(validator_package)
-  )
-  validator(result)
-  result
+  new_wk_vctr(NextMethod(), dots[[1]])
 }
 
 #' @export
