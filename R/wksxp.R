@@ -58,14 +58,14 @@ as_wksxp <- function(x, ...) {
 
 #' @rdname wksxp
 #' @export
-as_wksxp.default <- function(x, ...) {
-  as_wksxp(as_wkb(x), ...)
+as_wksxp.default <- function(x, ..., crs = NULL) {
+  as_wksxp(as_wkb(x, crs = crs), ...)
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.character <- function(x, ...) {
-  as_wksxp(wkt(x), ...)
+as_wksxp.character <- function(x, ..., crs = NULL) {
+  as_wksxp(wkt(x, crs = crs), ...)
 }
 
 #' @rdname wksxp
@@ -116,14 +116,14 @@ as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_
 
 #' @rdname wkb
 #' @export
-as_wksxp.blob <- function(x, ...) {
-  as_wksxp(wkb(x), ...)
+as_wksxp.blob <- function(x, ..., crs = NULL) {
+  as_wksxp(wkb(x, crs = crs), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wksxp.WKB <- function(x, ...) {
-  as_wksxp(wkb(x), ...)
+as_wksxp.WKB <- function(x, ..., crs = NULL) {
+  as_wksxp(wkb(x, crs = crs), ...)
 }
 
 #' S3 Details for wk_wksxp

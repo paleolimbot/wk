@@ -151,5 +151,6 @@ format.wk_wkt <- function(x, ..., max_coords = 3) {
 
 #' @export
 as.character.wk_wkt <- function(x, ...) {
+  attr(x, "crs") <- NULL
   unclass(x)
 }

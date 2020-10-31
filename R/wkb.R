@@ -92,14 +92,14 @@ as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_
 
 #' @rdname wkb
 #' @export
-as_wkb.blob <- function(x, ...) {
-  as_wkb(wkb(x), ...)
+as_wkb.blob <- function(x, ..., crs = NULL) {
+  as_wkb(wkb(x, crs = crs), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.WKB <- function(x, ...) {
-  as_wkb(wkb(x), ...)
+as_wkb.WKB <- function(x, ..., crs = NULL) {
+  as_wkb(wkb(x, crs = crs), ...)
 }
 
 #' S3 Details for wk_wkb

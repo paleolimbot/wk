@@ -17,9 +17,9 @@ parse_wksxp(x, crs = NULL)
 
 as_wksxp(x, ...)
 
-\method{as_wksxp}{default}(x, ...)
+\method{as_wksxp}{default}(x, ..., crs = NULL)
 
-\method{as_wksxp}{character}(x, ...)
+\method{as_wksxp}{character}(x, ..., crs = NULL)
 
 \method{as_wksxp}{wk_wksxp}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
 

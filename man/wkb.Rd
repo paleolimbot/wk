@@ -49,13 +49,13 @@ as_wkb(x, ...)
   endian = NULL
 )
 
-\method{as_wkb}{blob}(x, ...)
+\method{as_wkb}{blob}(x, ..., crs = NULL)
 
-\method{as_wkb}{WKB}(x, ...)
+\method{as_wkb}{WKB}(x, ..., crs = NULL)
 
-\method{as_wksxp}{blob}(x, ...)
+\method{as_wksxp}{blob}(x, ..., crs = NULL)
 
-\method{as_wksxp}{WKB}(x, ...)
+\method{as_wksxp}{WKB}(x, ..., crs = NULL)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
