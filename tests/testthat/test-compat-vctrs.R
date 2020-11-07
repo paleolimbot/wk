@@ -32,6 +32,11 @@ test_that("vctrs wkb implementation works", {
   expect_identical(vctrs::vec_c(wkb(), wkb()), wkb())
   expect_identical(vctrs::vec_c(wkb(), wkt()), wkt())
   expect_identical(vctrs::vec_c(wkb(), wksxp()), wksxp())
+  expect_identical(vctrs::vec_c(wkb(), xy()), wkb())
+  expect_identical(vctrs::vec_c(wkb(), xyz()), wkb())
+  expect_identical(vctrs::vec_c(wkb(), xym()), wkb())
+  expect_identical(vctrs::vec_c(wkb(), xyzm()), wkb())
+  expect_identical(vctrs::vec_c(wkb(), rct()), wkb())
 })
 
 test_that("vctrs wkt implementation works", {
@@ -45,6 +50,11 @@ test_that("vctrs wkt implementation works", {
   expect_identical(vctrs::vec_c(wkt(), wkt()), wkt())
   expect_identical(vctrs::vec_c(wkt(), wkb()), wkt())
   expect_identical(vctrs::vec_c(wkt(), wksxp()), wksxp())
+  expect_identical(vctrs::vec_c(wkt(), xy()), wkt())
+  expect_identical(vctrs::vec_c(wkt(), xyz()), wkt())
+  expect_identical(vctrs::vec_c(wkt(), xym()), wkt())
+  expect_identical(vctrs::vec_c(wkt(), xyzm()), wkt())
+  expect_identical(vctrs::vec_c(wkt(), rct()), wkt())
 })
 
 test_that("vctrs wksxp implementation works", {
@@ -58,6 +68,11 @@ test_that("vctrs wksxp implementation works", {
   expect_identical(vctrs::vec_c(wksxp(), wksxp()), wksxp())
   expect_identical(vctrs::vec_c(wksxp(), wkt()), wksxp())
   expect_identical(vctrs::vec_c(wksxp(), wkb()), wksxp())
+  expect_identical(vctrs::vec_c(wksxp(), xy()), wksxp())
+  expect_identical(vctrs::vec_c(wksxp(), xyz()), wksxp())
+  expect_identical(vctrs::vec_c(wksxp(), xym()), wksxp())
+  expect_identical(vctrs::vec_c(wksxp(), xyzm()), wksxp())
+  expect_identical(vctrs::vec_c(wksxp(), rct()), wksxp())
 })
 
 test_that("vec_c() propagates the crs attribute", {

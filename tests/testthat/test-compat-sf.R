@@ -75,7 +75,7 @@ test_that("conversion from sf to xy works", {
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
   expect_identical(as_xy(sf), xy(c(NA, 0), c(NA, 1)))
 
-  expect_identical(as_xy(sf::st_sfc()), xy())
+  expect_identical(as_xy(sf::st_sfc()), xy(crs = NULL))
   expect_error(as_xy(sf::st_sfc(sf::st_linestring())), "Can't create xy")
 
   # check all dimensions

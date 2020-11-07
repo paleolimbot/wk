@@ -15,31 +15,31 @@
 #' xym(1:5, 1:5, 10)
 #' xyzm(1:5, 1:5, 10, 12)
 #'
-xy <- function(x = double(), y = double(), crs = NULL) {
-  vec <- new_wk_xy(recycle_common(x = as.double(x), y = as.double(y)), crs = crs)
+xy <- function(x = double(), y = double(), crs = wk_crs_auto()) {
+  vec <- new_wk_xy(recycle_common(x = as.double(x), y = as.double(y)), crs = wk_crs_auto_value(x, crs))
   validate_wk_xy(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xyz <- function(x = double(), y = double(), z = double(), crs = NULL) {
-  vec <- new_wk_xyz(recycle_common(x = as.double(x), y = as.double(y), z = as.double(z)), crs = crs)
+xyz <- function(x = double(), y = double(), z = double(), crs = wk_crs_auto()) {
+  vec <- new_wk_xyz(recycle_common(x = as.double(x), y = as.double(y), z = as.double(z)), crs = wk_crs_auto_value(x, crs))
   validate_wk_xyz(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xym <- function(x = double(), y = double(), m = double(), crs = NULL) {
-  vec <- new_wk_xym(recycle_common(x = as.double(x), y = as.double(y), m = as.double(m)), crs = NULL)
+xym <- function(x = double(), y = double(), m = double(), crs = wk_crs_auto()) {
+  vec <- new_wk_xym(recycle_common(x = as.double(x), y = as.double(y), m = as.double(m)), crs = wk_crs_auto_value(x, crs))
   validate_wk_xym(vec)
   vec
 }
 
 #' @rdname xy
 #' @export
-xyzm <- function(x = double(), y = double(), z = double(), m = double(), crs = NULL) {
+xyzm <- function(x = double(), y = double(), z = double(), m = double(), crs = wk_crs_auto()) {
   vec <- new_wk_xyzm(
     recycle_common(
       x = as.double(x),
@@ -47,7 +47,7 @@ xyzm <- function(x = double(), y = double(), z = double(), m = double(), crs = N
       z = as.double(z),
       m = as.double(m)
     ),
-    crs = crs
+    crs = wk_crs_auto_value(x, crs)
   )
   validate_wk_xyzm(vec)
   vec
@@ -71,16 +71,16 @@ as_xy.wk_xy <- function(x, ..., dims = NULL) {
   if (is.null(dims)) {
     x
   } else if (setequal(dims, c("x", "y"))) {
-    new_wk_xy(fill_missing_dims(unclass(x), c("x", "y"), length(x)))
+    new_wk_xy(fill_missing_dims(unclass(x), c("x", "y"), length(x)), crs = wk_crs(x))
 
   } else if (setequal(dims, c("x", "y", "z"))) {
-    new_wk_xyz(fill_missing_dims(unclass(x), c("x", "y", "z"), length(x)))
+    new_wk_xyz(fill_missing_dims(unclass(x), c("x", "y", "z"), length(x)), crs = wk_crs(x))
 
   } else if (setequal(dims, c("x", "y", "m"))) {
-    new_wk_xym(fill_missing_dims(unclass(x), c("x", "y", "m"), length(x)))
+    new_wk_xym(fill_missing_dims(unclass(x), c("x", "y", "m"), length(x)), crs = wk_crs(x))
 
   } else if (setequal(dims, c("x", "y", "z", "m"))) {
-    new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x)))
+    new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x)), crs = wk_crs(x))
 
   } else {
     stop("Unknown dims in as_xy().", call. = FALSE)
@@ -89,7 +89,7 @@ as_xy.wk_xy <- function(x, ..., dims = NULL) {
 
 #' @rdname xy
 #' @export
-as_xy.matrix <- function(x, ...) {
+as_xy.matrix <- function(x, ..., crs = NULL) {
   x[] <- as.numeric(x)
   colnames(x) <- tolower(colnames(x))
   cols <- colnames(x)
@@ -119,7 +119,8 @@ as_xy.matrix <- function(x, ...) {
       list(
         x = x[, 1, drop = TRUE],
         y = x[, 2, drop = TRUE]
-      )
+      ),
+      crs = crs
     )
   } else if (ncol(x) == 4) {
     new_wk_xyzm(
@@ -128,7 +129,8 @@ as_xy.matrix <- function(x, ...) {
         y = x[, 2, drop = TRUE],
         z = x[, 3, drop = TRUE],
         m = x[, 4, drop = TRUE]
-      )
+      ),
+      crs = crs
     )
   } else if (identical(cols, c("x", "y", "m"))) {
     new_wk_xym(
@@ -136,7 +138,8 @@ as_xy.matrix <- function(x, ...) {
         x = x[, 1, drop = TRUE],
         y = x[, 2, drop = TRUE],
         m = x[, 3, drop = TRUE]
-      )
+      ),
+      crs = crs
     )
   } else if (ncol(x) == 3) {
     new_wk_xyz(
@@ -144,7 +147,8 @@ as_xy.matrix <- function(x, ...) {
         x = x[, 1, drop = TRUE],
         y = x[, 2, drop = TRUE],
         z = x[, 3, drop = TRUE]
-      )
+      ),
+      crs = crs
     )
   } else {
     stop(
@@ -156,22 +160,22 @@ as_xy.matrix <- function(x, ...) {
 
 #' @rdname xy
 #' @export
-as_xy.data.frame <- function(x, ..., dims = NULL) {
+as_xy.data.frame <- function(x, ..., dims = NULL, crs = NULL) {
   if (is.null(dims)) {
     dims <- intersect(c("x", "y", "z", "m"), names(x))
   }
 
   if (setequal(dims, c("x", "y"))) {
-    new_wk_xy(fill_missing_dims(unclass(x), c("x", "y"), nrow(x)))
+    new_wk_xy(fill_missing_dims(unclass(x), c("x", "y"), nrow(x)), crs = crs)
 
   } else if (setequal(dims, c("x", "y", "z"))) {
-    new_wk_xyz(fill_missing_dims(unclass(x), c("x", "y", "z"), nrow(x)))
+    new_wk_xyz(fill_missing_dims(unclass(x), c("x", "y", "z"), nrow(x)), crs = crs)
 
   } else if (setequal(dims, c("x", "y", "m"))) {
-    new_wk_xym(fill_missing_dims(unclass(x), c("x", "y", "m"), nrow(x)))
+    new_wk_xym(fill_missing_dims(unclass(x), c("x", "y", "m"), nrow(x)), crs = crs)
 
   } else if (setequal(dims, c("x", "y", "z", "m"))) {
-    new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), nrow(x)))
+    new_wk_xyzm(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), nrow(x)), crs = crs)
 
   } else {
     stop("Unknown dims in as_xy.data.frame().", call. = FALSE)
@@ -212,16 +216,16 @@ as_xy_wkx <- function(x, translator, dims) {
   }
 
   if (identical(dims, c("x", "y"))) {
-    new_wk_xy(result[dims])
+    new_wk_xy(result[dims], crs = wk_crs(x))
 
   } else if (identical(dims, c("x", "y", "z"))) {
-    new_wk_xyz(result[dims])
+    new_wk_xyz(result[dims], crs = wk_crs(x))
 
   } else if (identical(dims, c("x", "y", "m"))) {
-    new_wk_xym(result[dims])
+    new_wk_xym(result[dims], crs = wk_crs(x))
 
   } else if (identical(dims, c("x", "y", "z", "m"))) {
-    new_wk_xyzm(result[dims])
+    new_wk_xyzm(result[dims], crs = wk_crs(x))
 
   } else {
     stop("Unknown dimensions.", call. = FALSE)

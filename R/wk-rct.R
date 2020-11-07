@@ -12,7 +12,7 @@
 #' @examples
 #' rct(1, 2, 3, 4)
 #'
-rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(), crs = NULL) {
+rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(), crs = wk_crs_auto()) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
@@ -20,7 +20,7 @@ rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double
       xmax = as.double(xmax),
       ymax = as.double(ymax)
     ),
-    crs = crs
+    crs = wk_crs_auto_value(xmin, crs)
   )
 
   validate_wk_rct(vec)

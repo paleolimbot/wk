@@ -9,10 +9,10 @@ test_that("xyzm_translate_wkt() works", {
 })
 
 test_that("wkt_translate_xyzm() works", {
-  expect_identical(wkt_translate_xyzm(character()), unclass(xy()))
-  expect_identical(wkt_translate_xyzm(character(), include_z = TRUE), unclass(xyz()))
-  expect_identical(wkt_translate_xyzm(character(), include_m = TRUE), unclass(xym()))
-  expect_identical(wkt_translate_xyzm(character(), include_z = TRUE, include_m = TRUE), unclass(xyzm()))
+  expect_identical(wkt_translate_xyzm(character()), unclass(xy(crs = NULL)))
+  expect_identical(wkt_translate_xyzm(character(), include_z = TRUE), unclass(xyz(crs = NULL)))
+  expect_identical(wkt_translate_xyzm(character(), include_m = TRUE), unclass(xym(crs = NULL)))
+  expect_identical(wkt_translate_xyzm(character(), include_z = TRUE, include_m = TRUE), unclass(xyzm(crs = NULL)))
 
   expect_identical(
     wkt_translate_xyzm("POINT ZM (1 2 3 4)"),
@@ -37,21 +37,21 @@ test_that("wkt_translate_xyzm() works", {
 })
 
 test_that("xyzm_translate_wkb() works", {
-  expect_identical(xyzm_translate_wkb(xyzm()), list())
+  expect_identical(xyzm_translate_wkb(xyzm(crs = NULL)), list())
   expect_identical(xyzm_translate_wkb(xyzm(1, 2, 3, 4)), wkt_translate_wkb("POINT ZM (1 2 3 4)"))
 })
 
 test_that("xyzm_translate_wksxp() works", {
-  expect_identical(xyzm_translate_wksxp(xyzm()), list())
+  expect_identical(xyzm_translate_wksxp(xyzm(crs = NULL)), list())
   expect_identical(xyzm_translate_wksxp(xyzm(1, 2, 3, 4)), wkt_translate_wksxp("POINT ZM (1 2 3 4)"))
 })
 
 test_that("wkb_translate_xyzm() works", {
-  expect_identical(wkb_translate_xyzm(list()), unclass(xy()))
+  expect_identical(wkb_translate_xyzm(list()), unclass(xy(crs = NULL)))
   expect_identical(wkb_translate_xyzm(wkt_translate_wkb("POINT ZM (1 2 3 4)")), unclass(xyzm(1, 2, 3, 4)))
 })
 
 test_that("wksxp_translate_xyzm() works", {
-  expect_identical(wksxp_translate_xyzm(list()), unclass(xy()))
+  expect_identical(wksxp_translate_xyzm(list()), unclass(xy(crs = NULL)))
   expect_identical(wksxp_translate_xyzm(wkt_translate_wksxp("POINT ZM (1 2 3 4)")), unclass(xyzm(1, 2, 3, 4)))
 })

@@ -12,13 +12,19 @@
 \alias{as_xy.data.frame}
 \title{Efficient point vectors}
 \usage{
-xy(x = double(), y = double(), crs = NULL)
+xy(x = double(), y = double(), crs = wk_crs_auto())
 
-xyz(x = double(), y = double(), z = double(), crs = NULL)
+xyz(x = double(), y = double(), z = double(), crs = wk_crs_auto())
 
-xym(x = double(), y = double(), m = double(), crs = NULL)
+xym(x = double(), y = double(), m = double(), crs = wk_crs_auto())
 
-xyzm(x = double(), y = double(), z = double(), m = double(), crs = NULL)
+xyzm(
+  x = double(),
+  y = double(),
+  z = double(),
+  m = double(),
+  crs = wk_crs_auto()
+)
 
 xy_dims(x)
 
@@ -26,9 +32,9 @@ as_xy(x, ...)
 
 \method{as_xy}{wk_xy}(x, ..., dims = NULL)
 
-\method{as_xy}{matrix}(x, ...)
+\method{as_xy}{matrix}(x, ..., crs = NULL)
 
-\method{as_xy}{data.frame}(x, ..., dims = NULL)
+\method{as_xy}{data.frame}(x, ..., dims = NULL, crs = NULL)
 }
 \arguments{
 \item{x, y, z, m}{Coordinate values.}

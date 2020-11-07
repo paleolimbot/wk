@@ -13,7 +13,7 @@ rct(
   ymin = double(),
   xmax = double(),
   ymax = double(),
-  crs = NULL
+  crs = wk_crs_auto()
 )
 
 as_rct(x, ...)
