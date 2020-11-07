@@ -13,8 +13,10 @@ vec_proxy.wk_wkb <- function(x, ...) {
   unclass(x)
 }
 
-vec_restore.wk_wkb <- function(x, ...) {
-  new_wk_wkb(x)
+vec_restore.wk_wkb <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  new_wk_wkb(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -32,6 +34,7 @@ vec_cast.wk_wkb.default <- function(x, to, ...) {
 #' @method vec_cast.wk_wkb wk_wkb
 #' @export
 vec_cast.wk_wkb.wk_wkb <- function(x, to, ...) {
+  wk_crs_output(x, to)
   x
 }
 
@@ -62,7 +65,7 @@ vec_ptype2.wk_wkb.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkb wk_wkb
 #' @export
 vec_ptype2.wk_wkb.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkb()
+  new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wkb wk_wkt
@@ -83,8 +86,10 @@ vec_proxy.wk_wkt <- function(x, ...) {
   unclass(x)
 }
 
-vec_restore.wk_wkt <- function(x, ...) {
-  new_wk_wkt(x)
+vec_restore.wk_wkt <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  new_wk_wkt(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -153,8 +158,10 @@ vec_proxy.wk_wksxp <- function(x, ...) {
   unclass(x)
 }
 
-vec_restore.wk_wksxp <- function(x, ...) {
-  new_wk_wksxp(x)
+vec_restore.wk_wksxp <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  new_wk_wksxp(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -223,9 +230,11 @@ vec_proxy.wk_xy <- function(x, ...) {
   as.data.frame(x)
 }
 
-vec_restore.wk_xy <- function(x, ...) {
+vec_restore.wk_xy <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
   attr(x, "row.names") <- NULL
-  new_wk_xy(x)
+  new_wk_xy(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -252,9 +261,11 @@ vec_proxy.wk_xyz <- function(x, ...) {
   as.data.frame(x)
 }
 
-vec_restore.wk_xyz <- function(x, ...) {
+vec_restore.wk_xyz <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
   attr(x, "row.names") <- NULL
-  new_wk_xyz(x)
+  new_wk_xyz(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -281,9 +292,11 @@ vec_proxy.wk_xym <- function(x, ...) {
   as.data.frame(x)
 }
 
-vec_restore.wk_xym <- function(x, ...) {
+vec_restore.wk_xym <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
   attr(x, "row.names") <- NULL
-  new_wk_xym(x)
+  new_wk_xym(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -310,9 +323,11 @@ vec_proxy.wk_xyzm <- function(x, ...) {
   as.data.frame(x)
 }
 
-vec_restore.wk_xyzm <- function(x, ...) {
+vec_restore.wk_xyzm <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
   attr(x, "row.names") <- NULL
-  new_wk_xyzm(x)
+  new_wk_xyzm(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods
@@ -339,9 +354,11 @@ vec_proxy.wk_rct <- function(x, ...) {
   as.data.frame(x)
 }
 
-vec_restore.wk_rct <- function(x, ...) {
+vec_restore.wk_rct <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
   attr(x, "row.names") <- NULL
-  new_wk_rct(x)
+  new_wk_rct(x, crs = crs_out)
 }
 
 #' @rdname vctrs-methods

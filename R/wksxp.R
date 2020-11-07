@@ -36,7 +36,8 @@
 #' @examples
 #' wksxp(wkt_translate_wksxp("POINT (20 10)"))
 #'
-wksxp <- function(x = list(), crs = NULL) {
+wksxp <- function(x = list(), crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   wksxp <- new_wk_wksxp(x, crs = crs)
   validate_wk_wksxp(x)
@@ -45,7 +46,8 @@ wksxp <- function(x = list(), crs = NULL) {
 
 #' @rdname wksxp
 #' @export
-parse_wksxp <- function(x, crs = NULL) {
+parse_wksxp <- function(x, crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   parse_base(new_wk_wksxp(x, crs = crs), wksxp_problems(x))
 }

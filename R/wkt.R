@@ -12,8 +12,9 @@
 #' @examples
 #' wkt("POINT (20 10)")
 #'
-wkt <- function(x = character(), crs = NULL) {
+wkt <- function(x = character(), crs = wk_crs_auto()) {
   x <- as.character(x)
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   wkt <- new_wk_wkt(x, crs = crs)
   validate_wk_wkt(x)
@@ -22,8 +23,9 @@ wkt <- function(x = character(), crs = NULL) {
 
 #' @rdname wkt
 #' @export
-parse_wkt <- function(x, crs = NULL) {
+parse_wkt <- function(x, crs = wk_crs_auto()) {
   x <- as.character(x)
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   parse_base(new_wk_wkt(x, crs = crs), wkt_problems(x))
 }

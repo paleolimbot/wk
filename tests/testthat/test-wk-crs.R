@@ -45,8 +45,8 @@ test_that("crs output computing works", {
     wk_crs_output(wk_set_crs(x, wk_crs_inherit()), wk_set_crs(x, wk_crs_inherit())),
     wk_crs_inherit()
   )
-  expect_identical(wk_crs_output(wk_set_crs(x, 1), x[integer(0)]), 1)
-  expect_identical(wk_crs_output(x[integer(0)], wk_set_crs(x, 1)), 1)
+  expect_identical(wk_crs_output(wk_set_crs(x, 1), wkt()), 1)
+  expect_identical(wk_crs_output(wkt(), wk_set_crs(x, 1)), 1)
   expect_error(wk_crs_output(wk_set_crs(x, 1), wk_set_crs(x, 2)), "are not equal")
 })
 

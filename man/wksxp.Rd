@@ -11,9 +11,9 @@
 \alias{as_wksxp.wk_wkb}
 \title{Mark lists as well-known "S" expressions}
 \usage{
-wksxp(x = list(), crs = NULL)
+wksxp(x = list(), crs = wk_crs_auto())
 
-parse_wksxp(x, crs = NULL)
+parse_wksxp(x, crs = wk_crs_auto())
 
 as_wksxp(x, ...)
 

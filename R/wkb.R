@@ -12,7 +12,8 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x = list(), crs = NULL) {
+wkb <- function(x = list(), crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   wkb <- new_wk_wkb(x, crs = crs)
   validate_wk_wkb(x)
@@ -21,7 +22,8 @@ wkb <- function(x = list(), crs = NULL) {
 
 #' @rdname wkb
 #' @export
-parse_wkb <- function(x, crs = NULL) {
+parse_wkb <- function(x, crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   parse_base(new_wk_wkb(x, crs = crs), wkb_problems(x))
 }

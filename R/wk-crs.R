@@ -55,8 +55,8 @@ wk_set_crs.wk_rcrd <- function(x, crs) {
 #' @rdname wk_crs
 #' @export
 wk_crs_output <- function(x, y) {
-  x <- if (length(x) == 0) wk_crs_inherit() else wk_crs(x)
-  y <- if (length(y) == 0) wk_crs_inherit() else wk_crs(y)
+  x <- attr(x, "crs", exact = TRUE)
+  y <- attr(y, "crs", exact = TRUE)
 
   if (inherits(y, "wk_crs_inherit")) {
     x
@@ -111,10 +111,40 @@ wk_crs_equal_generic.double <- function(x, y, ...) {
   isTRUE(x == y)
 }
 
-#' @rdname wk_crs_equal
+#' Special CRS values
+#'
+#' The CRS handling in the wk package requires two sentinel CRS values.
+#' The first, [wk_crs_inherit()], signals that the vector should inherit
+#' a CRS of another vector if combined. This is useful for empty, `NULL`,
+#' and/or zero-length geometries. The second, [wk_crs_auto()], is used
+#' as the default argument of `crs` for constructors so that zero-length
+#' geometries are assigned a CRS of `wk_crs_inherit()` by default.
+#'
 #' @export
+#'
+#' @examples
+#' wk_crs_auto_value(list(), wk_crs_auto())
+#' wk_crs_auto_value(list(), 1234)
+#' wk_crs_auto_value(list(NULL), wk_crs_auto())
+#'
 wk_crs_inherit <- function() {
   structure(list(), class = "wk_crs_inherit")
+}
+
+#' @rdname wk_crs_equal
+#' @export
+wk_crs_auto <- function() {
+  structure(list(), class = "wk_crs_auto")
+}
+
+#' @rdname wk_crs_equal
+#' @export
+wk_crs_auto_value <- function(x, crs) {
+  if (inherits(crs, "wk_crs_auto")) {
+    if (length(x) == 0) wk_crs_inherit() else attr(x, "crs", exact = TRUE)
+  } else {
+    crs
+  }
 }
 
 #' @export

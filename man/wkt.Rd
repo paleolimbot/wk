@@ -11,9 +11,9 @@
 \alias{as_wkt.wk_wksxp}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x = character(), crs = NULL)
+wkt(x = character(), crs = wk_crs_auto())
 
-parse_wkt(x, crs = NULL)
+parse_wkt(x, crs = wk_crs_auto())
 
 as_wkt(x, ...)
 

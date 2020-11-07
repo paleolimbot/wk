@@ -14,9 +14,9 @@
 \alias{as_wksxp.WKB}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x = list(), crs = NULL)
+wkb(x = list(), crs = wk_crs_auto())
 
-parse_wkb(x, crs = NULL)
+parse_wkb(x, crs = wk_crs_auto())
 
 as_wkb(x, ...)
 
