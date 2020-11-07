@@ -2,9 +2,19 @@
 % Please edit documentation in R/wk-crs.R
 \name{wk_crs_inherit}
 \alias{wk_crs_inherit}
+\alias{wk_crs_auto}
+\alias{wk_crs_auto_value}
 \title{Special CRS values}
 \usage{
 wk_crs_inherit()
+
+wk_crs_auto()
+
+wk_crs_auto_value(x, crs)
+}
+\arguments{
+\item{crs}{A value for the coordinate reference system supplied by
+the user.}
 }
 \description{
 The CRS handling in the wk package requires two sentinel CRS values.

@@ -3,17 +3,11 @@
 \name{wk_crs_equal}
 \alias{wk_crs_equal}
 \alias{wk_crs_equal_generic}
-\alias{wk_crs_auto}
-\alias{wk_crs_auto_value}
 \title{Compare CRS objects}
 \usage{
 wk_crs_equal(x, y)
 
 wk_crs_equal_generic(x, y, ...)
-
-wk_crs_auto()
-
-wk_crs_auto_value(x, crs)
 }
 \arguments{
 \item{x, y}{Objects stored in the \code{crs} attribute of a vector.}

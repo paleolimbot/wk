@@ -120,6 +120,9 @@ wk_crs_equal_generic.double <- function(x, y, ...) {
 #' as the default argument of `crs` for constructors so that zero-length
 #' geometries are assigned a CRS of `wk_crs_inherit()` by default.
 #'
+#' @param crs A value for the coordinate reference system supplied by
+#'   the user.
+#'
 #' @export
 #'
 #' @examples
@@ -131,13 +134,13 @@ wk_crs_inherit <- function() {
   structure(list(), class = "wk_crs_inherit")
 }
 
-#' @rdname wk_crs_equal
+#' @rdname wk_crs_inherit
 #' @export
 wk_crs_auto <- function() {
   structure(list(), class = "wk_crs_auto")
 }
 
-#' @rdname wk_crs_equal
+#' @rdname wk_crs_inherit
 #' @export
 wk_crs_auto_value <- function(x, crs) {
   if (inherits(crs, "wk_crs_auto")) {

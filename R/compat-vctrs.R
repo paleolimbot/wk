@@ -41,13 +41,13 @@ vec_cast.wk_wkb.wk_wkb <- function(x, to, ...) {
 #' @method vec_cast.wk_wkb wk_wkt
 #' @export
 vec_cast.wk_wkb.wk_wkt <- function(x, to, ...) {
-  as_wkb(x)
+  as_wkb(x, crs = wk_crs_output(x, to))
 }
 
 #' @method vec_cast.wk_wkb wk_wksxp
 #' @export
 vec_cast.wk_wkb.wk_wksxp <- function(x, to, ...) {
-  as_wkb(x)
+  as_wkb(x, crs = wk_crs_output(x, to))
 }
 
 #' @rdname vctrs-methods
@@ -71,13 +71,13 @@ vec_ptype2.wk_wkb.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkb wk_wkt
 #' @export
 vec_ptype2.wk_wkb.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt()
+  new_wk_wkt(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wkb wk_wksxp
 #' @export
 vec_ptype2.wk_wkb.wk_wksxp <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wksxp()
+  new_wk_wksxp(crs = wk_crs_output(x, y))
 }
 
 # wkt() --------
@@ -113,13 +113,13 @@ vec_cast.wk_wkt.wk_wkt <- function(x, to, ...) {
 #' @method vec_cast.wk_wkt wk_wkb
 #' @export
 vec_cast.wk_wkt.wk_wkb <- function(x, to, ...) {
-  as_wkt(x)
+  as_wkt(x, crs = wk_crs_output(x, to))
 }
 
 #' @method vec_cast.wk_wkt wk_wksxp
 #' @export
 vec_cast.wk_wkt.wk_wksxp <- function(x, to, ...) {
-  as_wkt(x)
+  as_wkt(x, crs = wk_crs_output(x, to))
 }
 
 #' @rdname vctrs-methods
@@ -137,19 +137,19 @@ vec_ptype2.wk_wkt.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkt wk_wkt
 #' @export
 vec_ptype2.wk_wkt.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt()
+  new_wk_wkt(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wkt wk_wkb
 #' @export
 vec_ptype2.wk_wkt.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt()
+  new_wk_wkt(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wkt wk_wksxp
 #' @export
 vec_ptype2.wk_wkt.wk_wksxp <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wksxp()
+  new_wk_wksxp(crs = wk_crs_output(x, y))
 }
 
 # wksxp() --------
@@ -185,13 +185,13 @@ vec_cast.wk_wksxp.wk_wksxp <- function(x, to, ...) {
 #' @method vec_cast.wk_wksxp wk_wkb
 #' @export
 vec_cast.wk_wksxp.wk_wkb <- function(x, to, ...) {
-  as_wksxp(x)
+  as_wksxp(x, crs = wk_crs_output(x, to))
 }
 
 #' @method vec_cast.wk_wksxp wk_wkt
 #' @export
 vec_cast.wk_wksxp.wk_wkt <- function(x, to, ...) {
-  as_wksxp(x)
+  as_wksxp(x, crs = wk_crs_output(x, to))
 }
 
 #' @rdname vctrs-methods
@@ -209,19 +209,19 @@ vec_ptype2.wk_wksxp.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wksxp wk_wksxp
 #' @export
 vec_ptype2.wk_wksxp.wk_wksxp <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wksxp()
+  new_wk_wksxp(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wksxp wk_wkb
 #' @export
 vec_ptype2.wk_wksxp.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wksxp()
+  new_wk_wksxp(crs = wk_crs_output(x, y))
 }
 
 #' @method vec_ptype2.wk_wksxp wk_wkt
 #' @export
 vec_ptype2.wk_wksxp.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wksxp()
+  new_wk_wksxp(crs = wk_crs_output(x, y))
 }
 
 # xy() --------

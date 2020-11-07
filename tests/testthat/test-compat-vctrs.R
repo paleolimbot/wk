@@ -61,20 +61,18 @@ test_that("vctrs wksxp implementation works", {
 })
 
 test_that("vec_c() propagates the crs attribute", {
-  # expect_identical(
-  #   vctrs::vec_c(wkt(crs = 1234), wkt(crs = 1234)),
-  #   wkt(crs = 1234)
-  # )
+  expect_identical(
+    vctrs::vec_c(wkt(crs = 1234), wkt(crs = 1234)),
+    wkt(crs = 1234)
+  )
 
   expect_identical(
     vctrs::vec_c(wkb(crs = 1234), wkb(crs = 1234)),
     wkb(crs = 1234)
   )
 
-  # expect_identical(
-  #   vctrs::vec_c(wksxp(crs = 1234), wksxp(crs = 1234)),
-  #   wksxp(crs = 1234)
-  # )
-
-
+  expect_identical(
+    vctrs::vec_c(wksxp(crs = 1234), wksxp(crs = 1234)),
+    wksxp(crs = 1234)
+  )
 })
