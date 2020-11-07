@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compare CRS objects — wk_crs_equal • wk</title>
+<title>Special CRS values — wk_crs_inherit • wk</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,13 @@
 
 
 
-<meta property="og:title" content="Compare CRS objects — wk_crs_equal" />
-<meta property="og:description" content="The wk_crs_equal() function uses special S3 dispatch on wk_crs_equal_generic()
-to evaluate whether or not two CRS values can be considered equal. When implementing
-wk_crs_equal_generic(), every attempt should be made to make wk_crs_equal(x, y)
-and wk_crs_equal(y, x) return identically." />
+<meta property="og:title" content="Special CRS values — wk_crs_inherit" />
+<meta property="og:description" content="The CRS handling in the wk package requires two sentinel CRS values.
+The first, wk_crs_inherit(), signals that the vector should inherit
+a CRS of another vector if combined. This is useful for empty, NULL,
+and/or zero-length geometries. The second, wk_crs_auto(), is used
+as the default argument of crs for constructors so that zero-length
+geometries are assigned a CRS of wk_crs_inherit() by default." />
 
 
 <meta name="robots" content="noindex">
@@ -114,39 +116,43 @@ and wk_crs_equal(y, x) return identically." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compare CRS objects</h1>
+    <h1>Special CRS values</h1>
     <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wk-crs.R'><code>R/wk-crs.R</code></a></small>
-    <div class="hidden name"><code>wk_crs_equal.Rd</code></div>
+    <div class="hidden name"><code>wk_crs_inherit.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The <code>wk_crs_equal()</code> function uses special S3 dispatch on <code>wk_crs_equal_generic()</code>
-to evaluate whether or not two CRS values can be considered equal. When implementing
-<code>wk_crs_equal_generic()</code>, every attempt should be made to make <code>wk_crs_equal(x, y)</code>
-and <code>wk_crs_equal(y, x)</code> return identically.</p>
+    <p>The CRS handling in the wk package requires two sentinel CRS values.
+The first, <code>wk_crs_inherit()</code>, signals that the vector should inherit
+a CRS of another vector if combined. This is useful for empty, <code>NULL</code>,
+and/or zero-length geometries. The second, <code>wk_crs_auto()</code>, is used
+as the default argument of <code>crs</code> for constructors so that zero-length
+geometries are assigned a CRS of <code>wk_crs_inherit()</code> by default.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_crs_equal</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_crs_inherit</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>wk_crs_equal_generic</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>wk_crs_auto</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='fu'>wk_crs_auto_value</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>crs</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, y</th>
-      <td><p>Objects stored in the <code>crs</code> attribute of a vector.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Unused</p></td>
+      <th>crs</th>
+      <td><p>A value for the coordinate reference system supplied by
+the user.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>TRUE</code> if <code>x</code> and <code>y</code> can be considered equal, <code>FALSE</code> otherwise.</p>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>wk_crs_auto_value</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fu'>wk_crs_auto</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;wk_crs_inherit&gt;</div><div class='input'><span class='fu'>wk_crs_auto_value</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='fl'>1234</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1234</div><div class='input'><span class='fu'>wk_crs_auto_value</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='cn'>NULL</span><span class='op'>)</span>, <span class='fu'>wk_crs_auto</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
