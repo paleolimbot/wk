@@ -13,6 +13,9 @@ wk_crs_auto()
 wk_crs_auto_value(x, crs)
 }
 \arguments{
+\item{x}{A raw input to a construuctor whose length and crs attributte
+is used to determine the default CRS returned by \code{\link[=wk_crs_auto]{wk_crs_auto()}}.}
+
 \item{crs}{A value for the coordinate reference system supplied by
 the user.}
 }
