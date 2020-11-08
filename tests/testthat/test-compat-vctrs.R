@@ -195,18 +195,18 @@ test_that("vctrs rct implementation works", {
 })
 
 test_that("vec_c() propagates the crs attribute", {
-  expect_identical(
-    vctrs::vec_c(wkt(crs = 1234), wkt(crs = 1234)),
-    wkt(crs = 1234)
-  )
-
-  expect_identical(
-    vctrs::vec_c(wkb(crs = 1234), wkb(crs = 1234)),
-    wkb(crs = 1234)
-  )
-
-  expect_identical(
-    vctrs::vec_c(wksxp(crs = 1234), wksxp(crs = 1234)),
-    wksxp(crs = 1234)
-  )
+  for (constructor in list(wkb, wkt, wksxp, xy, xyz, xyzm, rct)) {
+    expect_identical(
+      vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = 1234)),
+      !!constructor(crs = 1234)
+    )
+    expect_identical(
+      vctrs::vec_c(!!constructor(crs = 1234), !!constructor()),
+      !!constructor(crs = 1235)
+    )
+    expect_error(
+      vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = NULL)),
+      "are not equal"
+    )
+  }
 })
