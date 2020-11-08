@@ -31,6 +31,7 @@ test_that("vctrs wkb implementation works", {
   expect_identical(vctrs::vec_cast(xyz(), wkb()), wkb())
   expect_identical(vctrs::vec_cast(xym(), wkb()), wkb())
   expect_identical(vctrs::vec_cast(xyzm(), wkb()), wkb())
+  expect_identical(vctrs::vec_cast(rct(), wkb()), wkb())
   expect_identical(vctrs::vec_proxy(wkb(crs = NULL)), list())
   expect_identical(vctrs::vec_restore(list(), wkb()), wkb())
   expect_identical(vctrs::vec_c(wkb(), wkb()), wkb())
@@ -53,6 +54,7 @@ test_that("vctrs wkt implementation works", {
   expect_identical(vctrs::vec_cast(xyz(), wkt()), wkt())
   expect_identical(vctrs::vec_cast(xym(), wkt()), wkt())
   expect_identical(vctrs::vec_cast(xyzm(), wkt()), wkt())
+  expect_identical(vctrs::vec_cast(rct(), wkt()), wkt())
   expect_identical(vctrs::vec_proxy(wkt(crs = NULL)), character())
   expect_identical(vctrs::vec_restore(character(), wkt()), wkt())
   expect_identical(vctrs::vec_c(wkt(), wkt()), wkt())
@@ -75,6 +77,7 @@ test_that("vctrs wksxp implementation works", {
   expect_identical(vctrs::vec_cast(xyz(), wksxp()), wksxp())
   expect_identical(vctrs::vec_cast(xym(), wksxp()), wksxp())
   expect_identical(vctrs::vec_cast(xyzm(), wksxp()), wksxp())
+  expect_identical(vctrs::vec_cast(rct(), wksxp()), wksxp())
   expect_identical(vctrs::vec_proxy(wksxp(crs = NULL)), list())
   expect_identical(vctrs::vec_restore(list(), wksxp()), wksxp())
   expect_identical(vctrs::vec_c(wksxp(), wksxp()), wksxp())
@@ -191,6 +194,14 @@ test_that("vctrs rct implementation works", {
     vctrs::vec_restore(data.frame(xmin = double(), ymin = double(), xmax = double(), ymax = double()), rct()),
     rct()
   )
+
+  expect_identical(vctrs::vec_c(rct(), wkb()), wkb())
+  expect_identical(vctrs::vec_c(rct(), wkt()), wkt())
+  expect_identical(vctrs::vec_c(rct(), wksxp()), wksxp())
+  expect_identical(vctrs::vec_c(rct(), xy()), wkb())
+  expect_identical(vctrs::vec_c(rct(), xyz()), wkb())
+  expect_identical(vctrs::vec_c(rct(), xym()), wkb())
+  expect_identical(vctrs::vec_c(rct(), xyzm()), wkb())
   expect_identical(vctrs::vec_c(rct(), rct()), rct())
 })
 
