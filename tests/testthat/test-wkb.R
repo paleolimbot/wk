@@ -28,15 +28,10 @@ test_that("wkb class works", {
 })
 
 test_that("as_wkb() works", {
-  x <- wkb(wkt_translate_wkb("POINT (40 10)", endian = 1))
+  x <- wkb(wkt_translate_wkb("POINT (40 10)"))
   expect_identical(as_wkb(x), x)
-
-  # make sure creation options get passed through for identity case
-  expect_identical(unclass(as_wkb(x))[[1]][1], as.raw(0x01))
-  expect_identical(unclass(as_wkb(x, endian = 0))[[1]][1], as.raw(0x00))
-
-  expect_identical(as_wkb("POINT (40 10)", endian = 1), x)
-  expect_identical(as_wkb(wkt("POINT (40 10)"), endian = 1), x)
+  expect_identical(as_wkb("POINT (40 10)"), x)
+  expect_identical(as_wkb(wkt("POINT (40 10)")), x)
   expect_identical(as_wkb(as_wksxp("POINT (40 10)")), as_wkb("POINT (40 10)"))
 
   # blob and WKB methods

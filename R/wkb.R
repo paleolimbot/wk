@@ -42,54 +42,20 @@ as_wkb.character <- function(x, ..., crs = NULL) {
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                          endian = NULL) {
-  if (is.null(include_z) && is.null(include_m) && is.null(include_srid) && is.null(endian)) {
-    x
-  } else {
-    new_wk_wkb(
-      wkb_translate_wkb(
-        x,
-        include_z = include_z %||% NA,
-        include_m = include_m %||% NA,
-        include_srid = include_srid %||% NA,
-        endian = endian %||% wk_platform_endian()
-      ),
-      crs = attr(x, "crs", exact = TRUE)
-    )
-  }
+as_wkb.wk_wkb <- function(x, ...) {
+  new_wk_wkb(wkb_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                          endian = NULL) {
-  new_wk_wkb(
-    wkt_translate_wkb(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA,
-      endian = endian %||% wk_platform_endian()
-    ),
-    crs = attr(x, "crs", exact = TRUE)
-  )
+as_wkb.wk_wkt <- function(x, ...) {
+  new_wk_wkb(wkt_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                            endian = NULL) {
-  new_wk_wkb(
-    wksxp_translate_wkb(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA,
-      endian = endian %||% wk_platform_endian()
-    ),
-    crs = attr(x, "crs", exact = TRUE)
-  )
+as_wkb.wk_wksxp <- function(x, ...) {
+  new_wk_wkb(wksxp_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
