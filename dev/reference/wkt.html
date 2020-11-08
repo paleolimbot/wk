@@ -133,37 +133,13 @@
 <span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
+<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
+<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,39 +155,6 @@
     <tr>
       <th>...</th>
       <td><p>Unused</p></td>
-    </tr>
-    <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
     </tr>
     </table>
 

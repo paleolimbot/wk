@@ -130,34 +130,13 @@
 <span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  endian <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
+<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  endian <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
+<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  endian <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
+<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for blob</span>
 <span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
@@ -185,35 +164,6 @@
     <tr>
       <th>...</th>
       <td><p>Unused</p></td>
-    </tr>
-    <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>endian</th>
-      <td><p>For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to <code><a href='wkb_translate_wkt.html'>wk_platform_endian()</a></code> (slightly faster).</p></td>
     </tr>
     </table>
 
