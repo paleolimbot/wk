@@ -116,6 +116,6 @@ with(
   clipr::write_clip()
 
 with(
-  list(CLASS = "wk_xyz"),
+  list(CLASS = "wk_wkb"),
   glue::glue(template_cast)
 )
