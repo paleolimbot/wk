@@ -31,10 +31,6 @@ test_that("as_wksxp() works", {
   x <- wksxp(wkt_translate_wksxp("SRID=44;POINT (40 10)"))
   expect_identical(as_wksxp(x), x)
 
-  # make sure creation options get passed through for identity case
-  expect_identical(attr(unclass(as_wksxp(x, include_srid = TRUE))[[1]], "srid"), 44)
-  expect_identical(attr(unclass(as_wksxp(x, include_srid = FALSE))[[1]], "srid"), NULL)
-
   expect_identical(as_wksxp("SRID=44;POINT (40 10)"), x)
   expect_identical(as_wksxp(wkt("SRID=44;POINT (40 10)")), x)
   expect_identical(as_wksxp(as_wkb("SRID=44;POINT (40 10)")), x)

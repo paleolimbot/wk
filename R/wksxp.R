@@ -26,7 +26,6 @@
 #' interchangeable.
 #'
 #' @param x A [list()] features (see details)
-#' @inheritParams wkb_translate_wkt
 #' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'
@@ -72,48 +71,20 @@ as_wksxp.character <- function(x, ..., crs = NULL) {
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  if (is.null(include_z) && is.null(include_m) && is.null(include_srid)) {
-    x
-  } else {
-    new_wk_wksxp(
-      wksxp_translate_wksxp(
-        x,
-        include_z = include_z %||% NA,
-        include_m = include_m %||% NA,
-        include_srid = include_srid %||% NA
-      ),
-      crs = attr(x, "crs", exact = TRUE)
-    )
-  }
+as_wksxp.wk_wksxp <- function(x, ...) {
+  new_wk_wksxp(wksxp_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  new_wk_wksxp(
-    wkt_translate_wksxp(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA
-    ),
-    crs = attr(x, "crs", exact = TRUE)
-  )
+as_wksxp.wk_wkt <- function(x, ...) {
+  new_wk_wksxp(wkt_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  new_wk_wksxp(
-    wkb_translate_wksxp(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA
-    ),
-    crs = attr(x, "crs", exact = TRUE)
-  )
+as_wksxp.wk_wkb <- function(x, ...) {
+  new_wk_wksxp(wkb_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb

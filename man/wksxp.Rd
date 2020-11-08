@@ -21,11 +21,11 @@ as_wksxp(x, ...)
 
 \method{as_wksxp}{character}(x, ..., crs = NULL)
 
-\method{as_wksxp}{wk_wksxp}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wksxp}(x, ...)
 
-\method{as_wksxp}{wk_wkt}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wkt}(x, ...)
 
-\method{as_wksxp}{wk_wkb}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wkb}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} features (see details)}
@@ -33,24 +33,6 @@ as_wksxp(x, ...)
 \item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Unused}
-
-\item{include_z}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_m}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_srid}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
 }
 \value{
 A \code{\link[=new_wk_wksxp]{new_wk_wksxp()}}

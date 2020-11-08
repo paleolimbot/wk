@@ -2,7 +2,6 @@
 #' Mark lists of raw vectors as well-known binary
 #'
 #' @param x A [list()] of [raw()] vectors or `NULL`.
-#' @inheritParams wkb_translate_wkt
 #' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'

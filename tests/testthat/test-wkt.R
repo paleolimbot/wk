@@ -28,11 +28,6 @@ test_that("wkt class works", {
 test_that("as_wkt() works", {
   x <- wkt("POINT (40 10)")
   expect_identical(as_wkt(x), x)
-
-  # make sure creation options get passed through for identity case
-  expect_identical(unclass(x), "POINT (40 10)")
-  expect_identical(unclass(as_wkt(x, trim = FALSE, precision = 3)), "POINT (40.000 10.000)")
-
   expect_identical(as_wkt("POINT (43 44)"), wkt("POINT (43 44)"))
   expect_identical(as_wkt(wkb(wkt_translate_wkb("POINT (99 100)"))), wkt("POINT (99 100)"))
   expect_identical(as_wkt(as_wksxp("POINT (12 13)")), as_wkt("POINT (12 13)"))
