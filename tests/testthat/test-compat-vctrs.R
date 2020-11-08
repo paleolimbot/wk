@@ -202,7 +202,7 @@ test_that("vec_c() propagates the crs attribute", {
     )
     expect_identical(
       vctrs::vec_c(!!constructor(crs = 1234), !!constructor()),
-      !!constructor(crs = 1235)
+      !!constructor(crs = 1234)
     )
     expect_error(
       vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = NULL)),
