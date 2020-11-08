@@ -733,6 +733,49 @@ vec_cast.wk_xyzm.default <- function(x, to, ...) {
   vctrs::vec_default_cast(x, to) # nocov
 }
 
+#' @method vec_cast.wk_xyzm wk_xyzm
+#' @export
+vec_cast.wk_xyzm.wk_xyzm <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  x
+}
+
+#' @method vec_cast.wk_xyzm wk_wkb
+#' @export
+vec_cast.wk_xyzm.wk_wkb <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyzm wk_wkt
+#' @export
+vec_cast.wk_xyzm.wk_wkt <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyzm wk_wksxp
+#' @export
+vec_cast.wk_xyzm.wk_wksxp <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyzm wk_xy
+#' @export
+vec_cast.wk_xyzm.wk_xy <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyzm wk_xyz
+#' @export
+vec_cast.wk_xyzm.wk_xyz <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyzm wk_xym
+#' @export
+vec_cast.wk_xyzm.wk_xym <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+}
+
 #' @rdname vctrs-methods
 #' @export vec_ptype2.wk_xyzm
 vec_ptype2.wk_xyzm <- function(x, y, ...) {

@@ -86,7 +86,8 @@ as_wksxp.wk_rct <- function(x, ...) {
 #'
 #' @export
 #'
-new_wk_rct <- function(x, crs = NULL) {
+new_wk_rct <- function(x = list(xmin = double(), ymin = double(), xmax = double(), ymax = double()),
+                       crs = NULL) {
   structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs)
 }
 
