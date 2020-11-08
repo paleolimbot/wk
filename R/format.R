@@ -22,18 +22,18 @@
 #'   )
 #' )
 #'
-wkb_format <- function(wkb, max_coords = 3) {
-  cpp_format_wkb(wkb, maxCoords = max_coords)
+wkb_format <- function(wkb, max_coords = 3, precision = 6, trim = TRUE) {
+  cpp_format_wkb(wkb, maxCoords = max_coords, precision = precision, trim = trim)
 }
 
 #' @rdname wkb_format
 #' @export
-wkt_format <- function(wkt, max_coords = 3) {
-  cpp_format_wkt(wkt, maxCoords = max_coords)
+wkt_format <- function(wkt, max_coords = 3, precision = 6, trim = TRUE) {
+  cpp_format_wkt(wkt, maxCoords = max_coords, precision = precision, trim = trim)
 }
 
 #' @rdname wkb_format
 #' @export
-wksxp_format <- function(wksxp, max_coords = 3) {
-  cpp_format_wksxp(wksxp, maxCoords = max_coords)
+wksxp_format <- function(wksxp, max_coords = 3, precision = 6, trim = TRUE) {
+  cpp_format_wksxp(wksxp, maxCoords = max_coords, precision = precision, trim = trim)
 }

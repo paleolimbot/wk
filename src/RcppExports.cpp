@@ -6,38 +6,44 @@
 using namespace Rcpp;
 
 // cpp_format_wkb
-Rcpp::CharacterVector cpp_format_wkb(Rcpp::List wkb, int maxCoords);
-RcppExport SEXP _wk_cpp_format_wkb(SEXP wkbSEXP, SEXP maxCoordsSEXP) {
+Rcpp::CharacterVector cpp_format_wkb(Rcpp::List wkb, int maxCoords, int precision, bool trim);
+RcppExport SEXP _wk_cpp_format_wkb(SEXP wkbSEXP, SEXP maxCoordsSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type wkb(wkbSEXP);
     Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_format_wkb(wkb, maxCoords));
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wkb(wkb, maxCoords, precision, trim));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_format_wkt
-Rcpp::CharacterVector cpp_format_wkt(CharacterVector wkt, int maxCoords);
-RcppExport SEXP _wk_cpp_format_wkt(SEXP wktSEXP, SEXP maxCoordsSEXP) {
+Rcpp::CharacterVector cpp_format_wkt(CharacterVector wkt, int maxCoords, int precision, bool trim);
+RcppExport SEXP _wk_cpp_format_wkt(SEXP wktSEXP, SEXP maxCoordsSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type wkt(wktSEXP);
     Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_format_wkt(wkt, maxCoords));
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wkt(wkt, maxCoords, precision, trim));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_format_wksxp
-Rcpp::CharacterVector cpp_format_wksxp(List wksxp, int maxCoords);
-RcppExport SEXP _wk_cpp_format_wksxp(SEXP wksxpSEXP, SEXP maxCoordsSEXP) {
+Rcpp::CharacterVector cpp_format_wksxp(List wksxp, int maxCoords, int precision, bool trim);
+RcppExport SEXP _wk_cpp_format_wksxp(SEXP wksxpSEXP, SEXP maxCoordsSEXP, SEXP precisionSEXP, SEXP trimSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type wksxp(wksxpSEXP);
     Rcpp::traits::input_parameter< int >::type maxCoords(maxCoordsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_format_wksxp(wksxp, maxCoords));
+    Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
+    Rcpp::traits::input_parameter< bool >::type trim(trimSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_format_wksxp(wksxp, maxCoords, precision, trim));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -321,9 +327,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 2},
-    {"_wk_cpp_format_wkt", (DL_FUNC) &_wk_cpp_format_wkt, 2},
-    {"_wk_cpp_format_wksxp", (DL_FUNC) &_wk_cpp_format_wksxp, 2},
+    {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 4},
+    {"_wk_cpp_format_wkt", (DL_FUNC) &_wk_cpp_format_wkt, 4},
+    {"_wk_cpp_format_wksxp", (DL_FUNC) &_wk_cpp_format_wksxp, 4},
     {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
     {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
     {"_wk_cpp_problems_wksxp", (DL_FUNC) &_wk_cpp_problems_wksxp, 1},
