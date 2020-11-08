@@ -473,6 +473,50 @@ vec_cast.wk_xyz.default <- function(x, to, ...) {
   vctrs::vec_default_cast(x, to) # nocov
 }
 
+#' @method vec_cast.wk_xyz wk_wkb
+#' @export
+vec_cast.wk_xyz.wk_wkb <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyz wk_wkt
+#' @export
+vec_cast.wk_xyz.wk_wkt <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyz wk_wksxp
+#' @export
+vec_cast.wk_xyz.wk_wksxp <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyz wk_xy
+#' @export
+vec_cast.wk_xyz.wk_xy <- function(x, to, ...) {
+  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+}
+
+#' @method vec_cast.wk_xyz wk_xym
+#' @export
+vec_cast.wk_xyz.wk_xym <- function(x, to, ...) {
+  vctrs::maybe_lossy_cast(
+    as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to)),
+    x, to,
+    !is.na(unclass(x)$m)
+  )
+}
+
+#' @method vec_cast.wk_xyz wk_xyzm
+#' @export
+vec_cast.wk_xyz.wk_xyzm <- function(x, to, ...) {
+  vctrs::maybe_lossy_cast(
+    as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to)),
+    x, to,
+    !is.na(unclass(x)$m)
+  )
+}
+
 #' @rdname vctrs-methods
 #' @export vec_ptype2.wk_xyz
 vec_ptype2.wk_xyz <- function(x, y, ...) {
