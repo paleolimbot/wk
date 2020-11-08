@@ -128,11 +128,11 @@ use for geometry vectors with many (potentially large)
 features.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_format</span><span class='op'>(</span><span class='va'>wkb</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wkb_format</span><span class='op'>(</span><span class='va'>wkb</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>wkt_format</span><span class='op'>(</span><span class='va'>wkt</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'>wkt_format</span><span class='op'>(</span><span class='va'>wkt</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>wksxp_format</span><span class='op'>(</span><span class='va'>wksxp</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></pre>
+<span class='fu'>wksxp_format</span><span class='op'>(</span><span class='va'>wksxp</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +146,15 @@ returned by <code><a href='https://r-spatial.github.io/sf/reference/st_as_binary
       <th>max_coords</th>
       <td><p>The maximum number of coordinates to include
 in the output.</p></td>
+    </tr>
+    <tr>
+      <th>precision</th>
+      <td><p>The rounding precision to use when writing
+(number of decimal places).</p></td>
+    </tr>
+    <tr>
+      <th>trim</th>
+      <td><p>Trim unnecessary zeroes in the output?</p></td>
     </tr>
     <tr>
       <th>wkt</th>
