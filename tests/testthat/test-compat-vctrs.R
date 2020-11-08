@@ -121,6 +121,29 @@ test_that("vctrs xyz implementation works", {
   expect_identical(vctrs::vec_c(xyz(), rct()), wkb())
 })
 
+test_that("vctrs xyz implementation works", {
+  expect_true(vctrs::vec_is(xym()))
+  expect_identical(vctrs::vec_size(xym()), 0L)
+  expect_identical(vctrs::vec_cast(wkt(), xym()), xym())
+  expect_identical(vctrs::vec_cast(wkb(), xym()), xym())
+  expect_identical(vctrs::vec_cast(wksxp(), xym()), xym())
+  expect_identical(vctrs::vec_cast(xy(), xym()), xym())
+  expect_identical(vctrs::vec_cast(xyz(), xym()), xym())
+  expect_identical(vctrs::vec_cast(xym(), xym()), xym())
+  expect_identical(vctrs::vec_cast(xyzm(), xym()), xym())
+  expect_error(vctrs::vec_cast(rct(), xym()), class = "vctrs_error_incompatible_type")
+  expect_identical(vctrs::vec_proxy(xym(crs = NULL)), data.frame(x = double(), y = double(), m = double()))
+  expect_identical(vctrs::vec_restore(data.frame(x = double(), y = double(), m = double()), xym()), xym())
+  expect_identical(vctrs::vec_c(xym(), wkt()), wkt())
+  expect_identical(vctrs::vec_c(xym(), wkb()), wkb())
+  expect_identical(vctrs::vec_c(xym(), wksxp()), wksxp())
+  expect_identical(vctrs::vec_c(xym(), xy()), xym())
+  expect_identical(vctrs::vec_c(xym(), xyz()), xyzm())
+  expect_identical(vctrs::vec_c(xym(), xym()), xym())
+  expect_identical(vctrs::vec_c(xym(), xyzm()), xyzm())
+  expect_identical(vctrs::vec_c(xym(), rct()), wkb())
+})
+
 test_that("vec_c() propagates the crs attribute", {
   expect_identical(
     vctrs::vec_c(wkt(crs = 1234), wkt(crs = 1234)),
