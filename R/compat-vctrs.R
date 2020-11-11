@@ -41,37 +41,43 @@ vec_cast.wk_wkb.wk_wkb <- function(x, to, ...) {
 #' @method vec_cast.wk_wkb wk_wkt
 #' @export
 vec_cast.wk_wkb.wk_wkt <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_wksxp
 #' @export
 vec_cast.wk_wkb.wk_wksxp <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_xy
 #' @export
 vec_cast.wk_wkb.wk_xy <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_xyz
 #' @export
 vec_cast.wk_wkb.wk_xyz <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_xym
 #' @export
 vec_cast.wk_wkb.wk_xym <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_xyzm
 #' @export
 vec_cast.wk_wkb.wk_xyzm <- function(x, to, ...) {
-  as_wkb(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkb(x)
 }
 
 #' @method vec_cast.wk_wkb wk_rct
@@ -174,37 +180,43 @@ vec_cast.wk_wkt.wk_wkt <- function(x, to, ...) {
 #' @method vec_cast.wk_wkt wk_wkb
 #' @export
 vec_cast.wk_wkt.wk_wkb <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_wksxp
 #' @export
 vec_cast.wk_wkt.wk_wksxp <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_xy
 #' @export
 vec_cast.wk_wkt.wk_xy <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_xyz
 #' @export
 vec_cast.wk_wkt.wk_xyz <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_xym
 #' @export
 vec_cast.wk_wkt.wk_xym <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_xyzm
 #' @export
 vec_cast.wk_wkt.wk_xyzm <- function(x, to, ...) {
-  as_wkt(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_rct
@@ -307,37 +319,43 @@ vec_cast.wk_wksxp.wk_wksxp <- function(x, to, ...) {
 #' @method vec_cast.wk_wksxp wk_wkb
 #' @export
 vec_cast.wk_wksxp.wk_wkb <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_wkt
 #' @export
 vec_cast.wk_wksxp.wk_wkt <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_xy
 #' @export
 vec_cast.wk_wksxp.wk_xy <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_xyz
 #' @export
 vec_cast.wk_wksxp.wk_xyz <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_xym
 #' @export
 vec_cast.wk_wksxp.wk_xym <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_xyzm
 #' @export
 vec_cast.wk_wksxp.wk_xyzm <- function(x, to, ...) {
-  as_wksxp(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_wksxp(x)
 }
 
 #' @method vec_cast.wk_wksxp wk_rct
@@ -442,26 +460,30 @@ vec_cast.wk_xy.wk_xy <- function(x, to, ...) {
 #' @method vec_cast.wk_xy wk_wkb
 #' @export
 vec_cast.wk_xy.wk_wkb <- function(x, to, ...) {
-  as_xy(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x)
 }
 
 #' @method vec_cast.wk_xy wk_wkt
 #' @export
 vec_cast.wk_xy.wk_wkt <- function(x, to, ...) {
-  as_xy(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x)
 }
 
 #' @method vec_cast.wk_xy wk_wksxp
 #' @export
 vec_cast.wk_xy.wk_wksxp <- function(x, to, ...) {
-  as_xy(x, crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x)
 }
 
 #' @method vec_cast.wk_xy wk_xyz
 #' @export
 vec_cast.wk_xy.wk_xyz <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y")),
     x, to,
     !is.na(unclass(x)$z)
   )
@@ -470,8 +492,9 @@ vec_cast.wk_xy.wk_xyz <- function(x, to, ...) {
 #' @method vec_cast.wk_xy wk_xym
 #' @export
 vec_cast.wk_xy.wk_xym <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y")),
     x, to,
     !is.na(unclass(x)$m)
   )
@@ -480,8 +503,9 @@ vec_cast.wk_xy.wk_xym <- function(x, to, ...) {
 #' @method vec_cast.wk_xy wk_xyzm
 #' @export
 vec_cast.wk_xy.wk_xyzm <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y")),
     x, to,
     !is.na(unclass(x)$z) & !is.na(unclass(x)$m)
   )
@@ -576,32 +600,37 @@ vec_cast.wk_xyz.wk_xyz <- function(x, to, ...) {
 #' @method vec_cast.wk_xyz wk_wkb
 #' @export
 vec_cast.wk_xyz.wk_wkb <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z"))
 }
 
 #' @method vec_cast.wk_xyz wk_wkt
 #' @export
 vec_cast.wk_xyz.wk_wkt <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z"))
 }
 
 #' @method vec_cast.wk_xyz wk_wksxp
 #' @export
 vec_cast.wk_xyz.wk_wksxp <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z"))
 }
 
 #' @method vec_cast.wk_xyz wk_xy
 #' @export
 vec_cast.wk_xyz.wk_xy <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z"))
 }
 
 #' @method vec_cast.wk_xyz wk_xym
 #' @export
 vec_cast.wk_xyz.wk_xym <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y", "z")),
     x, to,
     !is.na(unclass(x)$m)
   )
@@ -610,8 +639,9 @@ vec_cast.wk_xyz.wk_xym <- function(x, to, ...) {
 #' @method vec_cast.wk_xyz wk_xyzm
 #' @export
 vec_cast.wk_xyz.wk_xyzm <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y", "z"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y", "z")),
     x, to,
     !is.na(unclass(x)$m)
   )
@@ -706,32 +736,37 @@ vec_cast.wk_xym.wk_xym <- function(x, to, ...) {
 #' @method vec_cast.wk_xym wk_wkb
 #' @export
 vec_cast.wk_xym.wk_wkb <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "m"))
 }
 
 #' @method vec_cast.wk_xym wk_wkt
 #' @export
 vec_cast.wk_xym.wk_wkt <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "m"))
 }
 
 #' @method vec_cast.wk_xym wk_wksxp
 #' @export
 vec_cast.wk_xym.wk_wksxp <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "m"))
 }
 
 #' @method vec_cast.wk_xym wk_xy
 #' @export
 vec_cast.wk_xym.wk_xy <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "m"))
 }
 
 #' @method vec_cast.wk_xym wk_xyz
 #' @export
 vec_cast.wk_xym.wk_xyz <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y", "m")),
     x, to,
     !is.na(unclass(x)$z)
   )
@@ -740,8 +775,9 @@ vec_cast.wk_xym.wk_xyz <- function(x, to, ...) {
 #' @method vec_cast.wk_xym wk_xyzm
 #' @export
 vec_cast.wk_xym.wk_xyzm <- function(x, to, ...) {
+  wk_crs_output(x, to)
   vctrs::maybe_lossy_cast(
-    as_xy(x, dims = c("x", "y", "m"), crs = wk_crs_output(x, to)),
+    as_xy(x, dims = c("x", "y", "m")),
     x, to,
     !is.na(unclass(x)$z)
   )
@@ -836,37 +872,43 @@ vec_cast.wk_xyzm.wk_xyzm <- function(x, to, ...) {
 #' @method vec_cast.wk_xyzm wk_wkb
 #' @export
 vec_cast.wk_xyzm.wk_wkb <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @method vec_cast.wk_xyzm wk_wkt
 #' @export
 vec_cast.wk_xyzm.wk_wkt <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @method vec_cast.wk_xyzm wk_wksxp
 #' @export
 vec_cast.wk_xyzm.wk_wksxp <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @method vec_cast.wk_xyzm wk_xy
 #' @export
 vec_cast.wk_xyzm.wk_xy <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @method vec_cast.wk_xyzm wk_xyz
 #' @export
 vec_cast.wk_xyzm.wk_xyz <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @method vec_cast.wk_xyzm wk_xym
 #' @export
 vec_cast.wk_xyzm.wk_xym <- function(x, to, ...) {
-  as_xy(x, dims = c("x", "y", "z", "m"), crs = wk_crs_output(x, to))
+  wk_crs_output(x, to)
+  as_xy(x, dims = c("x", "y", "z", "m"))
 }
 
 #' @rdname vctrs-methods
