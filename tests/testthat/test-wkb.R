@@ -20,6 +20,7 @@ test_that("wkb class works", {
   expect_is(c(x, x), "wk_wkb")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
+  expect_identical(rep(wkb(), 3), wkb())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"
@@ -27,15 +28,10 @@ test_that("wkb class works", {
 })
 
 test_that("as_wkb() works", {
-  x <- wkb(wkt_translate_wkb("POINT (40 10)", endian = 1))
+  x <- wkb(wkt_translate_wkb("POINT (40 10)"))
   expect_identical(as_wkb(x), x)
-
-  # make sure creation options get passed through for identity case
-  expect_identical(unclass(as_wkb(x))[[1]][1], as.raw(0x01))
-  expect_identical(unclass(as_wkb(x, endian = 0))[[1]][1], as.raw(0x00))
-
-  expect_identical(as_wkb("POINT (40 10)", endian = 1), x)
-  expect_identical(as_wkb(wkt("POINT (40 10)"), endian = 1), x)
+  expect_identical(as_wkb("POINT (40 10)"), x)
+  expect_identical(as_wkb(wkt("POINT (40 10)")), x)
   expect_identical(as_wkb(as_wksxp("POINT (40 10)")), as_wkb("POINT (40 10)"))
 
   # blob and WKB methods
@@ -60,4 +56,17 @@ test_that("parse_wkb() works", {
   expect_true(is.na(parsed))
   expect_is(attr(parsed, "problems"), "data.frame")
   expect_identical(nrow(attr(parsed, "problems")), 1L)
+})
+
+test_that("wkb() propagates CRS", {
+  x <- as_wkb("POINT (1 2)")
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wkb(x, crs = NULL), "are not equal")
+  x[1] <- wkb(x, crs = 1234L)
+  expect_identical(wk_crs(x), 1234)
 })

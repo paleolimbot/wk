@@ -11,44 +11,28 @@
 \alias{as_wksxp.wk_wkb}
 \title{Mark lists as well-known "S" expressions}
 \usage{
-wksxp(x = list())
+wksxp(x = list(), crs = wk_crs_auto())
 
-parse_wksxp(x)
+parse_wksxp(x, crs = wk_crs_auto())
 
 as_wksxp(x, ...)
 
-\method{as_wksxp}{default}(x, ...)
+\method{as_wksxp}{default}(x, ..., crs = NULL)
 
-\method{as_wksxp}{character}(x, ...)
+\method{as_wksxp}{character}(x, ..., crs = NULL)
 
-\method{as_wksxp}{wk_wksxp}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wksxp}(x, ...)
 
-\method{as_wksxp}{wk_wkt}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wkt}(x, ...)
 
-\method{as_wksxp}{wk_wkb}(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL)
+\method{as_wksxp}{wk_wkb}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} features (see details)}
 
+\item{crs}{A value to be propagated as the CRS for this vector.}
+
 \item{...}{Unused}
-
-\item{include_z}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_m}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_srid}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
 }
 \value{
 A \code{\link[=new_wk_wksxp]{new_wk_wksxp()}}
@@ -80,7 +64,7 @@ encoded as attributes. The attribures that are used are:
 }
 
 This is similar to the \code{sf::st_sfc()} format, but the formats aren't
-interchangable.
+interchangeable.
 }
 \examples{
 wksxp(wkt_translate_wksxp("POINT (20 10)"))

@@ -20,6 +20,7 @@ test_that("wksxp class works", {
   expect_is(c(x, x), "wk_wksxp")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
+  expect_identical(rep(wksxp(), 5), wksxp())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"
@@ -29,10 +30,6 @@ test_that("wksxp class works", {
 test_that("as_wksxp() works", {
   x <- wksxp(wkt_translate_wksxp("SRID=44;POINT (40 10)"))
   expect_identical(as_wksxp(x), x)
-
-  # make sure creation options get passed through for identity case
-  expect_identical(attr(unclass(as_wksxp(x, include_srid = TRUE))[[1]], "srid"), 44)
-  expect_identical(attr(unclass(as_wksxp(x, include_srid = FALSE))[[1]], "srid"), NULL)
 
   expect_identical(as_wksxp("SRID=44;POINT (40 10)"), x)
   expect_identical(as_wksxp(wkt("SRID=44;POINT (40 10)")), x)
@@ -50,4 +47,17 @@ test_that("as_wksxp() works", {
     as_wksxp(structure(wkt_translate_wkb("POINT (11 12)"), class = "WKB")),
     as_wksxp("POINT (11 12)")
   )
+})
+
+test_that("wkt() propagates CRS", {
+  x <- as_wksxp("POINT (1 2)")
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wksxp(x, crs = NULL), "are not equal")
+  x[1] <- wksxp(x, crs = 1234L)
+  expect_identical(wk_crs(x), 1234)
 })

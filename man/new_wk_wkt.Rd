@@ -6,7 +6,7 @@
 \alias{validate_wk_wkt}
 \title{S3 Details for wk_wkt}
 \usage{
-new_wk_wkt(x = character())
+new_wk_wkt(x = character(), crs = NULL)
 
 is_wk_wkt(x)
 
@@ -14,6 +14,8 @@ validate_wk_wkt(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wkt]{wkt()}} vector}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 }
 \description{
 S3 Details for wk_wkt

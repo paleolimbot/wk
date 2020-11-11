@@ -134,7 +134,6 @@ private:
 
   template<typename T>
   T readBinary() {
-    // Rcout << "Reading " << sizeof(T) << " starting at " << this->offset << "\n";
     if ((this->offset + sizeof(T)) > this->dataSize) {
       throw WKParseException("Reached end of RawVector input");
     }
@@ -196,7 +195,7 @@ public:
   }
 
   void extendBufferSize(R_xlen_t bufferSize) {
-    if (bufferSize < this->buffer.size()) {
+    if (bufferSize < ((R_xlen_t) this->buffer.size())) {
       throw std::runtime_error("Attempt to shrink RawVector buffer size");
     }
 

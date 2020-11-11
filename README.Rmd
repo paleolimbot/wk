@@ -63,7 +63,7 @@ wkt_translate_wksxp("POINT (30 10)")
 
 ## wkutils
 
-To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the [wkutils package](https://paleolimbot.github.io/wkutils). One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()` functions (among others) to extract usable coordinates and feature meta.
+To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the [wkutils package](https://paleolimbot.github.io/wkutils/). One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()` functions (among others) to extract usable coordinates and feature meta.
 
 ```{r}
 wkutils::wkt_coords("POINT ZM (1 2 3 4)")

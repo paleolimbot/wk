@@ -23,10 +23,10 @@
 #'    (may be omitted if false)
 #'
 #' This is similar to the `sf::st_sfc()` format, but the formats aren't
-#' interchangable.
+#' interchangeable.
 #'
 #' @param x A [list()] features (see details)
-#' @inheritParams wkb_translate_wkt
+#' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'
 #' @return A [new_wk_wksxp()]
@@ -35,18 +35,20 @@
 #' @examples
 #' wksxp(wkt_translate_wksxp("POINT (20 10)"))
 #'
-wksxp <- function(x = list()) {
+wksxp <- function(x = list(), crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wksxp <- new_wk_wksxp(x)
+  wksxp <- new_wk_wksxp(x, crs = crs)
   validate_wk_wksxp(x)
   wksxp
 }
 
 #' @rdname wksxp
 #' @export
-parse_wksxp <- function(x) {
+parse_wksxp <- function(x, crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  parse_base(new_wk_wksxp(x), wksxp_problems(x))
+  parse_base(new_wk_wksxp(x, crs = crs), wksxp_problems(x))
 }
 
 #' @rdname wksxp
@@ -57,83 +59,59 @@ as_wksxp <- function(x, ...) {
 
 #' @rdname wksxp
 #' @export
-as_wksxp.default <- function(x, ...) {
-  as_wksxp(as_wkb(x), ...)
+as_wksxp.default <- function(x, ..., crs = NULL) {
+  as_wksxp(as_wkb(x, crs = crs), ...)
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.character <- function(x, ...) {
-  as_wksxp(wkt(x), ...)
+as_wksxp.character <- function(x, ..., crs = NULL) {
+  as_wksxp(wkt(x, crs = crs), ...)
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  if (is.null(include_z) && is.null(include_m) && is.null(include_srid)) {
-    x
-  } else {
-    new_wk_wksxp(
-      wksxp_translate_wksxp(
-        x,
-        include_z = include_z %||% NA,
-        include_m = include_m %||% NA,
-        include_srid = include_srid %||% NA
-      )
-    )
-  }
+as_wksxp.wk_wksxp <- function(x, ...) {
+  new_wk_wksxp(wksxp_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  new_wk_wksxp(
-    wkt_translate_wksxp(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA
-    )
-  )
+as_wksxp.wk_wkt <- function(x, ...) {
+  new_wk_wksxp(wkt_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wksxp
 #' @export
-as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL) {
-  new_wk_wksxp(
-    wkb_translate_wksxp(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA
-    )
-  )
+as_wksxp.wk_wkb <- function(x, ...) {
+  new_wk_wksxp(wkb_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wksxp.blob <- function(x, ...) {
-  as_wksxp(wkb(x), ...)
+as_wksxp.blob <- function(x, ..., crs = NULL) {
+  as_wksxp(wkb(x, crs = crs), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wksxp.WKB <- function(x, ...) {
-  as_wksxp(wkb(x), ...)
+as_wksxp.WKB <- function(x, ..., crs = NULL) {
+  as_wksxp(wkb(x, crs = crs), ...)
 }
 
 #' S3 Details for wk_wksxp
 #'
 #' @param x A (possibly) [wksxp()] vector
+#' @inheritParams new_wk_wkb
 #'
 #' @export
 #'
-new_wk_wksxp <- function(x = list()) {
+new_wk_wksxp <- function(x = list(), crs = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wksxp input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wksxp", "wk_vctr"))
+  structure(x, class = c("wk_wksxp", "wk_vctr"), crs = crs)
 }
 
 #' @rdname new_wk_wksxp
@@ -154,9 +132,12 @@ validate_wk_wksxp <- function(x) {
 
 #' @export
 `[<-.wk_wksxp` <- function(x, i, value) {
+  replacement <- as_wksxp(value)
+  crs_out <- wk_crs_output(x, replacement)
   x <- unclass(x)
-  x[i] <- as_wksxp(value)
-  new_wk_wksxp(x)
+  x[i] <- replacement
+  attr(x, "crs") <- NULL
+  new_wk_wksxp(x, crs = crs_out)
 }
 
 #' @export

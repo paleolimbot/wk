@@ -14,74 +14,34 @@
 \alias{as_wksxp.WKB}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x = list())
+wkb(x = list(), crs = wk_crs_auto())
 
-parse_wkb(x)
+parse_wkb(x, crs = wk_crs_auto())
 
 as_wkb(x, ...)
 
-\method{as_wkb}{character}(x, ...)
+\method{as_wkb}{character}(x, ..., crs = NULL)
 
-\method{as_wkb}{wk_wkb}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  endian = NULL
-)
+\method{as_wkb}{wk_wkb}(x, ...)
 
-\method{as_wkb}{wk_wkt}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  endian = NULL
-)
+\method{as_wkb}{wk_wkt}(x, ...)
 
-\method{as_wkb}{wk_wksxp}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  endian = NULL
-)
+\method{as_wkb}{wk_wksxp}(x, ...)
 
-\method{as_wkb}{blob}(x, ...)
+\method{as_wkb}{blob}(x, ..., crs = NULL)
 
-\method{as_wkb}{WKB}(x, ...)
+\method{as_wkb}{WKB}(x, ..., crs = NULL)
 
-\method{as_wksxp}{blob}(x, ...)
+\method{as_wksxp}{blob}(x, ..., crs = NULL)
 
-\method{as_wksxp}{WKB}(x, ...)
+\method{as_wksxp}{WKB}(x, ..., crs = NULL)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
 
+\item{crs}{A value to be propagated as the CRS for this vector.}
+
 \item{...}{Unused}
-
-\item{include_z}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_m}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_srid}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{endian}{For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
 }
 \value{
 A \code{\link[=new_wk_wkb]{new_wk_wkb()}}

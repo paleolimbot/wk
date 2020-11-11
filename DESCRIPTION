@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.3.2.9000
+Version: 0.3.3.9000
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -36,6 +36,7 @@ Imports:
 Suggests: 
     testthat,
     vctrs (>= 0.3.0),
-    wkutils
-URL: https://paleolimbot.github.io/wk, https://github.com/paleolimbot/wk
+    wkutils,
+    sf
+URL: https://paleolimbot.github.io/wk/, https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues

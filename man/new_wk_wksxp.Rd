@@ -6,7 +6,7 @@
 \alias{validate_wk_wksxp}
 \title{S3 Details for wk_wksxp}
 \usage{
-new_wk_wksxp(x = list())
+new_wk_wksxp(x = list(), crs = NULL)
 
 is_wk_wksxp(x)
 
@@ -14,6 +14,8 @@ validate_wk_wksxp(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wksxp]{wksxp()}} vector}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 }
 \description{
 S3 Details for wk_wksxp

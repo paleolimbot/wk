@@ -153,6 +153,60 @@ wksxp_translate_wksxp <- function(wksxp, include_z = NA, include_m = NA, include
   )
 }
 
+# ----- leaving these unexported until the arguments are stable
+
+xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
+  cpp_translate_xyzm_wkt(xyzm, precision, trim)
+}
+
+xyzm_translate_wkb <- function(xyzm, endian = wk_platform_endian(), buffer_size = 2048) {
+  cpp_translate_xyzm_wkb(xyzm, endian, bufferSize = buffer_size)
+}
+
+xyzm_translate_wksxp <- function(xyzm) {
+  cpp_translate_xyzm_wksxp(xyzm)
+}
+
+rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
+  cpp_translate_rct_wkt(rct, precision, trim)
+}
+
+rct_translate_wkb <- function(rct, endian = wk_platform_endian(), buffer_size = 2048) {
+  cpp_translate_rct_wkb(rct, endian, bufferSize = buffer_size)
+}
+
+rct_translate_wksxp <- function(rct) {
+  cpp_translate_rct_wksxp(rct)
+}
+
+wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
+  xyzm_trim(cpp_translate_wkt_xyzm(wkt), include_z, include_m)
+}
+
+wkb_translate_xyzm <- function(wkb, include_z = NA, include_m = NA) {
+  xyzm_trim(cpp_translate_wkb_xyzm(wkb), include_z, include_m)
+}
+
+wksxp_translate_xyzm <- function(wksxp, include_z = NA, include_m = NA) {
+  xyzm_trim(cpp_translate_wksxp_xyzm(wksxp), include_z, include_m)
+}
+
+xyzm_trim <- function(result, include_z, include_m) {
+  if (identical(include_z, NA) && all(is.na(result$z))) {
+    result$z <- NULL
+  } else if (identical(include_z, FALSE)) {
+    result$z <- NULL
+  }
+
+  if (identical(include_m, NA) && all(is.na(result$m))) {
+    result$m <- NULL
+  } else if (identical(include_m, FALSE)) {
+    result$m <- NULL
+  }
+
+  result
+}
+
 #' @rdname wkb_translate_wkt
 #' @export
 wk_platform_endian <- function() {

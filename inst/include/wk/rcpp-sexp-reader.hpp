@@ -248,8 +248,9 @@ private:
 
     if (item.hasAttribute("srid")) {
       try {
-        srid = item.attr("srid");
-        hasSRID = srid != NA_INTEGER;
+        int sridInt = item.attr("srid");
+        hasSRID = sridInt != NA_INTEGER;
+        srid = sridInt;
       } catch(std::exception& e) {
         throw WKParseException("'srid' attribute has unexpected type");
       }

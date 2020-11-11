@@ -83,12 +83,12 @@ wkt_translate_wksxp("POINT (30 10)")
 
 To keep the footprint (i.e., compile time) of this package as slim as
 possible, utilities to work with WKT, WKB, and well-known R objects are
-located in the [wkutils package](https://paleolimbot.github.io/wkutils).
-One of the main drawbacks to passing around geometries in WKB is that
-the format is opaque to R users, who need coordinates as R objects
-rather than binary vectors. The wkutils package provides `wk*_meta()`
-and `wk*_coords()` functions (among others) to extract usable
-coordinates and feature meta.
+located in the [wkutils
+package](https://paleolimbot.github.io/wkutils/). One of the main
+drawbacks to passing around geometries in WKB is that the format is
+opaque to R users, who need coordinates as R objects rather than binary
+vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()`
+functions (among others) to extract usable coordinates and feature meta.
 
 ``` r
 wkutils::wkt_coords("POINT ZM (1 2 3 4)")
@@ -97,10 +97,10 @@ wkutils::wkt_coords("POINT ZM (1 2 3 4)")
 #>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
 #> 1          1       1       0     1     2     3     4
 wkutils::wkt_meta("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 8
-#>   feature_id part_id type_id  size  srid has_z has_m n_coords
-#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>    <int>
-#> 1          1       1       1     1    NA TRUE  TRUE         1
+#> # A tibble: 1 x 7
+#>   feature_id part_id type_id  size  srid has_z has_m
+#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>
+#> 1          1       1       1     1    NA TRUE  TRUE
 wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
 #> # A tibble: 1 x 8
 #>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
@@ -173,6 +173,7 @@ geometry using `wkutils::wkb|wkt_debug()` functions.
 
 ``` r
 library(wkutils) # remotes::install_github("paleolimbot/wkutils")
+#> Warning: package 'wkutils' was built under R version 4.0.2
 wkt_debug("POINT (30 10)")
 #> nextFeatureStart(0)
 #>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
@@ -197,8 +198,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            243µs    295µs     3292.   110.1KB     18.6
-#> 2 sf            389µs    456µs     2088.    99.8KB     13.8
+#> 1 wk            236µs    300µs     3072.   110.1KB     21.3
+#> 2 sf            425µs    548µs     1523.    99.1KB     12.4
 ```
 
 Read WKB + Write WKT:
@@ -213,8 +214,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.02ms   3.38ms    291.      3.32KB      0  
-#> 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8
+#> 1 wk           3.13ms   4.63ms    209.      3.32KB      0  
+#> 2 sf         246.44ms 255.17ms      3.92  566.67KB     17.6
 ```
 
 Read WKT + Write WKB:
@@ -228,8 +229,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.87ms   2.06ms      476.    49.5KB     0   
-#> 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18
+#> 1 wk           2.12ms   2.38ms      387.    49.5KB     2.03
+#> 2 sf           3.67ms   5.71ms      165.   185.7KB     4.24
 ```
 
 Read WKT + Write WKT:
@@ -244,6 +245,6 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98
-#> 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5
+#> 1 wk           5.26ms    6.9ms    123.      63.8KB     1.99
+#> 2 sf         254.41ms  254.5ms      3.93   234.9KB    17.7
 ```

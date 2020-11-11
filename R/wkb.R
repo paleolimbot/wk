@@ -2,7 +2,7 @@
 #' Mark lists of raw vectors as well-known binary
 #'
 #' @param x A [list()] of [raw()] vectors or `NULL`.
-#' @inheritParams wkb_translate_wkt
+#' @inheritParams new_wk_wkb
 #' @param ... Unused
 #'
 #' @return A [new_wk_wkb()]
@@ -11,18 +11,20 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x = list()) {
+wkb <- function(x = list(), crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x)
+  wkb <- new_wk_wkb(x, crs = crs)
   validate_wk_wkb(x)
   wkb
 }
 
 #' @rdname wkb
 #' @export
-parse_wkb <- function(x) {
+parse_wkb <- function(x, crs = wk_crs_auto()) {
+  crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  parse_base(new_wk_wkb(x), wkb_problems(x))
+  parse_base(new_wk_wkb(x, crs = crs), wkb_problems(x))
 }
 
 #' @rdname wkb
@@ -33,83 +35,53 @@ as_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.character <- function(x, ...) {
-  as_wkb(wkt(x), ...)
+as_wkb.character <- function(x, ..., crs = NULL) {
+  as_wkb(wkt(x, crs = crs), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                          endian = NULL) {
-  if (is.null(include_z) && is.null(include_m) && is.null(include_srid) && is.null(endian)) {
-    x
-  } else {
-    new_wk_wkb(
-      wkb_translate_wkb(
-        x,
-        include_z = include_z %||% NA,
-        include_m = include_m %||% NA,
-        include_srid = include_srid %||% NA,
-        endian = endian %||% wk_platform_endian()
-      )
-    )
-  }
+as_wkb.wk_wkb <- function(x, ...) {
+  new_wk_wkb(wkb_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wkt <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                          endian = NULL) {
-  new_wk_wkb(
-    wkt_translate_wkb(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA,
-      endian = endian %||% wk_platform_endian()
-    )
-  )
+as_wkb.wk_wkt <- function(x, ...) {
+  new_wk_wkb(wkt_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_srid = NULL,
-                            endian = NULL) {
-  new_wk_wkb(
-    wksxp_translate_wkb(
-      x,
-      include_z = include_z %||% NA,
-      include_m = include_m %||% NA,
-      include_srid = include_srid %||% NA,
-      endian = endian %||% wk_platform_endian()
-    )
-  )
+as_wkb.wk_wksxp <- function(x, ...) {
+  new_wk_wkb(wksxp_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.blob <- function(x, ...) {
-  as_wkb(wkb(x), ...)
+as_wkb.blob <- function(x, ..., crs = NULL) {
+  as_wkb(wkb(x, crs = crs), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.WKB <- function(x, ...) {
-  as_wkb(wkb(x), ...)
+as_wkb.WKB <- function(x, ..., crs = NULL) {
+  as_wkb(wkb(x, crs = crs), ...)
 }
 
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
+#' @param crs A value to be propagated as the CRS for this vector.
 #'
 #' @export
 #'
-new_wk_wkb <- function(x = list()) {
+new_wk_wkb <- function(x = list(), crs = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"))
+  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs)
 }
 
 #' @rdname new_wk_wkb
@@ -135,9 +107,12 @@ is_wk_wkb <- function(x) {
 
 #' @export
 `[<-.wk_wkb` <- function(x, i, value) {
+  replacement <- as_wkb(value)
+  crs_out <- wk_crs_output(x, replacement)
   x <- unclass(x)
-  x[i] <- as_wkb(value)
-  new_wk_wkb(x)
+  x[i] <- replacement
+  attr(x, "crs") <- NULL
+  new_wk_wkb(x, crs = crs_out)
 }
 
 #' @export

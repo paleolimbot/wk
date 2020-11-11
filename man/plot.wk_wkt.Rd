@@ -4,6 +4,8 @@
 \alias{plot.wk_wkt}
 \alias{plot.wk_wkb}
 \alias{plot.wk_wksxp}
+\alias{plot.wk_xy}
+\alias{plot.wk_rct}
 \title{Plot well-known geometry vectors}
 \usage{
 \method{plot}{wk_wkt}(
@@ -38,6 +40,10 @@
   rule = "evenodd",
   add = FALSE
 )
+
+\method{plot}{wk_xy}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
+
+\method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link[=wkt]{wkt()}}, \code{\link[=wkb]{wkb()}}, or \code{\link[=wksxp]{wksxp()}} vector.}
@@ -67,8 +73,11 @@ The input, invisibly.
 Plot well-known geometry vectors
 }
 \examples{
-plot(as_wkt("LINESTRING (0 0, 1 1)"))
-plot(as_wkb("LINESTRING (0 0, 1 1)"))
-plot(as_wksxp("LINESTRING (0 0, 1 1)"))
+# requires the wkutils package
+if (requireNamespace("wkutils")) {
+  plot(as_wkt("LINESTRING (0 0, 1 1)"))
+  plot(as_wkb("LINESTRING (0 0, 1 1)"))
+  plot(as_wksxp("LINESTRING (0 0, 1 1)"))
+}
 
 }
