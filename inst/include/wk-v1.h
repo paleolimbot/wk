@@ -85,6 +85,7 @@ extern "C" {
 WKHandler_t* wk_handler_create();
 SEXP wk_handler_create_xptr(WKHandler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(WKHandler_t* handler);
+SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, WKHandler_t* handler), SEXP readData, SEXP xptr);
 SEXP wk_error_sentinel(int code, const char* message);
 
 #ifdef __cplusplus

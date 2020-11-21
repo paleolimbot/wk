@@ -31,6 +31,7 @@ void wkb_set_errorf(WKBBuffer_t* buffer, const char* errorMessage, ...) {
   va_end(args);
 }
 
+SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler);
 char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t nParts, uint32_t partId,
                        int recursiveLevel);
 
@@ -43,8 +44,11 @@ unsigned char wkb_platform_endian();
 void memcpyrev(void* dst, unsigned char* src, size_t n);
 
 SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
+  return wk_handler_run_xptr(&wkb_read_wkb, data, handlerXptr);
+}
+
+SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
   R_xlen_t nFeatures = Rf_xlength(data);
-  WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(handlerXptr);
 
   WKGeometryMeta_t vectorMeta;
   WK_META_RESET(vectorMeta, WK_GEOMETRY);
@@ -90,7 +94,6 @@ SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
   }
 
   SEXP result = PROTECT(handler->vectorEnd(&vectorMeta, handler->userData));
-  handler->finalizer(handler->userData);
   UNPROTECT(1);
   return result;
 }

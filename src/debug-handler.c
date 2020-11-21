@@ -169,6 +169,10 @@ char wk_handler_debug_error(R_xlen_t featureId, int code, const char* message, v
   return WK_ABORT;
 }
 
+void wk_handler_debug_finalizer(void* userData) {
+  Rprintf("finalizer\n");
+}
+
 SEXP wk_c_handler_debug_new() {
   WKHandler_t* handler = wk_handler_create();
 
@@ -188,6 +192,8 @@ SEXP wk_c_handler_debug_new() {
   handler->coord = &wk_handler_debug_coord;
 
   handler->error = &wk_handler_debug_error;
+
+  handler->finalizer = &wk_handler_debug_finalizer;
 
   SEXP recursiveDepth = PROTECT(Rf_allocVector(INTSXP, 1));
   int* pRecursiveDepth = INTEGER(recursiveDepth);
