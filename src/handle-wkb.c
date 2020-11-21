@@ -9,6 +9,10 @@
 #define EWKB_M_BIT    0x40000000
 #define EWKB_SRID_BIT 0x20000000
 
+#define MAYBE(expr)                                            \
+  result = expr;                                               \
+  if (result != WK_CONTINUE) return result
+
 typedef struct {
   R_xlen_t featureId;
   unsigned char* buffer;
@@ -122,29 +126,22 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   }
 
   char result;
-  result = handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData);
-  if (result != WK_CONTINUE) return result;
+  MAYBE(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData));
 
   switch (meta.geometryType) {
   case WK_POINT:
   case WK_LINESTRING:
-    result = wkb_read_coordinates(handler, buffer, &meta, meta.size);
-    if (result != WK_CONTINUE) return result;
+    MAYBE(wkb_read_coordinates(handler, buffer, &meta, meta.size));
     break;
   case WK_POLYGON:
     for (uint32_t i = 0; i < meta.size; i++) {
-      result = handler->ringStart(&meta, meta.size, i, handler->userData);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(handler->ringStart(&meta, meta.size, i, handler->userData));
 
       uint32_t nCoords;
-      result = wkb_read_uint(handler, buffer, &nCoords);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(wkb_read_uint(handler, buffer, &nCoords));
+      MAYBE(wkb_read_coordinates(handler, buffer, &meta, nCoords));
 
-      result = wkb_read_coordinates(handler, buffer, &meta, nCoords);
-      if (result != WK_CONTINUE) return WK_ABORT_FEATURE;
-
-      result = handler->ringEnd(&meta, meta.size, i, handler->userData);
-      if (result != WK_CONTINUE) return WK_ABORT_FEATURE;
+      MAYBE(handler->ringEnd(&meta, meta.size, i, handler->userData));
     }
     break;
   case WK_MULTIPOINT:
@@ -152,8 +149,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   case WK_MULTIPOLYGON:
   case WK_GEOMETRYCOLLECTION:
     for (uint32_t i = 0; i < meta.size; i++) {
-      char result = wkb_read_geometry(handler, buffer, meta.size, i, meta.recursiveLevel + 1);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(wkb_read_geometry(handler, buffer, meta.size, i, meta.recursiveLevel + 1));
     }
     break;
   default:
@@ -202,6 +198,7 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
   }
 
   WKCoord_t coord;
+  char result;
 
   if (buffer->swapEndian) {
     for (uint32_t i = 0; i < nCoords; i++) {
@@ -210,15 +207,13 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
         buffer->offset += sizeof(double);
       }
 
-      char result = handler->coord(meta, coord, nCoords, i, handler->userData);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(handler->coord(meta, coord, nCoords, i, handler->userData));
     }
   } else {
     for (uint32_t i = 0; i < nCoords; i++) {
       memcpy(&coord, &(buffer->buffer[buffer->offset]), coordSize);
       buffer->offset += coordSize;
-      char result = handler->coord(meta, coord, nCoords, i, handler->userData);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(handler->coord(meta, coord, nCoords, i, handler->userData));
     }
   }
 
