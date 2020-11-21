@@ -4,22 +4,45 @@
 \alias{wk_void_handler}
 \alias{wk_debug_handler}
 \alias{new_wk_handler}
+\alias{is_wk_handler}
+\alias{as_wk_handler}
 \alias{wk_finish_default}
 \alias{wk_finish_invisible}
+\alias{handle_wkb}
 \title{Test handlers}
 \usage{
 wk_void_handler()
 
 wk_debug_handler()
 
-new_wk_handler(x, subclass = character(), finisher = wk_finish_default)
+new_wk_handler(
+  handler_ptr,
+  subclass = character(),
+  finisher = wk_finish_default
+)
+
+is_wk_handler(handler)
+
+as_wk_handler(handler, ...)
 
 wk_finish_default(result, x)
 
 wk_finish_invisible(result, x)
+
+handle_wkb(x, handler, ...)
 }
 \arguments{
-\item{x}{An external pointer to a newly created WK handler}
+\item{handler_ptr}{An external pointer to a newly created WK handler}
+
+\item{subclass}{The handler subclass}
+
+\item{finisher, result}{A function called on the \code{result} of the handler.}
+
+\item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
+
+\item{...}{Passed to the handler constructor.}
+
+\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
 }
 \value{
 A WK handler

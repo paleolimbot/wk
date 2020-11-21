@@ -166,7 +166,7 @@ char wk_handler_debug_coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint3
 char wk_handler_debug_error(R_xlen_t featureId, int code, const char* message, void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("error [i=%d](%d): %s\n", featureId, code, message);
-  return WK_STOP;
+  return WK_ABORT;
 }
 
 SEXP wk_c_handler_debug_new() {

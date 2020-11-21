@@ -42,7 +42,7 @@ as_wkb.character <- function(x, ..., crs = NULL) {
 #' @rdname wkb
 #' @export
 as_wkb.wk_wkb <- function(x, ...) {
-  new_wk_wkb(wkb_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
+  x
 }
 
 #' @rdname wkb
