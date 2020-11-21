@@ -2,7 +2,7 @@
 #include "wk-v1.h"
 #include <Rinternals.h>
 
-void wk_handler_debug_print_meta(const WKGeometryMeta* meta) {
+void wk_handler_debug_print_meta(const WKGeometryMeta_t* meta) {
   switch (meta->geometryType) {
   case WK_POINT:
     REprintf("POINT");
@@ -71,7 +71,7 @@ void wk_handler_debug_dedent(void* userData) {
   intData[0]--;
 }
 
-char wk_handler_debug_vector_start(const WKGeometryMeta* meta, void* userData) {
+char wk_handler_debug_vector_start(const WKGeometryMeta_t* meta, void* userData) {
   wk_handler_debug_reset(userData);
   wk_handler_debug_print_indent(userData);
   REprintf("vectorStart: ");
@@ -81,34 +81,37 @@ char wk_handler_debug_vector_start(const WKGeometryMeta* meta, void* userData) {
   return WK_CONTINUE;
 }
 
-SEXP wk_handler_debug_vector_end(const WKGeometryMeta* meta, void* userData) {
+SEXP wk_handler_debug_vector_end(const WKGeometryMeta_t* meta, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
   REprintf("vectorEnd <%p>\n", meta);
   return R_NilValue;
 }
 
-char wk_handler_debug_feature_start(const WKGeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
+char wk_handler_debug_feature_start(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId,
+                                    void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("featureStart (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_feature_null(const WKGeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
+char wk_handler_debug_feature_null(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId,
+                                   void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("nullFeature (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_feature_end(const WKGeometryMeta* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
+char wk_handler_debug_feature_end(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId,
+                                  void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
   REprintf("featureEnd (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_geometry_start(const WKGeometryMeta* meta, uint32_t nParts, uint32_t partId, void* userData) {
+char wk_handler_debug_geometry_start(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData) {
   wk_handler_debug_print_indent(userData);
 
   if (nParts == WK_PART_ID_NONE) {
@@ -123,7 +126,7 @@ char wk_handler_debug_geometry_start(const WKGeometryMeta* meta, uint32_t nParts
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_geometry_end(const WKGeometryMeta* meta, uint32_t nParts, uint32_t partId, void* userData) {
+char wk_handler_debug_geometry_end(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
 
@@ -136,21 +139,22 @@ char wk_handler_debug_geometry_end(const WKGeometryMeta* meta, uint32_t nParts, 
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_start(const WKGeometryMeta* meta, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_debug_ring_start(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("ringStart (%d / %d) <%p>\n", ringId + 1, nRings, meta);
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_end(const WKGeometryMeta* meta, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_debug_ring_end(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
   REprintf("ringEnd (%d / %d) <%p>\n", ringId + 1, nRings, meta);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_coord(const WKGeometryMeta* meta, WKCoord coord, uint32_t nCoords, uint32_t coordId, void* userData) {
+char wk_handler_debug_coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
+                            void* userData) {
   wk_handler_debug_print_indent(userData);
   REprintf("coord (%d / %d) <%p> (%f %f", coordId + 1, nCoords, meta, coord.v[0], coord.v[1]);
   if (meta->hasZ || meta->hasM) REprintf(" %f", coord.v[2]);
@@ -166,7 +170,7 @@ char wk_handler_debug_error(R_xlen_t featureId, int code, const char* message, v
 }
 
 SEXP wk_c_handler_debug_new() {
-  WKHandler* handler = wk_handler_create();
+  WKHandler_t* handler = wk_handler_create();
 
   handler->vectorStart = &wk_handler_debug_vector_start;
   handler->vectorEnd = &wk_handler_debug_vector_end;
