@@ -5,54 +5,54 @@
 void wk_handler_debug_print_meta(const WKGeometryMeta_t* meta) {
   switch (meta->geometryType) {
   case WK_POINT:
-    REprintf("POINT");
+    Rprintf("POINT");
     break;
   case WK_LINESTRING:
-    REprintf("LINESTRING");
+    Rprintf("LINESTRING");
     break;
   case WK_POLYGON:
-    REprintf("POLYGON");
+    Rprintf("POLYGON");
     break;
   case WK_MULTIPOINT:
-    REprintf("MULTIPOINT");
+    Rprintf("MULTIPOINT");
     break;
   case WK_MULTILINESTRING:
-    REprintf("MULTILINESTRING");
+    Rprintf("MULTILINESTRING");
     break;
   case WK_MULTIPOLYGON:
-    REprintf("MULTIPOLYGON");
+    Rprintf("MULTIPOLYGON");
     break;
   case WK_GEOMETRYCOLLECTION:
-    REprintf("GEOMETRYCOLLECTION");
+    Rprintf("GEOMETRYCOLLECTION");
     break;
   default:
-    REprintf("<Unknown type / %d>", meta->geometryType);
+    Rprintf("<Unknown type / %d>", meta->geometryType);
     break;
   }
 
   if (meta->hasZ || meta->hasM || meta->hasSrid || meta->hasBounds) {
-    REprintf(" ");
+    Rprintf(" ");
   }
-  if (meta->hasZ) REprintf("Z");
-  if (meta->hasM) REprintf("M");
-  if (meta->hasSrid) REprintf("S");
-  if (meta->hasBounds) REprintf("B");
+  if (meta->hasZ) Rprintf("Z");
+  if (meta->hasM) Rprintf("M");
+  if (meta->hasSrid) Rprintf("S");
+  if (meta->hasBounds) Rprintf("B");
 
   if (meta->hasSize) {
     if (meta->size == 0) {
-      REprintf("[EMPTY]");
+      Rprintf("[EMPTY]");
     } else {
-      REprintf("[%d]", meta->size);
+      Rprintf("[%d]", meta->size);
     }
   }
 
-  REprintf(" <%p>", (void*) meta);
+  Rprintf(" <%p>", (void*) meta);
 }
 
 void wk_handler_debug_print_indent(void* userData) {
   int* intData = (int*) userData;
   for (int i = 0; i < intData[0]; i++) {
-    REprintf("  ");
+    Rprintf("  ");
   }
 }
 
@@ -74,9 +74,9 @@ void wk_handler_debug_dedent(void* userData) {
 char wk_handler_debug_vector_start(const WKGeometryMeta_t* meta, void* userData) {
   wk_handler_debug_reset(userData);
   wk_handler_debug_print_indent(userData);
-  REprintf("vectorStart: ");
+  Rprintf("vectorStart: ");
   wk_handler_debug_print_meta(meta);
-  REprintf("\n");
+  Rprintf("\n");
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
@@ -84,14 +84,14 @@ char wk_handler_debug_vector_start(const WKGeometryMeta_t* meta, void* userData)
 SEXP wk_handler_debug_vector_end(const WKGeometryMeta_t* meta, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
-  REprintf("vectorEnd <%p>\n", meta);
+  Rprintf("vectorEnd <%p>\n", meta);
   return R_NilValue;
 }
 
 char wk_handler_debug_feature_start(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId,
                                     void* userData) {
   wk_handler_debug_print_indent(userData);
-  REprintf("featureStart (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
+  Rprintf("featureStart (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
@@ -99,7 +99,7 @@ char wk_handler_debug_feature_start(const WKGeometryMeta_t* meta, R_xlen_t nFeat
 char wk_handler_debug_feature_null(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId,
                                    void* userData) {
   wk_handler_debug_print_indent(userData);
-  REprintf("nullFeature (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
+  Rprintf("nullFeature (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   return WK_CONTINUE;
 }
 
@@ -107,7 +107,7 @@ char wk_handler_debug_feature_end(const WKGeometryMeta_t* meta, R_xlen_t nFeatur
                                   void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
-  REprintf("featureEnd (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
+  Rprintf("featureEnd (%d / %d) <%p>\n", featureId + 1, nFeatures, meta);
   return WK_CONTINUE;
 }
 
@@ -115,13 +115,13 @@ char wk_handler_debug_geometry_start(const WKGeometryMeta_t* meta, uint32_t nPar
   wk_handler_debug_print_indent(userData);
 
   if (nParts == WK_PART_ID_NONE) {
-    REprintf("geometryStart: ");
+    Rprintf("geometryStart: ");
   } else {
-    REprintf("geometryStart (%d / %d): ", partId + 1, nParts);
+    Rprintf("geometryStart (%d / %d): ", partId + 1, nParts);
   }
 
   wk_handler_debug_print_meta(meta);
-  REprintf("\n");
+  Rprintf("\n");
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
@@ -131,9 +131,9 @@ char wk_handler_debug_geometry_end(const WKGeometryMeta_t* meta, uint32_t nParts
   wk_handler_debug_print_indent(userData);
 
   if (nParts == WK_PART_ID_NONE) {
-    REprintf("geometryEnd <%p> \n", meta);
+    Rprintf("geometryEnd <%p> \n", meta);
   } else {
-    REprintf("geometryStart (%d / %d) <%p> \n", partId + 1, nParts, meta);
+    Rprintf("geometryStart (%d / %d) <%p> \n", partId + 1, nParts, meta);
   }
 
   return WK_CONTINUE;
@@ -141,7 +141,7 @@ char wk_handler_debug_geometry_end(const WKGeometryMeta_t* meta, uint32_t nParts
 
 char wk_handler_debug_ring_start(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_print_indent(userData);
-  REprintf("ringStart (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  Rprintf("ringStart (%d / %d) <%p>\n", ringId + 1, nRings, meta);
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
@@ -149,23 +149,23 @@ char wk_handler_debug_ring_start(const WKGeometryMeta_t* meta, uint32_t nRings, 
 char wk_handler_debug_ring_end(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
-  REprintf("ringEnd (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  Rprintf("ringEnd (%d / %d) <%p>\n", ringId + 1, nRings, meta);
   return WK_CONTINUE;
 }
 
 char wk_handler_debug_coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
                             void* userData) {
   wk_handler_debug_print_indent(userData);
-  REprintf("coord (%d / %d) <%p> (%f %f", coordId + 1, nCoords, meta, coord.v[0], coord.v[1]);
-  if (meta->hasZ || meta->hasM) REprintf(" %f", coord.v[2]);
-  if (meta->hasZ && meta->hasM) REprintf(" %f", coord.v[3]);
-  REprintf(")\n");
+  Rprintf("coord (%d / %d) <%p> (%f %f", coordId + 1, nCoords, meta, coord.v[0], coord.v[1]);
+  if (meta->hasZ || meta->hasM) Rprintf(" %f", coord.v[2]);
+  if (meta->hasZ && meta->hasM) Rprintf(" %f", coord.v[3]);
+  Rprintf(")\n");
   return WK_CONTINUE;
 }
 
 char wk_handler_debug_error(R_xlen_t featureId, int code, const char* message, void* userData) {
   wk_handler_debug_print_indent(userData);
-  REprintf("error [i=%d](%d): %s\n", featureId, code, message);
+  Rprintf("error [i=%d](%d): %s\n", featureId, code, message);
   return WK_ABORT;
 }
 
