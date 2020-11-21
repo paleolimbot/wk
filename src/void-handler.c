@@ -3,7 +3,7 @@
 #include <Rinternals.h>
 
 SEXP wk_c_handler_void_new() {
-  return WKV1_handler_create_xptr(WKV1_handler_create(), R_NilValue, R_NilValue);
+  return wk_handler_create_xptr(wk_handler_create(), R_NilValue, R_NilValue);
 }
 
 SEXP wk_c_handler_addr(SEXP xptr) {

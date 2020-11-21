@@ -75,7 +75,7 @@ class WKV1HandlerFactory {
 public:
 
   static WKV1_Handler* create(HandlerType* userData) {
-    WKV1_Handler* handler = WKV1_handler_create();
+    WKV1_Handler* handler = wk_handler_create();
     handler->userData = userData;
 
     handler->vectorStart = &vectorStart;
