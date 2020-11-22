@@ -347,7 +347,6 @@ public:
     WK_META_RESET(meta, WK_GEOMETRY);
 
     std::string geometryType = this->assertWord();
-    throw WKParseException("An exception");
 
     if (geometryType == "SRID") {
       this->assert_('=');
@@ -460,6 +459,7 @@ protected:
     WKGeometryMeta_t meta = s.assertGeometryMeta();
     this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId);
 
+    // this currently crashes with "invalid read of size 8"
     switch (meta.geometryType) {
 
     case WK_POINT:
