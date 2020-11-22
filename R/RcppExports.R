@@ -13,6 +13,10 @@ cpp_format_wksxp <- function(wksxp, maxCoords, precision, trim) {
     .Call(`_wk_cpp_format_wksxp`, wksxp, maxCoords, precision, trim)
 }
 
+wk_cpp_handle_wkt <- function(wkt, xptr) {
+    .Call(`_wk_wk_cpp_handle_wkt`, wkt, xptr)
+}
+
 cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }

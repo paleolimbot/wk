@@ -50,7 +50,7 @@ as_wkt.character <- function(x, ..., crs = NULL) {
 #' @rdname wkt
 #' @export
 as_wkt.wk_wkt <- function(x, ...) {
-  new_wk_wkt(wkt_translate_wkt(x), crs = attr(x, "crs", exact = TRUE))
+  x
 }
 
 #' @rdname wkt

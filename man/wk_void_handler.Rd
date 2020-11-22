@@ -9,6 +9,7 @@
 \alias{wk_finish_default}
 \alias{wk_finish_invisible}
 \alias{handle_wkb}
+\alias{handle_wkt}
 \title{Test handlers}
 \usage{
 wk_void_handler()
@@ -30,6 +31,8 @@ wk_finish_default(result, x)
 wk_finish_invisible(result, x)
 
 handle_wkb(x, handler, ...)
+
+handle_wkt(x, handler, ...)
 }
 \arguments{
 \item{handler_ptr}{An external pointer to a newly created WK handler}

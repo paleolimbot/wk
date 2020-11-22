@@ -66,6 +66,12 @@ handle_wkb <- function(x, handler, ...) {
   attr(handler, "finisher")(.Call(wk_c_read_wkb, as_wkb(x), as_wk_handler(handler, ...)))
 }
 
+#' @rdname wk_void_handler
+#' @export
+handle_wkt <- function(x, handler, ...) {
+  attr(handler, "finisher")(wk_cpp_handle_wkt(as_wkt(x), as_wk_handler(handler, ...)))
+}
+
 #' @export
 print.wk_handler <- function(x, ...) {
   cat(sprintf("<%s at %s>\n", class(x)[1], .Call(wk_c_handler_addr)))

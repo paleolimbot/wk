@@ -2,61 +2,80 @@
 #ifndef WK_V1_HPP_INCLUDED
 #define WK_V1_HPP_INCLUDED
 
-#include "wk-v1.h"
 #include "cpp11/external_pointer.hpp"
 #include "cpp11/protect.hpp"
+#include <string>
+#include <stdexcept>
+#include "wk-v1.h"
+
+class WKParseException: public std::runtime_error {
+public:
+  WKParseException(int code): std::runtime_error(""), exceptionCode(code) {}
+  WKParseException(std::string message): std::runtime_error(message), exceptionCode(WK_DEFAULT_ERROR_CODE) {}
+
+  int code() {
+    return this->exceptionCode;
+  }
+
+private:
+  int exceptionCode;
+};
 
 class WKHandler {
 public:
 
-  WKHandler(SEXP xptr): xptr(xptr) {}
+  WKHandler(WKHandler_t* handler): handler(handler) {}
+
+  ~WKHandler() {
+    this->handler->finalizer(this->handler->userData);
+  }
 
   char vectorStart(const WKGeometryMeta_t* meta) {
-    return cpp11::safe[xptr->vectorStart](meta, xptr->userData);
+    return cpp11::safe[handler->vectorStart](meta, handler->userData);
   }
 
   char featureStart(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[xptr->featureStart](meta, nFeatures, featureId, xptr->userData);
+    return cpp11::safe[handler->featureStart](meta, nFeatures, featureId, handler->userData);
   }
 
   char nullFeature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[xptr->nullFeature](meta, nFeatures, featureId, xptr->userData);
+    return cpp11::safe[handler->nullFeature](meta, nFeatures, featureId, handler->userData);
   }
 
   char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
-    return cpp11::safe[xptr->geometryStart](meta, nParts, partId, xptr->userData);
+    return cpp11::safe[handler->geometryStart](meta, nParts, partId, handler->userData);
   }
 
   char ringStart(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId) {
-    return cpp11::safe[xptr->ringStart](meta, nRings, ringId, xptr->userData);
+    return cpp11::safe[handler->ringStart](meta, nRings, ringId, handler->userData);
   }
 
   char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId) {
-    return cpp11::safe[xptr->coord](meta, coord, nCoords, coordId, xptr->userData);
+    return cpp11::safe[handler->coord](meta, coord, nCoords, coordId, handler->userData);
   }
 
   char ringEnd(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId) {
-    return cpp11::safe[xptr->ringEnd](meta, nRings, ringId, xptr->userData);
+    return cpp11::safe[handler->ringEnd](meta, nRings, ringId, handler->userData);
   }
 
   char geometryEnd(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
-    return cpp11::safe[xptr->geometryEnd](meta, nParts, partId, xptr->userData);
+    return cpp11::safe[handler->geometryEnd](meta, nParts, partId, handler->userData);
   }
 
   char featureEnd(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[xptr->featureEnd](meta, nFeatures, featureId, xptr->userData);
+    return cpp11::safe[handler->featureEnd](meta, nFeatures, featureId, handler->userData);
   }
 
   SEXP vectorEnd(const WKGeometryMeta_t* meta) {
-    return cpp11::safe[xptr->vectorEnd](meta, xptr->userData);
+    return cpp11::safe[handler->vectorEnd](meta, handler->userData);
   }
 
   char error(R_xlen_t featureId, int code, const char* message) {
-    return cpp11::safe[xptr->error](featureId, code, message, xptr->userData);
+    return cpp11::safe[handler->error](featureId, code, message, handler->userData);
   }
 
 private:
-  cpp11::external_pointer<WKHandler_t> xptr;
+  WKHandler_t* handler;
 };
 
 

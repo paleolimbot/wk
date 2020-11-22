@@ -11,6 +11,7 @@
 #define WK_DEFAULT_ERROR_CODE 0
 #define WK_NO_ERROR_CODE -1
 #define WK_PART_ID_NONE UINT32_MAX
+#define WK_SIZE_UNKNOWN UINT32_MAX
 
 enum WKV1_GeometryType {
   WK_GEOMETRY = 0,
