@@ -1,9 +1,9 @@
 
-#include "cpp11/sexp.hpp"
 #include "wk-v1.hpp"
 #include <clocale>
 #include <cstring>
 #include <sstream>
+#include <Rcpp.h>
 
 class WKParseableStringException: public std::runtime_error {
 public:
@@ -347,6 +347,7 @@ public:
     WK_META_RESET(meta, WK_GEOMETRY);
 
     std::string geometryType = this->assertWord();
+    throw WKParseException("An exception");
 
     if (geometryType == "SRID") {
       this->assert_('=');
@@ -423,7 +424,7 @@ public:
 class WKTStreamer {
 public:
 
-  WKTStreamer(SEXP wkt, WKHandler& handler): handler(handler), data(wkt) {
+  WKTStreamer(WKHandler& handler): handler(handler) {
     // constructor and deleter set the thread locale while the object is in use
 #ifdef _MSC_VER
     _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
@@ -439,14 +440,13 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  void readFeature(WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
+  void readFeature(WKGeometryMeta_t* meta, SEXP item, R_xlen_t nFeatures, R_xlen_t featureId) {
     this->handler.featureStart(meta, nFeatures, featureId);
 
-    if (STRING_ELT(this->data, featureId) == NA_STRING) {
+    if (item == NA_STRING) {
       this->handler.nullFeature(meta, nFeatures, featureId);
     } else {
-      WKTString s(CHAR(STRING_ELT(this->data, featureId)));
-      Rprintf("Created WKTString '%s'\n", s.c_str());
+      WKTString s(CHAR(item));
       this->readGeometryWithType(s, WK_PART_ID_NONE);
       s.assertFinished();
     }
@@ -458,7 +458,7 @@ protected:
 
   void readGeometryWithType(WKTString& s, uint32_t partId) {
     WKGeometryMeta_t meta = s.assertGeometryMeta();
-    // this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId);
+    this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId);
 
     switch (meta.geometryType) {
 
@@ -679,15 +679,10 @@ protected:
 private:
   std::string saved_locale;
   WKHandler& handler;
-  SEXP data;
 };
-
-#include "cpp11/declarations.hpp"
-#include <Rcpp.h>
 
 // [[Rcpp::export]]
 SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
-  BEGIN_CPP11
   R_xlen_t nFeatures = Rf_xlength(wkt);
   WKGeometryMeta_t globalMeta;
   WK_META_RESET(globalMeta, WK_GEOMETRY);
@@ -695,13 +690,11 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
 
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);
-  WKTStreamer streamer(wkt, cppHandler);
+  WKTStreamer streamer(cppHandler);
 
   for (R_xlen_t i = 0; i < nFeatures; i++) {
-    cpp11::check_user_interrupt();
-    streamer.readFeature(&globalMeta, nFeatures, i);
+    streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), nFeatures, i);
   }
 
   return cppHandler.vectorEnd(&globalMeta);
-  END_CPP11
 }
