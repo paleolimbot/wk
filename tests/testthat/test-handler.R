@@ -23,7 +23,7 @@ test_that("void handlers do nothing", {
     )
   )
 
-  handle_wkb(wkb_good, wk_void_handler())
+  expect_null(handle_wkb(wkb_good, wk_void_handler()))
 
   wkb_bad <- unclass(wkb_good[1])
   wkb_bad[[1]][2] <- as.raw(0xff)
@@ -67,4 +67,20 @@ test_that("debug handlers print messages from the wkt handler", {
 
   wkt_bad <- new_wk_wkt("NOT WKT")
   expect_output(handle_wkt(wkt_bad, wk_debug_handler()), "Expected geometry type or 'SRID='")
+})
+
+test_that("void handlers do nothing when passed to the wkt handler", {
+  wkt_good <- as_wkt(
+    c(
+      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+    )
+  )
+
+  expect_null(handle_wkt(wkt_good, wk_void_handler()))
+
+  wkt_bad <- new_wk_wkt("NOT WKT")
+  expect_error(handle_wkt(wkt_bad, wk_void_handler()), "Expected geometry type or 'SRID='")
 })
