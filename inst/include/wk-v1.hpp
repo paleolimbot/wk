@@ -10,7 +10,7 @@
 
 class WKParseException: public std::runtime_error {
 public:
-  WKParseException(int code): std::runtime_error(""), exceptionCode(code) {}
+  WKParseException(int code, std::string message): std::runtime_error(message), exceptionCode(code) {}
   WKParseException(std::string message): std::runtime_error(message), exceptionCode(WK_DEFAULT_ERROR_CODE) {}
 
   int code() {

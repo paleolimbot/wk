@@ -60,12 +60,11 @@ test_that("debug handlers print messages from the wkt handler", {
     )
   )
 
-  handle_wkt(wkt_good, wk_debug_handler())
   expect_output(
     handle_wkt(wkt_good, wk_debug_handler()),
     "POINT.*?LINESTRING.*?POLYGON.*?MULTIPOINT.*?MULTILINESTRING.*?MULTIPOLYGON.*?GEOMETRYCOLLECTION.*?POINT.*?LINESTRING"
   )
 
   wkt_bad <- new_wk_wkt("NOT WKT")
-  expect_output(handle_wkt(wkt_bad, wk_debug_handler()), "fish")
+  expect_output(handle_wkt(wkt_bad, wk_debug_handler()), "Expected geometry type or 'SRID='")
 })

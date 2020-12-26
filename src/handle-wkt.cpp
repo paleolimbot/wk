@@ -1,14 +1,14 @@
 
+#include "cpp11.hpp"
 #include "wk-v1.hpp"
 #include <clocale>
 #include <cstring>
 #include <sstream>
-#include <Rcpp.h>
 
-class WKParseableStringException: public std::runtime_error {
+class WKV1ParseableStringException: public WKParseException {
 public:
-  WKParseableStringException(std::string expected, std::string found, const char* src, size_t pos):
-  std::runtime_error(makeError(expected, found, src, pos)),
+  WKV1ParseableStringException(std::string expected, std::string found, const char* src, size_t pos):
+  WKParseException(makeError(expected, found, src, pos)),
   expected(expected), found(found), src(src), pos(pos) {}
 
   std::string expected;
@@ -23,9 +23,9 @@ public:
   }
 };
 
-class WKParseableString {
+class WKV1ParseableString {
 public:
-  WKParseableString(const char* str, const char* whitespace, const char* sep):
+  WKV1ParseableString(const char* str, const char* whitespace, const char* sep):
   str(str), length(strlen(str)), offset(0), whitespace(whitespace), sep(sep) {}
 
   const char* c_str() {
@@ -276,15 +276,15 @@ public:
   }
 
   [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
-    throw WKParseableStringException(expected, quote(found), this->str, this->offset - found.size());
+    throw WKV1ParseableStringException(expected, quote(found), this->str, this->offset - found.size());
   }
 
   [[noreturn]] void error(std::string expected, std::string found) {
-    throw WKParseableStringException(expected, found, this->str, this->offset);
+    throw WKV1ParseableStringException(expected, found, this->str, this->offset);
   }
 
   [[noreturn]] void error(std::string expected) {
-    throw WKParseableStringException(expected, quote(this->peekUntilSep()), this->str, this->offset);
+    throw WKV1ParseableStringException(expected, quote(this->peekUntilSep()), this->str, this->offset);
   }
 
 private:
@@ -338,9 +338,9 @@ private:
 };
 
 
-class WKTString: public WKParseableString {
+class WKTV1String: public WKV1ParseableString {
 public:
-  WKTString(const char* str): WKParseableString(str, " \r\n\t", " \r\n\t,();=") {}
+  WKTV1String(const char* str): WKV1ParseableString(str, " \r\n\t", " \r\n\t,();=") {}
 
   WKGeometryMeta_t assertGeometryMeta() {
     WKGeometryMeta_t meta;
@@ -420,10 +420,10 @@ public:
   }
 };
 
-class WKTStreamer {
+class WKTStreamingHandler {
 public:
 
-  WKTStreamer(WKHandler& handler): handler(handler) {
+  WKTStreamingHandler(WKHandler& handler): handler(handler) {
     // constructor and deleter set the thread locale while the object is in use
 #ifdef _MSC_VER
     _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
@@ -435,7 +435,7 @@ public:
     std::setlocale(LC_NUMERIC, "C");
   }
 
-  ~WKTStreamer() {
+  ~WKTStreamingHandler() {
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
@@ -445,7 +445,7 @@ public:
     if (item == NA_STRING) {
       this->handler.nullFeature(meta, nFeatures, featureId);
     } else {
-      WKTString s(CHAR(item));
+      WKTV1String s(CHAR(item));
       this->readGeometryWithType(s, WK_PART_ID_NONE);
       s.assertFinished();
     }
@@ -455,7 +455,7 @@ public:
 
 protected:
 
-  void readGeometryWithType(WKTString& s, uint32_t partId) {
+  void readGeometryWithType(WKTV1String& s, uint32_t partId) {
     WKGeometryMeta_t meta = s.assertGeometryMeta();
     this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId);
 
@@ -497,22 +497,22 @@ protected:
     this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, partId);
   }
 
-  void readPoint(WKTString& s, const WKGeometryMeta_t* meta) {
+  void readPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
       this->readPointCoordinate(s, meta);
       s.assert_(')');
     }
   }
 
-  void readLineString(WKTString& s, const WKGeometryMeta_t* meta) {
+  void readLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
     this->readCoordinates(s, meta);
   }
 
-  void readPolygon(WKTString& s, const WKGeometryMeta_t* meta)  {
+  void readPolygon(WKTV1String& s, const WKGeometryMeta_t* meta)  {
     this->readLinearRings(s, meta);
   }
 
-  uint32_t readMultiPoint(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readMultiPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return 0;
     }
@@ -548,7 +548,7 @@ protected:
     return partId;
   }
 
-  uint32_t readMultiLineString(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readMultiLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return 0;
     }
@@ -566,7 +566,7 @@ protected:
     return partId;
   }
 
-  uint32_t readMultiPolygon(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readMultiPolygon(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return 0;
     }
@@ -584,7 +584,7 @@ protected:
     return partId;
   }
 
-  uint32_t readGeometryCollection(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readGeometryCollection(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return 0;
     }
@@ -598,7 +598,7 @@ protected:
     return partId;
   }
 
-  uint32_t readLinearRings(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readLinearRings(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return 0;
     }
@@ -619,7 +619,7 @@ protected:
   // writers are unlikely to expect a point geometry with many coordinates).
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
-  uint32_t readPointCoordinate(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readPointCoordinate(WKTV1String& s, const WKGeometryMeta_t* meta) {
     WKCoord_t coord;
     int coordSize = 2;
     if (meta->hasZ) coordSize++;
@@ -630,7 +630,7 @@ protected:
     return 1;
   }
 
-  uint32_t readCoordinates(WKTString& s, const WKGeometryMeta_t* meta) {
+  uint32_t readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
     WKCoord_t coord;
     int coordSize = 2;
     if (meta->hasZ) coordSize++;
@@ -650,7 +650,7 @@ protected:
     return coordId;
   }
 
-  void readCoordinate(WKTString& s, WKCoord_t* coord, int coordSize) {
+  void readCoordinate(WKTV1String& s, WKCoord_t* coord, int coordSize) {
     coord->v[0] = s.assertNumber();
     for (size_t i = 1; i < coordSize; i++) {
       s.assertWhitespace();
@@ -658,7 +658,7 @@ protected:
     }
   }
 
-  WKGeometryMeta_t childMeta(WKTString& s, const WKGeometryMeta_t* parent, int geometryType) {
+  WKGeometryMeta_t childMeta(WKTV1String& s, const WKGeometryMeta_t* parent, int geometryType) {
     WKGeometryMeta_t childMeta;
     WK_META_RESET(childMeta, geometryType);
     childMeta.srid = parent->srid;
@@ -681,7 +681,7 @@ private:
   WKHandler& handler;
 };
 
-// [[Rcpp::export]]
+[[cpp11::register]]
 SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   R_xlen_t nFeatures = Rf_xlength(wkt);
   WKGeometryMeta_t globalMeta;
@@ -690,10 +690,18 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
 
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);
-  WKTStreamer streamer(cppHandler);
+  WKTStreamingHandler streamer(cppHandler);
+
+  cppHandler.vectorStart(&globalMeta);
 
   for (R_xlen_t i = 0; i < nFeatures; i++) {
-    streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), nFeatures, i);
+    try {
+      streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), nFeatures, i);
+    } catch (WKParseException& e) {
+      if (cppHandler.error(i, e.code(), e.what()) != WK_CONTINUE) {
+        break;
+      }
+    }
   }
 
   return cppHandler.vectorEnd(&globalMeta);

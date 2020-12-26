@@ -47,18 +47,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// wk_cpp_handle_wkt
-SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr);
-RcppExport SEXP _wk_wk_cpp_handle_wkt(SEXP wktSEXP, SEXP xptrSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type wkt(wktSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type xptr(xptrSEXP);
-    rcpp_result_gen = Rcpp::wrap(wk_cpp_handle_wkt(wkt, xptr));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_problems_wkb
 Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb);
 RcppExport SEXP _wk_cpp_problems_wkb(SEXP wkbSEXP) {
@@ -336,47 +324,4 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(cpp_translate_rct_wksxp(rct));
     return rcpp_result_gen;
 END_RCPP
-}
-
-RcppExport SEXP wk_c_handler_addr();
-RcppExport SEXP wk_c_handler_debug_new();
-RcppExport SEXP wk_c_handler_void_new();
-RcppExport SEXP wk_c_read_wkb(SEXP, SEXP);
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 4},
-    {"_wk_cpp_format_wkt", (DL_FUNC) &_wk_cpp_format_wkt, 4},
-    {"_wk_cpp_format_wksxp", (DL_FUNC) &_wk_cpp_format_wksxp, 4},
-    {"_wk_wk_cpp_handle_wkt", (DL_FUNC) &_wk_wk_cpp_handle_wkt, 2},
-    {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
-    {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
-    {"_wk_cpp_problems_wksxp", (DL_FUNC) &_wk_cpp_problems_wksxp, 1},
-    {"_wk_cpp_wkb_translate_wkt", (DL_FUNC) &_wk_cpp_wkb_translate_wkt, 6},
-    {"_wk_cpp_wkb_translate_wkb", (DL_FUNC) &_wk_cpp_wkb_translate_wkb, 6},
-    {"_wk_cpp_wkb_translate_wksxp", (DL_FUNC) &_wk_cpp_wkb_translate_wksxp, 4},
-    {"_wk_cpp_wkt_translate_wkt", (DL_FUNC) &_wk_cpp_wkt_translate_wkt, 6},
-    {"_wk_cpp_wkt_translate_wkb", (DL_FUNC) &_wk_cpp_wkt_translate_wkb, 6},
-    {"_wk_cpp_wkt_translate_wksxp", (DL_FUNC) &_wk_cpp_wkt_translate_wksxp, 4},
-    {"_wk_cpp_wksxp_translate_wkt", (DL_FUNC) &_wk_cpp_wksxp_translate_wkt, 6},
-    {"_wk_cpp_wksxp_translate_wkb", (DL_FUNC) &_wk_cpp_wksxp_translate_wkb, 6},
-    {"_wk_cpp_wksxp_translate_wksxp", (DL_FUNC) &_wk_cpp_wksxp_translate_wksxp, 4},
-    {"_wk_cpp_translate_xyzm_wkt", (DL_FUNC) &_wk_cpp_translate_xyzm_wkt, 3},
-    {"_wk_cpp_translate_xyzm_wkb", (DL_FUNC) &_wk_cpp_translate_xyzm_wkb, 3},
-    {"_wk_cpp_translate_xyzm_wksxp", (DL_FUNC) &_wk_cpp_translate_xyzm_wksxp, 1},
-    {"_wk_cpp_translate_wkt_xyzm", (DL_FUNC) &_wk_cpp_translate_wkt_xyzm, 1},
-    {"_wk_cpp_translate_wkb_xyzm", (DL_FUNC) &_wk_cpp_translate_wkb_xyzm, 1},
-    {"_wk_cpp_translate_wksxp_xyzm", (DL_FUNC) &_wk_cpp_translate_wksxp_xyzm, 1},
-    {"_wk_cpp_translate_rct_wkt", (DL_FUNC) &_wk_cpp_translate_rct_wkt, 3},
-    {"_wk_cpp_translate_rct_wkb", (DL_FUNC) &_wk_cpp_translate_rct_wkb, 3},
-    {"_wk_cpp_translate_rct_wksxp", (DL_FUNC) &_wk_cpp_translate_rct_wksxp, 1},
-    {"wk_c_handler_addr",      (DL_FUNC) &wk_c_handler_addr,      0},
-    {"wk_c_handler_debug_new", (DL_FUNC) &wk_c_handler_debug_new, 0},
-    {"wk_c_handler_void_new",  (DL_FUNC) &wk_c_handler_void_new,  0},
-    {"wk_c_read_wkb",          (DL_FUNC) &wk_c_read_wkb,          2},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_wk(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
 }
