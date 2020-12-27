@@ -32,8 +32,7 @@ void wkb_set_errorf(WKBBuffer_t* buffer, const char* errorMessage, ...) {
 }
 
 SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler);
-char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t nParts, uint32_t partId,
-                       int recursiveLevel);
+char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t nParts, uint32_t partId);
 
 char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer);
 char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t* value);
@@ -77,7 +76,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
       buffer.errorCode = WK_NO_ERROR_CODE;
       memset(buffer.errorMessage, 0, 1024);
 
-      char result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE, WK_PART_ID_NONE, 0);
+      char result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE, WK_PART_ID_NONE);
 
       if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
         result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->userData);
@@ -99,7 +98,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
 }
 
 char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
-                       uint32_t nParts, uint32_t partId, int recursiveLevel) {
+                       uint32_t nParts, uint32_t partId) {
   if (wkb_read_endian(handler, buffer) != WK_CONTINUE) {
     return WK_ABORT_FEATURE;
   }
@@ -111,7 +110,6 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
 
   WKGeometryMeta_t meta;
   WK_META_RESET(meta, geometryType & 0x000000ff)
-  meta.recursiveLevel = recursiveLevel;
   meta.hasZ = (geometryType & EWKB_Z_BIT) != 0;
   meta.hasM = (geometryType & EWKB_M_BIT) != 0;
   meta.hasSrid = (geometryType & EWKB_SRID_BIT) != 0;
@@ -152,7 +150,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   case WK_MULTIPOLYGON:
   case WK_GEOMETRYCOLLECTION:
     for (uint32_t i = 0; i < meta.size; i++) {
-      HANDLE_OR_RETURN(wkb_read_geometry(handler, buffer, meta.size, i, meta.recursiveLevel + 1));
+      HANDLE_OR_RETURN(wkb_read_geometry(handler, buffer, meta.size, i));
     }
     break;
   default:

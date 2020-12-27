@@ -30,7 +30,6 @@ typedef union {
 
 typedef struct {
   int geometryType;
-  int recursiveLevel;
   char hasZ;
   char hasM;
   char hasSrid;
@@ -45,7 +44,6 @@ typedef struct {
 
 #define WK_META_RESET(meta, geometryType_)                   \
   meta.geometryType = geometryType_;                           \
-  meta.recursiveLevel = 0;                                     \
   meta.hasZ = 0;                                               \
   meta.hasM = 0;                                               \
   meta.hasSrid = 0;                                            \
