@@ -28,6 +28,12 @@ wk_validation_handler <- function() {
 
 #' @rdname wk_void_handler
 #' @export
+wkt_writer <- function() {
+  new_wk_handler(wk_cpp_wkt_writer(), "wk_wkt_writer")
+}
+
+#' @rdname wk_void_handler
+#' @export
 new_wk_handler <- function(handler_ptr, subclass = character(), finisher = wk_finish_default) {
   stopifnot(is.function(finisher), typeof(handler_ptr) == "externalptr")
   structure(handler_ptr, class = union(subclass, "wk_handler"), finisher = finisher)

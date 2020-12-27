@@ -13,6 +13,13 @@ extern "C" SEXP _wk_wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
     return cpp11::as_sexp(wk_cpp_handle_wkt(cpp11::as_cpp<cpp11::decay_t<SEXP>>(wkt), cpp11::as_cpp<cpp11::decay_t<SEXP>>(xptr)));
   END_CPP11
 }
+// wkt-writer.cpp
+cpp11::sexp wk_cpp_wkt_writer();
+extern "C" SEXP _wk_wk_cpp_wkt_writer() {
+  BEGIN_CPP11
+    return cpp11::as_sexp(wk_cpp_wkt_writer());
+  END_CPP11
+}
 
 extern "C" {
 /* .Call calls */
@@ -41,6 +48,7 @@ extern SEXP _wk_cpp_wkt_translate_wkb(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_cpp_wkt_translate_wksxp(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_cpp_wkt_translate_wkt(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_handle_wkt(SEXP, SEXP);
+extern SEXP _wk_wk_cpp_wkt_writer();
 extern SEXP wk_c_handler_addr();
 extern SEXP wk_c_handler_debug_new();
 extern SEXP wk_c_handler_validation_new();
@@ -73,6 +81,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_wkt_translate_wksxp",   (DL_FUNC) &_wk_cpp_wkt_translate_wksxp,   4},
     {"_wk_cpp_wkt_translate_wkt",     (DL_FUNC) &_wk_cpp_wkt_translate_wkt,     6},
     {"_wk_wk_cpp_handle_wkt",         (DL_FUNC) &_wk_wk_cpp_handle_wkt,         2},
+    {"_wk_wk_cpp_wkt_writer",         (DL_FUNC) &_wk_wk_cpp_wkt_writer,         0},
     {"wk_c_handler_addr",             (DL_FUNC) &wk_c_handler_addr,             0},
     {"wk_c_handler_debug_new",        (DL_FUNC) &wk_c_handler_debug_new,        0},
     {"wk_c_handler_validation_new",   (DL_FUNC) &wk_c_handler_validation_new,   0},

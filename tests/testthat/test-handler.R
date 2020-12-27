@@ -144,3 +144,19 @@ test_that("validating handlers return a character vector of problems for WKT", {
     c("Expected geometry type or 'SRID=' but found 'NOT' (:1)", rep(NA_character_, length(wkt_good) - 1))
   )
 })
+
+test_that("wkt_writer() works", {
+  wkt_good <- as_wkt(
+    c(
+      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+    )
+  )
+
+  expect_identical(
+    handle_wkt(wkt_good, wkt_writer()),
+    unclass(wkt_good)
+  )
+})
