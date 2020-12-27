@@ -9,7 +9,7 @@
 #define EWKB_M_BIT    0x40000000
 #define EWKB_SRID_BIT 0x20000000
 
-#define MAYBE(expr)                                            \
+#define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
@@ -129,22 +129,22 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   }
 
   char result;
-  MAYBE(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData));
+  HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData));
 
   switch (meta.geometryType) {
   case WK_POINT:
   case WK_LINESTRING:
-    MAYBE(wkb_read_coordinates(handler, buffer, &meta, meta.size));
+    HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, meta.size));
     break;
   case WK_POLYGON:
     for (uint32_t i = 0; i < meta.size; i++) {
-      MAYBE(handler->ringStart(&meta, meta.size, i, handler->userData));
+      HANDLE_OR_RETURN(handler->ringStart(&meta, meta.size, i, handler->userData));
 
       uint32_t nCoords;
-      MAYBE(wkb_read_uint(handler, buffer, &nCoords));
-      MAYBE(wkb_read_coordinates(handler, buffer, &meta, nCoords));
+      HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &nCoords));
+      HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, nCoords));
 
-      MAYBE(handler->ringEnd(&meta, meta.size, i, handler->userData));
+      HANDLE_OR_RETURN(handler->ringEnd(&meta, meta.size, i, handler->userData));
     }
     break;
   case WK_MULTIPOINT:
@@ -152,7 +152,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   case WK_MULTIPOLYGON:
   case WK_GEOMETRYCOLLECTION:
     for (uint32_t i = 0; i < meta.size; i++) {
-      MAYBE(wkb_read_geometry(handler, buffer, meta.size, i, meta.recursiveLevel + 1));
+      HANDLE_OR_RETURN(wkb_read_geometry(handler, buffer, meta.size, i, meta.recursiveLevel + 1));
     }
     break;
   default:
@@ -210,13 +210,13 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
         buffer->offset += sizeof(double);
       }
 
-      MAYBE(handler->coord(meta, coord, nCoords, i, handler->userData));
+      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->userData));
     }
   } else {
     for (uint32_t i = 0; i < nCoords; i++) {
       memcpy(&coord, &(buffer->buffer[buffer->offset]), coordSize);
       buffer->offset += coordSize;
-      MAYBE(handler->coord(meta, coord, nCoords, i, handler->userData));
+      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->userData));
     }
   }
 

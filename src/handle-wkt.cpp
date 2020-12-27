@@ -5,7 +5,7 @@
 #include <cstring>
 #include <sstream>
 
-#define MAYBE(expr)                                            \
+#define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
@@ -445,13 +445,13 @@ public:
 
   char readFeature(WKGeometryMeta_t* meta, SEXP item, R_xlen_t nFeatures, R_xlen_t featureId) {
     char result;
-    MAYBE(this->handler.featureStart(meta, nFeatures, featureId));
+    HANDLE_OR_RETURN(this->handler.featureStart(meta, nFeatures, featureId));
 
     if (item == NA_STRING) {
-      MAYBE(this->handler.nullFeature(meta, nFeatures, featureId));
+      HANDLE_OR_RETURN(this->handler.nullFeature(meta, nFeatures, featureId));
     } else {
       WKTV1String s(CHAR(item));
-      MAYBE(this->readGeometryWithType(s, WK_PART_ID_NONE));
+      HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
       s.assertFinished();
     }
 
@@ -463,36 +463,36 @@ protected:
   char readGeometryWithType(WKTV1String& s, uint32_t partId) {
     WKGeometryMeta_t meta = s.assertGeometryMeta();
     char result;
-    MAYBE(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
+    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
 
     switch (meta.geometryType) {
 
     case WK_POINT:
-      MAYBE(this->readPoint(s, &meta));
+      HANDLE_OR_RETURN(this->readPoint(s, &meta));
       break;
 
     case WK_LINESTRING:
-      MAYBE(this->readLineString(s, &meta));
+      HANDLE_OR_RETURN(this->readLineString(s, &meta));
       break;
 
     case WK_POLYGON:
-      MAYBE(this->readPolygon(s, &meta));
+      HANDLE_OR_RETURN(this->readPolygon(s, &meta));
       break;
 
     case WK_MULTIPOINT:
-      MAYBE(this->readMultiPoint(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiPoint(s, &meta));
       break;
 
     case WK_MULTILINESTRING:
-      MAYBE(this->readMultiLineString(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiLineString(s, &meta));
       break;
 
     case WK_MULTIPOLYGON:
-      MAYBE(this->readMultiPolygon(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiPolygon(s, &meta));
       break;
 
     case WK_GEOMETRYCOLLECTION:
-      MAYBE(this->readGeometryCollection(s, &meta));
+      HANDLE_OR_RETURN(this->readGeometryCollection(s, &meta));
       break;
 
     default:
@@ -505,7 +505,7 @@ protected:
   char readPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
       char result;
-      MAYBE(this->readPointCoordinate(s, meta));
+      HANDLE_OR_RETURN(this->readPointCoordinate(s, meta));
       s.assert_(')');
     }
 
@@ -533,14 +533,14 @@ protected:
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
-          MAYBE(this->readPointCoordinate(s, &childMeta));
+          HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
 
         partId++;
       } while (s.assertOneOf(",)") != ')');
@@ -548,9 +548,9 @@ protected:
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
-        MAYBE(this->readPoint(s, &childMeta));
-        MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
+        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
         partId++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -569,9 +569,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
-      MAYBE(this->readLineString(s, &childMeta));
-      MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
 
       partId++;
     } while (s.assertOneOf(",)") != ')');
@@ -590,9 +590,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
-      MAYBE(this->readPolygon(s, &childMeta));
-      MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
       partId++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -608,7 +608,7 @@ protected:
     char result;
 
     do {
-      MAYBE(this->readGeometryWithType(s, partId));
+      HANDLE_OR_RETURN(this->readGeometryWithType(s, partId));
       partId++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -624,9 +624,9 @@ protected:
     char result;
 
     do {
-      MAYBE(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ringId));
-      MAYBE(this->readCoordinates(s, meta));
-      MAYBE(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->readCoordinates(s, meta));
+      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ringId));
       ringId++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -646,7 +646,7 @@ protected:
     if (meta->hasM) coordSize++;
 
     this->readCoordinate(s, &coord, coordSize);
-    MAYBE(handler.coord(meta, coord, 1, 0));
+    HANDLE_OR_RETURN(handler.coord(meta, coord, 1, 0));
     return WK_CONTINUE;
   }
 
@@ -665,7 +665,7 @@ protected:
 
     do {
       this->readCoordinate(s, &coord, coordSize);
-      MAYBE(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId));
+      HANDLE_OR_RETURN(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId));
 
       coordId++;
     } while (s.assertOneOf(",)") != ')');
