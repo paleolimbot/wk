@@ -3,6 +3,7 @@
 \name{wk_void_handler}
 \alias{wk_void_handler}
 \alias{wk_debug_handler}
+\alias{wk_validation_handler}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
@@ -15,6 +16,8 @@
 wk_void_handler()
 
 wk_debug_handler()
+
+wk_validation_handler()
 
 new_wk_handler(
   handler_ptr,

@@ -43,6 +43,7 @@ extern SEXP _wk_cpp_wkt_translate_wkt(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_handle_wkt(SEXP, SEXP);
 extern SEXP wk_c_handler_addr();
 extern SEXP wk_c_handler_debug_new();
+extern SEXP wk_c_handler_validation_new();
 extern SEXP wk_c_handler_void_new();
 extern SEXP wk_c_read_wkb(SEXP, SEXP);
 
@@ -74,6 +75,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_wk_cpp_handle_wkt",         (DL_FUNC) &_wk_wk_cpp_handle_wkt,         2},
     {"wk_c_handler_addr",             (DL_FUNC) &wk_c_handler_addr,             0},
     {"wk_c_handler_debug_new",        (DL_FUNC) &wk_c_handler_debug_new,        0},
+    {"wk_c_handler_validation_new",   (DL_FUNC) &wk_c_handler_validation_new,   0},
     {"wk_c_handler_void_new",         (DL_FUNC) &wk_c_handler_void_new,         0},
     {"wk_c_read_wkb",                 (DL_FUNC) &wk_c_read_wkb,                 2},
     {NULL, NULL, 0}

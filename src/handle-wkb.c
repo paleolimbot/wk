@@ -27,7 +27,7 @@ void wkb_set_errorf(WKBBuffer_t* buffer, const char* errorMessage, ...) {
   buffer->errorCode = WK_DEFAULT_ERROR_CODE;
   va_list args;
   va_start(args, errorMessage);
-  sprintf(buffer->errorMessage, errorMessage, args);
+  vsnprintf(buffer->errorMessage, 1024 - 1, errorMessage, args);
   va_end(args);
 }
 
