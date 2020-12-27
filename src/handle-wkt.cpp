@@ -5,6 +5,10 @@
 #include <cstring>
 #include <sstream>
 
+#define MAYBE(expr)                                            \
+  result = expr;                                               \
+  if (result != WK_CONTINUE) return result
+
 class WKV1ParseableStringException: public WKParseException {
 public:
   WKV1ParseableStringException(std::string expected, std::string found, const char* src, size_t pos):
@@ -440,22 +444,14 @@ public:
   }
 
   char readFeature(WKGeometryMeta_t* meta, SEXP item, R_xlen_t nFeatures, R_xlen_t featureId) {
-    char result = this->handler.featureStart(meta, nFeatures, featureId);
-    if (result != WK_CONTINUE) {
-      return result;
-    }
+    char result;
+    MAYBE(this->handler.featureStart(meta, nFeatures, featureId));
 
     if (item == NA_STRING) {
-      result = this->handler.nullFeature(meta, nFeatures, featureId);
-      if (result != WK_CONTINUE) {
-        return result;
-      }
+      MAYBE(this->handler.nullFeature(meta, nFeatures, featureId));
     } else {
       WKTV1String s(CHAR(item));
-      result = this->readGeometryWithType(s, WK_PART_ID_NONE);
-      if (result != WK_CONTINUE) {
-        return result;
-      }
+      MAYBE(this->readGeometryWithType(s, WK_PART_ID_NONE));
       s.assertFinished();
     }
 
@@ -466,55 +462,50 @@ protected:
 
   char readGeometryWithType(WKTV1String& s, uint32_t partId) {
     WKGeometryMeta_t meta = s.assertGeometryMeta();
-    char result = this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId);
-    if (result != WK_CONTINUE) {
-      return result;
-    }
+    char result;
+    MAYBE(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
 
-    // this currently crashes with "invalid read of size 8"
     switch (meta.geometryType) {
 
     case WK_POINT:
-      result = this->readPoint(s, &meta);
+      MAYBE(this->readPoint(s, &meta));
       break;
 
     case WK_LINESTRING:
-      result = this->readLineString(s, &meta);
+      MAYBE(this->readLineString(s, &meta));
       break;
 
     case WK_POLYGON:
-      result = this->readPolygon(s, &meta);
+      MAYBE(this->readPolygon(s, &meta));
       break;
 
     case WK_MULTIPOINT:
-      result = this->readMultiPoint(s, &meta);
+      MAYBE(this->readMultiPoint(s, &meta));
       break;
 
     case WK_MULTILINESTRING:
-      result = this->readMultiLineString(s, &meta);
+      MAYBE(this->readMultiLineString(s, &meta));
       break;
 
     case WK_MULTIPOLYGON:
-      result = this->readMultiPolygon(s, &meta);
+      MAYBE(this->readMultiPolygon(s, &meta));
       break;
 
     case WK_GEOMETRYCOLLECTION:
-      result = this->readGeometryCollection(s, &meta);
+      MAYBE(this->readGeometryCollection(s, &meta));
       break;
 
     default:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    if (result != WK_CONTINUE) return result;
-
     return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, partId);
   }
 
   char readPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
-      char result = this->readPointCoordinate(s, meta);
-      if (result != WK_CONTINUE) return result;
+      char result;
+      MAYBE(this->readPointCoordinate(s, meta));
       s.assert_(')');
     }
 
@@ -542,17 +533,14 @@ protected:
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        result = this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId);
-        if (result != WK_CONTINUE) return result;
+        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
-          result = this->readPointCoordinate(s, &childMeta);
-          if (result != WK_CONTINUE) return result;
+          MAYBE(this->readPointCoordinate(s, &childMeta));
         }
-        result = this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId);
-        if (result != WK_CONTINUE) return result;
+        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
 
         partId++;
       } while (s.assertOneOf(",)") != ')');
@@ -560,12 +548,9 @@ protected:
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        result = this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId);
-        if (result != WK_CONTINUE) return result;
-        result = this->readPoint(s, &childMeta);
-        if (result != WK_CONTINUE) return result;
-        result = this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId);
-        if (result != WK_CONTINUE) return result;
+        MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        MAYBE(this->readPoint(s, &childMeta));
+        MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
         partId++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -575,7 +560,7 @@ protected:
 
   char readMultiLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
-      return 0;
+      return WK_CONTINUE;
     }
 
     WKGeometryMeta_t childMeta;
@@ -584,14 +569,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      result = this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->readLineString(s, &childMeta);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      MAYBE(this->readLineString(s, &childMeta));
+      MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
 
       partId++;
     } while (s.assertOneOf(",)") != ')');
@@ -601,7 +581,7 @@ protected:
 
   uint32_t readMultiPolygon(WKTV1String& s, const WKGeometryMeta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
-      return 0;
+      return WK_CONTINUE;
     }
 
     WKGeometryMeta_t childMeta;
@@ -610,15 +590,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      result = this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->readPolygon(s, &childMeta);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId);
-      if (result != WK_CONTINUE) return result;
-
+      MAYBE(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      MAYBE(this->readPolygon(s, &childMeta));
+      MAYBE(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
       partId++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -634,9 +608,7 @@ protected:
     char result;
 
     do {
-      result = this->readGeometryWithType(s, partId);
-      if (result != WK_CONTINUE) return result;
-
+      MAYBE(this->readGeometryWithType(s, partId));
       partId++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -652,19 +624,13 @@ protected:
     char result;
 
     do {
-      result = this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ringId);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->readCoordinates(s, meta);
-      if (result != WK_CONTINUE) return result;
-
-      result = this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ringId);
-      if (result != WK_CONTINUE) return result;
-
+      MAYBE(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ringId));
+      MAYBE(this->readCoordinates(s, meta));
+      MAYBE(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ringId));
       ringId++;
     } while (s.assertOneOf(",)") != ')');
 
-    return ringId;
+    return WK_CONTINUE;
   }
 
   // Point coordinates are special in that there can only be one
@@ -674,20 +640,17 @@ protected:
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
   char readPointCoordinate(WKTV1String& s, const WKGeometryMeta_t* meta) {
     WKCoord_t coord;
+    char result;
     int coordSize = 2;
     if (meta->hasZ) coordSize++;
     if (meta->hasM) coordSize++;
 
     this->readCoordinate(s, &coord, coordSize);
-    char result = handler.coord(meta, coord, 1, 0);
-    if (result != WK_CONTINUE) {
-      return result;
-    } else {
-      return WK_CONTINUE;
-    }
+    MAYBE(handler.coord(meta, coord, 1, 0));
+    return WK_CONTINUE;
   }
 
-  uint32_t readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
     WKCoord_t coord;
     int coordSize = 2;
     if (meta->hasZ) coordSize++;
@@ -702,13 +665,12 @@ protected:
 
     do {
       this->readCoordinate(s, &coord, coordSize);
-      result = handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId);
-      if (result != WK_CONTINUE) return result;
+      MAYBE(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId));
 
       coordId++;
     } while (s.assertOneOf(",)") != ')');
 
-    return coordId;
+    return WK_CONTINUE;
   }
 
   void readCoordinate(WKTV1String& s, WKCoord_t* coord, int coordSize) {
