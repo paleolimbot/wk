@@ -9,6 +9,7 @@ typedef struct {
 
 char wk_handler_validation_vector_start(const WKGeometryMeta_t* meta, void* userData) {
   ValidationHandlerData_t* handlerData = (ValidationHandlerData_t*) userData;
+
   SEXP output = PROTECT(Rf_allocVector(STRSXP, meta->size));
   R_xlen_t nFeatures = meta->size;
   for (R_xlen_t i = 0; i < nFeatures; i++) {

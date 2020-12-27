@@ -39,6 +39,7 @@ void wk_handler_void_finalizer(void* userData) {
 WKHandler_t* wk_handler_create() {
   WKHandler_t* handler = (WKHandler_t*) malloc(sizeof(WKHandler_t));
   handler->WKAPIVersion = 1;
+  handler->dirty = 0;
   handler->userData = NULL;
 
   handler->vectorStart = &wk_handler_void_vector_start;
@@ -57,6 +58,7 @@ WKHandler_t* wk_handler_create() {
   handler->coord = &wk_handler_void_coord;
 
   handler->error = &wk_handler_void_error;
+  handler->vectorFinally = &wk_handler_void_finalizer;
   handler->finalizer = &wk_handler_void_finalizer;
 
   return handler;
@@ -64,6 +66,7 @@ WKHandler_t* wk_handler_create() {
 
 void wk_handler_destroy(WKHandler_t* handler) {
   if (handler != NULL) {
+    handler->finalizer(handler->userData);
     free(handler);
   }
 }
@@ -74,7 +77,7 @@ void wk_handler_destroy_xptr(SEXP xptr) {
 
 SEXP wk_handler_create_xptr(WKHandler_t* handler, SEXP tag, SEXP prot) {
   SEXP xptr = R_MakeExternalPtr(handler, tag, prot);
-  R_RegisterCFinalizerEx(xptr, &wk_handler_destroy_xptr, TRUE);
+  R_RegisterCFinalizerEx(xptr, &wk_handler_destroy_xptr, FALSE);
   return xptr;
 }
 
@@ -86,11 +89,18 @@ struct wk_handler_run_data {
 
 void wk_handler_run_cleanup(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
-  runData->handler->finalizer(runData->handler->userData);
+  runData->handler->vectorFinally(runData->handler->userData);
 }
 
 SEXP wk_handler_run_internal(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
+
+  if (runData->handler->dirty) {
+    Rf_error("Can't re-use a wk_handler");
+  } else {
+    runData->handler->dirty = 1;
+  }
+
   return runData->readFunction(runData->readData, runData->handler);
 }
 
@@ -98,7 +108,6 @@ SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, WKHandler_t* handle
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
   struct wk_handler_run_data runData = { readFunction, readData, handler };
   return R_ExecWithCleanup(&wk_handler_run_internal, &runData, &wk_handler_run_cleanup, &runData);
-  return readFunction(readData, handler);
 }
 
 SEXP wk_error_sentinel(int code, const char* message) {

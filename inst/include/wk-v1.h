@@ -62,6 +62,7 @@ typedef struct {
 
 typedef struct {
   int WKAPIVersion;
+  char dirty;
   void* userData;
   char (*vectorStart)(const WKGeometryMeta_t* meta, void* userData);
   char (*featureStart)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
@@ -75,6 +76,7 @@ typedef struct {
   char (*featureEnd)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   SEXP (*vectorEnd)(const WKGeometryMeta_t* meta, void* userData);
   char (*error)(R_xlen_t featureId, int code, const char* message, void* userData);
+  void (*vectorFinally)(void* userData);
   void (*finalizer)(void* userData);
 } WKHandler_t;
 

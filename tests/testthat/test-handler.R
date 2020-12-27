@@ -32,6 +32,12 @@ test_that("void handlers do nothing", {
   expect_error(handle_wkb(new_wk_wkb(wkb_bad), wk_void_handler()), "Unrecognized geometry type code")
 })
 
+test_that("void handlers cannot be re-used", {
+  handler <- wk_void_handler()
+  expect_null(handle_wkb(as_wkb("POINT (1 1)"), handler))
+  expect_error(handle_wkb(as_wkb("POINT (1 1)"), handler), "Can't re-use a wk_handler")
+})
+
 test_that("debug handlers print messages from the wkb handler", {
   wkb_good <- as_wkb(
     c(
@@ -108,6 +114,12 @@ test_that("void handlers do nothing when passed to the wkt handler", {
 
   wkt_bad <- new_wk_wkt("NOT WKT")
   expect_error(handle_wkt(wkt_bad, wk_void_handler()), "Expected geometry type or 'SRID='")
+})
+
+test_that("void handlers cannot be re-used when called from C++", {
+  handler <- wk_void_handler()
+  expect_null(handle_wkt(as_wkt("POINT (1 1)"), handler))
+  expect_error(handle_wkt(as_wkt("POINT (1 1)"), handler), "Can't re-use a wk_handler")
 })
 
 test_that("validating handlers return a character vector of problems for WKT", {
