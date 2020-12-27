@@ -5,6 +5,9 @@
 #' @param handler An object created with [new_wk_handler()].
 #' @param subclass The handler subclass
 #' @param finisher,result A function called on the `result` of the handler.
+#' @param precision If `trim` is `TRUE`, the total number of significant digits to keep
+#'   for each result or the number of digits after the decimal place otherwise.
+#' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
 #' @param x A vector that can be interpreted as a [wkb()], [wkt()], or [wksxp()].
 #' @param ... Passed to the handler constructor.
 #' @return A WK handler
@@ -28,8 +31,8 @@ wk_validation_handler <- function() {
 
 #' @rdname wk_void_handler
 #' @export
-wkt_writer <- function() {
-  new_wk_handler(wk_cpp_wkt_writer(), "wk_wkt_writer")
+wkt_writer <- function(precision = 16, trim = TRUE) {
+  new_wk_handler(wk_cpp_wkt_writer(precision, trim), "wk_wkt_writer")
 }
 
 #' @rdname wk_void_handler

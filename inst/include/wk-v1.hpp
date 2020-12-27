@@ -165,6 +165,7 @@ public:
   }
 
   virtual char error(R_xlen_t featureId, int code, const char* message) noexcept {
+    this->setError(code, message);
     return WK_ABORT;
   }
 

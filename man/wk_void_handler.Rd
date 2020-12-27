@@ -4,6 +4,7 @@
 \alias{wk_void_handler}
 \alias{wk_debug_handler}
 \alias{wk_validation_handler}
+\alias{wkt_writer}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
@@ -18,6 +19,8 @@ wk_void_handler()
 wk_debug_handler()
 
 wk_validation_handler()
+
+wkt_writer(precision = 16, trim = TRUE)
 
 new_wk_handler(
   handler_ptr,
@@ -38,6 +41,11 @@ handle_wkb(x, handler, ...)
 handle_wkt(x, handler, ...)
 }
 \arguments{
+\item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
+for each result or the number of digits after the decimal place otherwise.}
+
+\item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
+
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 
 \item{subclass}{The handler subclass}

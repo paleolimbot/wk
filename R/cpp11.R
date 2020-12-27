@@ -4,6 +4,6 @@ wk_cpp_handle_wkt <- function(wkt, xptr) {
   .Call("_wk_wk_cpp_handle_wkt", wkt, xptr, PACKAGE = "wk")
 }
 
-wk_cpp_wkt_writer <- function() {
-  .Call("_wk_wk_cpp_wkt_writer", PACKAGE = "wk")
+wk_cpp_wkt_writer <- function(precision, trim) {
+  .Call("_wk_wk_cpp_wkt_writer", precision, trim, PACKAGE = "wk")
 }

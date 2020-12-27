@@ -12,6 +12,16 @@ public:
   WKGeometryMeta_t parentMeta;
   std::vector<const WKGeometryMeta_t*> stack;
 
+  WKTWriterHandler(int precision = 16, bool trim = true) {
+    this->out.imbue(std::locale::classic());
+    this->out.precision(precision);
+    if (trim) {
+      this->out.unsetf(out.fixed);
+    } else {
+      this->out.setf(out.fixed);
+    }
+  }
+
   bool isNestingCollection() {
     return this->stack.size() > 0 && 
       (this->stack[this->stack.size() - 1]->geometryType == WK_GEOMETRYCOLLECTION);
@@ -70,6 +80,14 @@ public:
             std::stringstream err;
             err << "Can't write geometry type '" << meta->geometryType << "' as WKT";
             throw WKHandlerException(err.str().c_str());
+        }
+
+        if (meta->hasZ && meta->hasM) {
+            out << "ZM ";
+        } else if (meta->hasZ) {
+            out << "Z ";
+        } else if (meta->hasM) {
+            out << "M ";
         }
     }
 
@@ -133,6 +151,6 @@ public:
 };
 
 [[cpp11::register]]
-cpp11::sexp wk_cpp_wkt_writer() {
-  return WKHandlerFactory<WKTWriterHandler>::create_xptr(new WKTWriterHandler());
+cpp11::sexp wk_cpp_wkt_writer(int precision = 16, bool trim = true) {
+  return WKHandlerFactory<WKTWriterHandler>::create_xptr(new WKTWriterHandler(precision, trim));
 }
