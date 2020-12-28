@@ -107,18 +107,21 @@ char wkb_writer_geometry_start(const WKGeometryMeta_t* meta, uint32_t nParts, ui
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
     wkb_write_uchar(writeBuffer, writeBuffer->endian);
     wkb_write_uint(writeBuffer, wkb_writer_encode_type(meta));
-    if (meta->geometryType >= WK_POLYGON) {
+    if (meta->geometryType != WK_POINT) {
         wkb_write_uint(writeBuffer, meta->size);
     }
     return WK_CONTINUE;
 }
 
+char wkb_writer_ring_start(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
+  WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+  wkb_write_uint(writeBuffer, size);
+  return WK_CONTINUE;
+}
+
 char wkb_writer_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
                       void* userData) {
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
-    if (meta->geometryType != WK_POINT && coordId == 0) {
-        wkb_write_uint(writeBuffer, nCoords);
-    }
     wkb_write_doubles(writeBuffer, coord.v, 2 + meta->hasZ + meta->hasM);
     return WK_CONTINUE;
 }
@@ -164,6 +167,7 @@ SEXP wk_c_wkb_writer_new() {
     handler->vectorStart = &wkb_writer_vector_start;
     handler->featureStart = &wkb_writer_feature_start;
     handler->geometryStart = &wkb_writer_geometry_start;
+    handler->ringStart = &wkb_writer_ring_start;
     handler->coord = &wkb_writer_coord;
     handler->nullFeature = &wkb_writer_feature_null;
     handler->featureEnd = &wkb_writer_feature_end;
