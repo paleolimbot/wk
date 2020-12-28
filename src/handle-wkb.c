@@ -51,7 +51,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
 
   WKGeometryMeta_t vectorMeta;
   WK_META_RESET(vectorMeta, WK_GEOMETRY);
-  WK_META_SET_SIZE(vectorMeta, nFeatures);
+  vectorMeta.size = nFeatures;
 
   if (handler->vectorStart(&vectorMeta, handler->userData) == WK_CONTINUE) {
     SEXP item;
@@ -112,14 +112,13 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   WK_META_RESET(meta, geometryType & 0x000000ff)
   meta.hasZ = (geometryType & EWKB_Z_BIT) != 0;
   meta.hasM = (geometryType & EWKB_M_BIT) != 0;
-  meta.hasSrid = (geometryType & EWKB_SRID_BIT) != 0;
+  char hasSrid = (geometryType & EWKB_SRID_BIT) != 0;
 
-  if (meta.hasSrid &&
+  if (hasSrid &&
       (wkb_read_uint(handler, buffer, &(meta.srid)) != WK_CONTINUE)) {
     return WK_ABORT_FEATURE;
   }
 
-  meta.hasSize = 1;
   if (meta.geometryType == WK_POINT) {
     meta.size = 1;
   } else if (wkb_read_uint(handler, buffer, &(meta.size)) != WK_CONTINUE) {

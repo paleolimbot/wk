@@ -12,6 +12,7 @@
 #define WK_NO_ERROR_CODE -1
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
+#define WK_SRID_NONE UINT32_MAX
 
 enum WKV1_GeometryType {
   WK_GEOMETRY = 0,
@@ -32,8 +33,6 @@ typedef struct {
   int geometryType;
   char hasZ;
   char hasM;
-  char hasSrid;
-  char hasSize;
   char hasBounds;
   uint32_t size;
   uint32_t srid;
@@ -42,21 +41,13 @@ typedef struct {
   void* userData;
 } WKGeometryMeta_t;
 
-#define WK_META_RESET(meta, geometryType_)                   \
+#define WK_META_RESET(meta, geometryType_)                     \
   meta.geometryType = geometryType_;                           \
   meta.hasZ = 0;                                               \
   meta.hasM = 0;                                               \
-  meta.hasSrid = 0;                                            \
-  meta.hasSize = 0;                                            \
+  meta.srid = WK_SRID_NONE;                                    \
+  meta.size = WK_SIZE_UNKNOWN;                                 \
   meta.hasBounds = 0;
-
-#define WK_META_SET_SIZE(meta, size_)                        \
-  meta.hasSize = 1;                                            \
-  meta.size = size_;
-
-#define WK_META_SET_SRID(meta, srid_)                        \
-  meta.hasSrid = 1;                                            \
-  meta.srid = srid_;
 
 typedef struct {
   int WKAPIVersion;

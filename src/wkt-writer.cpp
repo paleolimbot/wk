@@ -44,15 +44,15 @@ public:
   }
 
   char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
-    if (partId != 0 && this->stack.size() > 0) {
+    if ((partId != 0) && (this->stack.size() > 0)) {
       out << ", ";
     }
 
-    if (meta->hasSrid && this->stack.size() == 0) {
+    if ((meta->srid != WK_SRID_NONE) && (this->stack.size() == 0)) {
       out << "SRID=" << meta->srid << ";";
     }
 
-    if (this->stack.size() == 0 || this->isNestingCollection()) {
+    if ((this->stack.size() == 0) || this->isNestingCollection()) {
         switch (meta->geometryType) {
         case WK_POINT:
             out << "POINT ";

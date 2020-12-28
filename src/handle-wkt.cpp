@@ -355,7 +355,6 @@ public:
     if (geometryType == "SRID") {
       this->assert_('=');
       meta.srid = this->assertInteger();
-      meta.hasSrid = true;
       this->assert_(';');
       geometryType = this->assertWord();
     }
@@ -375,7 +374,6 @@ public:
     }
 
     if (this->isEMPTY()) {
-      meta.hasSize = true;
       meta.size = 0;
     }
 
@@ -685,14 +683,11 @@ protected:
     WKGeometryMeta_t childMeta;
     WK_META_RESET(childMeta, geometryType);
     childMeta.srid = parent->srid;
-    childMeta.hasSrid = parent->hasSrid;
 
     childMeta.geometryType = geometryType;
     if (s.isEMPTY()) {
-      childMeta.hasSize = true;
       childMeta.size = 0;
     } else {
-      childMeta.hasSize = false;
       childMeta.size = WK_SIZE_UNKNOWN;
     }
 
@@ -709,7 +704,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   R_xlen_t nFeatures = Rf_xlength(wkt);
   WKGeometryMeta_t globalMeta;
   WK_META_RESET(globalMeta, WK_GEOMETRY);
-  WK_META_SET_SIZE(globalMeta, nFeatures);
+  globalMeta.size = nFeatures;
 
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);

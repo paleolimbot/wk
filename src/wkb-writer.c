@@ -26,7 +26,7 @@ uint32_t wkb_writer_encode_type(const WKGeometryMeta_t* meta) {
     uint32_t out = meta->geometryType;
     if (meta->hasZ) out |= EWKB_Z_BIT;
     if (meta->hasM) out |= EWKB_M_BIT;
-    if (meta->hasSrid) out |= EWKB_SRID_BIT;
+    if (meta->srid != WK_SRID_NONE) out |= EWKB_SRID_BIT;
     return out;
   }
 
