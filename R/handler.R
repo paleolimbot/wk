@@ -37,6 +37,12 @@ wkt_writer <- function(precision = 16, trim = TRUE) {
 
 #' @rdname wk_void_handler
 #' @export
+wkb_writer <- function() {
+  new_wk_handler(.Call(wk_c_wkb_writer_new), "wk_wkb_writer")
+}
+
+#' @rdname wk_void_handler
+#' @export
 new_wk_handler <- function(handler_ptr, subclass = character(), finisher = wk_finish_default) {
   stopifnot(is.function(finisher), typeof(handler_ptr) == "externalptr")
   structure(handler_ptr, class = union(subclass, "wk_handler"), finisher = finisher)

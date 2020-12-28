@@ -166,3 +166,23 @@ test_that("wkt_writer() works", {
     "POINT (1.0 1.0)"
   )
 })
+
+test_that("wkb_writer() works", {
+  wkb_good <- as_wkb(
+    c(
+      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+    )
+  )
+
+  expect_identical(
+    handle_wkb(wkb_good, wkb_writer()),
+    unclass(wkb_good)
+  )
+
+  wkb_bad <- unclass(wkb_good[1])
+  wkb_bad[[1]][2] <- as.raw(0xff)
+  expect_error(handle_wkb(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
+})

@@ -54,6 +54,7 @@ extern SEXP wk_c_handler_debug_new();
 extern SEXP wk_c_handler_validation_new();
 extern SEXP wk_c_handler_void_new();
 extern SEXP wk_c_read_wkb(SEXP, SEXP);
+extern SEXP wk_c_wkb_writer_new();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_format_wkb",            (DL_FUNC) &_wk_cpp_format_wkb,            4},
@@ -87,6 +88,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_handler_validation_new",   (DL_FUNC) &wk_c_handler_validation_new,   0},
     {"wk_c_handler_void_new",         (DL_FUNC) &wk_c_handler_void_new,         0},
     {"wk_c_read_wkb",                 (DL_FUNC) &wk_c_read_wkb,                 2},
+    {"wk_c_wkb_writer_new",           (DL_FUNC) &wk_c_wkb_writer_new,           0},
     {NULL, NULL, 0}
 };
 }
