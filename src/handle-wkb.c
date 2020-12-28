@@ -99,14 +99,11 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
 
 char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
                        uint32_t nParts, uint32_t partId) {
-  if (wkb_read_endian(handler, buffer) != WK_CONTINUE) {
-    return WK_ABORT_FEATURE;
-  }
+  char result;
+  HANDLE_OR_RETURN(wkb_read_endian(handler, buffer));
 
   uint32_t geometryType;
-  if (wkb_read_uint(handler, buffer, &geometryType) != WK_CONTINUE) {
-    return WK_ABORT_FEATURE;
-  }
+  HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometryType));
 
   WKGeometryMeta_t meta;
   WK_META_RESET(meta, geometryType & 0x000000ff)
@@ -114,18 +111,16 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   meta.hasM = (geometryType & EWKB_M_BIT) != 0;
   char hasSrid = (geometryType & EWKB_SRID_BIT) != 0;
 
-  if (hasSrid &&
-      (wkb_read_uint(handler, buffer, &(meta.srid)) != WK_CONTINUE)) {
-    return WK_ABORT_FEATURE;
+  if (hasSrid) {
+    HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
   }
 
   if (meta.geometryType == WK_POINT) {
     meta.size = 1;
-  } else if (wkb_read_uint(handler, buffer, &(meta.size)) != WK_CONTINUE) {
-    return WK_ABORT_FEATURE;
+  } else {
+    HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.size)));
   }
 
-  char result;
   HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData));
 
   switch (meta.geometryType) {
