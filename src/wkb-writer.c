@@ -17,9 +17,9 @@ typedef struct {
 } WKBWriteBuffer_t;
 
 unsigned char wkb_writer_platform_endian() {
-  const int one = 1;
-  unsigned char *cp = (unsigned char *) &one;
-  return (char) *cp;
+    const int one = 1;
+    unsigned char *cp = (unsigned char *) &one;
+    return (char) *cp;
 }
 
 uint32_t wkb_writer_encode_type(const WKGeometryMeta_t* meta) {
@@ -33,7 +33,7 @@ uint32_t wkb_writer_encode_type(const WKGeometryMeta_t* meta) {
 WKBWriteBuffer_t* wkb_write_buffer_new(size_t size) {
     unsigned char* buffer = malloc(size);
     if (buffer == NULL) {
-        Rf_error("Can't allocate buffer of size %d", size);
+        Rf_error("Can't allocate buffer of size %d", size); // # nocov
     }
 
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) malloc(sizeof(WKBWriteBuffer_t));
