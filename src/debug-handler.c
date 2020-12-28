@@ -139,17 +139,25 @@ char wk_handler_debug_geometry_end(const WKGeometryMeta_t* meta, uint32_t nParts
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_start(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_debug_ring_start(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_print_indent(userData);
-  Rprintf("ringStart (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  if (size != WK_SIZE_UNKNOWN) {
+    Rprintf("ringStart[%d] (%d / %d) <%p>\n", size, ringId + 1, nRings, meta);
+  } else {
+    Rprintf("ringStart (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  }
   wk_handler_debug_indent(userData);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_end(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_debug_ring_end(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
   wk_handler_debug_dedent(userData);
   wk_handler_debug_print_indent(userData);
-  Rprintf("ringEnd (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  if (size != WK_SIZE_UNKNOWN) {
+    Rprintf("ringEnd[%d] (%d / %d) <%p>\n", size, ringId + 1, nRings, meta);
+  } else {
+    Rprintf("ringEnd (%d / %d) <%p>\n", ringId + 1, nRings, meta);
+  }
   return WK_CONTINUE;
 }
 

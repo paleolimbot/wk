@@ -18,7 +18,7 @@ char wk_handler_void_geometry(const WKGeometryMeta_t* meta, uint32_t nParts, uin
   return WK_CONTINUE;
 }
 
-char wk_handler_void_ring(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_void_ring(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
   return WK_CONTINUE;
 }
 

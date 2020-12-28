@@ -66,10 +66,10 @@ typedef struct {
   char (*featureStart)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   char (*nullFeature)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   char (*geometryStart)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
-  char (*ringStart)(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData);
+  char (*ringStart)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
   char (*coord)(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
                 void* userData);
-  char (*ringEnd)(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId, void* userData);
+  char (*ringEnd)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
   char (*geometryEnd)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
   char (*featureEnd)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
   SEXP (*vectorEnd)(const WKGeometryMeta_t* meta, void* userData);

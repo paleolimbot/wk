@@ -136,13 +136,11 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
     break;
   case WK_POLYGON:
     for (uint32_t i = 0; i < meta.size; i++) {
-      HANDLE_OR_RETURN(handler->ringStart(&meta, meta.size, i, handler->userData));
-
       uint32_t nCoords;
       HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &nCoords));
+      HANDLE_OR_RETURN(handler->ringStart(&meta, nCoords, meta.size, i, handler->userData));
       HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, nCoords));
-
-      HANDLE_OR_RETURN(handler->ringEnd(&meta, meta.size, i, handler->userData));
+      HANDLE_OR_RETURN(handler->ringEnd(&meta, nCoords, meta.size, i, handler->userData));
     }
     break;
   case WK_MULTIPOINT:

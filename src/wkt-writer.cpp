@@ -101,7 +101,7 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringStart(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId) {
+  char ringStart(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     out << "(";
     return WK_CONTINUE;
   }
@@ -121,7 +121,7 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringEnd(const WKGeometryMeta_t* meta, uint32_t nRings, uint32_t ringId) {
+  char ringEnd(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     out << ")";
     return WK_CONTINUE;
   }

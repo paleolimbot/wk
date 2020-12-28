@@ -624,9 +624,9 @@ protected:
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
       HANDLE_OR_RETURN(this->readCoordinates(s, meta));
-      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
       ringId++;
     } while (s.assertOneOf(",)") != ')');
 
