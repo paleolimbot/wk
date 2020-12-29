@@ -65,6 +65,11 @@ as_wk_handler.wk_handler <- function(handler, ...) {
   handler
 }
 
+#' @export
+as_wk_handler.function <- function(handler, ...) {
+  handler()
+}
+
 #' @rdname wk_void_handler
 #' @export
 wk_finish_default <- function(result, x) {
@@ -84,13 +89,15 @@ wk_finish_invisible <- function(result, x) {
 #' @rdname wk_void_handler
 #' @export
 handle_wkb <- function(x, handler, ...) {
-  attr(handler, "finisher")(.Call(wk_c_read_wkb, as_wkb(x), as_wk_handler(handler, ...)))
+  handler <- as_wk_handler(handler, ...)
+  attr(handler, "finisher")(.Call(wk_c_read_wkb, as_wkb(x), handler))
 }
 
 #' @rdname wk_void_handler
 #' @export
 handle_wkt <- function(x, handler, ...) {
-  attr(handler, "finisher")(wk_cpp_handle_wkt(as_wkt(x), as_wk_handler(handler, ...)))
+  handler <- as_wk_handler(handler, ...)
+  attr(handler, "finisher")(wk_cpp_handle_wkt(as_wkt(x), handler))
 }
 
 #' @export
