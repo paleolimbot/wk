@@ -325,36 +325,3 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-
-static const R_CallMethodDef CallEntries[] = {
-    {"_wk_cpp_format_wkb", (DL_FUNC) &_wk_cpp_format_wkb, 4},
-    {"_wk_cpp_format_wkt", (DL_FUNC) &_wk_cpp_format_wkt, 4},
-    {"_wk_cpp_format_wksxp", (DL_FUNC) &_wk_cpp_format_wksxp, 4},
-    {"_wk_cpp_problems_wkb", (DL_FUNC) &_wk_cpp_problems_wkb, 1},
-    {"_wk_cpp_problems_wkt", (DL_FUNC) &_wk_cpp_problems_wkt, 1},
-    {"_wk_cpp_problems_wksxp", (DL_FUNC) &_wk_cpp_problems_wksxp, 1},
-    {"_wk_cpp_wkb_translate_wkt", (DL_FUNC) &_wk_cpp_wkb_translate_wkt, 6},
-    {"_wk_cpp_wkb_translate_wkb", (DL_FUNC) &_wk_cpp_wkb_translate_wkb, 6},
-    {"_wk_cpp_wkb_translate_wksxp", (DL_FUNC) &_wk_cpp_wkb_translate_wksxp, 4},
-    {"_wk_cpp_wkt_translate_wkt", (DL_FUNC) &_wk_cpp_wkt_translate_wkt, 6},
-    {"_wk_cpp_wkt_translate_wkb", (DL_FUNC) &_wk_cpp_wkt_translate_wkb, 6},
-    {"_wk_cpp_wkt_translate_wksxp", (DL_FUNC) &_wk_cpp_wkt_translate_wksxp, 4},
-    {"_wk_cpp_wksxp_translate_wkt", (DL_FUNC) &_wk_cpp_wksxp_translate_wkt, 6},
-    {"_wk_cpp_wksxp_translate_wkb", (DL_FUNC) &_wk_cpp_wksxp_translate_wkb, 6},
-    {"_wk_cpp_wksxp_translate_wksxp", (DL_FUNC) &_wk_cpp_wksxp_translate_wksxp, 4},
-    {"_wk_cpp_translate_xyzm_wkt", (DL_FUNC) &_wk_cpp_translate_xyzm_wkt, 3},
-    {"_wk_cpp_translate_xyzm_wkb", (DL_FUNC) &_wk_cpp_translate_xyzm_wkb, 3},
-    {"_wk_cpp_translate_xyzm_wksxp", (DL_FUNC) &_wk_cpp_translate_xyzm_wksxp, 1},
-    {"_wk_cpp_translate_wkt_xyzm", (DL_FUNC) &_wk_cpp_translate_wkt_xyzm, 1},
-    {"_wk_cpp_translate_wkb_xyzm", (DL_FUNC) &_wk_cpp_translate_wkb_xyzm, 1},
-    {"_wk_cpp_translate_wksxp_xyzm", (DL_FUNC) &_wk_cpp_translate_wksxp_xyzm, 1},
-    {"_wk_cpp_translate_rct_wkt", (DL_FUNC) &_wk_cpp_translate_rct_wkt, 3},
-    {"_wk_cpp_translate_rct_wkb", (DL_FUNC) &_wk_cpp_translate_rct_wkb, 3},
-    {"_wk_cpp_translate_rct_wksxp", (DL_FUNC) &_wk_cpp_translate_rct_wksxp, 1},
-    {NULL, NULL, 0}
-};
-
-RcppExport void R_init_wk(DllInfo *dll) {
-    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
-    R_useDynamicSymbols(dll, FALSE);
-}
