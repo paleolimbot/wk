@@ -8,13 +8,15 @@
 #define WK_CONTINUE 0
 #define WK_ABORT 1
 #define WK_ABORT_FEATURE 2
+
 #define WK_DEFAULT_ERROR_CODE 0
 #define WK_NO_ERROR_CODE -1
+
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_SRID_NONE UINT32_MAX
 
-enum WKV1_GeometryType {
+enum WKGeometryType {
   WK_GEOMETRY = 0,
   WK_POINT = 1,
   WK_LINESTRING = 2,
@@ -25,20 +27,21 @@ enum WKV1_GeometryType {
   WK_GEOMETRYCOLLECTION = 7
 };
 
-typedef union {
+typedef struct {
   double v[4];
 } WKCoord_t;
 
 typedef struct {
-  int geometryType;
+  void* userData;
+  uint32_t geometryType;
+  char hasDim;
+  char hasBounds;
   char hasZ;
   char hasM;
-  char hasBounds;
   uint32_t size;
   uint32_t srid;
   WKCoord_t boundsMin;
   WKCoord_t boundsMax;
-  void* userData;
 } WKGeometryMeta_t;
 
 #define WK_META_RESET(meta, geometryType_)                     \
