@@ -103,7 +103,7 @@ char wkb_writer_feature_start(const wk_meta_t* meta, R_xlen_t n_features, R_xlen
     return WK_CONTINUE;
 }
 
-char wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_data) {
+char wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t nParts, uint32_t part_id, void* handler_data) {
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     wkb_write_uchar(writeBuffer, writeBuffer->endian);
     wkb_write_uint(writeBuffer, wkb_writer_encode_type(meta));
@@ -113,13 +113,13 @@ char wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t nParts, uint32_t 
     return WK_CONTINUE;
 }
 
-char wkb_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* handler_data) {
+char wkb_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ring_id, void* handler_data) {
   WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
   wkb_write_uint(writeBuffer, size);
   return WK_CONTINUE;
 }
 
-char wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+char wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t nCoords, uint32_t coord_id,
                       void* handler_data) {
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     int coordSize = 2;

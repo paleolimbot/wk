@@ -32,7 +32,7 @@ void wkb_set_errorf(WKBBuffer_t* buffer, const char* errorMessage, ...) {
 }
 
 SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler);
-char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t nParts, uint32_t partId);
+char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t nParts, uint32_t part_id);
 
 char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer);
 char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t* value);
@@ -99,7 +99,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
 }
 
 char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
-                       uint32_t nParts, uint32_t partId) {
+                       uint32_t nParts, uint32_t part_id) {
   char result;
   HANDLE_OR_RETURN(wkb_read_endian(handler, buffer));
 

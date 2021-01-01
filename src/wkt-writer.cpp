@@ -43,8 +43,8 @@ public:
     return WK_ABORT_FEATURE;
   }
 
-  char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
-    if ((partId != 0) && (this->stack.size() > 0)) {
+  char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t part_id) {
+    if ((part_id != 0) && (this->stack.size() > 0)) {
       out << ", ";
     }
 
@@ -101,13 +101,13 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ring_id) {
     out << "(";
     return WK_CONTINUE;
   }
 
-  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
-    if (coordId > 0) {
+  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coord_id) {
+    if (coord_id > 0) {
       out << ", ";
     }
 
@@ -121,12 +121,12 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ring_id) {
     out << ")";
     return WK_CONTINUE;
   }
 
-  char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
+  char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t part_id) {
     this->stack.pop_back();
 
     if (meta->size != 0) {

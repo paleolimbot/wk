@@ -454,10 +454,10 @@ public:
 
 protected:
 
-  char readGeometryWithType(WKTV1String& s, uint32_t partId) {
+  char readGeometryWithType(WKTV1String& s, uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
     char result;
-    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
+    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, part_id));
 
     switch (meta.geometryType) {
 
@@ -493,7 +493,7 @@ protected:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, partId);
+    return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, part_id);
   }
 
   char readPoint(WKTV1String& s, const wk_meta_t* meta) {
@@ -520,32 +520,32 @@ protected:
     }
 
     wk_meta_t childMeta;
-    uint32_t partId = 0;
+    uint32_t part_id = 0;
     char result;
 
     if (s.isNumber()) { // (0 0, 1 1)
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
 
-        partId++;
+        part_id++;
       } while (s.assertOneOf(",)") != ')');
 
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
         HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
-        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
-        partId++;
+        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
+        part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
 
@@ -558,16 +558,16 @@ protected:
     }
 
     wk_meta_t childMeta;
-    uint32_t partId = 0;
+    uint32_t part_id = 0;
     char result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
       HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
 
-      partId++;
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
@@ -579,15 +579,15 @@ protected:
     }
 
     wk_meta_t childMeta;
-    uint32_t partId = 0;
+    uint32_t part_id = 0;
     char result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
       HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
-      partId++;
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
@@ -598,12 +598,12 @@ protected:
       return WK_CONTINUE;
     }
 
-    uint32_t partId = 0;
+    uint32_t part_id = 0;
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->readGeometryWithType(s, partId));
-      partId++;
+      HANDLE_OR_RETURN(this->readGeometryWithType(s, part_id));
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
@@ -614,14 +614,14 @@ protected:
       return WK_CONTINUE;
     }
 
-    uint32_t ringId = 0;
+    uint32_t ring_id = 0;
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ring_id));
       HANDLE_OR_RETURN(this->readCoordinates(s, meta));
-      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
-      ringId++;
+      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ring_id));
+      ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
@@ -654,14 +654,14 @@ protected:
       return WK_CONTINUE;
     }
 
-    uint32_t coordId = 0;
+    uint32_t coord_id = 0;
     char result;
 
     do {
       this->readCoordinate(s, &coord, coordSize);
-      HANDLE_OR_RETURN(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId));
+      HANDLE_OR_RETURN(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coord_id));
 
-      coordId++;
+      coord_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;

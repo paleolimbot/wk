@@ -60,8 +60,8 @@ public:
     return cpp11::safe[handler->ringStart](meta, size, nRings, ringId, handler->handler_data);
   }
 
-  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
-    return cpp11::safe[handler->coord](meta, coord, nCoords, coordId, handler->handler_data);
+  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coord_id) {
+    return cpp11::safe[handler->coord](meta, coord, nCoords, coord_id, handler->handler_data);
   }
 
   char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
@@ -140,7 +140,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
+  virtual char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coord_id) {
     return WK_CONTINUE;
   }
 
@@ -286,11 +286,11 @@ private:
     return WK_ABORT;
   }
 
-  static char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+  static char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coord_id,
                     void* handler_dataPtr) noexcept {
     HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return handler_data->coord(meta, coord, nCoords, coordId);
+      return handler_data->coord(meta, coord, nCoords, coord_id);
     } catch (WKHandlerException& e) {
       handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
