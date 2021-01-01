@@ -346,58 +346,54 @@ class WKTV1String: public WKV1ParseableString {
 public:
   WKTV1String(const char* str): WKV1ParseableString(str, " \r\n\t", " \r\n\t,();=") {}
 
-  WKGeometryMeta_t assertGeometryMeta() {
-    WKGeometryMeta_t meta;
+  wk_meta_t assertGeometryMeta() {
+    wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
 
-    std::string geometryType = this->assertWord();
+    std::string geometry_type = this->assertWord();
 
-    if (geometryType == "SRID") {
+    if (geometry_type == "SRID") {
       this->assert_('=');
       meta.srid = this->assertInteger();
       this->assert_(';');
-      geometryType = this->assertWord();
+      geometry_type = this->assertWord();
     }
 
     if (this->is('Z')) {
       this->assert_('Z');
-      meta.hasZ = true;
-    } else {
-      meta.hasZ = false;
+      meta.flags |= WK_FLAG_HAS_Z;
     }
 
     if (this->is('M')) {
       this->assert_('M');
-      meta.hasM = true;
-    } else {
-      meta.hasM = false;
+      meta.flags |= WK_FLAG_HAS_M;
     }
 
     if (this->isEMPTY()) {
       meta.size = 0;
     }
 
-    meta.geometryType = this->geometryTypeFromString(geometryType);
+    meta.geometry_type = this->geometry_typeFromString(geometry_type);
     return meta;
   }
 
-  int geometryTypeFromString(std::string geometryType) {
-    if (geometryType == "POINT") {
+  int geometry_typeFromString(std::string geometry_type) {
+    if (geometry_type == "POINT") {
       return WK_POINT;
-    } else if(geometryType == "LINESTRING") {
+    } else if(geometry_type == "LINESTRING") {
       return WK_LINESTRING;
-    } else if(geometryType == "POLYGON") {
+    } else if(geometry_type == "POLYGON") {
       return WK_POLYGON;
-    } else if(geometryType == "MULTIPOINT") {
+    } else if(geometry_type == "MULTIPOINT") {
       return WK_MULTIPOINT;
-    } else if(geometryType == "MULTILINESTRING") {
+    } else if(geometry_type == "MULTILINESTRING") {
       return WK_MULTILINESTRING;
-    } else if(geometryType == "MULTIPOLYGON") {
+    } else if(geometry_type == "MULTIPOLYGON") {
       return WK_MULTIPOLYGON;
-    } else if(geometryType == "GEOMETRYCOLLECTION") {
+    } else if(geometry_type == "GEOMETRYCOLLECTION") {
       return WK_GEOMETRYCOLLECTION;
     } else {
-      this->errorBefore("geometry type or 'SRID='", geometryType);
+      this->errorBefore("geometry type or 'SRID='", geometry_type);
     }
   }
 
@@ -441,29 +437,29 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  char readFeature(WKGeometryMeta_t* meta, SEXP item, R_xlen_t nFeatures, R_xlen_t featureId) {
+  char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
     char result;
-    HANDLE_OR_RETURN(this->handler.featureStart(meta, nFeatures, featureId));
+    HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
     if (item == NA_STRING) {
-      HANDLE_OR_RETURN(this->handler.nullFeature(meta, nFeatures, featureId));
+      HANDLE_OR_RETURN(this->handler.null_feature(meta, feat_id));
     } else {
       WKTV1String s(CHAR(item));
       HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
       s.assertFinished();
     }
 
-    return this->handler.featureEnd(meta, nFeatures, featureId);
+    return this->handler.feature_end(meta, feat_id);
   }
 
 protected:
 
-  char readGeometryWithType(WKTV1String& s, uint32_t partId) {
-    WKGeometryMeta_t meta = s.assertGeometryMeta();
+  char readGeometryWithType(WKTV1String& s, uint32_t part_id) {
+    wk_meta_t meta = s.assertGeometryMeta();
     char result;
-    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
+    HANDLE_OR_RETURN(this->handler.geometry_start(&meta, part_id));
 
-    switch (meta.geometryType) {
+    switch (meta.geometry_type) {
 
     case WK_POINT:
       HANDLE_OR_RETURN(this->readPoint(s, &meta));
@@ -497,10 +493,10 @@ protected:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, partId);
+    return this->handler.geometry_end(&meta, part_id);
   }
 
-  char readPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
       char result;
       HANDLE_OR_RETURN(this->readPointCoordinate(s, meta));
@@ -510,122 +506,122 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readLineString(WKTV1String& s, const wk_meta_t* meta) {
     return this->readCoordinates(s, meta);
   }
 
-  char readPolygon(WKTV1String& s, const WKGeometryMeta_t* meta)  {
+  char readPolygon(WKTV1String& s, const wk_meta_t* meta)  {
     return this->readLinearRings(s, meta);
   }
 
-  char readMultiPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readMultiPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
-    uint32_t partId = 0;
+    wk_meta_t childMeta;
+    uint32_t part_id = 0;
     char result;
 
     if (s.isNumber()) { // (0 0, 1 1)
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
 
-        partId++;
+        part_id++;
       } while (s.assertOneOf(",)") != ')');
 
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
         HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
-        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
-        partId++;
+        HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+        part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
 
     return WK_CONTINUE;
   }
 
-  char readMultiLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readMultiLineString(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
-    uint32_t partId = 0;
+    wk_meta_t childMeta;
+    uint32_t part_id = 0;
     char result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
 
-      partId++;
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
   }
 
-  uint32_t readMultiPolygon(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  uint32_t readMultiPolygon(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
-    uint32_t partId = 0;
+    wk_meta_t childMeta;
+    uint32_t part_id = 0;
     char result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, partId));
+      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, partId));
-      partId++;
+      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
   }
 
-  char readGeometryCollection(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readGeometryCollection(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    uint32_t partId = 0;
+    uint32_t part_id = 0;
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->readGeometryWithType(s, partId));
-      partId++;
+      HANDLE_OR_RETURN(this->readGeometryWithType(s, part_id));
+      part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
   }
 
-  uint32_t readLinearRings(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  uint32_t readLinearRings(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    uint32_t ringId = 0;
+    uint32_t ring_id = 0;
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
+      HANDLE_OR_RETURN(this->handler.ring_start(meta, WK_SIZE_UNKNOWN, ring_id));
       HANDLE_OR_RETURN(this->readCoordinates(s, meta));
-      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ringId));
-      ringId++;
+      HANDLE_OR_RETURN(this->handler.ring_end(meta, WK_SIZE_UNKNOWN, ring_id));
+      ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
@@ -636,42 +632,42 @@ protected:
   // writers are unlikely to expect a point geometry with many coordinates).
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
-  char readPointCoordinate(WKTV1String& s, const WKGeometryMeta_t* meta) {
-    WKCoord_t coord;
+  char readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
+    wk_coord_t coord;
     char result;
     int coordSize = 2;
-    if (meta->hasZ) coordSize++;
-    if (meta->hasM) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     this->readCoordinate(s, &coord, coordSize);
-    HANDLE_OR_RETURN(handler.coord(meta, coord, 1, 0));
+    HANDLE_OR_RETURN(handler.coord(meta, coord, 0));
     return WK_CONTINUE;
   }
 
-  char readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
-    WKCoord_t coord;
+  char readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
+    wk_coord_t coord;
     int coordSize = 2;
-    if (meta->hasZ) coordSize++;
-    if (meta->hasM) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    uint32_t coordId = 0;
+    uint32_t coord_id = 0;
     char result;
 
     do {
       this->readCoordinate(s, &coord, coordSize);
-      HANDLE_OR_RETURN(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coordId));
+      HANDLE_OR_RETURN(handler.coord(meta, coord, coord_id));
 
-      coordId++;
+      coord_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
   }
 
-  void readCoordinate(WKTV1String& s, WKCoord_t* coord, int coordSize) {
+  void readCoordinate(WKTV1String& s, wk_coord_t* coord, int coordSize) {
     coord->v[0] = s.assertNumber();
     for (size_t i = 1; i < coordSize; i++) {
       s.assertWhitespace();
@@ -679,12 +675,12 @@ protected:
     }
   }
 
-  WKGeometryMeta_t childMeta(WKTV1String& s, const WKGeometryMeta_t* parent, int geometryType) {
-    WKGeometryMeta_t childMeta;
-    WK_META_RESET(childMeta, geometryType);
+  wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometry_type) {
+    wk_meta_t childMeta;
+    WK_META_RESET(childMeta, geometry_type);
     childMeta.srid = parent->srid;
 
-    childMeta.geometryType = geometryType;
+    childMeta.geometry_type = geometry_type;
     if (s.isEMPTY()) {
       childMeta.size = 0;
     } else {
@@ -701,20 +697,21 @@ private:
 
 [[cpp11::register]]
 SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
-  R_xlen_t nFeatures = Rf_xlength(wkt);
-  WKGeometryMeta_t globalMeta;
+  R_xlen_t n_features = Rf_xlength(wkt);
+  wk_meta_t globalMeta;
   WK_META_RESET(globalMeta, WK_GEOMETRY);
-  globalMeta.size = nFeatures;
+  globalMeta.size = n_features;
+  globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
-  WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
+  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);
   WKTStreamingHandler streamer(cppHandler);
 
-  cppHandler.vectorStart(&globalMeta);
+  cppHandler.vector_start(&globalMeta);
 
-  for (R_xlen_t i = 0; i < nFeatures; i++) {
+  for (R_xlen_t i = 0; i < n_features; i++) {
     try {
-      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), nFeatures, i);
+      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i);
       if (result == WK_ABORT) {
         break;
       }
@@ -725,5 +722,5 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
     }
   }
 
-  return cppHandler.vectorEnd(&globalMeta);
+  return cppHandler.vector_end(&globalMeta);
 }

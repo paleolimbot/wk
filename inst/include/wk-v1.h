@@ -8,13 +8,20 @@
 #define WK_CONTINUE 0
 #define WK_ABORT 1
 #define WK_ABORT_FEATURE 2
+
 #define WK_DEFAULT_ERROR_CODE 0
 #define WK_NO_ERROR_CODE -1
+
+#define WK_FLAG_HAS_BOUNDS 1
+#define WK_FLAG_HAS_Z 2
+#define WK_FLAG_HAS_M 4
+#define WK_FLAG_DIMS_UNKNOWN 8
+
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_SRID_NONE UINT32_MAX
 
-enum WKV1_GeometryType {
+enum wk_geometery_type_enum {
   WK_GEOMETRY = 0,
   WK_POINT = 1,
   WK_LINESTRING = 2,
@@ -25,59 +32,55 @@ enum WKV1_GeometryType {
   WK_GEOMETRYCOLLECTION = 7
 };
 
-typedef union {
+typedef struct {
   double v[4];
-} WKCoord_t;
+} wk_coord_t;
 
 typedef struct {
-  int geometryType;
-  char hasZ;
-  char hasM;
-  char hasBounds;
+  void* meta_data;
+  uint32_t geometry_type;
+  uint32_t flags;
   uint32_t size;
   uint32_t srid;
-  WKCoord_t boundsMin;
-  WKCoord_t boundsMax;
-  void* userData;
-} WKGeometryMeta_t;
+  double bounds_min[4];
+  double bounds_max[4];
+} wk_meta_t;
 
-#define WK_META_RESET(meta, geometryType_)                     \
-  meta.geometryType = geometryType_;                           \
-  meta.hasZ = 0;                                               \
-  meta.hasM = 0;                                               \
+#define WK_META_RESET(meta, geometry_type_)                    \
+  meta.meta_data = NULL;                                       \
+  meta.geometry_type = geometry_type_;                         \
+  meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
-  meta.size = WK_SIZE_UNKNOWN;                                 \
-  meta.hasBounds = 0;
+  meta.size = WK_SIZE_UNKNOWN
 
 typedef struct {
-  int WKAPIVersion;
+  int wk_api_version;
   char dirty;
-  void* userData;
-  char (*vectorStart)(const WKGeometryMeta_t* meta, void* userData);
-  char (*featureStart)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*nullFeature)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*geometryStart)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
-  char (*ringStart)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
-  char (*coord)(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
-                void* userData);
-  char (*ringEnd)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
-  char (*geometryEnd)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
-  char (*featureEnd)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  SEXP (*vectorEnd)(const WKGeometryMeta_t* meta, void* userData);
-  char (*error)(R_xlen_t featureId, int code, const char* message, void* userData);
-  void (*vectorFinally)(void* userData);
-  void (*finalizer)(void* userData);
-} WKHandler_t;
+  void* handler_data;
+  char (*vector_start)(const wk_meta_t* meta, void* handler_data);
+  char (*feature_start)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
+  char (*null_feature)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
+  char (*geometry_start)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
+  char (*ring_start)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
+  char (*coord)(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data);
+  char (*ring_end)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
+  char (*geometry_end)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
+  char (*feature_end)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
+  SEXP (*vector_end)(const wk_meta_t* meta, void* handler_data);
+  char (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
+  void (*vector_finally)(void* handler_data);
+  void (*finalizer)(void* handler_data);
+} wk_handler_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // implementations in wk-v1-impl.c, which must be included exactly once in an R package
-WKHandler_t* wk_handler_create();
-SEXP wk_handler_create_xptr(WKHandler_t* handler, SEXP tag, SEXP prot);
-void wk_handler_destroy(WKHandler_t* handler);
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, WKHandler_t* handler), SEXP readData, SEXP xptr);
+wk_handler_t* wk_handler_create();
+SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
+void wk_handler_destroy(wk_handler_t* handler);
+SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr);
 SEXP wk_error_sentinel(int code, const char* message);
 
 #ifdef __cplusplus
