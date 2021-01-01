@@ -41,23 +41,23 @@ wk_handler_t* wk_handler_create() {
   handler->dirty = 0;
   handler->handler_data = NULL;
 
-  handler->vectorStart = &wk_handler_void_vector_start;
-  handler->vectorEnd = &wk_handler_void_vector_end;
+  handler->vector_start = &wk_handler_void_vector_start;
+  handler->vector_end = &wk_handler_void_vector_end;
 
   handler->featureStart = &wk_handler_void_feature;
-  handler->nullFeature = &wk_handler_void_feature;
+  handler->null_feature = &wk_handler_void_feature;
   handler->featureEnd = &wk_handler_void_feature;
 
-  handler->geometryStart = &wk_handler_void_geometry;
-  handler->geometryEnd = &wk_handler_void_geometry;
+  handler->geometry_start = &wk_handler_void_geometry;
+  handler->geometry_end = &wk_handler_void_geometry;
 
-  handler->ringStart = &wk_handler_void_ring;
-  handler->ringEnd = &wk_handler_void_ring;
+  handler->ring_start = &wk_handler_void_ring;
+  handler->ring_end = &wk_handler_void_ring;
 
   handler->coord = &wk_handler_void_coord;
 
   handler->error = &wk_handler_void_error;
-  handler->vectorFinally = &wk_handler_void_finalizer;
+  handler->vector_finally = &wk_handler_void_finalizer;
   handler->finalizer = &wk_handler_void_finalizer;
 
   return handler;
@@ -88,7 +88,7 @@ struct wk_handler_run_data {
 
 void wk_handler_run_cleanup(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
-  runData->handler->vectorFinally(runData->handler->handler_data);
+  runData->handler->vector_finally(runData->handler->handler_data);
 }
 
 SEXP wk_handler_run_internal(void* data) {

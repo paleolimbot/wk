@@ -167,15 +167,15 @@ void wkb_writer_finalize(void* handler_data) {
 SEXP wk_c_wkb_writer_new() {
     wk_handler_t* handler = wk_handler_create();
 
-    handler->vectorStart = &wkb_writer_vector_start;
+    handler->vector_start = &wkb_writer_vector_start;
     handler->featureStart = &wkb_writer_feature_start;
-    handler->geometryStart = &wkb_writer_geometry_start;
-    handler->ringStart = &wkb_writer_ring_start;
+    handler->geometry_start = &wkb_writer_geometry_start;
+    handler->ring_start = &wkb_writer_ring_start;
     handler->coord = &wkb_writer_coord;
-    handler->nullFeature = &wkb_writer_feature_null;
+    handler->null_feature = &wkb_writer_feature_null;
     handler->featureEnd = &wkb_writer_feature_end;
-    handler->vectorEnd = &wkb_writer_vector_end;
-    handler->vectorFinally = &wkb_writer_vector_finally;
+    handler->vector_end = &wkb_writer_vector_end;
+    handler->vector_finally = &wkb_writer_vector_finally;
     handler->finalizer = &wkb_writer_finalize;
 
     handler->handler_data = wkb_write_buffer_new(1024);

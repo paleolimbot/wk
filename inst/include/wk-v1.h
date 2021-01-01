@@ -57,18 +57,18 @@ typedef struct {
   int wk_api_version;
   char dirty;
   void* handler_data;
-  char (*vectorStart)(const wk_meta_t* meta, void* handler_data);
+  char (*vector_start)(const wk_meta_t* meta, void* handler_data);
   char (*featureStart)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
-  char (*nullFeature)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
-  char (*geometryStart)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
-  char (*ringStart)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
+  char (*null_feature)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
+  char (*geometry_start)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
+  char (*ring_start)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
   char (*coord)(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data);
-  char (*ringEnd)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
-  char (*geometryEnd)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
+  char (*ring_end)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
+  char (*geometry_end)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
   char (*featureEnd)(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data);
-  SEXP (*vectorEnd)(const wk_meta_t* meta, void* handler_data);
+  SEXP (*vector_end)(const wk_meta_t* meta, void* handler_data);
   char (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
-  void (*vectorFinally)(void* handler_data);
+  void (*vector_finally)(void* handler_data);
   void (*finalizer)(void* handler_data);
 } wk_handler_t;
 

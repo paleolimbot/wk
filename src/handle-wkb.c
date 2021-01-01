@@ -54,7 +54,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
   vectorMeta.size = n_features;
   vectorMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
-  if (handler->vectorStart(&vectorMeta, handler->handler_data) == WK_CONTINUE) {
+  if (handler->vector_start(&vectorMeta, handler->handler_data) == WK_CONTINUE) {
     SEXP item;
     WKBBuffer_t buffer;
 
@@ -66,7 +66,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
       }
 
       if ((item == R_NilValue) &&
-          (handler->nullFeature(&vectorMeta, i, handler->handler_data) != WK_CONTINUE)) {
+          (handler->null_feature(&vectorMeta, i, handler->handler_data) != WK_CONTINUE)) {
         break;
       }
 
@@ -93,7 +93,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
     }
   }
 
-  SEXP result = PROTECT(handler->vectorEnd(&vectorMeta, handler->handler_data));
+  SEXP result = PROTECT(handler->vector_end(&vectorMeta, handler->handler_data));
   UNPROTECT(1);
   return result;
 }
@@ -127,7 +127,7 @@ char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.size)));
   }
 
-  HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, handler->handler_data));
+  HANDLE_OR_RETURN(handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
 
   switch (meta.geometry_type) {
   case WK_POINT:
@@ -138,9 +138,9 @@ char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     for (uint32_t i = 0; i < meta.size; i++) {
       uint32_t nCoords;
       HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &nCoords));
-      HANDLE_OR_RETURN(handler->ringStart(&meta, nCoords, i, handler->handler_data));
+      HANDLE_OR_RETURN(handler->ring_start(&meta, nCoords, i, handler->handler_data));
       HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, nCoords));
-      HANDLE_OR_RETURN(handler->ringEnd(&meta, nCoords, i, handler->handler_data));
+      HANDLE_OR_RETURN(handler->ring_end(&meta, nCoords, i, handler->handler_data));
     }
     break;
   case WK_MULTIPOINT:
@@ -156,7 +156,7 @@ char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     return WK_ABORT_FEATURE;
   }
 
-  return handler->geometryEnd(&meta, WK_PART_ID_NONE, handler->handler_data);
+  return handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data);
 }
 
 inline char wkb_read_endian(const wk_handler_t* handler, WKBBuffer_t* buffer) {

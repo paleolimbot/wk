@@ -442,7 +442,7 @@ public:
     HANDLE_OR_RETURN(this->handler.featureStart(meta, feat_id));
 
     if (item == NA_STRING) {
-      HANDLE_OR_RETURN(this->handler.nullFeature(meta, feat_id));
+      HANDLE_OR_RETURN(this->handler.null_feature(meta, feat_id));
     } else {
       WKTV1String s(CHAR(item));
       HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
@@ -457,7 +457,7 @@ protected:
   char readGeometryWithType(WKTV1String& s, uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
     char result;
-    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, part_id));
+    HANDLE_OR_RETURN(this->handler.geometry_start(&meta, part_id));
 
     switch (meta.geometry_type) {
 
@@ -493,7 +493,7 @@ protected:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    return this->handler.geometryEnd(&meta, part_id);
+    return this->handler.geometry_end(&meta, part_id);
   }
 
   char readPoint(WKTV1String& s, const wk_meta_t* meta) {
@@ -527,14 +527,14 @@ protected:
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
 
         part_id++;
       } while (s.assertOneOf(",)") != ')');
@@ -542,9 +542,9 @@ protected:
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
         HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
-        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
         part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -563,9 +563,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
 
       part_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -584,9 +584,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -618,9 +618,9 @@ protected:
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler.ring_start(meta, WK_SIZE_UNKNOWN, ring_id));
       HANDLE_OR_RETURN(this->readCoordinates(s, meta));
-      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler.ring_end(meta, WK_SIZE_UNKNOWN, ring_id));
       ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -707,7 +707,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   WKHandler cppHandler(handler);
   WKTStreamingHandler streamer(cppHandler);
 
-  cppHandler.vectorStart(&globalMeta);
+  cppHandler.vector_start(&globalMeta);
 
   for (R_xlen_t i = 0; i < n_features; i++) {
     try {
@@ -722,5 +722,5 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
     }
   }
 
-  return cppHandler.vectorEnd(&globalMeta);
+  return cppHandler.vector_end(&globalMeta);
 }
