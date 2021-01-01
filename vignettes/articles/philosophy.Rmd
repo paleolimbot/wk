@@ -40,7 +40,7 @@ class BBoxHandler: public WKVoidHandler {
 public:
   BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
   
-  char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId) {
+  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
     this->xmin = std::min(coord.v[0], this->xmin);
     this->ymin = std::min(coord.v[1], this->ymin);
     this->xmax = std::max(coord.v[0], this->xmax);
@@ -48,7 +48,7 @@ public:
     return WK_CONTINUE; 
   }
   
-  SEXP vectorEnd(const WKGeometryMeta_t* meta) {
+  SEXP vectorEnd(const wk_meta_t* meta) {
     writable::doubles output = {this->xmin, this->ymin, this->xmax, this->ymax};
     output.names() = {"xmin", "ymin", "xmax", "ymax"};
     return output;
@@ -134,9 +134,9 @@ typedef struct {
   double xmin, ymin, xmax, ymax;
 } BboxHandlerData_t;
 
-char bbox_handler_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, 
-                        uint32_t nCoords, uint32_t coordId, void* userData) {
-  BboxHandlerData_t* data = (BboxHandlerData_t*) userData;
+char bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
+                        uint32_t nCoords, uint32_t coordId, void* handler_data) {
+  BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
   data->xmin = MIN(coord.v[0], data->xmin);
   data->ymin = MIN(coord.v[1], data->ymin);
   data->xmax = MAX(coord.v[0], data->xmax);
@@ -144,8 +144,8 @@ char bbox_handler_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord,
   return WK_CONTINUE;
 }
 
-SEXP bbox_handler_vector_end(const WKGeometryMeta_t* meta, void* userData) {
-  BboxHandlerData_t* data = (BboxHandlerData_t*) userData;
+SEXP bbox_handler_vector_end(const wk_meta_t* meta, void* handler_data) {
+  BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
   
   const char *names[] = {"xmin", "ymin", "xmax", "ymax", ""};
   SEXP output = PROTECT(Rf_mkNamed(REALSXP, names));
@@ -158,8 +158,8 @@ SEXP bbox_handler_vector_end(const WKGeometryMeta_t* meta, void* userData) {
   return output;
 }
 
-void bbox_handler_finalize(void* userData) {
-    BboxHandlerData_t* data = (BboxHandlerData_t*) userData;
+void bbox_handler_finalize(void* handler_data) {
+    BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
     free(data);
 }
 
@@ -174,7 +174,7 @@ SEXP c_bbox_handler_new() {
   data->ymin = R_PosInf;
   data->xmax = R_NegInf;
   data->ymax = R_NegInf;
-  handler->userData = data;
+  handler->handler_data = data;
   
   return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
 }

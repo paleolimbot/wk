@@ -37,51 +37,51 @@ public:
   }
 
   ~WKHandler() {
-    handler->vectorFinally(handler->userData);
+    handler->vectorFinally(handler->handler_data);
   }
 
-  char vectorStart(const WKGeometryMeta_t* meta) {
-    return cpp11::safe[handler->vectorStart](meta, handler->userData);
+  char vectorStart(const wk_meta_t* meta) {
+    return cpp11::safe[handler->vectorStart](meta, handler->handler_data);
   }
 
-  char featureStart(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[handler->featureStart](meta, nFeatures, featureId, handler->userData);
+  char featureStart(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
+    return cpp11::safe[handler->featureStart](meta, n_features, feat_id, handler->handler_data);
   }
 
-  char nullFeature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[handler->nullFeature](meta, nFeatures, featureId, handler->userData);
+  char nullFeature(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
+    return cpp11::safe[handler->nullFeature](meta, n_features, feat_id, handler->handler_data);
   }
 
-  char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
-    return cpp11::safe[handler->geometryStart](meta, nParts, partId, handler->userData);
+  char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
+    return cpp11::safe[handler->geometryStart](meta, nParts, partId, handler->handler_data);
   }
 
-  char ringStart(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
-    return cpp11::safe[handler->ringStart](meta, size, nRings, ringId, handler->userData);
+  char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+    return cpp11::safe[handler->ringStart](meta, size, nRings, ringId, handler->handler_data);
   }
 
-  char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId) {
-    return cpp11::safe[handler->coord](meta, coord, nCoords, coordId, handler->userData);
+  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
+    return cpp11::safe[handler->coord](meta, coord, nCoords, coordId, handler->handler_data);
   }
 
-  char ringEnd(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
-    return cpp11::safe[handler->ringEnd](meta, size, nRings, ringId, handler->userData);
+  char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+    return cpp11::safe[handler->ringEnd](meta, size, nRings, ringId, handler->handler_data);
   }
 
-  char geometryEnd(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
-    return cpp11::safe[handler->geometryEnd](meta, nParts, partId, handler->userData);
+  char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
+    return cpp11::safe[handler->geometryEnd](meta, nParts, partId, handler->handler_data);
   }
 
-  char featureEnd(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    return cpp11::safe[handler->featureEnd](meta, nFeatures, featureId, handler->userData);
+  char featureEnd(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
+    return cpp11::safe[handler->featureEnd](meta, n_features, feat_id, handler->handler_data);
   }
 
-  SEXP vectorEnd(const WKGeometryMeta_t* meta) {
-    return cpp11::safe[handler->vectorEnd](meta, handler->userData);
+  SEXP vectorEnd(const wk_meta_t* meta) {
+    return cpp11::safe[handler->vectorEnd](meta, handler->handler_data);
   }
 
-  char error(R_xlen_t featureId, int code, const char* message) {
-    return cpp11::safe[handler->error](featureId, code, message, handler->userData);
+  char error(R_xlen_t feat_id, int code, const char* message) {
+    return cpp11::safe[handler->error](feat_id, code, message, handler->handler_data);
   }
 
 private:
@@ -103,11 +103,11 @@ public:
 
 class WKVoidHandler {
 public:
-  R_xlen_t lastFeatureId;
+  R_xlen_t lastfeat_id;
   int lastErrorCode;
   std::string lastErrorMessage;
 
-  WKVoidHandler(): lastFeatureId(-1), lastErrorCode(WK_NO_ERROR_CODE) {}
+  WKVoidHandler(): lastfeat_id(-1), lastErrorCode(WK_NO_ERROR_CODE) {}
 
   virtual ~WKVoidHandler() {}
 
@@ -120,43 +120,43 @@ public:
     return this->lastErrorCode != WK_NO_ERROR_CODE;
   }
 
-  virtual char vectorStart(const WKGeometryMeta_t* meta) {
+  virtual char vectorStart(const wk_meta_t* meta) {
     return WK_CONTINUE;
   }
 
-  virtual char featureStart(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
+  virtual char featureStart(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual char nullFeature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
+  virtual char nullFeature(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
+  virtual char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
     return WK_CONTINUE;
   }
 
-  virtual char ringStart(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  virtual char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     return WK_CONTINUE;
   }
 
-  virtual char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId) {
+  virtual char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
     return WK_CONTINUE;
   }
 
-  virtual char ringEnd(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  virtual char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     return WK_CONTINUE;
   }
 
-  virtual char geometryEnd(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
+  virtual char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
     return WK_CONTINUE;
   }
 
-  virtual char featureEnd(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
+  virtual char featureEnd(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual SEXP vectorEnd(const WKGeometryMeta_t* meta) {
+  virtual SEXP vectorEnd(const wk_meta_t* meta) {
     return R_NilValue;
   }
 
@@ -164,7 +164,7 @@ public:
      
   }
 
-  virtual char error(R_xlen_t featureId, int code, const char* message) noexcept {
+  virtual char error(R_xlen_t feat_id, int code, const char* message) noexcept {
     this->setError(code, message);
     return WK_ABORT;
   }
@@ -179,9 +179,9 @@ template <class HandlerType>
 class WKHandlerFactory {
 public:
 
-  static WKHandler_t* create(HandlerType* userData) {
+  static WKHandler_t* create(HandlerType* handler_data) {
     WKHandler_t* handler = wk_handler_create();
-    handler->userData = userData;
+    handler->handler_data = handler_data;
 
     handler->vectorStart = &vectorStart;
     handler->vectorEnd = &vectorEnd;
@@ -206,148 +206,148 @@ public:
     return handler;
   }
 
-  static SEXP create_xptr(HandlerType* userData) {
-    WKHandler_t* handler = create(userData);
+  static SEXP create_xptr(HandlerType* handler_data) {
+    WKHandler_t* handler = create(handler_data);
     return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
   }
 
 private:
 
-  static void finalizer(void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
-    if (userData != NULL) {
-      delete userData;
+  static void finalizer(void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
+    if (handler_data != NULL) {
+      delete handler_data;
     }
   }
 
-  static char vectorStart(const WKGeometryMeta_t* meta, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char vectorStart(const wk_meta_t* meta, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->vectorStart(meta);
+      return handler_data->vectorStart(meta);
     } catch (WKHandlerException& e) {
-      return userData->error(-1, e.code, e.what());
+      return handler_data->error(-1, e.code, e.what());
     } catch (std::exception& e) {
       return WK_ABORT;
     }
   }
 
-  static char featureStart(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, 
-                           void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
-    userData->lastFeatureId = featureId;
+  static char featureStart(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, 
+                           void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
+    handler_data->lastfeat_id = feat_id;
     try {
-      return userData->featureStart(meta, nFeatures, featureId);
+      return handler_data->featureStart(meta, n_features, feat_id);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char nullFeature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char nullFeature(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->nullFeature(meta, nFeatures, featureId);
+      return handler_data->nullFeature(meta, n_features, feat_id);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->geometryStart(meta, nParts, partId);
+      return handler_data->geometryStart(meta, nParts, partId);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char ringStart(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, 
-                        void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, 
+                        void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->ringStart(meta, size, nRings, ringId);
+      return handler_data->ringStart(meta, size, nRings, ringId);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
-                    void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+                    void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->coord(meta, coord, nCoords, coordId);
+      return handler_data->coord(meta, coord, nCoords, coordId);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char ringEnd(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, 
-                      void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, 
+                      void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->ringEnd(meta, size, nRings, ringId);
+      return handler_data->ringEnd(meta, size, nRings, ringId);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char geometryEnd(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->geometryEnd(meta, nParts, partId);
+      return handler_data->geometryEnd(meta, nParts, partId);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static char featureEnd(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
+  static char featureEnd(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
     try {
-      return userData->featureEnd(meta, nFeatures, featureId);
+      return handler_data->featureEnd(meta, n_features, feat_id);
     } catch (WKHandlerException& e) {
-      userData->setError(e.code, e.what());
+      handler_data->setError(e.code, e.what());
     } catch (std::exception& e) {
-      userData->setError(WK_DEFAULT_ERROR_CODE, e.what());
+      handler_data->setError(WK_DEFAULT_ERROR_CODE, e.what());
     }
 
     return WK_ABORT;
   }
 
-  static SEXP vectorEnd(const WKGeometryMeta_t* meta, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
-    if (userData->hasError()) {
-      return wk_error_sentinel(userData->lastErrorCode, userData->lastErrorMessage.c_str());
+  static SEXP vectorEnd(const wk_meta_t* meta, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
+    if (handler_data->hasError()) {
+      return wk_error_sentinel(handler_data->lastErrorCode, handler_data->lastErrorMessage.c_str());
     }
 
     try {
-      return userData->vectorEnd(meta);
+      return handler_data->vectorEnd(meta);
     } catch (WKHandlerException& e) {
       return wk_error_sentinel(e.code, e.what());
     } catch (std::exception& e) {
@@ -355,14 +355,14 @@ private:
     }
   }
 
-  static void vectorFinally(void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
-    userData->vectorFinally();
+  static void vectorFinally(void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
+    handler_data->vectorFinally();
   }
 
-  static char error(R_xlen_t featureId, int code, const char* message, void* userDataPtr) noexcept {
-    HandlerType* userData = (HandlerType*) userDataPtr;
-    return userData->error(featureId, code, message);
+  static char error(R_xlen_t feat_id, int code, const char* message, void* handler_dataPtr) noexcept {
+    HandlerType* handler_data = (HandlerType*) handler_dataPtr;
+    return handler_data->error(feat_id, code, message);
   }
 };
 

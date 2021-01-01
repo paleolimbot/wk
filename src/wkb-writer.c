@@ -22,7 +22,7 @@ unsigned char wkb_writer_platform_endian() {
     return (char) *cp;
 }
 
-uint32_t wkb_writer_encode_type(const WKGeometryMeta_t* meta) {
+uint32_t wkb_writer_encode_type(const wk_meta_t* meta) {
     uint32_t out = meta->geometryType;
     if (meta->flags & WK_FLAG_HAS_Z) out |= EWKB_Z_BIT;
     if (meta->flags & WK_FLAG_HAS_M) out |= EWKB_M_BIT;
@@ -90,21 +90,21 @@ void wkb_write_doubles(WKBWriteBuffer_t* writeBuffer, const double* value, uint3
     writeBuffer->offset += sizeof(double) * nValues;
 }
 
-char wkb_writer_vector_start(const WKGeometryMeta_t* meta, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_vector_start(const wk_meta_t* meta, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     writeBuffer->result = Rf_allocVector(VECSXP, meta->size);
     R_PreserveObject(writeBuffer->result);
     return WK_CONTINUE;
 }
 
-char wkb_writer_feature_start(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_feature_start(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     writeBuffer->offset = 0;
     return WK_CONTINUE;
 }
 
-char wkb_writer_geometry_start(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     wkb_write_uchar(writeBuffer, writeBuffer->endian);
     wkb_write_uint(writeBuffer, wkb_writer_encode_type(meta));
     if (meta->geometryType != WK_POINT) {
@@ -113,15 +113,15 @@ char wkb_writer_geometry_start(const WKGeometryMeta_t* meta, uint32_t nParts, ui
     return WK_CONTINUE;
 }
 
-char wkb_writer_ring_start(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
-  WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* handler_data) {
+  WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
   wkb_write_uint(writeBuffer, size);
   return WK_CONTINUE;
 }
 
-char wkb_writer_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
-                      void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+                      void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
@@ -129,35 +129,35 @@ char wkb_writer_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint3
     return WK_CONTINUE;
 }
 
-char wkb_writer_feature_null(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
-    SET_VECTOR_ELT(writeBuffer->result, featureId, R_NilValue);
+char wkb_writer_feature_null(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
+    SET_VECTOR_ELT(writeBuffer->result, feat_id, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 
-char wkb_writer_feature_end(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+char wkb_writer_feature_end(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     SEXP item = PROTECT(Rf_allocVector(RAWSXP, writeBuffer->offset));
     memcpy(RAW(item), writeBuffer->buffer, writeBuffer->offset);
-    SET_VECTOR_ELT(writeBuffer->result, featureId, item);
+    SET_VECTOR_ELT(writeBuffer->result, feat_id, item);
     UNPROTECT(1);
     return WK_CONTINUE;
 }
 
-SEXP wkb_writer_vector_end(const WKGeometryMeta_t* meta, void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+SEXP wkb_writer_vector_end(const wk_meta_t* meta, void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     return writeBuffer->result;
 }
 
-void wkb_writer_vector_finally(void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+void wkb_writer_vector_finally(void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     if (writeBuffer->result != R_NilValue) {
         R_ReleaseObject(writeBuffer->result);
     }
 }
 
-void wkb_writer_finalize(void* userData) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
+void wkb_writer_finalize(void* handler_data) {
+    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
     if (writeBuffer != NULL) {
         free(writeBuffer->buffer);
         free(writeBuffer);
@@ -178,7 +178,7 @@ SEXP wk_c_wkb_writer_new() {
     handler->vectorFinally = &wkb_writer_vector_finally;
     handler->finalizer = &wkb_writer_finalize;
 
-    handler->userData = wkb_write_buffer_new(1024);
+    handler->handler_data = wkb_write_buffer_new(1024);
     SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
     return xptr;
 }

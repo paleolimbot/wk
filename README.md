@@ -135,12 +135,12 @@ using namespace Rcpp;
 class CustomHandler: public WKGeometryHandler {
 public:
   
-  void nextFeatureStart(size_t featureId) {
-    Rcout << "Do something before feature " << featureId << "\n";
+  void nextFeatureStart(size_t feat_id) {
+    Rcout << "Do something before feature " << feat_id << "\n";
   }
   
-  void nextFeatureEnd(size_t featureId) {
-    Rcout << "Do something after feature " << featureId << "\n";
+  void nextFeatureEnd(size_t feat_id) {
+    Rcout << "Do something after feature " << feat_id << "\n";
   }
 };
 

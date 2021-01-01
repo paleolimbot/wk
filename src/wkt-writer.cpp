@@ -9,8 +9,8 @@ class WKTWriterHandler: public WKVoidHandler {
 public:
   cpp11::writable::strings result;
   std::stringstream out;
-  WKGeometryMeta_t parentMeta;
-  std::vector<const WKGeometryMeta_t*> stack;
+  wk_meta_t parentMeta;
+  std::vector<const wk_meta_t*> stack;
 
   WKTWriterHandler(int precision = 16, bool trim = true) {
     this->out.imbue(std::locale::classic());
@@ -27,23 +27,23 @@ public:
       (this->stack[this->stack.size() - 1]->geometryType == WK_GEOMETRYCOLLECTION);
   }
 
-  char vectorStart(const WKGeometryMeta_t* meta) {
+  char vectorStart(const wk_meta_t* meta) {
     result = cpp11::writable::strings(meta->size);
     return WK_CONTINUE;
   }
 
-  char featureStart(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
+  char featureStart(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
   }
 
-  char nullFeature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    result[featureId] = NA_STRING;
+  char nullFeature(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
+    result[feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
 
-  char geometryStart(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
+  char geometryStart(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
     if ((partId != 0) && (this->stack.size() > 0)) {
       out << ", ";
     }
@@ -101,12 +101,12 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringStart(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  char ringStart(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     out << "(";
     return WK_CONTINUE;
   }
 
-  char coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint32_t nCoords, uint32_t coordId) {
+  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coordId) {
     if (coordId > 0) {
       out << ", ";
     }
@@ -121,12 +121,12 @@ public:
     return WK_CONTINUE;
   }
 
-  char ringEnd(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
+  char ringEnd(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId) {
     out << ")";
     return WK_CONTINUE;
   }
 
-  char geometryEnd(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId) {
+  char geometryEnd(const wk_meta_t* meta, uint32_t nParts, uint32_t partId) {
     this->stack.pop_back();
 
     if (meta->size != 0) {
@@ -136,16 +136,16 @@ public:
     return WK_CONTINUE;
   }
 
-  char featureEnd(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId) {
-    result[featureId] = this->out.str();
+  char featureEnd(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id) {
+    result[feat_id] = this->out.str();
     return WK_CONTINUE;
   }
 
-  SEXP vectorEnd(const WKGeometryMeta_t* meta) {
+  SEXP vectorEnd(const wk_meta_t* meta) {
     return this->result;
   }
 
-  void nextFeatureStart(size_t featureId) {
+  void nextFeatureStart(size_t feat_id) {
     this->stack.clear();
   }
 };

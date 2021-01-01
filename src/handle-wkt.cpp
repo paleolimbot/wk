@@ -346,8 +346,8 @@ class WKTV1String: public WKV1ParseableString {
 public:
   WKTV1String(const char* str): WKV1ParseableString(str, " \r\n\t", " \r\n\t,();=") {}
 
-  WKGeometryMeta_t assertGeometryMeta() {
-    WKGeometryMeta_t meta;
+  wk_meta_t assertGeometryMeta() {
+    wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
 
     std::string geometryType = this->assertWord();
@@ -437,25 +437,25 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  char readFeature(WKGeometryMeta_t* meta, SEXP item, R_xlen_t nFeatures, R_xlen_t featureId) {
+  char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t n_features, R_xlen_t feat_id) {
     char result;
-    HANDLE_OR_RETURN(this->handler.featureStart(meta, nFeatures, featureId));
+    HANDLE_OR_RETURN(this->handler.featureStart(meta, n_features, feat_id));
 
     if (item == NA_STRING) {
-      HANDLE_OR_RETURN(this->handler.nullFeature(meta, nFeatures, featureId));
+      HANDLE_OR_RETURN(this->handler.nullFeature(meta, n_features, feat_id));
     } else {
       WKTV1String s(CHAR(item));
       HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
       s.assertFinished();
     }
 
-    return this->handler.featureEnd(meta, nFeatures, featureId);
+    return this->handler.featureEnd(meta, n_features, feat_id);
   }
 
 protected:
 
   char readGeometryWithType(WKTV1String& s, uint32_t partId) {
-    WKGeometryMeta_t meta = s.assertGeometryMeta();
+    wk_meta_t meta = s.assertGeometryMeta();
     char result;
     HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, partId));
 
@@ -496,7 +496,7 @@ protected:
     return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, partId);
   }
 
-  char readPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
       char result;
       HANDLE_OR_RETURN(this->readPointCoordinate(s, meta));
@@ -506,20 +506,20 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readLineString(WKTV1String& s, const wk_meta_t* meta) {
     return this->readCoordinates(s, meta);
   }
 
-  char readPolygon(WKTV1String& s, const WKGeometryMeta_t* meta)  {
+  char readPolygon(WKTV1String& s, const wk_meta_t* meta)  {
     return this->readLinearRings(s, meta);
   }
 
-  char readMultiPoint(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readMultiPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
+    wk_meta_t childMeta;
     uint32_t partId = 0;
     char result;
 
@@ -552,12 +552,12 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readMultiLineString(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readMultiLineString(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
+    wk_meta_t childMeta;
     uint32_t partId = 0;
     char result;
 
@@ -573,12 +573,12 @@ protected:
     return WK_CONTINUE;
   }
 
-  uint32_t readMultiPolygon(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  uint32_t readMultiPolygon(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
-    WKGeometryMeta_t childMeta;
+    wk_meta_t childMeta;
     uint32_t partId = 0;
     char result;
 
@@ -593,7 +593,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readGeometryCollection(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  char readGeometryCollection(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -609,7 +609,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  uint32_t readLinearRings(WKTV1String& s, const WKGeometryMeta_t* meta) {
+  uint32_t readLinearRings(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -632,8 +632,8 @@ protected:
   // writers are unlikely to expect a point geometry with many coordinates).
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
-  char readPointCoordinate(WKTV1String& s, const WKGeometryMeta_t* meta) {
-    WKCoord_t coord;
+  char readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
+    wk_coord_t coord;
     char result;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
@@ -644,8 +644,8 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
-    WKCoord_t coord;
+  char readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
+    wk_coord_t coord;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
@@ -667,7 +667,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  void readCoordinate(WKTV1String& s, WKCoord_t* coord, int coordSize) {
+  void readCoordinate(WKTV1String& s, wk_coord_t* coord, int coordSize) {
     coord->v[0] = s.assertNumber();
     for (size_t i = 1; i < coordSize; i++) {
       s.assertWhitespace();
@@ -675,8 +675,8 @@ protected:
     }
   }
 
-  WKGeometryMeta_t childMeta(WKTV1String& s, const WKGeometryMeta_t* parent, int geometryType) {
-    WKGeometryMeta_t childMeta;
+  wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometryType) {
+    wk_meta_t childMeta;
     WK_META_RESET(childMeta, geometryType);
     childMeta.srid = parent->srid;
 
@@ -697,10 +697,10 @@ private:
 
 [[cpp11::register]]
 SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
-  R_xlen_t nFeatures = Rf_xlength(wkt);
-  WKGeometryMeta_t globalMeta;
+  R_xlen_t n_features = Rf_xlength(wkt);
+  wk_meta_t globalMeta;
   WK_META_RESET(globalMeta, WK_GEOMETRY);
-  globalMeta.size = nFeatures;
+  globalMeta.size = n_features;
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
@@ -709,9 +709,9 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
 
   cppHandler.vectorStart(&globalMeta);
 
-  for (R_xlen_t i = 0; i < nFeatures; i++) {
+  for (R_xlen_t i = 0; i < n_features; i++) {
     try {
-      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), nFeatures, i);
+      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), n_features, i);
       if (result == WK_ABORT) {
         break;
       }

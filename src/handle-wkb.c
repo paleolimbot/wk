@@ -14,7 +14,7 @@
   if (result != WK_CONTINUE) return result
 
 typedef struct {
-  R_xlen_t featureId;
+  R_xlen_t feat_id;
   unsigned char* buffer;
   size_t size;
   size_t offset;
@@ -36,7 +36,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t
 
 char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer);
 char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t* value);
-char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer, const WKGeometryMeta_t* meta,
+char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer, const wk_meta_t* meta,
                           uint32_t nCoords);
 char wkb_check_buffer(const WKHandler_t* handler, WKBBuffer_t* buffer, size_t bytes);
 unsigned char wkb_platform_endian();
@@ -47,30 +47,30 @@ SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
 }
 
 SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
-  R_xlen_t nFeatures = Rf_xlength(data);
+  R_xlen_t n_features = Rf_xlength(data);
 
-  WKGeometryMeta_t vectorMeta;
+  wk_meta_t vectorMeta;
   WK_META_RESET(vectorMeta, WK_GEOMETRY);
-  vectorMeta.size = nFeatures;
+  vectorMeta.size = n_features;
   vectorMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
-  if (handler->vectorStart(&vectorMeta, handler->userData) == WK_CONTINUE) {
+  if (handler->vectorStart(&vectorMeta, handler->handler_data) == WK_CONTINUE) {
     SEXP item;
     WKBBuffer_t buffer;
 
-    for (R_xlen_t i = 0; i < nFeatures; i++) {
+    for (R_xlen_t i = 0; i < n_features; i++) {
       item = VECTOR_ELT(data, i);
 
-      if (handler->featureStart(&vectorMeta, nFeatures, i, handler->userData)  != WK_CONTINUE) {
+      if (handler->featureStart(&vectorMeta, n_features, i, handler->handler_data)  != WK_CONTINUE) {
         break;
       }
 
       if ((item == R_NilValue) &&
-          (handler->nullFeature(&vectorMeta, nFeatures, i, handler->userData) != WK_CONTINUE)) {
+          (handler->nullFeature(&vectorMeta, n_features, i, handler->handler_data) != WK_CONTINUE)) {
         break;
       }
 
-      buffer.featureId = i;
+      buffer.feat_id = i;
       buffer.buffer = RAW(item);
       buffer.size = Rf_xlength(item);
       buffer.offset = 0;
@@ -80,20 +80,20 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
       char result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE, WK_PART_ID_NONE);
 
       if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
-        result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->userData);
+        result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->handler_data);
       }
 
       if (result == WK_ABORT) {
         break;
       }
 
-      if (handler->featureEnd(&vectorMeta, nFeatures, i, handler->userData) == WK_ABORT) {
+      if (handler->featureEnd(&vectorMeta, n_features, i, handler->handler_data) == WK_ABORT) {
         break;
       }
     }
   }
 
-  SEXP result = PROTECT(handler->vectorEnd(&vectorMeta, handler->userData));
+  SEXP result = PROTECT(handler->vectorEnd(&vectorMeta, handler->handler_data));
   UNPROTECT(1);
   return result;
 }
@@ -106,7 +106,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   uint32_t geometryType;
   HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometryType));
 
-  WKGeometryMeta_t meta;
+  wk_meta_t meta;
   WK_META_RESET(meta, geometryType & 0x000000ff);
 
   if ((geometryType & EWKB_Z_BIT) != 0) {
@@ -127,7 +127,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.size)));
   }
 
-  HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData));
+  HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->handler_data));
 
   switch (meta.geometryType) {
   case WK_POINT:
@@ -138,9 +138,9 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
     for (uint32_t i = 0; i < meta.size; i++) {
       uint32_t nCoords;
       HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &nCoords));
-      HANDLE_OR_RETURN(handler->ringStart(&meta, nCoords, meta.size, i, handler->userData));
+      HANDLE_OR_RETURN(handler->ringStart(&meta, nCoords, meta.size, i, handler->handler_data));
       HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, nCoords));
-      HANDLE_OR_RETURN(handler->ringEnd(&meta, nCoords, meta.size, i, handler->userData));
+      HANDLE_OR_RETURN(handler->ringEnd(&meta, nCoords, meta.size, i, handler->handler_data));
     }
     break;
   case WK_MULTIPOINT:
@@ -156,7 +156,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
     return WK_ABORT_FEATURE;
   }
 
-  return handler->geometryEnd(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->userData);
+  return handler->geometryEnd(&meta, WK_PART_ID_NONE, WK_PART_ID_NONE, handler->handler_data);
 }
 
 inline char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer) {
@@ -188,7 +188,7 @@ inline char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint3
 }
 
 inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer,
-                                 const WKGeometryMeta_t* meta, uint32_t nCoords) {
+                                 const wk_meta_t* meta, uint32_t nCoords) {
   int nDim = 2 + ((meta->flags & WK_FLAG_HAS_Z )!= 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
   size_t coordSize = nDim * sizeof(double);
 
@@ -196,7 +196,7 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
     return WK_ABORT_FEATURE;
   }
 
-  WKCoord_t coord;
+  wk_coord_t coord;
   char result;
 
   if (buffer->swapEndian) {
@@ -206,13 +206,13 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
         buffer->offset += sizeof(double);
       }
 
-      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->userData));
+      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->handler_data));
     }
   } else {
     for (uint32_t i = 0; i < nCoords; i++) {
       memcpy(&coord, &(buffer->buffer[buffer->offset]), coordSize);
       buffer->offset += coordSize;
-      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->userData));
+      HANDLE_OR_RETURN(handler->coord(meta, coord, nCoords, i, handler->handler_data));
     }
   }
 

@@ -2,37 +2,37 @@
 #include "wk-v1.h"
 #include <stdlib.h> // for malloc()
 
-char wk_handler_void_vector_start(const WKGeometryMeta_t* meta, void* userData) {
+char wk_handler_void_vector_start(const wk_meta_t* meta, void* handler_data) {
   return WK_CONTINUE;
 }
 
-SEXP wk_handler_void_vector_end(const WKGeometryMeta_t* meta, void* userData) {
+SEXP wk_handler_void_vector_end(const wk_meta_t* meta, void* handler_data) {
   return R_NilValue;
 }
 
-char wk_handler_void_feature(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData) {
+char wk_handler_void_feature(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_geometry(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData) {
+char wk_handler_void_geometry(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_ring(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData) {
+char wk_handler_void_ring(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
-                           void* userData) {
+char wk_handler_void_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+                           void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_error(R_xlen_t featureId, int code, const char* message, void* userData) {
+char wk_handler_void_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }
 
-void wk_handler_void_finalizer(void* userData) {
+void wk_handler_void_finalizer(void* handler_data) {
 
 }
 
@@ -40,7 +40,7 @@ WKHandler_t* wk_handler_create() {
   WKHandler_t* handler = (WKHandler_t*) malloc(sizeof(WKHandler_t));
   handler->WKAPIVersion = 1;
   handler->dirty = 0;
-  handler->userData = NULL;
+  handler->handler_data = NULL;
 
   handler->vectorStart = &wk_handler_void_vector_start;
   handler->vectorEnd = &wk_handler_void_vector_end;
@@ -66,7 +66,7 @@ WKHandler_t* wk_handler_create() {
 
 void wk_handler_destroy(WKHandler_t* handler) {
   if (handler != NULL) {
-    handler->finalizer(handler->userData);
+    handler->finalizer(handler->handler_data);
     free(handler);
   }
 }
@@ -89,7 +89,7 @@ struct wk_handler_run_data {
 
 void wk_handler_run_cleanup(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
-  runData->handler->vectorFinally(runData->handler->userData);
+  runData->handler->vectorFinally(runData->handler->handler_data);
 }
 
 SEXP wk_handler_run_internal(void* data) {

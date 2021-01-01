@@ -34,20 +34,20 @@ enum WKGeometryType {
 
 typedef struct {
   double v[4];
-} WKCoord_t;
+} wk_coord_t;
 
 typedef struct {
-  void* userData;
+  void* meta_data;
   uint32_t geometryType;
   uint32_t flags;
   uint32_t size;
   uint32_t srid;
-  WKCoord_t boundsMin;
-  WKCoord_t boundsMax;
-} WKGeometryMeta_t;
+  wk_coord_t boundsMin;
+  wk_coord_t boundsMax;
+} wk_meta_t;
 
 #define WK_META_RESET(meta, geometryType_)                     \
-  meta.userData = NULL;                                        \
+  meta.meta_data = NULL;                                        \
   meta.geometryType = geometryType_;                           \
   meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
@@ -56,21 +56,21 @@ typedef struct {
 typedef struct {
   int WKAPIVersion;
   char dirty;
-  void* userData;
-  char (*vectorStart)(const WKGeometryMeta_t* meta, void* userData);
-  char (*featureStart)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*nullFeature)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  char (*geometryStart)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
-  char (*ringStart)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
-  char (*coord)(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
-                void* userData);
-  char (*ringEnd)(const WKGeometryMeta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* userData);
-  char (*geometryEnd)(const WKGeometryMeta_t* meta, uint32_t nParts, uint32_t partId, void* userData);
-  char (*featureEnd)(const WKGeometryMeta_t* meta, R_xlen_t nFeatures, R_xlen_t featureId, void* userData);
-  SEXP (*vectorEnd)(const WKGeometryMeta_t* meta, void* userData);
-  char (*error)(R_xlen_t featureId, int code, const char* message, void* userData);
-  void (*vectorFinally)(void* userData);
-  void (*finalizer)(void* userData);
+  void* handler_data;
+  char (*vectorStart)(const wk_meta_t* meta, void* handler_data);
+  char (*featureStart)(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data);
+  char (*nullFeature)(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data);
+  char (*geometryStart)(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_data);
+  char (*ringStart)(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* handler_data);
+  char (*coord)(const wk_meta_t* meta, const wk_coord_t coord, uint32_t nCoords, uint32_t coordId,
+                void* handler_data);
+  char (*ringEnd)(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ringId, void* handler_data);
+  char (*geometryEnd)(const wk_meta_t* meta, uint32_t nParts, uint32_t partId, void* handler_data);
+  char (*featureEnd)(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id, void* handler_data);
+  SEXP (*vectorEnd)(const wk_meta_t* meta, void* handler_data);
+  char (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
+  void (*vectorFinally)(void* handler_data);
+  void (*finalizer)(void* handler_data);
 } WKHandler_t;
 
 #ifdef __cplusplus
