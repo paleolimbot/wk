@@ -24,7 +24,7 @@ public:
 
   bool isNestingCollection() {
     return this->stack.size() > 0 && 
-      (this->stack[this->stack.size() - 1]->geometryType == WK_GEOMETRYCOLLECTION);
+      (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
   char vectorStart(const wk_meta_t* meta) {
@@ -53,7 +53,7 @@ public:
     }
 
     if ((this->stack.size() == 0) || this->isNestingCollection()) {
-        switch (meta->geometryType) {
+        switch (meta->geometry_type) {
         case WK_POINT:
             out << "POINT ";
             break;
@@ -78,7 +78,7 @@ public:
         
         default:
             std::stringstream err;
-            err << "Can't write geometry type '" << meta->geometryType << "' as WKT";
+            err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
             throw WKHandlerException(err.str().c_str());
         }
 

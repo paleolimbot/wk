@@ -103,25 +103,25 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   char result;
   HANDLE_OR_RETURN(wkb_read_endian(handler, buffer));
 
-  uint32_t geometryType;
-  HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometryType));
+  uint32_t geometry_type;
+  HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometry_type));
 
   wk_meta_t meta;
-  WK_META_RESET(meta, geometryType & 0x000000ff);
+  WK_META_RESET(meta, geometry_type & 0x000000ff);
 
-  if ((geometryType & EWKB_Z_BIT) != 0) {
+  if ((geometry_type & EWKB_Z_BIT) != 0) {
     meta.flags |= WK_FLAG_HAS_Z;
   }
 
-  if ((geometryType & EWKB_M_BIT) != 0) {
+  if ((geometry_type & EWKB_M_BIT) != 0) {
     meta.flags |= WK_FLAG_HAS_M;
   }
 
-  if ((geometryType & EWKB_SRID_BIT) != 0) {
+  if ((geometry_type & EWKB_SRID_BIT) != 0) {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
   }
 
-  if (meta.geometryType == WK_POINT) {
+  if (meta.geometry_type == WK_POINT) {
     meta.size = 1;
   } else {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.size)));
@@ -129,7 +129,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
 
   HANDLE_OR_RETURN(handler->geometryStart(&meta, WK_PART_ID_NONE, handler->handler_data));
 
-  switch (meta.geometryType) {
+  switch (meta.geometry_type) {
   case WK_POINT:
   case WK_LINESTRING:
     HANDLE_OR_RETURN(wkb_read_coordinates(handler, buffer, &meta, meta.size));
@@ -152,7 +152,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
     }
     break;
   default:
-    wkb_set_errorf(buffer, "Unrecognized geometry type code: %d", meta.geometryType);
+    wkb_set_errorf(buffer, "Unrecognized geometry type code: %d", meta.geometry_type);
     return WK_ABORT_FEATURE;
   }
 

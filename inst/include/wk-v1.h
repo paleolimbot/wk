@@ -21,7 +21,7 @@
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_SRID_NONE UINT32_MAX
 
-enum WKGeometryType {
+enum wk_geometery_type_enum {
   WK_GEOMETRY = 0,
   WK_POINT = 1,
   WK_LINESTRING = 2,
@@ -38,7 +38,7 @@ typedef struct {
 
 typedef struct {
   void* meta_data;
-  uint32_t geometryType;
+  uint32_t geometry_type;
   uint32_t flags;
   uint32_t size;
   uint32_t srid;
@@ -46,9 +46,9 @@ typedef struct {
   wk_coord_t boundsMax;
 } wk_meta_t;
 
-#define WK_META_RESET(meta, geometryType_)                     \
+#define WK_META_RESET(meta, geometry_type_)                    \
   meta.meta_data = NULL;                                       \
-  meta.geometryType = geometryType_;                           \
+  meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
   meta.size = WK_SIZE_UNKNOWN

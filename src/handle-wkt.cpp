@@ -350,13 +350,13 @@ public:
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
 
-    std::string geometryType = this->assertWord();
+    std::string geometry_type = this->assertWord();
 
-    if (geometryType == "SRID") {
+    if (geometry_type == "SRID") {
       this->assert_('=');
       meta.srid = this->assertInteger();
       this->assert_(';');
-      geometryType = this->assertWord();
+      geometry_type = this->assertWord();
     }
 
     if (this->is('Z')) {
@@ -373,27 +373,27 @@ public:
       meta.size = 0;
     }
 
-    meta.geometryType = this->geometryTypeFromString(geometryType);
+    meta.geometry_type = this->geometry_typeFromString(geometry_type);
     return meta;
   }
 
-  int geometryTypeFromString(std::string geometryType) {
-    if (geometryType == "POINT") {
+  int geometry_typeFromString(std::string geometry_type) {
+    if (geometry_type == "POINT") {
       return WK_POINT;
-    } else if(geometryType == "LINESTRING") {
+    } else if(geometry_type == "LINESTRING") {
       return WK_LINESTRING;
-    } else if(geometryType == "POLYGON") {
+    } else if(geometry_type == "POLYGON") {
       return WK_POLYGON;
-    } else if(geometryType == "MULTIPOINT") {
+    } else if(geometry_type == "MULTIPOINT") {
       return WK_MULTIPOINT;
-    } else if(geometryType == "MULTILINESTRING") {
+    } else if(geometry_type == "MULTILINESTRING") {
       return WK_MULTILINESTRING;
-    } else if(geometryType == "MULTIPOLYGON") {
+    } else if(geometry_type == "MULTIPOLYGON") {
       return WK_MULTIPOLYGON;
-    } else if(geometryType == "GEOMETRYCOLLECTION") {
+    } else if(geometry_type == "GEOMETRYCOLLECTION") {
       return WK_GEOMETRYCOLLECTION;
     } else {
-      this->errorBefore("geometry type or 'SRID='", geometryType);
+      this->errorBefore("geometry type or 'SRID='", geometry_type);
     }
   }
 
@@ -459,7 +459,7 @@ protected:
     char result;
     HANDLE_OR_RETURN(this->handler.geometryStart(&meta, part_id));
 
-    switch (meta.geometryType) {
+    switch (meta.geometry_type) {
 
     case WK_POINT:
       HANDLE_OR_RETURN(this->readPoint(s, &meta));
@@ -675,12 +675,12 @@ protected:
     }
   }
 
-  wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometryType) {
+  wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometry_type) {
     wk_meta_t childMeta;
-    WK_META_RESET(childMeta, geometryType);
+    WK_META_RESET(childMeta, geometry_type);
     childMeta.srid = parent->srid;
 
-    childMeta.geometryType = geometryType;
+    childMeta.geometry_type = geometry_type;
     if (s.isEMPTY()) {
       childMeta.size = 0;
     } else {

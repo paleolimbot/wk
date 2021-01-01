@@ -3,7 +3,7 @@
 #include <Rinternals.h>
 
 void wk_handler_debug_print_meta(const wk_meta_t* meta) {
-  switch (meta->geometryType) {
+  switch (meta->geometry_type) {
   case WK_POINT:
     Rprintf("POINT");
     break;
@@ -26,7 +26,7 @@ void wk_handler_debug_print_meta(const wk_meta_t* meta) {
     Rprintf("GEOMETRYCOLLECTION");
     break;
   default:
-    Rprintf("<Unknown type / %d>", meta->geometryType);
+    Rprintf("<Unknown type / %d>", meta->geometry_type);
     break;
   }
 
