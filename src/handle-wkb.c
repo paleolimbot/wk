@@ -106,12 +106,17 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometryType));
 
   WKGeometryMeta_t meta;
-  WK_META_RESET(meta, geometryType & 0x000000ff)
-  meta.hasZ = (geometryType & EWKB_Z_BIT) != 0;
-  meta.hasM = (geometryType & EWKB_M_BIT) != 0;
-  char hasSrid = (geometryType & EWKB_SRID_BIT) != 0;
+  WK_META_RESET(meta, geometryType & 0x000000ff);
 
-  if (hasSrid) {
+  if ((geometryType & EWKB_Z_BIT) != 0) {
+    meta.flags |= WK_FLAG_HAS_Z;
+  }
+
+  if ((geometryType & EWKB_M_BIT) != 0) {
+    meta.flags |= WK_FLAG_HAS_M;
+  }
+
+  if ((geometryType & EWKB_SRID_BIT) != 0) {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
   }
 
@@ -183,7 +188,7 @@ inline char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint3
 
 inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer,
                                  const WKGeometryMeta_t* meta, uint32_t nCoords) {
-  int nDim = 2 + (meta->hasZ != 0) + (meta->hasM != 0);
+  int nDim = 2 + ((meta->flags & WK_FLAG_HAS_Z )!= 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
   size_t coordSize = nDim * sizeof(double);
 
   if (wkb_check_buffer(handler, buffer, coordSize * nCoords) != WK_CONTINUE) {

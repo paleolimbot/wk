@@ -361,16 +361,12 @@ public:
 
     if (this->is('Z')) {
       this->assert_('Z');
-      meta.hasZ = true;
-    } else {
-      meta.hasZ = false;
+      meta.flags |= WK_FLAG_HAS_Z;
     }
 
     if (this->is('M')) {
       this->assert_('M');
-      meta.hasM = true;
-    } else {
-      meta.hasM = false;
+      meta.flags |= WK_FLAG_HAS_M;
     }
 
     if (this->isEMPTY()) {
@@ -640,8 +636,8 @@ protected:
     WKCoord_t coord;
     char result;
     int coordSize = 2;
-    if (meta->hasZ) coordSize++;
-    if (meta->hasM) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     this->readCoordinate(s, &coord, coordSize);
     HANDLE_OR_RETURN(handler.coord(meta, coord, 1, 0));
@@ -651,8 +647,8 @@ protected:
   char readCoordinates(WKTV1String& s, const WKGeometryMeta_t* meta) {
     WKCoord_t coord;
     int coordSize = 2;
-    if (meta->hasZ) coordSize++;
-    if (meta->hasM) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;

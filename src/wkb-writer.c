@@ -24,8 +24,8 @@ unsigned char wkb_writer_platform_endian() {
 
 uint32_t wkb_writer_encode_type(const WKGeometryMeta_t* meta) {
     uint32_t out = meta->geometryType;
-    if (meta->hasZ) out |= EWKB_Z_BIT;
-    if (meta->hasM) out |= EWKB_M_BIT;
+    if (meta->flags & WK_FLAG_HAS_Z) out |= EWKB_Z_BIT;
+    if (meta->flags & WK_FLAG_HAS_M) out |= EWKB_M_BIT;
     if (meta->srid != WK_SRID_NONE) out |= EWKB_SRID_BIT;
     return out;
   }
@@ -122,7 +122,10 @@ char wkb_writer_ring_start(const WKGeometryMeta_t* meta, uint32_t size, uint32_t
 char wkb_writer_coord(const WKGeometryMeta_t* meta, const WKCoord_t coord, uint32_t nCoords, uint32_t coordId,
                       void* userData) {
     WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) userData;
-    wkb_write_doubles(writeBuffer, coord.v, 2 + meta->hasZ + meta->hasM);
+    int coordSize = 2;
+    if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
+    if (meta->flags & WK_FLAG_HAS_M) coordSize++;
+    wkb_write_doubles(writeBuffer, coord.v, coordSize);
     return WK_CONTINUE;
 }
 

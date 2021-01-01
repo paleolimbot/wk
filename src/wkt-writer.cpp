@@ -82,11 +82,11 @@ public:
             throw WKHandlerException(err.str().c_str());
         }
 
-        if (meta->hasZ && meta->hasM) {
+        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
             out << "ZM ";
-        } else if (meta->hasZ) {
+        } else if (meta->flags & WK_FLAG_HAS_Z) {
             out << "Z ";
-        } else if (meta->hasM) {
+        } else if (meta->flags & WK_FLAG_HAS_M) {
             out << "M ";
         }
     }
@@ -112,9 +112,9 @@ public:
     }
 
     out << coord.v[0] << " " << coord.v[1];
-    if (meta->hasZ && meta->hasM) {
+    if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
         out << " " << coord.v[2] << " " << coord.v[3];
-    } else if (meta->hasZ || meta->hasM) {
+    } else if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M)) {
         out << " " << coord.v[2];
     }
 

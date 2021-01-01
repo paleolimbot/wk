@@ -12,6 +12,11 @@
 #define WK_DEFAULT_ERROR_CODE 0
 #define WK_NO_ERROR_CODE -1
 
+#define WK_FLAG_HAS_BOUNDS 1
+#define WK_FLAG_HAS_Z 2
+#define WK_FLAG_HAS_M 4
+#define WK_FLAG_DIMS_UNKNOWN 8
+
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_SRID_NONE UINT32_MAX
@@ -34,10 +39,9 @@ typedef struct {
 typedef struct {
   void* userData;
   uint32_t geometryType;
+  uint32_t flags;
   char hasDim;
   char hasBounds;
-  char hasZ;
-  char hasM;
   uint32_t size;
   uint32_t srid;
   WKCoord_t boundsMin;
@@ -45,12 +49,12 @@ typedef struct {
 } WKGeometryMeta_t;
 
 #define WK_META_RESET(meta, geometryType_)                     \
+  meta.userData = NULL;                                        \
   meta.geometryType = geometryType_;                           \
-  meta.hasZ = 0;                                               \
-  meta.hasM = 0;                                               \
+  meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
   meta.size = WK_SIZE_UNKNOWN;                                 \
-  meta.hasBounds = 0;
+  meta.hasBounds = 0
 
 typedef struct {
   int WKAPIVersion;

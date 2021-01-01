@@ -30,11 +30,11 @@ void wk_handler_debug_print_meta(const WKGeometryMeta_t* meta) {
     break;
   }
 
-  if (meta->hasZ || meta->hasM || (meta->srid != WK_SRID_NONE) || meta->hasBounds) {
+  if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M || (meta->srid != WK_SRID_NONE) || meta->hasBounds) {
     Rprintf(" ");
   }
-  if (meta->hasZ) Rprintf("Z");
-  if (meta->hasM) Rprintf("M");
+  if (meta->flags & WK_FLAG_HAS_Z) Rprintf("Z");
+  if (meta->flags & WK_FLAG_HAS_M) Rprintf("M");
   if (meta->srid != WK_SRID_NONE) Rprintf("S");
   if (meta->hasBounds) Rprintf("B");
 
@@ -165,8 +165,8 @@ char wk_handler_debug_coord(const WKGeometryMeta_t* meta, WKCoord_t coord, uint3
                             void* userData) {
   wk_handler_debug_print_indent(userData);
   Rprintf("coord (%d / %d) <%p> (%f %f", coordId + 1, nCoords, meta, coord.v[0], coord.v[1]);
-  if (meta->hasZ || meta->hasM) Rprintf(" %f", coord.v[2]);
-  if (meta->hasZ && meta->hasM) Rprintf(" %f", coord.v[3]);
+  if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[2]);
+  if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[3]);
   Rprintf(")\n");
   return WK_CONTINUE;
 }
