@@ -30,13 +30,14 @@ void wk_handler_debug_print_meta(const WKGeometryMeta_t* meta) {
     break;
   }
 
-  if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M || (meta->srid != WK_SRID_NONE) || meta->hasBounds) {
+  if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M) ||
+      (meta->srid != WK_SRID_NONE) || (meta->flags & WK_FLAG_HAS_BOUNDS)) {
     Rprintf(" ");
   }
   if (meta->flags & WK_FLAG_HAS_Z) Rprintf("Z");
   if (meta->flags & WK_FLAG_HAS_M) Rprintf("M");
   if (meta->srid != WK_SRID_NONE) Rprintf("S");
-  if (meta->hasBounds) Rprintf("B");
+  if (meta->flags & WK_FLAG_HAS_BOUNDS) Rprintf("B");
 
   if (meta->size != WK_SIZE_UNKNOWN) {
     if (meta->size == 0) {

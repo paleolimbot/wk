@@ -40,8 +40,6 @@ typedef struct {
   void* userData;
   uint32_t geometryType;
   uint32_t flags;
-  char hasDim;
-  char hasBounds;
   uint32_t size;
   uint32_t srid;
   WKCoord_t boundsMin;
@@ -53,8 +51,7 @@ typedef struct {
   meta.geometryType = geometryType_;                           \
   meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
-  meta.size = WK_SIZE_UNKNOWN;                                 \
-  meta.hasBounds = 0
+  meta.size = WK_SIZE_UNKNOWN
 
 typedef struct {
   int WKAPIVersion;
