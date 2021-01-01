@@ -701,6 +701,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   WKGeometryMeta_t globalMeta;
   WK_META_RESET(globalMeta, WK_GEOMETRY);
   globalMeta.size = nFeatures;
+  globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);

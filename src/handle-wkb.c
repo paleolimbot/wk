@@ -52,6 +52,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
   WKGeometryMeta_t vectorMeta;
   WK_META_RESET(vectorMeta, WK_GEOMETRY);
   vectorMeta.size = nFeatures;
+  vectorMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   if (handler->vectorStart(&vectorMeta, handler->userData) == WK_CONTINUE) {
     SEXP item;
