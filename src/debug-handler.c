@@ -169,7 +169,7 @@ void wk_handler_debug_vector_finally(void* handler_data) {
 }
 
 SEXP wk_c_handler_debug_new() {
-  WKHandler_t* handler = wk_handler_create();
+  wk_handler_t* handler = wk_handler_create();
 
   handler->vectorStart = &wk_handler_debug_vector_start;
   handler->vectorEnd = &wk_handler_debug_vector_end;

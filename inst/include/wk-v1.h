@@ -42,8 +42,8 @@ typedef struct {
   uint32_t flags;
   uint32_t size;
   uint32_t srid;
-  wk_coord_t boundsMin;
-  wk_coord_t boundsMax;
+  double bounds_min[4];
+  double bounds_max[4];
 } wk_meta_t;
 
 #define WK_META_RESET(meta, geometry_type_)                    \
@@ -54,7 +54,7 @@ typedef struct {
   meta.size = WK_SIZE_UNKNOWN
 
 typedef struct {
-  int WKAPIVersion;
+  int wk_api_version;
   char dirty;
   void* handler_data;
   char (*vectorStart)(const wk_meta_t* meta, void* handler_data);
@@ -70,17 +70,17 @@ typedef struct {
   char (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
   void (*vectorFinally)(void* handler_data);
   void (*finalizer)(void* handler_data);
-} WKHandler_t;
+} wk_handler_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // implementations in wk-v1-impl.c, which must be included exactly once in an R package
-WKHandler_t* wk_handler_create();
-SEXP wk_handler_create_xptr(WKHandler_t* handler, SEXP tag, SEXP prot);
-void wk_handler_destroy(WKHandler_t* handler);
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, WKHandler_t* handler), SEXP readData, SEXP xptr);
+wk_handler_t* wk_handler_create();
+SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
+void wk_handler_destroy(wk_handler_t* handler);
+SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr);
 SEXP wk_error_sentinel(int code, const char* message);
 
 #ifdef __cplusplus

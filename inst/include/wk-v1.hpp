@@ -28,7 +28,7 @@ public:
   // Instead, the scope of the WKHandler is used to guarantee that (1) the handler
   // is not being re-used and (2) vectorFinalize() is called and is called
   // as soon as possible.
-  WKHandler(WKHandler_t* handler): handler(handler) {
+  WKHandler(wk_handler_t* handler): handler(handler) {
     if (handler->dirty) {
       throw std::runtime_error("Can't re-use a wk_handler");
     } else {
@@ -85,7 +85,7 @@ public:
   }
 
 private:
-  WKHandler_t* handler;
+  wk_handler_t* handler;
 };
 
 
@@ -179,8 +179,8 @@ template <class HandlerType>
 class WKHandlerFactory {
 public:
 
-  static WKHandler_t* create(HandlerType* handler_data) {
-    WKHandler_t* handler = wk_handler_create();
+  static wk_handler_t* create(HandlerType* handler_data) {
+    wk_handler_t* handler = wk_handler_create();
     handler->handler_data = handler_data;
 
     handler->vectorStart = &vectorStart;
@@ -207,7 +207,7 @@ public:
   }
 
   static SEXP create_xptr(HandlerType* handler_data) {
-    WKHandler_t* handler = create(handler_data);
+    wk_handler_t* handler = create(handler_data);
     return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
   }
 

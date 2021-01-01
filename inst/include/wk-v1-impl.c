@@ -35,9 +35,9 @@ void wk_handler_void_finalizer(void* handler_data) {
 
 }
 
-WKHandler_t* wk_handler_create() {
-  WKHandler_t* handler = (WKHandler_t*) malloc(sizeof(WKHandler_t));
-  handler->WKAPIVersion = 1;
+wk_handler_t* wk_handler_create() {
+  wk_handler_t* handler = (wk_handler_t*) malloc(sizeof(wk_handler_t));
+  handler->wk_api_version = 1;
   handler->dirty = 0;
   handler->handler_data = NULL;
 
@@ -63,7 +63,7 @@ WKHandler_t* wk_handler_create() {
   return handler;
 }
 
-void wk_handler_destroy(WKHandler_t* handler) {
+void wk_handler_destroy(wk_handler_t* handler) {
   if (handler != NULL) {
     handler->finalizer(handler->handler_data);
     free(handler);
@@ -71,19 +71,19 @@ void wk_handler_destroy(WKHandler_t* handler) {
 }
 
 void wk_handler_destroy_xptr(SEXP xptr) {
-  wk_handler_destroy((WKHandler_t*) R_ExternalPtrAddr(xptr));
+  wk_handler_destroy((wk_handler_t*) R_ExternalPtrAddr(xptr));
 }
 
-SEXP wk_handler_create_xptr(WKHandler_t* handler, SEXP tag, SEXP prot) {
+SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot) {
   SEXP xptr = R_MakeExternalPtr(handler, tag, prot);
   R_RegisterCFinalizerEx(xptr, &wk_handler_destroy_xptr, FALSE);
   return xptr;
 }
 
 struct wk_handler_run_data {
-  SEXP (*readFunction)(SEXP readData, WKHandler_t* handler);
+  SEXP (*readFunction)(SEXP readData, wk_handler_t* handler);
   SEXP readData;
-  WKHandler_t* handler;
+  wk_handler_t* handler;
 };
 
 void wk_handler_run_cleanup(void* data) {
@@ -103,8 +103,8 @@ SEXP wk_handler_run_internal(void* data) {
   return runData->readFunction(runData->readData, runData->handler);
 }
 
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, WKHandler_t* handler), SEXP readData, SEXP xptr) {
-  WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
+SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr) {
+  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
   struct wk_handler_run_data runData = { readFunction, readData, handler };
   return R_ExecWithCleanup(&wk_handler_run_internal, &runData, &wk_handler_run_cleanup, &runData);
 }

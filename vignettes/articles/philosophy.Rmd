@@ -164,7 +164,7 @@ void bbox_handler_finalize(void* handler_data) {
 }
 
 SEXP c_bbox_handler_new() {
-  WKHandler_t* handler = wk_handler_create();
+  wk_handler_t* handler = wk_handler_create();
 
   handler->coord = &bbox_handler_coord;
   handler->vectorEnd = &bbox_handler_vector_end;

@@ -165,7 +165,7 @@ void wkb_writer_finalize(void* handler_data) {
 }
 
 SEXP wk_c_wkb_writer_new() {
-    WKHandler_t* handler = wk_handler_create();
+    wk_handler_t* handler = wk_handler_create();
 
     handler->vectorStart = &wkb_writer_vector_start;
     handler->featureStart = &wkb_writer_feature_start;

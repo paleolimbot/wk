@@ -31,14 +31,14 @@ void wkb_set_errorf(WKBBuffer_t* buffer, const char* errorMessage, ...) {
   va_end(args);
 }
 
-SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler);
-char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t part_id);
+SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler);
+char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer, uint32_t part_id);
 
-char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer);
-char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t* value);
-char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer, const wk_meta_t* meta,
+char wkb_read_endian(const wk_handler_t* handler, WKBBuffer_t* buffer);
+char wkb_read_uint(const wk_handler_t* handler, WKBBuffer_t* buffer, uint32_t* value);
+char wkb_read_coordinates(const wk_handler_t* handler, WKBBuffer_t* buffer, const wk_meta_t* meta,
                           uint32_t nCoords);
-char wkb_check_buffer(const WKHandler_t* handler, WKBBuffer_t* buffer, size_t bytes);
+char wkb_check_buffer(const wk_handler_t* handler, WKBBuffer_t* buffer, size_t bytes);
 unsigned char wkb_platform_endian();
 void memcpyrev(void* dst, unsigned char* src, size_t n);
 
@@ -46,7 +46,7 @@ SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
   return wk_handler_run_xptr(&wkb_read_wkb, data, handlerXptr);
 }
 
-SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
+SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
   R_xlen_t n_features = Rf_xlength(data);
 
   wk_meta_t vectorMeta;
@@ -98,7 +98,7 @@ SEXP wkb_read_wkb(SEXP data, WKHandler_t* handler) {
   return result;
 }
 
-char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
+char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
                        uint32_t part_id) {
   char result;
   HANDLE_OR_RETURN(wkb_read_endian(handler, buffer));
@@ -159,7 +159,7 @@ char wkb_read_geometry(const WKHandler_t* handler, WKBBuffer_t* buffer,
   return handler->geometryEnd(&meta, WK_PART_ID_NONE, handler->handler_data);
 }
 
-inline char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer) {
+inline char wkb_read_endian(const wk_handler_t* handler, WKBBuffer_t* buffer) {
   if (wkb_check_buffer(handler, buffer, 1) == WK_CONTINUE) {
     unsigned char value;
     memcpy(&value, &(buffer->buffer[buffer->offset]), 1);
@@ -171,7 +171,7 @@ inline char wkb_read_endian(const WKHandler_t* handler, WKBBuffer_t* buffer) {
   }
 }
 
-inline char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint32_t* value) {
+inline char wkb_read_uint(const wk_handler_t* handler, WKBBuffer_t* buffer, uint32_t* value) {
   if (wkb_check_buffer(handler, buffer, sizeof(uint32_t)) == WK_CONTINUE) {
     if (buffer->swapEndian) {
       memcpyrev(value, &(buffer->buffer[buffer->offset]), sizeof(uint32_t));
@@ -187,7 +187,7 @@ inline char wkb_read_uint(const WKHandler_t* handler, WKBBuffer_t* buffer, uint3
   }
 }
 
-inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer,
+inline char wkb_read_coordinates(const wk_handler_t* handler, WKBBuffer_t* buffer,
                                  const wk_meta_t* meta, uint32_t nCoords) {
   int nDim = 2 + ((meta->flags & WK_FLAG_HAS_Z )!= 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
   size_t coordSize = nDim * sizeof(double);
@@ -219,7 +219,7 @@ inline char wkb_read_coordinates(const WKHandler_t* handler, WKBBuffer_t* buffer
   return WK_CONTINUE;
 }
 
-inline char wkb_check_buffer(const WKHandler_t* handler, WKBBuffer_t* buffer, size_t bytes) {
+inline char wkb_check_buffer(const wk_handler_t* handler, WKBBuffer_t* buffer, size_t bytes) {
   if ((buffer->offset + bytes) <= buffer->size) {
     return WK_CONTINUE;
   } else {

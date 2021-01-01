@@ -25,7 +25,7 @@ SEXP wk_handler_validation_vector_end(const wk_meta_t* meta, void* handler_data)
 }
 
 SEXP wk_c_handler_validation_new() {
-  WKHandler_t* handler = wk_handler_create();
+  wk_handler_t* handler = wk_handler_create();
 
   handler->vectorStart = &wk_handler_validation_vector_start;
   handler->vectorEnd = &wk_handler_validation_vector_end;

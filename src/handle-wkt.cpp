@@ -703,7 +703,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   globalMeta.size = n_features;
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
-  WKHandler_t* handler = (WKHandler_t*) R_ExternalPtrAddr(xptr);
+  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
   WKHandler cppHandler(handler);
   WKTStreamingHandler streamer(cppHandler);
 
