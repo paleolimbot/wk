@@ -168,12 +168,12 @@ SEXP wk_c_wkb_writer_new() {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wkb_writer_vector_start;
-    handler->featureStart = &wkb_writer_feature_start;
+    handler->feature_start = &wkb_writer_feature_start;
     handler->geometry_start = &wkb_writer_geometry_start;
     handler->ring_start = &wkb_writer_ring_start;
     handler->coord = &wkb_writer_coord;
     handler->null_feature = &wkb_writer_feature_null;
-    handler->featureEnd = &wkb_writer_feature_end;
+    handler->feature_end = &wkb_writer_feature_end;
     handler->vector_end = &wkb_writer_vector_end;
     handler->vector_finally = &wkb_writer_vector_finally;
     handler->finalizer = &wkb_writer_finalize;

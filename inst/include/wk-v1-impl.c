@@ -44,9 +44,9 @@ wk_handler_t* wk_handler_create() {
   handler->vector_start = &wk_handler_void_vector_start;
   handler->vector_end = &wk_handler_void_vector_end;
 
-  handler->featureStart = &wk_handler_void_feature;
+  handler->feature_start = &wk_handler_void_feature;
   handler->null_feature = &wk_handler_void_feature;
-  handler->featureEnd = &wk_handler_void_feature;
+  handler->feature_end = &wk_handler_void_feature;
 
   handler->geometry_start = &wk_handler_void_geometry;
   handler->geometry_end = &wk_handler_void_geometry;

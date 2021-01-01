@@ -439,7 +439,7 @@ public:
 
   char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
     char result;
-    HANDLE_OR_RETURN(this->handler.featureStart(meta, feat_id));
+    HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
     if (item == NA_STRING) {
       HANDLE_OR_RETURN(this->handler.null_feature(meta, feat_id));
@@ -449,7 +449,7 @@ public:
       s.assertFinished();
     }
 
-    return this->handler.featureEnd(meta, feat_id);
+    return this->handler.feature_end(meta, feat_id);
   }
 
 protected:

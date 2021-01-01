@@ -32,7 +32,7 @@ public:
     return WK_CONTINUE;
   }
 
-  char featureStart(const wk_meta_t* meta, R_xlen_t feat_id) {
+  char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
@@ -136,7 +136,7 @@ public:
     return WK_CONTINUE;
   }
 
-  char featureEnd(const wk_meta_t* meta, R_xlen_t feat_id) {
+  char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
     result[feat_id] = this->out.str();
     return WK_CONTINUE;
   }
@@ -145,7 +145,7 @@ public:
     return this->result;
   }
 
-  void nextFeatureStart(size_t feat_id) {
+  void nextfeature_start(size_t feat_id) {
     this->stack.clear();
   }
 };

@@ -91,7 +91,7 @@ SEXP wk_handler_debug_vector_end(const wk_meta_t* meta, void* handler_data) {
 
 char wk_handler_debug_feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("featureStart (%d) <%p>\n", feat_id + 1, meta);
+  Rprintf("feature_start (%d) <%p>\n", feat_id + 1, meta);
   wk_handler_debug_indent(handler_data);
   return WK_CONTINUE;
 }
@@ -105,7 +105,7 @@ char wk_handler_debug_feature_null(const wk_meta_t* meta, R_xlen_t feat_id, void
 char wk_handler_debug_feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("featureEnd (%d) <%p>\n", feat_id + 1, meta);
+  Rprintf("feature_end (%d) <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
@@ -174,9 +174,9 @@ SEXP wk_c_handler_debug_new() {
   handler->vector_start = &wk_handler_debug_vector_start;
   handler->vector_end = &wk_handler_debug_vector_end;
 
-  handler->featureStart = &wk_handler_debug_feature_start;
+  handler->feature_start = &wk_handler_debug_feature_start;
   handler->null_feature = &wk_handler_debug_feature_null;
-  handler->featureEnd = &wk_handler_debug_feature_end;
+  handler->feature_end = &wk_handler_debug_feature_end;
 
   handler->geometry_start = &wk_handler_debug_geometry_start;
   handler->geometry_end = &wk_handler_debug_geometry_end;

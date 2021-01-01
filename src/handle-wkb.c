@@ -61,7 +61,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
     for (R_xlen_t i = 0; i < n_features; i++) {
       item = VECTOR_ELT(data, i);
 
-      if (handler->featureStart(&vectorMeta, i, handler->handler_data)  != WK_CONTINUE) {
+      if (handler->feature_start(&vectorMeta, i, handler->handler_data)  != WK_CONTINUE) {
         break;
       }
 
@@ -87,7 +87,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
         break;
       }
 
-      if (handler->featureEnd(&vectorMeta, i, handler->handler_data) == WK_ABORT) {
+      if (handler->feature_end(&vectorMeta, i, handler->handler_data) == WK_ABORT) {
         break;
       }
     }

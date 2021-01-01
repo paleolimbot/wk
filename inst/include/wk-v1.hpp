@@ -44,8 +44,8 @@ public:
     return cpp11::safe[handler->vector_start](meta, handler->handler_data);
   }
 
-  char featureStart(const wk_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->featureStart](meta, feat_id, handler->handler_data);
+  char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
+    return cpp11::safe[handler->feature_start](meta, feat_id, handler->handler_data);
   }
 
   char null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
@@ -72,8 +72,8 @@ public:
     return cpp11::safe[handler->geometry_end](meta, partId, handler->handler_data);
   }
 
-  char featureEnd(const wk_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->featureEnd](meta, feat_id, handler->handler_data);
+  char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
+    return cpp11::safe[handler->feature_end](meta, feat_id, handler->handler_data);
   }
 
   SEXP vector_end(const wk_meta_t* meta) {
@@ -124,7 +124,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual char featureStart(const wk_meta_t* meta, R_xlen_t feat_id) {
+  virtual char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
@@ -152,7 +152,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual char featureEnd(const wk_meta_t* meta, R_xlen_t feat_id) {
+  virtual char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
@@ -186,9 +186,9 @@ public:
     handler->vector_start = &vector_start;
     handler->vector_end = &vector_end;
 
-    handler->featureStart = &featureStart;
+    handler->feature_start = &feature_start;
     handler->null_feature = &null_feature;
-    handler->featureEnd = &featureEnd;
+    handler->feature_end = &feature_end;
 
     handler->geometry_start = &geometry_start;
     handler->geometry_end = &geometry_end;
@@ -231,11 +231,11 @@ private:
     }
   }
 
-  static char featureStart(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static char feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     cpp_handler->lastfeat_id = feat_id;
     try {
-      return cpp_handler->featureStart(meta, feat_id);
+      return cpp_handler->feature_start(meta, feat_id);
     } catch (WKHandlerException& e) {
       cpp_handler->setError(e.code, e.what());
     } catch (std::exception& e) {
@@ -323,10 +323,10 @@ private:
     return WK_ABORT;
   }
 
-  static char featureEnd(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static char feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     try {
-      return cpp_handler->featureEnd(meta, feat_id);
+      return cpp_handler->feature_end(meta, feat_id);
     } catch (WKHandlerException& e) {
       cpp_handler->setError(e.code, e.what());
     } catch (std::exception& e) {

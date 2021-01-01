@@ -132,11 +132,11 @@ Sys.setenv(
 
 typedef struct {
   double xmin, ymin, xmax, ymax;
-} BboxHandlerData_t;
+} bbox_handler_data_t;
 
 char bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
                         uint32_t coord_id, void* handler_data) {
-  BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
+  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   data->xmin = MIN(coord.v[0], data->xmin);
   data->ymin = MIN(coord.v[1], data->ymin);
   data->xmax = MAX(coord.v[0], data->xmax);
@@ -145,7 +145,7 @@ char bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord,
 }
 
 SEXP bbox_handler_vector_end(const wk_meta_t* meta, void* handler_data) {
-  BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
+  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   
   const char *names[] = {"xmin", "ymin", "xmax", "ymax", ""};
   SEXP output = PROTECT(Rf_mkNamed(REALSXP, names));
@@ -159,7 +159,7 @@ SEXP bbox_handler_vector_end(const wk_meta_t* meta, void* handler_data) {
 }
 
 void bbox_handler_finalize(void* handler_data) {
-    BboxHandlerData_t* data = (BboxHandlerData_t*) handler_data;
+    bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
     free(data);
 }
 
@@ -169,7 +169,7 @@ SEXP c_bbox_handler_new() {
   handler->coord = &bbox_handler_coord;
   handler->vector_end = &bbox_handler_vector_end;
   
-  BboxHandlerData_t* data = (BboxHandlerData_t*) malloc(sizeof(BboxHandlerData_t));
+  bbox_handler_data_t* data = (bbox_handler_data_t*) malloc(sizeof(bbox_handler_data_t));
   data->xmin = R_PosInf;
   data->ymin = R_PosInf;
   data->xmax = R_NegInf;
