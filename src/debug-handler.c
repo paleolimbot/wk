@@ -89,37 +89,29 @@ SEXP wk_handler_debug_vector_end(const wk_meta_t* meta, void* handler_data) {
   return R_NilValue;
 }
 
-char wk_handler_debug_feature_start(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id,
-                                    void* handler_data) {
+char wk_handler_debug_feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("featureStart (%d / %d) <%p>\n", feat_id + 1, n_features, meta);
+  Rprintf("featureStart (%d) <%p>\n", feat_id + 1, meta);
   wk_handler_debug_indent(handler_data);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_feature_null(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id,
-                                   void* handler_data) {
+char wk_handler_debug_feature_null(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("nullFeature (%d / %d) <%p>\n", feat_id + 1, n_features, meta);
+  Rprintf("nullFeature (%d) <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_feature_end(const wk_meta_t* meta, R_xlen_t n_features, R_xlen_t feat_id,
-                                  void* handler_data) {
+char wk_handler_debug_feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("featureEnd (%d / %d) <%p>\n", feat_id + 1, n_features, meta);
+  Rprintf("featureEnd (%d) <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t nParts, uint32_t part_id, void* handler_data) {
+char wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-
-  if (nParts == WK_PART_ID_NONE) {
-    Rprintf("geometryStart: ");
-  } else {
-    Rprintf("geometryStart (%d / %d): ", part_id + 1, nParts);
-  }
+  Rprintf("geometryStart (%d): ", part_id + 1);
 
   wk_handler_debug_print_meta(meta);
   Rprintf("\n");
@@ -127,45 +119,39 @@ char wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t nParts, uin
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_geometry_end(const wk_meta_t* meta, uint32_t nParts, uint32_t part_id, void* handler_data) {
+char wk_handler_debug_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
-
-  if (nParts == WK_PART_ID_NONE) {
-    Rprintf("geometryEnd <%p> \n", meta);
-  } else {
-    Rprintf("geometryStart (%d / %d) <%p> \n", part_id + 1, nParts, meta);
-  }
+  Rprintf("geometryEnd (%d) <%p> \n", part_id + 1, meta);
 
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ring_id, void* handler_data) {
+char wk_handler_debug_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
   if (size != WK_SIZE_UNKNOWN) {
-    Rprintf("ringStart[%d] (%d / %d) <%p>\n", size, ring_id + 1, nRings, meta);
+    Rprintf("ringStart[%d] (%d) <%p>\n", size, ring_id + 1, meta);
   } else {
-    Rprintf("ringStart (%d / %d) <%p>\n", ring_id + 1, nRings, meta);
+    Rprintf("ringStart (%d) <%p>\n", ring_id + 1, meta);
   }
   wk_handler_debug_indent(handler_data);
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t nRings, uint32_t ring_id, void* handler_data) {
+char wk_handler_debug_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
   if (size != WK_SIZE_UNKNOWN) {
-    Rprintf("ringEnd[%d] (%d / %d) <%p>\n", size, ring_id + 1, nRings, meta);
+    Rprintf("ringEnd[%d] (%d) <%p>\n", size, ring_id + 1, meta);
   } else {
-    Rprintf("ringEnd (%d / %d) <%p>\n", ring_id + 1, nRings, meta);
+    Rprintf("ringEnd (%d) <%p>\n", ring_id + 1, meta);
   }
   return WK_CONTINUE;
 }
 
-char wk_handler_debug_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t nCoords, uint32_t coord_id,
-                            void* handler_data) {
+char wk_handler_debug_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("coord (%d / %d) <%p> (%f %f", coord_id + 1, nCoords, meta, coord.v[0], coord.v[1]);
+  Rprintf("coord (%d) <%p> (%f %f", coord_id + 1, meta, coord.v[0], coord.v[1]);
   if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[2]);
   if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[3]);
   Rprintf(")\n");
@@ -179,7 +165,7 @@ char wk_handler_debug_error(R_xlen_t feat_id, int code, const char* message, voi
 }
 
 void wk_handler_debug_vector_finally(void* handler_data) {
-  Rprintf("vectorFinally()\n");
+  Rprintf("vectorFinally\n");
 }
 
 SEXP wk_c_handler_debug_new() {

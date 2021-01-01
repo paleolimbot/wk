@@ -437,19 +437,19 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t n_features, R_xlen_t feat_id) {
+  char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
     char result;
-    HANDLE_OR_RETURN(this->handler.featureStart(meta, n_features, feat_id));
+    HANDLE_OR_RETURN(this->handler.featureStart(meta, feat_id));
 
     if (item == NA_STRING) {
-      HANDLE_OR_RETURN(this->handler.nullFeature(meta, n_features, feat_id));
+      HANDLE_OR_RETURN(this->handler.nullFeature(meta, feat_id));
     } else {
       WKTV1String s(CHAR(item));
       HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
       s.assertFinished();
     }
 
-    return this->handler.featureEnd(meta, n_features, feat_id);
+    return this->handler.featureEnd(meta, feat_id);
   }
 
 protected:
@@ -457,7 +457,7 @@ protected:
   char readGeometryWithType(WKTV1String& s, uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
     char result;
-    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, WK_SIZE_UNKNOWN, part_id));
+    HANDLE_OR_RETURN(this->handler.geometryStart(&meta, part_id));
 
     switch (meta.geometryType) {
 
@@ -493,7 +493,7 @@ protected:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    return this->handler.geometryEnd(&meta, WK_SIZE_UNKNOWN, part_id);
+    return this->handler.geometryEnd(&meta, part_id);
   }
 
   char readPoint(WKTV1String& s, const wk_meta_t* meta) {
@@ -527,14 +527,14 @@ protected:
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
 
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
 
         part_id++;
       } while (s.assertOneOf(",)") != ')');
@@ -542,9 +542,9 @@ protected:
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(s, meta, WK_POINT);
-        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
+        HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
         HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
-        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
+        HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
         part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -563,9 +563,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
 
       part_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -584,9 +584,9 @@ protected:
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
-      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, WK_SIZE_UNKNOWN, part_id));
+      HANDLE_OR_RETURN(this->handler.geometryStart(&childMeta, part_id));
       HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
-      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, WK_SIZE_UNKNOWN, part_id));
+      HANDLE_OR_RETURN(this->handler.geometryEnd(&childMeta, part_id));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -618,9 +618,9 @@ protected:
     char result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler.ringStart(meta, WK_SIZE_UNKNOWN, ring_id));
       HANDLE_OR_RETURN(this->readCoordinates(s, meta));
-      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler.ringEnd(meta, WK_SIZE_UNKNOWN, ring_id));
       ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -640,7 +640,7 @@ protected:
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     this->readCoordinate(s, &coord, coordSize);
-    HANDLE_OR_RETURN(handler.coord(meta, coord, 1, 0));
+    HANDLE_OR_RETURN(handler.coord(meta, coord, 0));
     return WK_CONTINUE;
   }
 
@@ -659,7 +659,7 @@ protected:
 
     do {
       this->readCoordinate(s, &coord, coordSize);
-      HANDLE_OR_RETURN(handler.coord(meta, coord, WK_SIZE_UNKNOWN, coord_id));
+      HANDLE_OR_RETURN(handler.coord(meta, coord, coord_id));
 
       coord_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -711,7 +711,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
 
   for (R_xlen_t i = 0; i < n_features; i++) {
     try {
-      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), n_features, i);
+      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i);
       if (result == WK_ABORT) {
         break;
       }
