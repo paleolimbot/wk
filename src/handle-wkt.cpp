@@ -669,7 +669,7 @@ protected:
 
   void readCoordinate(WKTV1String& s, wk_coord_t* coord, int coordSize) {
     coord->v[0] = s.assertNumber();
-    for (size_t i = 1; i < coordSize; i++) {
+    for (int i = 1; i < coordSize; i++) {
       s.assertWhitespace();
       coord->v[i] = s.assertNumber();
     }

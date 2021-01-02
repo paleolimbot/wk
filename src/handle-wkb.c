@@ -14,7 +14,7 @@
   if (result != WK_CONTINUE) return result
 
 // parses both EWKB flags and the 1000-style WKB types
-uint32_t wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
+void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
   if (geometry_type & EWKB_Z_BIT) {
     meta->flags |= WK_FLAG_HAS_Z;
   }
