@@ -16,6 +16,7 @@
 \alias{wk_handle.wk_wkb}
 \alias{wk_handle.wk_wkt}
 \alias{wk_handle.wk_xy}
+\alias{wk_handle.wk_rct}
 \title{Test handlers}
 \usage{
 wk_void_handler()
@@ -47,6 +48,8 @@ wk_handle(x, handler, ...)
 \method{wk_handle}{wk_wkt}(x, handler, ...)
 
 \method{wk_handle}{wk_xy}(x, handler, ...)
+
+\method{wk_handle}{wk_rct}(x, handler, ...)
 }
 \arguments{
 \item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
