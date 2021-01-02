@@ -134,35 +134,45 @@
 
     <pre class="usage"><span class='fu'>wk_void_handler</span><span class='op'>(</span><span class='op'>)</span>
 
+<span class='fu'>wk_void</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
 <span class='fu'>wk_debug_handler</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>wk_validation_handler</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>wk_problems_handler</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='fu'>wk_problems</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='fu'>wkb_writer</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>new_wk_handler</span><span class='op'>(</span>
-  <span class='va'>handler_ptr</span>,
-  subclass <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>,
-  finisher <span class='op'>=</span> <span class='va'>wk_finish_default</span>
-<span class='op'>)</span>
+<span class='fu'>new_wk_handler</span><span class='op'>(</span><span class='va'>handler_ptr</span>, subclass <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'>is_wk_handler</span><span class='op'>(</span><span class='va'>handler</span><span class='op'>)</span>
 
 <span class='fu'>as_wk_handler</span><span class='op'>(</span><span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_finish_default</span><span class='op'>(</span><span class='va'>result</span>, <span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_finish_invisible</span><span class='op'>(</span><span class='va'>result</span>, <span class='va'>x</span><span class='op'>)</span>
+<span class='co'># S3 method for wk_wkb</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>handle_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>handle_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for wk_wkt</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>A vector that can be interpreted as a <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, or <code><a href='wksxp.html'>wksxp()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Unused</p></td>
+    </tr>
     <tr>
       <th>precision</th>
       <td><p>If <code>trim</code> is <code>TRUE</code>, the total number of significant digits to keep
@@ -181,26 +191,14 @@ for each result or the number of digits after the decimal place otherwise.</p></
       <td><p>The handler subclass</p></td>
     </tr>
     <tr>
-      <th>finisher, result</th>
-      <td><p>A function called on the <code>result</code> of the handler.</p></td>
-    </tr>
-    <tr>
       <th>handler</th>
       <td><p>An object created with <code>new_wk_handler()</code>.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Passed to the handler constructor.</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>A vector that can be interpreted as a <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, or <code><a href='wksxp.html'>wksxp()</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A WK handler</p>
+    <p>A WK handler.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

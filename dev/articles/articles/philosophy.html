@@ -97,28 +97,29 @@
 <p>The wk API works with a <strong>vector</strong> of <strong>features</strong>: readers iterate over such vectors and handlers compute a value based on some or all of the features in the vector. Each <strong>feature</strong> can be <code>NULL</code> or contain exactly one <strong>geometry</strong> (although this geometry can be a collection or multi-geometry which can contain a tree of other geometries). A good way to visualize the structure, order, and type of messages passed to a <strong>handler</strong> is to use the <code><a href="../../reference/wk_void_handler.html">wk_debug_handler()</a></code> on some well-known text (WKT):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wk/">wk</a></span><span class="op">)</span>
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span>,
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span>
+  <span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug_handler</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;   feature_start (1) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;     null_feature (1) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;   feature_end (1) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;   feature_start (2) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeeec98b58&gt;</span>
-<span class="co">#&gt;       coord (1) &lt;0x7ffeeec98b58&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeeec98b58&gt; </span>
-<span class="co">#&gt;   feature_end (2) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;   feature_start (3) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffeeec98b58&gt;</span>
-<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffeeec98a68&gt;</span>
-<span class="co">#&gt;         coord (1) &lt;0x7ffeeec98a68&gt; (2.000000 3.000000)</span>
-<span class="co">#&gt;       geometry_end (1) &lt;0x7ffeeec98a68&gt; </span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeeec98b58&gt; </span>
-<span class="co">#&gt;   feature_end (3) &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt; vector_end &lt;0x7ffeeec98cd0&gt;</span>
-<span class="co">#&gt; vector_finally</span></code></pre></div>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;   feature_start (1) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;     null_feature (1) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;   feature_end (1) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;   feature_start (2) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffee2a26788&gt;</span>
+<span class="co">#&gt;       coord (1) &lt;0x7ffee2a26788&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0) &lt;0x7ffee2a26788&gt; </span>
+<span class="co">#&gt;   feature_end (2) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;   feature_start (3) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffee2a26788&gt;</span>
+<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffee2a26698&gt;</span>
+<span class="co">#&gt;         coord (1) &lt;0x7ffee2a26698&gt; (2.000000 3.000000)</span>
+<span class="co">#&gt;       geometry_end (1) &lt;0x7ffee2a26698&gt; </span>
+<span class="co">#&gt;     geometry_end (0) &lt;0x7ffee2a26788&gt; </span>
+<span class="co">#&gt;   feature_end (3) &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt; vector_end &lt;0x7ffee2a26900&gt;</span>
+<span class="co">#&gt; vector_finally</span>
+<span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
 <div id="a-handler-in-c" class="section level2">
 <h2 class="hasAnchor">
@@ -165,11 +166,11 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900004130&gt;</span></code></pre></div>
-<p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code><a href="../../reference/wk_void_handler.html">handle_wkt()</a></code> or <code><a href="../../reference/wk_void_handler.html">handle_wkb()</a></code>:</p>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900003cf0&gt;</span></code></pre></div>
+<p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span>
+  <span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; xmin ymin xmax ymax </span>
@@ -181,18 +182,18 @@
 <p>The most important thing about a <code>wk_handler</code> is that, once created, it can only be used once:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">handler</span> <span class="op">&lt;-</span> <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
 <span class="co">#&gt; xmin ymin xmax ymax </span>
 <span class="co">#&gt;  Inf  Inf -Inf -Inf</span>
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
-<span class="co">#&gt; Error in wk_cpp_handle_wkt(as_wkt(x), handler): Can't re-use a wk_handler</span></code></pre></div>
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
+<span class="co">#&gt; Error in wk_cpp_handle_wkt(x, handler): Can't re-use a wk_handler</span></code></pre></div>
 <p>If you need to program with user-supplied handlers, you can pass a function wherever a <code>wk_handler</code> was expected (the reader will call the function to obtain the fresh handler).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">handler</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
 <span class="co">#&gt; xmin ymin xmax ymax </span>
 <span class="co">#&gt;  Inf  Inf -Inf -Inf</span>
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span>
 <span class="co">#&gt; xmin ymin xmax ymax </span>
 <span class="co">#&gt;  Inf  Inf -Inf -Inf</span></code></pre></div>
 <p>When writing a handler, it is also important to consider cleaning up the resources you allocate. With a C++ handler some of this is taken care of for you because the deleter for the object is called at some point after the object is garbage collected. This is taken care of in the magical <code>WKHandlerFactory&lt;T&gt;::create_xptr(new T())</code>, which registers the deleter and catches any exceptions you may have thrown so that the your handling functions are safe to call from C. The default deleter will clean up any class members you’ve declared which is sufficient for most handlers you might want to write.</p>
@@ -270,8 +271,8 @@
   <span class="fu"><a href="../../reference/wk_void_handler.html">new_wk_handler</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/CallExternal.html">.Call</a></span><span class="op">(</span><span class="st">"c_bbox_handler_new"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="fu"><a href="../../reference/wk_void_handler.html">handle_wkt</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span>,
+<span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span>
+  <span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu">bbox_handler_c</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; xmin ymin xmax ymax </span>
