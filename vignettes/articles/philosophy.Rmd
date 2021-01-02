@@ -212,3 +212,5 @@ Note that you can and should use the R API within your functions! This includes 
 
 
 ## A reader in C
+
+## R infrastructure, revisited

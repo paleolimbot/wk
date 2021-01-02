@@ -82,11 +82,11 @@ public:
             cpp11::stop(err.str());
         }
 
-        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        if ((meta->size != 0) &&(meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
             out << "ZM ";
-        } else if (meta->flags & WK_FLAG_HAS_Z) {
+        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_Z)) {
             out << "Z ";
-        } else if (meta->flags & WK_FLAG_HAS_M) {
+        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_M)) {
             out << "M ";
         }
     }
