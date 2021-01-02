@@ -711,12 +711,11 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
 
   for (R_xlen_t i = 0; i < n_features; i++) {
     try {
-      char result = streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i);
-      if (result == WK_ABORT) {
+      if (streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i) == WK_ABORT) {
         break;
       }
     } catch (WKParseException& e) {
-      if (cppHandler.error(i, e.code(), e.what()) != WK_CONTINUE) {
+      if (cppHandler.error(i, e.code(), e.what()) == WK_ABORT) {
         break;
       }
     }
