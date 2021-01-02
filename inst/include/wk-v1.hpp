@@ -4,6 +4,7 @@
 
 #include "cpp11/external_pointer.hpp"
 #include "cpp11/protect.hpp"
+#include "cpp11/declarations.hpp"
 #include <string>
 #include <stdexcept>
 #include "wk-v1.h"
@@ -90,35 +91,10 @@ private:
 
 
 // ---- the class one should extend when writing handlers in C++ ---
-
-class WKHandlerException: public std::runtime_error {
-public:
-  int code;
-
-  WKHandlerException(const char* message):
-    std::runtime_error(message), code(WK_DEFAULT_ERROR_CODE) {}
-  WKHandlerException(const char* message, int code):
-    std::runtime_error(message), code(code) {}
-};
-
 class WKVoidHandler {
 public:
-  R_xlen_t lastfeat_id;
-  int lastErrorCode;
-  std::string lastErrorMessage;
-
-  WKVoidHandler(): lastfeat_id(-1), lastErrorCode(WK_NO_ERROR_CODE) {}
-
+  WKVoidHandler() {}
   virtual ~WKVoidHandler() {}
-
-  void setError(int code, std::string message) noexcept {
-    this->lastErrorCode = code;
-    this->lastErrorMessage = message;
-  }
-
-  bool hasError() noexcept {
-    return this->lastErrorCode != WK_NO_ERROR_CODE;
-  }
 
   virtual char vector_start(const wk_meta_t* meta) {
     return WK_CONTINUE;
@@ -132,11 +108,11 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual char geometry_start(const wk_meta_t* meta, uint32_t partId) {
+  virtual char geometry_start(const wk_meta_t* meta, uint32_t part_id) {
     return WK_CONTINUE;
   }
 
-  virtual char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
+  virtual char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     return WK_CONTINUE;
   }
 
@@ -144,11 +120,11 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
+  virtual char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     return WK_CONTINUE;
   }
 
-  virtual char geometry_end(const wk_meta_t* meta, uint32_t partId) {
+  virtual char geometry_end(const wk_meta_t* meta, uint32_t part_id) {
     return WK_CONTINUE;
   }
 
@@ -160,13 +136,12 @@ public:
     return R_NilValue;
   }
 
-  virtual void vector_finally() noexcept {
+  virtual void vector_finally() {
      
   }
 
-  virtual char error(R_xlen_t feat_id, int code, const char* message) noexcept {
-    this->setError(code, message);
-    return WK_ABORT;
+  virtual char error(R_xlen_t feat_id, int code, const char* message) {
+    cpp11::stop(message);
   }
 
   virtual void finalize() noexcept {
@@ -174,6 +149,31 @@ public:
   }
 };
 
+// Need our own BEGIN_CPP11 and END_CPP11 because we don't always return an SEXP
+// and the macro contains 'return R_NilValue' which causes a compiler error
+// https://github.com/r-lib/cpp11/blob/master/inst/include/cpp11/declarations.hpp
+#define WK_BEGIN_CPP11            \
+  SEXP err = R_NilValue;          \
+  const size_t ERROR_SIZE = 8192; \
+  char buf[ERROR_SIZE] = "";      \
+  try {
+#define WK_END_CPP11(_ret)                                     \
+  }                                                            \
+  catch (cpp11::unwind_exception & e) {                        \
+    err = e.token;                                             \
+  }                                                            \
+  catch (std::exception & e) {                                 \
+    strncpy(buf, e.what(), ERROR_SIZE - 1);                    \
+  }                                                            \
+  catch (...) {                                                \
+    strncpy(buf, "C++ error (unknown cause)", ERROR_SIZE - 1); \
+  }                                                            \
+  if (buf[0] != '\0') {                                        \
+    Rf_errorcall(R_NilValue, "%s", buf);                       \
+  } else if (err != R_NilValue) {                              \
+    CPP11_UNWIND                                               \
+  }                                                            \
+  return _ret;
 
 template <class HandlerType>
 class WKHandlerFactory {
@@ -221,144 +221,87 @@ private:
   }
 
   static char vector_start(const wk_meta_t* meta, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->vector_start(meta);
-    } catch (WKHandlerException& e) {
-      return cpp_handler->error(-1, e.code, e.what());
-    } catch (std::exception& e) {
-      return WK_ABORT;
-    }
+    return cpp_handler->vector_start(meta);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    cpp_handler->lastfeat_id = feat_id;
-    try {
-      return cpp_handler->feature_start(meta, feat_id);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->feature_start(meta, feat_id);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char null_feature(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->null_feature(meta, feat_id);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->null_feature(meta, feat_id);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char geometry_start(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->geometry_start(meta, partId);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->geometry_start(meta, partId);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->ring_start(meta, size, ringId);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->ring_start(meta, size, ringId);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->coord(meta, coord, coord_id);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->coord(meta, coord, coord_id);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->ring_end(meta, size, ringId);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->ring_end(meta, size, ringId);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char geometry_end(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->geometry_end(meta, partId);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->geometry_end(meta, partId);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static char feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    try {
-      return cpp_handler->feature_end(meta, feat_id);
-    } catch (WKHandlerException& e) {
-      cpp_handler->setError(e.code, e.what());
-    } catch (std::exception& e) {
-      cpp_handler->setError(WK_DEFAULT_ERROR_CODE, e.what());
-    }
-
-    return WK_ABORT;
+    return cpp_handler->feature_end(meta, feat_id);
+    WK_END_CPP11(WK_ABORT)
   }
 
   static SEXP vector_end(const wk_meta_t* meta, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    if (cpp_handler->hasError()) {
-      return wk_error_sentinel(cpp_handler->lastErrorCode, cpp_handler->lastErrorMessage.c_str());
-    }
-
-    try {
-      return cpp_handler->vector_end(meta);
-    } catch (WKHandlerException& e) {
-      return wk_error_sentinel(e.code, e.what());
-    } catch (std::exception& e) {
-      return wk_error_sentinel(WK_DEFAULT_ERROR_CODE, e.what());
-    }
+    return cpp_handler->vector_end(meta);
+    WK_END_CPP11(R_NilValue)
   }
 
   static void vector_finally(void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     cpp_handler->vector_finally();
+    WK_END_CPP11()
   }
 
   static char error(R_xlen_t feat_id, int code, const char* message, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->error(feat_id, code, message);
+    WK_END_CPP11(WK_ABORT)
   }
 };
 
