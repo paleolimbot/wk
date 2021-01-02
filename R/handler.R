@@ -9,12 +9,18 @@
 #'   for each result or the number of digits after the decimal place otherwise.
 #' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
 #' @param x A vector that can be interpreted as a [wkb()], [wkt()], or [wksxp()].
-#' @param ... Passed to the handler constructor.
-#' @return A WK handler
+#' @param ... Unused
+#' @return A WK handler.
 #' @export
 #'
 wk_void_handler <- function() {
   new_wk_handler(.Call(wk_c_handler_void_new), "wk_void_handler")
+}
+
+#' @rdname wk_void_handler
+#' @export
+wk_void <- function(x, ...) {
+  invisible(wk_handle(x, wk_void_handler(), ...))
 }
 
 #' @rdname wk_void_handler
@@ -25,8 +31,20 @@ wk_debug_handler <- function() {
 
 #' @rdname wk_void_handler
 #' @export
+wk_debug <- function(x, ...) {
+  invisible(wk_handle(x, wk_debug_handler(), ...))
+}
+
+#' @rdname wk_void_handler
+#' @export
 wk_validation_handler <- function() {
   new_wk_handler(.Call(wk_c_handler_validation_new), "wk_validation_handler")
+}
+
+#' @rdname wk_void_handler
+#' @export
+wk_problems <- function(x, ...) {
+  wk_handle(x, wk_validation_handler(), ...)
 }
 
 #' @rdname wk_void_handler

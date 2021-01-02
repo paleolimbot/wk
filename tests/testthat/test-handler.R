@@ -8,6 +8,12 @@ test_that("handlers can be created", {
   expect_is(wk_validation_handler(), "wk_handler")
 })
 
+test_that("handlers can be run", {
+  expect_null(wk_void(wkb()))
+  expect_output(expect_null(wk_debug(wkb())))
+  expect_identical(wk_problems(wkb()), character())
+})
+
 test_that("wk_handler class works", {
   expect_true(is_wk_handler(wk_void_handler()))
   handler <- wk_void_handler()

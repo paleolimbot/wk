@@ -2,8 +2,11 @@
 % Please edit documentation in R/handler.R
 \name{wk_void_handler}
 \alias{wk_void_handler}
+\alias{wk_void}
 \alias{wk_debug_handler}
+\alias{wk_debug}
 \alias{wk_validation_handler}
+\alias{wk_problems}
 \alias{wkt_writer}
 \alias{wkb_writer}
 \alias{new_wk_handler}
@@ -16,9 +19,15 @@
 \usage{
 wk_void_handler()
 
+wk_void(x, ...)
+
 wk_debug_handler()
 
+wk_debug(x, ...)
+
 wk_validation_handler()
+
+wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
 
@@ -37,6 +46,10 @@ wk_handle(x, handler, ...)
 \method{wk_handle}{wk_wkt}(x, handler, ...)
 }
 \arguments{
+\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
+
+\item{...}{Unused}
+
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.}
 
@@ -48,14 +61,10 @@ for each result or the number of digits after the decimal place otherwise.}
 
 \item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
 
-\item{...}{Passed to the handler constructor.}
-
-\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
-
 \item{result}{A function called on the \code{result} of the handler.}
 }
 \value{
-A WK handler
+A WK handler.
 }
 \description{
 Test handlers
