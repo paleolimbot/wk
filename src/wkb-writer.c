@@ -238,7 +238,7 @@ SEXP wk_c_wkb_writer_new() {
     handler->ring_start = &wkb_writer_ring_start;
     handler->coord = &wkb_writer_coord;
     handler->ring_end = &wkb_writer_ring_end;
-     handler->geometry_end = &wkb_writer_geometry_end;
+    handler->geometry_end = &wkb_writer_geometry_end;
     handler->null_feature = &wkb_writer_feature_null;
     handler->feature_end = &wkb_writer_feature_end;
     handler->vector_end = &wkb_writer_vector_end;

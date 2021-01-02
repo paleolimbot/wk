@@ -13,6 +13,33 @@
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
+// parses both EWKB flags and the 1000-style WKB types
+void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
+  if (geometry_type & EWKB_Z_BIT) {
+    meta->flags |= WK_FLAG_HAS_Z;
+  }
+
+  if (geometry_type & EWKB_M_BIT) {
+    meta->flags |= WK_FLAG_HAS_M;
+  }
+
+  geometry_type = geometry_type & 0x0000ffff;
+
+  if (geometry_type >= 3000) {
+    meta->geometry_type = geometry_type - 3000;
+    meta->flags |= WK_FLAG_HAS_Z;
+    meta->flags |= WK_FLAG_HAS_M;
+  } else  if (geometry_type >= 2000) {
+    meta->geometry_type = geometry_type - 2000;
+    meta->flags |= WK_FLAG_HAS_M;
+  } else if (geometry_type >= 1000) {
+    meta->geometry_type = geometry_type - 1000;
+    meta->flags |= WK_FLAG_HAS_Z;
+  } else {
+    meta->geometry_type = geometry_type;
+  }
+}
+
 typedef struct {
   R_xlen_t feat_id;
   unsigned char* buffer;
@@ -107,16 +134,9 @@ char wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
   HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &geometry_type));
 
   wk_meta_t meta;
-  WK_META_RESET(meta, geometry_type & 0x000000ff);
-
-  if ((geometry_type & EWKB_Z_BIT) != 0) {
-    meta.flags |= WK_FLAG_HAS_Z;
-  }
-
-  if ((geometry_type & EWKB_M_BIT) != 0) {
-    meta.flags |= WK_FLAG_HAS_M;
-  }
-
+  WK_META_RESET(meta, WK_GEOMETRY);
+  wkb_parse_geometry_type(geometry_type, &meta);
+  
   if ((geometry_type & EWKB_SRID_BIT) != 0) {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
   }
