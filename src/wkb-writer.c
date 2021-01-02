@@ -8,13 +8,18 @@
 #define EWKB_M_BIT    0x40000000
 #define EWKB_SRID_BIT 0x20000000
 
+#define WKB_MAX_RECURSION_DEPTH 32
+
 typedef struct {
     SEXP result;
     unsigned char endian;
     unsigned char* buffer;
     size_t size;
     size_t offset;
-} WKBWriteBuffer_t;
+    size_t current_size_offset[WKB_MAX_RECURSION_DEPTH + 3];
+    uint32_t current_size[WKB_MAX_RECURSION_DEPTH + 3]; 
+    size_t recursion_level;
+} wkb_write_buffer_t;
 
 unsigned char wkb_writer_platform_endian() {
     const int one = 1;
@@ -30,137 +35,197 @@ uint32_t wkb_writer_encode_type(const wk_meta_t* meta) {
     return out;
   }
 
-WKBWriteBuffer_t* wkb_write_buffer_new(size_t size) {
+wkb_write_buffer_t* wkb_write_buffer_new(size_t size) {
     unsigned char* buffer = malloc(size);
     if (buffer == NULL) {
         Rf_error("Can't allocate buffer of size %d", size); // # nocov
     }
 
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) malloc(sizeof(WKBWriteBuffer_t));
-    if (writeBuffer == NULL) {
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) malloc(sizeof(wkb_write_buffer_t));
+    if (write_buffer == NULL) {
         free(buffer); // # nocov
-        Rf_error("Can't allocate WKBWriteBuffer_t"); // # nocov
+        Rf_error("Can't allocate wkb_write_buffer_t"); // # nocov
     }
 
-    writeBuffer->endian = wkb_writer_platform_endian();
-    writeBuffer->result =  R_NilValue;
-    writeBuffer->buffer = buffer;
-    writeBuffer->size = size;
-    writeBuffer->offset = 0;
-    return writeBuffer;
+    write_buffer->endian = wkb_writer_platform_endian();
+    write_buffer->result =  R_NilValue;
+    write_buffer->buffer = buffer;
+    write_buffer->size = size;
+    write_buffer->offset = 0;
+    write_buffer->recursion_level = 0;
+    return write_buffer;
 }
 
-void wkb_write_buffer_ensure_size(WKBWriteBuffer_t* writeBuffer, size_t size) {
+void wkb_write_buffer_ensure_size(wkb_write_buffer_t* write_buffer, size_t size) {
     Rprintf("Attempting to realloc to size %d\n", size);
 
-    unsigned char* newBuffer = realloc(writeBuffer->buffer, size);
-    if (newBuffer == NULL) {
+    unsigned char* new_buffer = realloc(write_buffer->buffer, size);
+    if (new_buffer == NULL) {
         Rf_error("Can't reallocate buffer of size %d", size);
     }
 
-    writeBuffer->buffer = newBuffer;
-    writeBuffer->size = size;
+    write_buffer->buffer = new_buffer;
+    write_buffer->size = size;
 }
 
-char wkb_write_buffer_has_space(WKBWriteBuffer_t* writeBuffer, size_t item) {
-    return (writeBuffer->offset + item) <= writeBuffer->size;
+char wkb_write_buffer_has_space(wkb_write_buffer_t* write_buffer, size_t item) {
+    return (write_buffer->offset + item) <= write_buffer->size;
 }
 
-void wkb_write_buffer_ensure_space(WKBWriteBuffer_t* writeBuffer, size_t item) {
-    if (!wkb_write_buffer_has_space(writeBuffer, item)) {
-        wkb_write_buffer_ensure_size(writeBuffer, writeBuffer->size * 2);
+void wkb_write_buffer_ensure_space(wkb_write_buffer_t* write_buffer, size_t item) {
+    if (!wkb_write_buffer_has_space(write_buffer, item)) {
+        wkb_write_buffer_ensure_size(write_buffer, write_buffer->size * 2);
     }
 }
 
-void wkb_write_uint(WKBWriteBuffer_t* writeBuffer, const uint32_t value) {
-    wkb_write_buffer_ensure_space(writeBuffer, sizeof(uint32_t));
-    memcpy(writeBuffer->buffer + writeBuffer->offset, &value, sizeof(uint32_t));
-    writeBuffer->offset += sizeof(uint32_t);
+void wkb_write_uint_offset(wkb_write_buffer_t* write_buffer, const uint32_t value, size_t offset) {
+    wkb_write_buffer_ensure_space(write_buffer, sizeof(uint32_t));
+    memcpy(write_buffer->buffer + offset, &value, sizeof(uint32_t));
 }
 
-void wkb_write_uchar(WKBWriteBuffer_t* writeBuffer, const unsigned char value) {
-    wkb_write_buffer_ensure_space(writeBuffer, sizeof(unsigned char));
-    memcpy(writeBuffer->buffer + writeBuffer->offset, &value, sizeof(unsigned char));
-    writeBuffer->offset += sizeof(unsigned char);
+void wkb_write_uint(wkb_write_buffer_t* write_buffer, const uint32_t value) {
+    wkb_write_uint_offset(write_buffer, value, write_buffer->offset);
+    write_buffer->offset += sizeof(uint32_t);
 }
 
-void wkb_write_doubles(WKBWriteBuffer_t* writeBuffer, const double* value, uint32_t nValues) {
-    wkb_write_buffer_ensure_space(writeBuffer, sizeof(double) * nValues);
-    memcpy(writeBuffer->buffer + writeBuffer->offset, value, sizeof(double) * nValues);
-    writeBuffer->offset += sizeof(double) * nValues;
+void wkb_write_uchar(wkb_write_buffer_t* write_buffer, const unsigned char value) {
+    wkb_write_buffer_ensure_space(write_buffer, sizeof(unsigned char));
+    memcpy(write_buffer->buffer + write_buffer->offset, &value, sizeof(unsigned char));
+    write_buffer->offset += sizeof(unsigned char);
+}
+
+void wkb_write_doubles(wkb_write_buffer_t* write_buffer, const double* value, uint32_t nValues) {
+    wkb_write_buffer_ensure_space(write_buffer, sizeof(double) * nValues);
+    memcpy(write_buffer->buffer + write_buffer->offset, value, sizeof(double) * nValues);
+    write_buffer->offset += sizeof(double) * nValues;
 }
 
 char wkb_writer_vector_start(const wk_meta_t* meta, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    writeBuffer->result = Rf_allocVector(VECSXP, meta->size);
-    R_PreserveObject(writeBuffer->result);
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->result = Rf_allocVector(VECSXP, meta->size);
+    R_PreserveObject(write_buffer->result);
     return WK_CONTINUE;
 }
 
 char wkb_writer_feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    writeBuffer->offset = 0;
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->offset = 0;
+    write_buffer->recursion_level = 0;
     return WK_CONTINUE;
 }
 
 char wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    wkb_write_uchar(writeBuffer, writeBuffer->endian);
-    wkb_write_uint(writeBuffer, wkb_writer_encode_type(meta));
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    if (write_buffer->recursion_level > 0) {
+        write_buffer->current_size[write_buffer->recursion_level - 1]++;
+    }
+
+    wkb_write_uchar(write_buffer, write_buffer->endian);
+    wkb_write_uint(write_buffer, wkb_writer_encode_type(meta));
     if (meta->geometry_type != WK_POINT) {
-        wkb_write_uint(writeBuffer, meta->size);
+        if (write_buffer->recursion_level >= WKB_MAX_RECURSION_DEPTH) {
+            Rf_error(
+                "Can't write WKB with maximum recursion depth greater than %d", 
+                WKB_MAX_RECURSION_DEPTH
+            );
+        }
+        
+        // reserve space for the size and record where it is
+        write_buffer->current_size_offset[write_buffer->recursion_level] = write_buffer->offset;
+        write_buffer->current_size[write_buffer->recursion_level] = 0;
+        wkb_write_uint(write_buffer, 0);
+    }
+    write_buffer->recursion_level++;
+
+    return WK_CONTINUE;
+}
+
+char wkb_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->recursion_level--;
+    if (meta->geometry_type != WK_POINT) {
+        wkb_write_uint_offset(
+            write_buffer,
+            write_buffer->current_size[write_buffer->recursion_level],
+            write_buffer->current_size_offset[write_buffer->recursion_level]
+        );
     }
     return WK_CONTINUE;
 }
 
 char wkb_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-  wkb_write_uint(writeBuffer, size);
-  return WK_CONTINUE;
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->current_size[write_buffer->recursion_level - 1]++;
+
+    if (write_buffer->recursion_level >= WKB_MAX_RECURSION_DEPTH) {
+        Rf_error(
+            "Can't write WKB with maximum recursion depth greater than %d", 
+            WKB_MAX_RECURSION_DEPTH
+        );
+    }
+
+    write_buffer->current_size_offset[write_buffer->recursion_level] = write_buffer->offset;
+    write_buffer->current_size[write_buffer->recursion_level] = 0;
+    wkb_write_uint(write_buffer, 0);
+    write_buffer->recursion_level++;
+
+    return WK_CONTINUE;
+}
+
+char wkb_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->recursion_level--;
+    wkb_write_uint_offset(
+        write_buffer,
+        write_buffer->current_size[write_buffer->recursion_level],
+        write_buffer->current_size_offset[write_buffer->recursion_level]
+    );
+    return WK_CONTINUE;
 }
 
 char wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id,
                       void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    write_buffer->current_size[write_buffer->recursion_level - 1]++;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
-    wkb_write_doubles(writeBuffer, coord.v, coordSize);
+    wkb_write_doubles(write_buffer, coord.v, coordSize);
     return WK_CONTINUE;
 }
 
 char wkb_writer_feature_null(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    SET_VECTOR_ELT(writeBuffer->result, feat_id, R_NilValue);
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    SET_VECTOR_ELT(write_buffer->result, feat_id, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 
 char wkb_writer_feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    SEXP item = PROTECT(Rf_allocVector(RAWSXP, writeBuffer->offset));
-    memcpy(RAW(item), writeBuffer->buffer, writeBuffer->offset);
-    SET_VECTOR_ELT(writeBuffer->result, feat_id, item);
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    SEXP item = PROTECT(Rf_allocVector(RAWSXP, write_buffer->offset));
+    memcpy(RAW(item), write_buffer->buffer, write_buffer->offset);
+    SET_VECTOR_ELT(write_buffer->result, feat_id, item);
     UNPROTECT(1);
     return WK_CONTINUE;
 }
 
 SEXP wkb_writer_vector_end(const wk_meta_t* meta, void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    return writeBuffer->result;
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    return write_buffer->result;
 }
 
 void wkb_writer_vector_finally(void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    if (writeBuffer->result != R_NilValue) {
-        R_ReleaseObject(writeBuffer->result);
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    if (write_buffer->result != R_NilValue) {
+        R_ReleaseObject(write_buffer->result);
     }
 }
 
 void wkb_writer_finalize(void* handler_data) {
-    WKBWriteBuffer_t* writeBuffer = (WKBWriteBuffer_t*) handler_data;
-    if (writeBuffer != NULL) {
-        free(writeBuffer->buffer);
-        free(writeBuffer);
+    wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+    if (write_buffer != NULL) {
+        free(write_buffer->buffer);
+        free(write_buffer);
     }
 }
 
@@ -172,6 +237,8 @@ SEXP wk_c_wkb_writer_new() {
     handler->geometry_start = &wkb_writer_geometry_start;
     handler->ring_start = &wkb_writer_ring_start;
     handler->coord = &wkb_writer_coord;
+    handler->ring_end = &wkb_writer_ring_end;
+     handler->geometry_end = &wkb_writer_geometry_end;
     handler->null_feature = &wkb_writer_feature_null;
     handler->feature_end = &wkb_writer_feature_end;
     handler->vector_end = &wkb_writer_vector_end;
