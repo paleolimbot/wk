@@ -13,6 +13,10 @@
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
+
 // parses both EWKB flags and the 1000-style WKB types
 void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
   if (geometry_type & EWKB_Z_BIT) {
@@ -82,19 +86,17 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
   vectorMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   if (handler->vector_start(&vectorMeta, handler->handler_data) == WK_CONTINUE) {
+    int result;
     SEXP item;
     WKBBuffer_t buffer;
 
     for (R_xlen_t i = 0; i < n_features; i++) {
       item = VECTOR_ELT(data, i);
 
-      if (handler->feature_start(&vectorMeta, i, handler->handler_data)  != WK_CONTINUE) {
-        break;
-      }
+      HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vectorMeta, i, handler->handler_data));
 
-      if ((item == R_NilValue) &&
-          (handler->null_feature(&vectorMeta, i, handler->handler_data) != WK_CONTINUE)) {
-        break;
+      if (item == R_NilValue) {
+        HANDLE_CONTINUE_OR_BREAK(handler->null_feature(&vectorMeta, i, handler->handler_data));
       }
 
       buffer.feat_id = i;
@@ -104,13 +106,14 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
       buffer.errorCode = WK_NO_ERROR_CODE;
       memset(buffer.errorMessage, 0, 1024);
 
-      char result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE);
-
+      result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE);
       if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
         result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->handler_data);
       }
-
-      if (result == WK_ABORT) {
+      
+      if (result == WK_ABORT_FEATURE) {
+        continue;
+      } else if (result == WK_ABORT) {
         break;
       }
 
