@@ -192,3 +192,39 @@ test_that("wkb_writer() works", {
   wkb_bad[[1]][2] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
 })
+
+test_that("wkb_writer() works with streaming input", {
+  wkb_good <- as_wkb(
+    c(
+      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+    )
+  )
+
+  expect_identical(
+    wk_handle(as_wkt(wkb_good), wkb_writer()),
+    unclass(wkb_good)
+  )
+})
+
+test_that("wkb_writer() errors when the recursion limit is too high", {
+  make_really_recursive_geom <- function(n) {
+    wkt(paste0(
+      c(rep("GEOMETRYCOLLECTION (", n), "POLYGON ((0 1))", rep(")", n)),
+      collapse = ""
+    ))
+  }
+
+  # errors in geometry_start
+  expect_error(
+    wk_handle(make_really_recursive_geom(31), wkb_writer()),
+    "Can't write WKB with maximum"
+  )
+  # errors in ring_start
+  expect_error(
+    wk_handle(make_really_recursive_geom(32), wkb_writer()),
+    "Can't write WKB with maximum"
+  )
+})
