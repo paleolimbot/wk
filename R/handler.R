@@ -4,7 +4,6 @@
 #' @param handler_ptr An external pointer to a newly created WK handler
 #' @param handler An object created with [new_wk_handler()].
 #' @param subclass The handler subclass
-#' @param result A function called on the `result` of the handler.
 #' @param precision If `trim` is `TRUE`, the total number of significant digits to keep
 #'   for each result or the number of digits after the decimal place otherwise.
 #' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
@@ -37,14 +36,14 @@ wk_debug <- function(x, ...) {
 
 #' @rdname wk_void_handler
 #' @export
-wk_validation_handler <- function() {
-  new_wk_handler(.Call(wk_c_handler_validation_new), "wk_validation_handler")
+wk_problems_handler <- function() {
+  new_wk_handler(.Call(wk_c_handler_problems_new), "wk_problems_handler")
 }
 
 #' @rdname wk_void_handler
 #' @export
 wk_problems <- function(x, ...) {
-  wk_handle(x, wk_validation_handler(), ...)
+  wk_handle(x, wk_problems_handler(), ...)
 }
 
 #' @rdname wk_void_handler

@@ -4,8 +4,8 @@ test_that("handlers can be created", {
   expect_is(wk_void_handler(), "wk_handler")
   expect_is(wk_debug_handler(), "wk_debug_handler")
   expect_is(wk_debug_handler(), "wk_handler")
-  expect_is(wk_validation_handler(), "wk_validation_handler")
-  expect_is(wk_validation_handler(), "wk_handler")
+  expect_is(wk_problems_handler(), "wk_problems_handler")
+  expect_is(wk_problems_handler(), "wk_handler")
 })
 
 test_that("handlers can be run", {
@@ -75,14 +75,14 @@ test_that("validating handlers return a character vector of problems", {
   )
 
   expect_identical(
-    wk_handle(wkb_good, wk_validation_handler()),
+    wk_handle(wkb_good, wk_problems_handler()),
     rep(NA_character_, length(wkb_good))
   )
 
   wkb_bad <- unclass(wkb_good)
   wkb_bad[[1]][2] <- as.raw(0xff)
   expect_identical(
-    wk_handle(new_wk_wkb(wkb_bad), wk_validation_handler()),
+    wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler()),
     c("Unrecognized geometry type code: 255", rep(NA_character_, length(wkb_good) - 1))
   )
 })
@@ -139,14 +139,14 @@ test_that("validating handlers return a character vector of problems for WKT", {
   )
 
   expect_identical(
-    wk_handle(wkt_good, wk_validation_handler()),
+    wk_handle(wkt_good, wk_problems_handler()),
     rep(NA_character_, length(wkt_good))
   )
 
   wkt_bad <- unclass(wkt_good)
   wkt_bad[1] <- "NOT WKT"
   expect_identical(
-    wk_handle(new_wk_wkt(wkt_bad), wk_validation_handler()),
+    wk_handle(new_wk_wkt(wkt_bad), wk_problems_handler()),
     c("Expected geometry type or 'SRID=' but found 'NOT' (:1)", rep(NA_character_, length(wkt_good) - 1))
   )
 })

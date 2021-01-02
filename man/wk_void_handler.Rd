@@ -5,7 +5,7 @@
 \alias{wk_void}
 \alias{wk_debug_handler}
 \alias{wk_debug}
-\alias{wk_validation_handler}
+\alias{wk_problems_handler}
 \alias{wk_problems}
 \alias{wkt_writer}
 \alias{wkb_writer}
@@ -25,7 +25,7 @@ wk_debug_handler()
 
 wk_debug(x, ...)
 
-wk_validation_handler()
+wk_problems_handler()
 
 wk_problems(x, ...)
 
@@ -60,8 +60,6 @@ for each result or the number of digits after the decimal place otherwise.}
 \item{subclass}{The handler subclass}
 
 \item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
-
-\item{result}{A function called on the \code{result} of the handler.}
 }
 \value{
 A WK handler.
