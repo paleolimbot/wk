@@ -9,8 +9,6 @@
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
-\alias{wk_finish_default}
-\alias{wk_finish_invisible}
 \alias{handle_wkb}
 \alias{handle_wkt}
 \title{Test handlers}
@@ -25,19 +23,11 @@ wkt_writer(precision = 16, trim = TRUE)
 
 wkb_writer()
 
-new_wk_handler(
-  handler_ptr,
-  subclass = character(),
-  finisher = wk_finish_default
-)
+new_wk_handler(handler_ptr, subclass = character())
 
 is_wk_handler(handler)
 
 as_wk_handler(handler, ...)
-
-wk_finish_default(result, x)
-
-wk_finish_invisible(result, x)
 
 handle_wkb(x, handler, ...)
 
@@ -53,13 +43,13 @@ for each result or the number of digits after the decimal place otherwise.}
 
 \item{subclass}{The handler subclass}
 
-\item{finisher, result}{A function called on the \code{result} of the handler.}
-
 \item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
 
 \item{...}{Passed to the handler constructor.}
 
 \item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
+
+\item{result}{A function called on the \code{result} of the handler.}
 }
 \value{
 A WK handler
