@@ -2,48 +2,54 @@
 % Please edit documentation in R/handler.R
 \name{wk_void_handler}
 \alias{wk_void_handler}
+\alias{wk_void}
 \alias{wk_debug_handler}
-\alias{wk_validation_handler}
+\alias{wk_debug}
+\alias{wk_problems_handler}
+\alias{wk_problems}
 \alias{wkt_writer}
 \alias{wkb_writer}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
-\alias{wk_finish_default}
-\alias{wk_finish_invisible}
-\alias{handle_wkb}
-\alias{handle_wkt}
+\alias{wk_handle}
+\alias{wk_handle.wk_wkb}
+\alias{wk_handle.wk_wkt}
 \title{Test handlers}
 \usage{
 wk_void_handler()
 
+wk_void(x, ...)
+
 wk_debug_handler()
 
-wk_validation_handler()
+wk_debug(x, ...)
+
+wk_problems_handler()
+
+wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
 
 wkb_writer()
 
-new_wk_handler(
-  handler_ptr,
-  subclass = character(),
-  finisher = wk_finish_default
-)
+new_wk_handler(handler_ptr, subclass = character())
 
 is_wk_handler(handler)
 
 as_wk_handler(handler, ...)
 
-wk_finish_default(result, x)
+wk_handle(x, handler, ...)
 
-wk_finish_invisible(result, x)
+\method{wk_handle}{wk_wkb}(x, handler, ...)
 
-handle_wkb(x, handler, ...)
-
-handle_wkt(x, handler, ...)
+\method{wk_handle}{wk_wkt}(x, handler, ...)
 }
 \arguments{
+\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
+
+\item{...}{Unused}
+
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.}
 
@@ -53,16 +59,10 @@ for each result or the number of digits after the decimal place otherwise.}
 
 \item{subclass}{The handler subclass}
 
-\item{finisher, result}{A function called on the \code{result} of the handler.}
-
 \item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
-
-\item{...}{Passed to the handler constructor.}
-
-\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
 }
 \value{
-A WK handler
+A WK handler.
 }
 \description{
 Test handlers

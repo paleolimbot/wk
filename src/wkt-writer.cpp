@@ -23,7 +23,7 @@ public:
   }
 
   bool isNestingCollection() {
-    return this->stack.size() > 0 && 
+    return this->stack.size() > 0 &&
       (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
@@ -75,11 +75,11 @@ public:
         case WK_GEOMETRYCOLLECTION:
             out << "GEOMETRYCOLLECTION ";
             break;
-        
+
         default:
             std::stringstream err;
             err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
-            throw WKHandlerException(err.str().c_str());
+            cpp11::stop(err.str());
         }
 
         if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
