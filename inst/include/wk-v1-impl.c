@@ -1,6 +1,6 @@
 
 #include "wk-v1.h"
-#include <stdlib.h> // for malloc()
+#include <stdlib.h>
 
 char wk_handler_void_vector_start(const wk_meta_t* meta, void* handler_data) {
   return WK_CONTINUE;
@@ -37,7 +37,7 @@ void wk_handler_void_finalizer(void* handler_data) {
 
 wk_handler_t* wk_handler_create() {
   wk_handler_t* handler = (wk_handler_t*) malloc(sizeof(wk_handler_t));
-  handler->wk_api_version = 1;
+  handler->api_version = 1;
   handler->dirty = 0;
   handler->handler_data = NULL;
 
@@ -94,6 +94,10 @@ void wk_handler_run_cleanup(void* data) {
 SEXP wk_handler_run_internal(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
 
+  if (runData->handler->api_version != 1) {
+    Rf_error("Can't run a wk_handler with api_version '%d'", runData->handler->api_version);
+  }
+
   if (runData->handler->dirty) {
     Rf_error("Can't re-use a wk_handler");
   } else {
@@ -107,17 +111,4 @@ SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handl
   wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
   struct wk_handler_run_data runData = { readFunction, readData, handler };
   return R_ExecWithCleanup(&wk_handler_run_internal, &runData, &wk_handler_run_cleanup, &runData);
-}
-
-SEXP wk_error_sentinel(int code, const char* message) {
-  const char* names[] = {"code", "message", ""};
-  SEXP sentinel = PROTECT(Rf_mkNamed(VECSXP, names));
-  Rf_setAttrib(sentinel, Rf_install("class"), Rf_mkString("wk_error_sentinel"));
-  SEXP codeSEXP = PROTECT(Rf_allocVector(INTSXP, 1));
-  INTEGER(codeSEXP)[0] = code;
-  SET_VECTOR_ELT(sentinel, 0, codeSEXP);
-
-  SET_VECTOR_ELT(sentinel, 1, Rf_mkString(message));
-  UNPROTECT(2);
-  return sentinel;
 }

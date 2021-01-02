@@ -143,10 +143,6 @@ public:
   virtual char error(R_xlen_t feat_id, int code, const char* message) {
     cpp11::stop(message);
   }
-
-  virtual void finalize() noexcept {
-
-  }
 };
 
 // Need our own BEGIN_CPP11 and END_CPP11 because we don't always return an SEXP

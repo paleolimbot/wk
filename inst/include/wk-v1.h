@@ -54,7 +54,7 @@ typedef struct {
   meta.size = WK_SIZE_UNKNOWN
 
 typedef struct {
-  int wk_api_version;
+  int api_version;
   char dirty;
   void* handler_data;
   char (*vector_start)(const wk_meta_t* meta, void* handler_data);
@@ -81,7 +81,6 @@ wk_handler_t* wk_handler_create();
 SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(wk_handler_t* handler);
 SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr);
-SEXP wk_error_sentinel(int code, const char* message);
 
 #ifdef __cplusplus
 } // extern "C" {
