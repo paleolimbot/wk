@@ -72,16 +72,22 @@ as_wk_handler.function <- function(handler, ...) {
 
 #' @rdname wk_void_handler
 #' @export
-handle_wkb <- function(x, handler, ...) {
-  handler <- as_wk_handler(handler, ...)
-  .Call(wk_c_read_wkb, as_wkb(x), handler)
+wk_handle <- function(x, handler, ...) {
+  UseMethod("wk_handle")
 }
 
 #' @rdname wk_void_handler
 #' @export
-handle_wkt <- function(x, handler, ...) {
-  handler <- as_wk_handler(handler, ...)
-  wk_cpp_handle_wkt(as_wkt(x), handler)
+wk_handle.wk_wkb <- function(x, handler, ...) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_wkb, x, handler)
+}
+
+#' @rdname wk_void_handler
+#' @export
+wk_handle.wk_wkt <- function(x, handler, ...) {
+  handler <- as_wk_handler(handler)
+  wk_cpp_handle_wkt(x, handler)
 }
 
 #' @export

@@ -9,8 +9,9 @@
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
-\alias{handle_wkb}
-\alias{handle_wkt}
+\alias{wk_handle}
+\alias{wk_handle.wk_wkb}
+\alias{wk_handle.wk_wkt}
 \title{Test handlers}
 \usage{
 wk_void_handler()
@@ -29,9 +30,11 @@ is_wk_handler(handler)
 
 as_wk_handler(handler, ...)
 
-handle_wkb(x, handler, ...)
+wk_handle(x, handler, ...)
 
-handle_wkt(x, handler, ...)
+\method{wk_handle}{wk_wkb}(x, handler, ...)
+
+\method{wk_handle}{wk_wkt}(x, handler, ...)
 }
 \arguments{
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
