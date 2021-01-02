@@ -24,6 +24,15 @@ wk_handle(
 
 The concept of a **vector** was inspired by the `sf::sfc()` data type and draws heavily from the [vctrs](https://vctrs.r-lib.org) framework. The concept of a **feature** draws from the implementations of the simple features specification in most databases and the support in R for "missing" values, which are not quite the same as an EMPTY geometry (in the same way that `NaN` and `NA` can be distinguished in R). The concept of a **geometry** is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.
 
+## R infrastructure
+
+The `wk_handle()` function is an S3 generic for which methods are defined for `wkb()`, `wkt()`, `wksxp()`, `xy()`, `rct()`, and could be implemented for any number of in-memory and on-disk forms. When writing a new **reader**, this is the method you're defining for your data type. While you don't technically have to do implement the `wk_handle()` generic, doing so makes functions that use **handlers** work for your data type without having to know anything about your type/package! For example, the `wk_debug()` function uses this under the hood to support multiple input types with one line of code.
+
+```{r}
+wk_debug(wkt("POINT (0 1)"))
+wk_debug(as_wkb("POINT (0 1)"))
+```
+
 ## A handler in C++
 
 As an example, I'll write a handler that computes the 2D bounding box of its input (assuming Euclidean space). One way to go about this is to use the C++ extension of the C API. The approach is probably familiar: keep a running tally of the greatest and least values so far, updating every time information about a new coordinate is available.
