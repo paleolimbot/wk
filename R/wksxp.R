@@ -2,28 +2,9 @@
 #' Mark lists as well-known "S" expressions
 #'
 #' @details
-#' The "wksxp" format is experimental, but was written as a way to
-#' make it possible for packages to generate [wkb()] vectors without
-#' needing to use C++. The format represents geometries as following:
-#'
-#' - points are matrices with zero or one row
-#' - linestrings are matrices (one row per point)
-#' - polygons are lists of matrices (one matrix per ring)
-#' - multi (point, linestring, polygon) types are lists
-#'   of the simple types (without any meta information)
-#' - collections are lists of any type (must contain meta)
-#'
-#' Any geometry that isn't in a multi type must have meta information
-#' encoded as attributes. The attribures that are used are:
-#'
-#' - `class`: "wk_(point|linestring|...)
-#' - `has_z`: use `TRUE` if there is a Z coordinate
-#'    (may be omitted if false)
-#' - `has_m`: use `TRUE` if there is an M coordinate
-#'    (may be omitted if false)
-#'
-#' This is similar to the `sf::st_sfc()` format, but the formats aren't
-#' interchangeable.
+#' The "wksxp" format waw an attempt to provide an R-native format
+#' that could losslessly store WKT and WKB. This is now deprecated
+#' and will be removed in a future version.
 #'
 #' @param x A [list()] features (see details)
 #' @inheritParams new_wk_wkb
@@ -32,23 +13,12 @@
 #' @return A [new_wk_wksxp()]
 #' @export
 #'
-#' @examples
-#' wksxp(wkt_translate_wksxp("POINT (20 10)"))
-#'
 wksxp <- function(x = list(), crs = wk_crs_auto()) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   wksxp <- new_wk_wksxp(x, crs = crs)
   validate_wk_wksxp(x)
   wksxp
-}
-
-#' @rdname wksxp
-#' @export
-parse_wksxp <- function(x, crs = wk_crs_auto()) {
-  crs <- wk_crs_auto_value(x, crs)
-  attributes(x) <- NULL
-  parse_base(new_wk_wksxp(x, crs = crs), wksxp_problems(x))
 }
 
 #' @rdname wksxp
@@ -72,7 +42,7 @@ as_wksxp.character <- function(x, ..., crs = NULL) {
 #' @rdname wksxp
 #' @export
 as_wksxp.wk_wksxp <- function(x, ...) {
-  new_wk_wksxp(wksxp_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
+  x
 }
 
 #' @rdname wksxp
@@ -85,18 +55,6 @@ as_wksxp.wk_wkt <- function(x, ...) {
 #' @export
 as_wksxp.wk_wkb <- function(x, ...) {
   new_wk_wksxp(wkb_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
-}
-
-#' @rdname wkb
-#' @export
-as_wksxp.blob <- function(x, ..., crs = NULL) {
-  as_wksxp(wkb(x, crs = crs), ...)
-}
-
-#' @rdname wkb
-#' @export
-as_wksxp.WKB <- function(x, ..., crs = NULL) {
-  as_wksxp(wkb(x, crs = crs), ...)
 }
 
 #' S3 Details for wk_wksxp
@@ -123,10 +81,7 @@ is_wk_wksxp <- function(x) {
 #' @rdname new_wk_wksxp
 #' @export
 validate_wk_wksxp <- function(x) {
-  # types are checked in the parser
-  problems <- wksxp_problems(x)
-  stop_for_problems(problems)
-
+  # deprecated; don't check!
   invisible(x)
 }
 
@@ -143,11 +98,6 @@ validate_wk_wksxp <- function(x) {
 #' @export
 is.na.wk_wksxp <- function(x) {
   vapply(unclass(x), is.null, logical(1))
-}
-
-#' @export
-format.wk_wksxp <- function(x, ...) {
-  paste0("<", wksxp_format(x), ">")
 }
 
 # as far as I can tell, this is the only way to change

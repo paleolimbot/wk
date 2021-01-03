@@ -3,7 +3,6 @@
 \name{plot.wk_wkt}
 \alias{plot.wk_wkt}
 \alias{plot.wk_wkb}
-\alias{plot.wk_wksxp}
 \alias{plot.wk_xy}
 \alias{plot.wk_rct}
 \title{Plot well-known geometry vectors}
@@ -20,17 +19,6 @@
 )
 
 \method{plot}{wk_wkb}(
-  x,
-  ...,
-  asp = 1,
-  bbox = NULL,
-  xlab = "",
-  ylab = "",
-  rule = "evenodd",
-  add = FALSE
-)
-
-\method{plot}{wk_wksxp}(
   x,
   ...,
   asp = 1,
@@ -77,7 +65,6 @@ Plot well-known geometry vectors
 if (requireNamespace("wkutils")) {
   plot(as_wkt("LINESTRING (0 0, 1 1)"))
   plot(as_wkb("LINESTRING (0 0, 1 1)"))
-  plot(as_wksxp("LINESTRING (0 0, 1 1)"))
 }
 
 }

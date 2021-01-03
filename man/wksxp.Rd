@@ -2,7 +2,6 @@
 % Please edit documentation in R/wksxp.R
 \name{wksxp}
 \alias{wksxp}
-\alias{parse_wksxp}
 \alias{as_wksxp}
 \alias{as_wksxp.default}
 \alias{as_wksxp.character}
@@ -12,8 +11,6 @@
 \title{Mark lists as well-known "S" expressions}
 \usage{
 wksxp(x = list(), crs = wk_crs_auto())
-
-parse_wksxp(x, crs = wk_crs_auto())
 
 as_wksxp(x, ...)
 
@@ -41,32 +38,7 @@ A \code{\link[=new_wk_wksxp]{new_wk_wksxp()}}
 Mark lists as well-known "S" expressions
 }
 \details{
-The "wksxp" format is experimental, but was written as a way to
-make it possible for packages to generate \code{\link[=wkb]{wkb()}} vectors without
-needing to use C++. The format represents geometries as following:
-\itemize{
-\item points are matrices with zero or one row
-\item linestrings are matrices (one row per point)
-\item polygons are lists of matrices (one matrix per ring)
-\item multi (point, linestring, polygon) types are lists
-of the simple types (without any meta information)
-\item collections are lists of any type (must contain meta)
-}
-
-Any geometry that isn't in a multi type must have meta information
-encoded as attributes. The attribures that are used are:
-\itemize{
-\item \code{class}: "wk_(point|linestring|...)
-\item \code{has_z}: use \code{TRUE} if there is a Z coordinate
-(may be omitted if false)
-\item \code{has_m}: use \code{TRUE} if there is an M coordinate
-(may be omitted if false)
-}
-
-This is similar to the \code{sf::st_sfc()} format, but the formats aren't
-interchangeable.
-}
-\examples{
-wksxp(wkt_translate_wksxp("POINT (20 10)"))
-
+The "wksxp" format waw an attempt to provide an R-native format
+that could losslessly store WKT and WKB. This is now deprecated
+and will be removed in a future version.
 }
