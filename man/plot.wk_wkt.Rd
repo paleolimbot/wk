@@ -34,7 +34,7 @@
 \method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 }
 \arguments{
-\item{x}{A \code{\link[=wkt]{wkt()}}, \code{\link[=wkb]{wkb()}}, or \code{\link[=wksxp]{wksxp()}} vector.}
+\item{x}{A \code{\link[=wkt]{wkt()}} or \code{\link[=wkb]{wkb()}} vector.}
 
 \item{...}{Passed to plotting functions for features: \code{\link[graphics:points]{graphics::points()}}
 for point and multipoint geometries, \code{\link[graphics:lines]{graphics::lines()}} for linestring

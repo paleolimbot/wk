@@ -52,7 +52,7 @@ wk_handle(x, handler, ...)
 \method{wk_handle}{wk_rct}(x, handler, ...)
 }
 \arguments{
-\item{x}{A vector that can be interpreted as a \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, or \code{\link[=wksxp]{wksxp()}}.}
+\item{x}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}} or \code{\link[=wkt]{wkt()}}).}
 
 \item{...}{Unused}
 
