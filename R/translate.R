@@ -4,7 +4,6 @@
 #' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by `sf::st_as_binary()`.
 #' @param wkt A character vector containing well-known text.
-#' @param wksxp A `list()` of classed objects
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
@@ -22,10 +21,8 @@
 #'
 #' @return `*_translate_wkt()` returns a character vector of
 #'   well-known text; `*_translate_wkb()` returns a list
-#'   of raw vectors, and `*_translate_wksxp()` returns an unclassed
-#'   list of [wksxp()] geometries. Unlike [as_wkb()], [as_wkt()], and
-#'   [as_wksxp()], these functions do not attach
-#'   a class to the output.
+#'   of raw vectors. Unlike [as_wkb()], [as_wkt()],
+#'   these functions do not attach a class to the output.
 #'
 #' @export
 #'
@@ -66,17 +63,6 @@ wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wksxp <- function(wkb, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wkb_translate_wksxp(
-    wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
-  )
-}
-
-#' @rdname wkb_translate_wkt
-#' @export
 wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
                               precision = 16, trim = TRUE) {
   cpp_wkt_translate_wkt(
@@ -100,56 +86,6 @@ wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid 
     includeSRID = include_srid,
     endian = endian,
     bufferSize = buffer_size
-  )
-}
-
-#' @rdname wkb_translate_wkt
-#' @export
-wkt_translate_wksxp <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wkt_translate_wksxp(
-    wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
-  )
-}
-
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wkt <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
-                                 precision = 16, trim = TRUE) {
-  cpp_wksxp_translate_wkt(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    precision = precision,
-    trim = trim
-  )
-}
-
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wkb <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
-                                endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_wksxp_translate_wkb(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
-  )
-}
-
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wksxp <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wksxp_translate_wksxp(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
   )
 }
 

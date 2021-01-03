@@ -45,18 +45,6 @@ as_wksxp.wk_wksxp <- function(x, ...) {
   x
 }
 
-#' @rdname wksxp
-#' @export
-as_wksxp.wk_wkt <- function(x, ...) {
-  new_wk_wksxp(wkt_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
-}
-
-#' @rdname wksxp
-#' @export
-as_wksxp.wk_wkb <- function(x, ...) {
-  new_wk_wksxp(wkb_translate_wksxp(x), crs = attr(x, "crs", exact = TRUE))
-}
-
 #' S3 Details for wk_wksxp
 #'
 #' @param x A (possibly) [wksxp()] vector

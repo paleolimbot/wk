@@ -7,7 +7,6 @@
 \alias{as_wkb.character}
 \alias{as_wkb.wk_wkb}
 \alias{as_wkb.wk_wkt}
-\alias{as_wkb.wk_wksxp}
 \alias{as_wkb.blob}
 \alias{as_wkb.WKB}
 \title{Mark lists of raw vectors as well-known binary}
@@ -23,8 +22,6 @@ as_wkb(x, ...)
 \method{as_wkb}{wk_wkb}(x, ...)
 
 \method{as_wkb}{wk_wkt}(x, ...)
-
-\method{as_wkb}{wk_wksxp}(x, ...)
 
 \method{as_wkb}{blob}(x, ..., crs = NULL)
 

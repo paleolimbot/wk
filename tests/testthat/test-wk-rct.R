@@ -28,11 +28,6 @@ test_that("coercion to and from wk* classes works", {
     as_wkb(rct(1, 2, 3, 4)),
     as_wkb("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
   )
-
-  expect_identical(
-    as_wksxp(rct(1, 2, 3, 4)),
-    as_wksxp("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
-  )
 })
 
 test_that("subset-assign works for rct", {

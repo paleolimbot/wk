@@ -6,8 +6,6 @@
 \alias{as_wksxp.default}
 \alias{as_wksxp.character}
 \alias{as_wksxp.wk_wksxp}
-\alias{as_wksxp.wk_wkt}
-\alias{as_wksxp.wk_wkb}
 \title{Mark lists as well-known "S" expressions}
 \usage{
 wksxp(x = list(), crs = wk_crs_auto())
@@ -19,10 +17,6 @@ as_wksxp(x, ...)
 \method{as_wksxp}{character}(x, ..., crs = NULL)
 
 \method{as_wksxp}{wk_wksxp}(x, ...)
-
-\method{as_wksxp}{wk_wkt}(x, ...)
-
-\method{as_wksxp}{wk_wkb}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} features (see details)}

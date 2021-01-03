@@ -35,11 +35,3 @@ test_that("rct_translate_wkb() works", {
     wkt_translate_wkb("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
   )
 })
-
-test_that("rct_translate_wksxp() works", {
-  expect_identical(rct_translate_wksxp(rct()), list())
-  expect_identical(
-    rct_translate_wksxp(rct(1, 2, 3, 4)),
-    wkt_translate_wksxp("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
-  )
-})

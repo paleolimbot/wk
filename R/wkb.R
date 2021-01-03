@@ -53,12 +53,6 @@ as_wkb.wk_wkt <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.wk_wksxp <- function(x, ...) {
-  new_wk_wkb(wksxp_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
-}
-
-#' @rdname wkb
-#' @export
 as_wkb.blob <- function(x, ..., crs = NULL) {
   as_wkb(wkb(x, crs = crs), ...)
 }
