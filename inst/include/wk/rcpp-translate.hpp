@@ -12,8 +12,6 @@
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.hpp"
-#include "wk/rcpp-sexp-writer.hpp"
-#include "wk/rcpp-sexp-reader.hpp"
 
 class RcppWKFieldsProvider: public WKFieldsProvider<List> {
 public:
@@ -85,17 +83,6 @@ inline Rcpp::CharacterVector rcpp_translate_wkt(WKReader& reader,
   exporter.setRoundingPrecision(precision);
   exporter.setTrim(trim);
   WKTWriter writer(exporter);
-
-  rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
-
-  return exporter.output;
-}
-
-inline Rcpp::List rcpp_translate_wksxp(WKReader& reader,
-                                       int includeZ = NA_INTEGER, int includeM = NA_INTEGER,
-                                       int includeSRID = NA_INTEGER) {
-  WKRcppSEXPExporter exporter(reader.nFeatures());
-  WKRcppSEXPWriter writer(exporter);
 
   rcpp_translate_base(reader, writer, includeZ, includeM, includeSRID);
 

@@ -1,5 +1,8 @@
 # wk (development version)
 
+* Removed `wksxp()` in favour of improved `sfc()` support 
+  (#21).
+
 # wk 0.3.3
 
 * Fixed WKB import of ZM geometries that do not use EWKB.

@@ -134,7 +134,6 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
 test_that("coercion to wk* vectors works", {
   expect_identical(as_wkt(xy(1, 2)), wkt("POINT (1 2)"))
   expect_identical(as_wkb(xy(1, 2)), as_wkb("POINT (1 2)"))
-  expect_identical(as_wksxp(xy(1, 2)), as_wksxp("POINT (1 2)"))
 })
 
 test_that("coercion from wk* vectors works", {
@@ -145,7 +144,6 @@ test_that("coercion from wk* vectors works", {
   expect_identical(as_xy(wkt("POINT (1 2)"), dims = c("x", "y", "z", "m")), xyzm(1, 2, NaN, NaN))
 
   expect_identical(as_xy(as_wkb("POINT (1 2)")), xy(1, 2))
-  expect_identical(as_xy(as_wksxp("POINT (1 2)")), xy(1, 2))
 
   expect_error(as_xy(wkt("POINT (1 2)"), dims = "L"), "Unknown dimensions")
 })

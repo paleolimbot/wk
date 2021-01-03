@@ -16,15 +16,3 @@ test_that("wkt_problems() reports parsing errors", {
   expect_identical(wkt_problems("POINT (30 10)"), NA_character_)
   expect_match(wkt_problems("sss"), "Expected geometry type or")
 })
-
-test_that("wksxp_problems() reports parsing errors", {
-  expect_identical(
-    wksxp_problems(list(structure(matrix(c(30, 10),  ncol = 2), class = "wk_point"))),
-    NA_character_
-  )
-  expect_match(
-    wksxp_problems(list(structure(list(c(30, 10),  ncol = 2), class = "wk_point"))),
-    "Unexpected classed object"
-  )
-})
-

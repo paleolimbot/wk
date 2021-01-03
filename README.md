@@ -44,13 +44,14 @@ If you can load the package, you’re good to go\!
 library(wk)
 ```
 
-## Basic vector classes for WKT and WKB
+## Basic vector classes for WKT, WKB, points, and rectangles
 
 Use `wkt()` to mark a character vector as containing well-known text, or
-`wkb()` to mark a vector as well-known binary. These have some basic
-vector features built in, which means you can subset, repeat,
-concatenate, and put these objects in a data frame or tibble. These come
-with built-in `format()` and `print()` methods.
+`wkb()` to mark a vector as well-known binary. Use `xy()`, `xyz()`,
+`xym()`, and `xyzm()` to create vectors of points, and `rct()` to create
+vectors of rectangles. These classes have full
+[vctrs](https://vctrs.r-lib.org) support and `plot()`/`format()` methods
+to make them as frictionless as possible working in R and RStudio.
 
 ``` r
 wkt("POINT (30 10)")
@@ -59,53 +60,10 @@ wkt("POINT (30 10)")
 as_wkb(wkt("POINT (30 10)"))
 #> <wk_wkb[1]>
 #> [1] <POINT (30 10)>
-```
-
-## Well-known R objects
-
-The wk package experimentally generates (and parses) a plain R object
-format, which is needed because well-known binary can’t natively
-represent the empty point and reading/writing well-known text is too
-slow. The format of the `wksxp()` object is designed to be as close as
-possible to well-known text and well-known binary to make the
-translation code as clean as possible.
-
-``` r
-wkt_translate_wksxp("POINT (30 10)")
-#> [[1]]
-#>      [,1] [,2]
-#> [1,]   30   10
-#> attr(,"class")
-#> [1] "wk_point"
-```
-
-## wkutils
-
-To keep the footprint (i.e., compile time) of this package as slim as
-possible, utilities to work with WKT, WKB, and well-known R objects are
-located in the [wkutils
-package](https://paleolimbot.github.io/wkutils/). One of the main
-drawbacks to passing around geometries in WKB is that the format is
-opaque to R users, who need coordinates as R objects rather than binary
-vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()`
-functions (among others) to extract usable coordinates and feature meta.
-
-``` r
-wkutils::wkt_coords("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id ring_id     x     y     z     m
-#>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
-#> 1          1       1       0     1     2     3     4
-wkutils::wkt_meta("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id type_id  size  srid has_z has_m
-#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>
-#> 1          1       1       1     1    NA TRUE  TRUE
-wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 8
-#>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1     1     2     3     4     1     2     3     4
-wkutils::coords_point_translate_wkt(1, 2, 3, 4)
-#> [1] "POINT ZM (1 2 3 4)"
+xy(1, 2)
+#> <wk_xy[1]>
+#> [1] (1 2)
+rct(1, 2, 3, 4)
+#> <wk_rct[1]>
+#> [1] [1 2 3 4]
 ```

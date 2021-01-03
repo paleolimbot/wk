@@ -32,7 +32,6 @@ test_that("as_wkb() works", {
   expect_identical(as_wkb(x), x)
   expect_identical(as_wkb("POINT (40 10)"), x)
   expect_identical(as_wkb(wkt("POINT (40 10)")), x)
-  expect_identical(as_wkb(as_wksxp("POINT (40 10)")), as_wkb("POINT (40 10)"))
 
   # blob and WKB methods
   expect_identical(

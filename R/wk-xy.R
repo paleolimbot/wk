@@ -201,11 +201,6 @@ as_xy.wk_wkb <- function(x, ..., dims = NULL) {
   as_xy_wkx(x, translator = wkb_translate_xyzm, dims = dims)
 }
 
-#' @export
-as_xy.wk_wksxp <- function(x, ..., dims = NULL) {
-  as_xy_wkx(x, translator = wksxp_translate_xyzm, dims = dims)
-}
-
 as_xy_wkx <- function(x, translator, dims) {
   if (is.null(dims)) {
     result <- translator(x, include_z = NA, include_m = NA)
@@ -306,14 +301,6 @@ as_wkt.wk_xy <- function(x, ...) {
 as_wkb.wk_xy <- function(x, ...) {
   new_wk_wkb(
     xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
-    crs = wk_crs(x)
-  )
-}
-
-#' @export
-as_wksxp.wk_xy <- function(x, ...) {
-  new_wk_wksxp(
-    xyzm_translate_wksxp(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
     crs = wk_crs(x)
   )
 }

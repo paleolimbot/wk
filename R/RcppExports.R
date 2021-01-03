@@ -9,20 +9,12 @@ cpp_format_wkt <- function(wkt, maxCoords, precision, trim) {
     .Call(`_wk_cpp_format_wkt`, wkt, maxCoords, precision, trim)
 }
 
-cpp_format_wksxp <- function(wksxp, maxCoords, precision, trim) {
-    .Call(`_wk_cpp_format_wksxp`, wksxp, maxCoords, precision, trim)
-}
-
 cpp_problems_wkb <- function(wkb) {
     .Call(`_wk_cpp_problems_wkb`, wkb)
 }
 
 cpp_problems_wkt <- function(wkt) {
     .Call(`_wk_cpp_problems_wkt`, wkt)
-}
-
-cpp_problems_wksxp <- function(wksxp) {
-    .Call(`_wk_cpp_problems_wksxp`, wksxp)
 }
 
 cpp_wkb_translate_wkt <- function(wkb, includeZ, includeM, includeSRID, precision, trim) {
@@ -33,32 +25,12 @@ cpp_wkb_translate_wkb <- function(wkb, includeZ, includeM, includeSRID, endian, 
     .Call(`_wk_cpp_wkb_translate_wkb`, wkb, includeZ, includeM, includeSRID, endian, bufferSize)
 }
 
-cpp_wkb_translate_wksxp <- function(wkb, includeZ, includeM, includeSRID) {
-    .Call(`_wk_cpp_wkb_translate_wksxp`, wkb, includeZ, includeM, includeSRID)
-}
-
 cpp_wkt_translate_wkt <- function(wkt, includeZ, includeM, includeSRID, precision, trim) {
     .Call(`_wk_cpp_wkt_translate_wkt`, wkt, includeZ, includeM, includeSRID, precision, trim)
 }
 
 cpp_wkt_translate_wkb <- function(wkt, includeZ, includeM, includeSRID, endian, bufferSize) {
     .Call(`_wk_cpp_wkt_translate_wkb`, wkt, includeZ, includeM, includeSRID, endian, bufferSize)
-}
-
-cpp_wkt_translate_wksxp <- function(wkt, includeZ, includeM, includeSRID) {
-    .Call(`_wk_cpp_wkt_translate_wksxp`, wkt, includeZ, includeM, includeSRID)
-}
-
-cpp_wksxp_translate_wkt <- function(wksexp, includeZ, includeM, includeSRID, precision, trim) {
-    .Call(`_wk_cpp_wksxp_translate_wkt`, wksexp, includeZ, includeM, includeSRID, precision, trim)
-}
-
-cpp_wksxp_translate_wkb <- function(wksexp, includeZ, includeM, includeSRID, endian, bufferSize) {
-    .Call(`_wk_cpp_wksxp_translate_wkb`, wksexp, includeZ, includeM, includeSRID, endian, bufferSize)
-}
-
-cpp_wksxp_translate_wksxp <- function(wksexp, includeZ, includeM, includeSRID) {
-    .Call(`_wk_cpp_wksxp_translate_wksxp`, wksexp, includeZ, includeM, includeSRID)
 }
 
 cpp_translate_xyzm_wkt <- function(xy, precision, trim) {
@@ -69,10 +41,6 @@ cpp_translate_xyzm_wkb <- function(xy, endian, bufferSize) {
     .Call(`_wk_cpp_translate_xyzm_wkb`, xy, endian, bufferSize)
 }
 
-cpp_translate_xyzm_wksxp <- function(xy) {
-    .Call(`_wk_cpp_translate_xyzm_wksxp`, xy)
-}
-
 cpp_translate_wkt_xyzm <- function(wkt) {
     .Call(`_wk_cpp_translate_wkt_xyzm`, wkt)
 }
@@ -81,19 +49,11 @@ cpp_translate_wkb_xyzm <- function(wkb) {
     .Call(`_wk_cpp_translate_wkb_xyzm`, wkb)
 }
 
-cpp_translate_wksxp_xyzm <- function(wksxp) {
-    .Call(`_wk_cpp_translate_wksxp_xyzm`, wksxp)
-}
-
 cpp_translate_rct_wkt <- function(rct, precision, trim) {
     .Call(`_wk_cpp_translate_rct_wkt`, rct, precision, trim)
 }
 
 cpp_translate_rct_wkb <- function(rct, endian, bufferSize) {
     .Call(`_wk_cpp_translate_rct_wkb`, rct, endian, bufferSize)
-}
-
-cpp_translate_rct_wksxp <- function(rct) {
-    .Call(`_wk_cpp_translate_rct_wksxp`, rct)
 }
 

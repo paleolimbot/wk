@@ -313,5 +313,4 @@ test_that("wkt_translate_* can handle non-finite values", {
 
 test_that("wkt_translate_* doesn't segfault on other inputs", {
   expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), class = "Rcpp::not_compatible")
-  expect_error(wkt_translate_wkt(as_wksxp("POINT (30 10)")), class = "Rcpp::not_compatible")
 })

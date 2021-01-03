@@ -399,7 +399,6 @@ test_that("wkb--wkb translation works for nested collections", {
 
 test_that("wkb_translate_* doesn't segfault on other inputs", {
   expect_error(wkb_translate_wkt("POINT (30 10)"), "can only be applied to a 'raw'")
-  expect_error(wkb_translate_wkt(as_wksxp("POINT (30 10)")), "can only be applied to a 'raw'")
 })
 
 test_that("wkb reader can read 1000-3000 style WKB input", {

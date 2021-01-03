@@ -5,7 +5,6 @@
 
 #include <Rcpp.h>
 #include "wk/rcpp-io.hpp"
-#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 class WKValidator: public WKGeometryHandler {
@@ -46,12 +45,5 @@ Rcpp::CharacterVector cpp_problems_wkb(Rcpp::List wkb) {
 Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
   WKCharacterVectorProvider provider(wkt);
   WKTStreamer reader(provider);
-  return cpp_problems_base(reader);
-}
-
-// [[Rcpp::export]]
-Rcpp::CharacterVector cpp_problems_wksxp(List wksxp) {
-  WKRcppSEXPProvider provider(wksxp);
-  WKRcppSEXPReader reader(provider);
   return cpp_problems_base(reader);
 }

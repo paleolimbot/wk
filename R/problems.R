@@ -26,9 +26,3 @@ wkb_problems <- function(wkb) {
 wkt_problems <- function(wkt) {
   cpp_problems_wkt(wkt)
 }
-
-#' @rdname wkb_problems
-#' @export
-wksxp_problems <- function(wksxp) {
-  cpp_problems_wksxp(wksxp)
-}

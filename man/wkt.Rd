@@ -8,7 +8,6 @@
 \alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
 \alias{as_wkt.wk_wkb}
-\alias{as_wkt.wk_wksxp}
 \title{Mark character vectors as well-known text}
 \usage{
 wkt(x = character(), crs = wk_crs_auto())
@@ -24,8 +23,6 @@ as_wkt(x, ...)
 \method{as_wkt}{wk_wkt}(x, ...)
 
 \method{as_wkt}{wk_wkb}(x, ...)
-
-\method{as_wkt}{wk_wksxp}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=character]{character()}} vector containing well-known text.}

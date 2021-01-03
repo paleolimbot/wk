@@ -3,22 +3,17 @@
 \name{wkb_problems}
 \alias{wkb_problems}
 \alias{wkt_problems}
-\alias{wksxp_problems}
 \title{Validate well-known binary and well-known text}
 \usage{
 wkb_problems(wkb)
 
 wkt_problems(wkt)
-
-wksxp_problems(wksxp)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{sf::st_as_binary()}.}
 
 \item{wkt}{A character vector containing well-known text.}
-
-\item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
 A character vector of parsing errors. \code{NA} signifies

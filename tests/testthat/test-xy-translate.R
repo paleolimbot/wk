@@ -41,17 +41,7 @@ test_that("xyzm_translate_wkb() works", {
   expect_identical(xyzm_translate_wkb(xyzm(1, 2, 3, 4)), wkt_translate_wkb("POINT ZM (1 2 3 4)"))
 })
 
-test_that("xyzm_translate_wksxp() works", {
-  expect_identical(xyzm_translate_wksxp(xyzm(crs = NULL)), list())
-  expect_identical(xyzm_translate_wksxp(xyzm(1, 2, 3, 4)), wkt_translate_wksxp("POINT ZM (1 2 3 4)"))
-})
-
 test_that("wkb_translate_xyzm() works", {
   expect_identical(wkb_translate_xyzm(list()), unclass(xy(crs = NULL)))
   expect_identical(wkb_translate_xyzm(wkt_translate_wkb("POINT ZM (1 2 3 4)")), unclass(xyzm(1, 2, 3, 4)))
-})
-
-test_that("wksxp_translate_xyzm() works", {
-  expect_identical(wksxp_translate_xyzm(list()), unclass(xy(crs = NULL)))
-  expect_identical(wksxp_translate_xyzm(wkt_translate_wksxp("POINT ZM (1 2 3 4)")), unclass(xyzm(1, 2, 3, 4)))
 })

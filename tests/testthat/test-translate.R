@@ -1,14 +1,4 @@
 
-test_that("wksxp writing is vectorized", {
-  expect_identical(
-    wkt_translate_wksxp(c("POINT (20 20)", "POINT (30 30)")),
-    list(
-      structure(matrix(c(20, 20),  ncol = 2), class = "wk_point"),
-      structure(matrix(c(30, 30),  ncol = 2), class = "wk_point")
-    )
-  )
-})
-
 test_that("wkt writing is vectorized", {
   expect_identical(
     wkt_translate_wkt(c("POINT (20 20)", "POINT (30 30)")),

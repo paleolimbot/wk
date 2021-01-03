@@ -46,25 +46,6 @@ test_that("conversion from sf to wkb works", {
   expect_identical(wk_crs(as_wkb(sf)), sf::st_crs(sf))
 })
 
-test_that("conversion from sf to wksxp works", {
-  skip_if_not_installed("sf")
-
-  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), crs = 4326)
-  expect_is(as_wksxp(sfc), "wk_wksxp")
-  expect_identical(
-    as.character(as_wkt(as_wksxp(sfc))),
-    c("POINT EMPTY", "POINT (0 1)")
-  )
-  expect_identical(wk_crs(as_wksxp(sfc)), sf::st_crs(sfc))
-
-  sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
-  expect_identical(
-    as.character(as_wkt(as_wksxp(sf))),
-    c("POINT EMPTY", "POINT (0 1)")
-  )
-  expect_identical(wk_crs(as_wksxp(sf)), sf::st_crs(sf))
-})
-
 test_that("conversion from sf to xy works", {
   skip_if_not_installed("sf")
 
@@ -99,14 +80,11 @@ test_that("conversion to sf works", {
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
   wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
   wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
-  wksxp <- as_wksxp(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
 
   expect_equal(sf::st_as_sf(wkb), sf)
   expect_equal(sf::st_as_sfc(wkb), sfc)
   expect_equal(sf::st_as_sf(wkt), sf)
   expect_equal(sf::st_as_sfc(wkt), sfc)
-  expect_equal(sf::st_as_sf(wksxp), sf)
-  expect_equal(sf::st_as_sfc(wksxp), sfc)
 
   # xy has no SRID
   expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1), crs = 4326)), sf)
