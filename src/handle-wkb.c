@@ -45,7 +45,7 @@ void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
 }
 
 typedef struct {
-  uint64_t feat_id;
+  R_xlen_t feat_id;
   unsigned char* buffer;
   size_t size;
   size_t offset;

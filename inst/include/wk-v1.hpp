@@ -45,11 +45,11 @@ public:
     return cpp11::safe[handler->vector_start](meta, handler->handler_data);
   }
 
-  int feature_start(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->feature_start](meta, feat_id, handler->handler_data);
   }
 
-  int null_feature(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->null_feature](meta, feat_id, handler->handler_data);
   }
 
@@ -73,7 +73,7 @@ public:
     return cpp11::safe[handler->geometry_end](meta, partId, handler->handler_data);
   }
 
-  int feature_end(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->feature_end](meta, feat_id, handler->handler_data);
   }
 
@@ -81,7 +81,7 @@ public:
     return cpp11::safe[handler->vector_end](meta, handler->handler_data);
   }
 
-  int error(uint64_t feat_id, int code, const char* message) {
+  int error(R_xlen_t feat_id, int code, const char* message) {
     return cpp11::safe[handler->error](feat_id, code, message, handler->handler_data);
   }
 
@@ -100,11 +100,11 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int feature_start(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual int null_feature(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
@@ -128,7 +128,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int feature_end(const wk_vector_meta_t* meta, uint64_t feat_id) {
+  virtual int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
@@ -140,7 +140,7 @@ public:
      
   }
 
-  virtual int error(uint64_t feat_id, int code, const char* message) {
+  virtual int error(R_xlen_t feat_id, int code, const char* message) {
     cpp11::stop(message);
   }
 };
@@ -223,14 +223,14 @@ private:
     WK_END_CPP11(WK_ABORT)
   }
 
-  static int feature_start(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) noexcept {
+  static int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->feature_start(meta, feat_id);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static int null_feature(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) noexcept {
+  static int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->null_feature(meta, feat_id);
@@ -272,7 +272,7 @@ private:
     WK_END_CPP11(WK_ABORT)
   }
 
-  static int feature_end(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) noexcept {
+  static int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->feature_end(meta, feat_id);
@@ -293,7 +293,7 @@ private:
     WK_END_CPP11()
   }
 
-  static int error(uint64_t feat_id, int code, const char* message, void* handler_data) noexcept {
+  static int error(R_xlen_t feat_id, int code, const char* message, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->error(feat_id, code, message);

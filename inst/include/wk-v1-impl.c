@@ -10,7 +10,7 @@ SEXP wk_handler_void_vector_end(const wk_vector_meta_t* meta, void* handler_data
   return R_NilValue;
 }
 
-int wk_handler_void_feature(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wk_handler_void_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
@@ -26,7 +26,7 @@ int wk_handler_void_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_
   return WK_CONTINUE;
 }
 
-int wk_handler_void_error(uint64_t feat_id, int code, const char* message, void* handler_data) {
+int wk_handler_void_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }

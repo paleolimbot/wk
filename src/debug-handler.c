@@ -137,20 +137,20 @@ SEXP wk_handler_debug_vector_end(const wk_vector_meta_t* meta, void* handler_dat
   return R_NilValue;
 }
 
-int wk_handler_debug_feature_start(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wk_handler_debug_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
   Rprintf("feature_start (%d): <%p>\n", feat_id + 1, meta);
   wk_handler_debug_indent(handler_data);
   return WK_CONTINUE;
 }
 
-int wk_handler_debug_feature_null(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wk_handler_debug_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
   Rprintf("null_feature (%d) <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
-int wk_handler_debug_feature_end(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wk_handler_debug_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
   Rprintf("feature_end (%d): <%p>\n", feat_id + 1, meta);
@@ -206,7 +206,7 @@ int wk_handler_debug_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coo
   return WK_CONTINUE;
 }
 
-int wk_handler_debug_error(uint64_t feat_id, int code, const char* message, void* handler_data) {
+int wk_handler_debug_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
   Rprintf("error [i=%d](%d): %s\n", feat_id, code, message);
   return WK_ABORT;
