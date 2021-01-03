@@ -101,23 +101,23 @@
   <span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug_handler</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;   feature_start (1) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;     null_feature (1) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;   feature_end (1) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;   feature_start (2) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeea884788&gt;</span>
-<span class="co">#&gt;       coord (1) &lt;0x7ffeea884788&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeea884788&gt; </span>
-<span class="co">#&gt;   feature_end (2) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;   feature_start (3) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffeea884788&gt;</span>
-<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffeea884698&gt;</span>
-<span class="co">#&gt;         coord (1) &lt;0x7ffeea884698&gt; (2.000000 3.000000)</span>
-<span class="co">#&gt;       geometry_end (1) &lt;0x7ffeea884698&gt; </span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeea884788&gt; </span>
-<span class="co">#&gt;   feature_end (3) &lt;0x7ffeea884900&gt;</span>
-<span class="co">#&gt; vector_end &lt;0x7ffeea884900&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;     null_feature (1) &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;   feature_start (2): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffee3238788&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee3238788&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffee3238788&gt; </span>
+<span class="co">#&gt;   feature_end (2): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;   feature_start (3): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffee3238788&gt;</span>
+<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffee3238698&gt;</span>
+<span class="co">#&gt;         coord (1): &lt;0x7ffee3238698&gt; (2.000000 3.000000)</span>
+<span class="co">#&gt;       geometry_end (1): &lt;0x7ffee3238698&gt; </span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffee3238788&gt; </span>
+<span class="co">#&gt;   feature_end (3): &lt;0x7ffee3238900&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee3238900&gt;</span>
 <span class="co">#&gt; vector_finally</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
@@ -127,22 +127,22 @@
 <p>The <code><a href="../../reference/wk_void_handler.html">wk_handle()</a></code> function is an S3 generic for which methods are defined for <code><a href="../../reference/wkb.html">wkb()</a></code>, <code><a href="../../reference/wkt.html">wkt()</a></code>, <code><a href="../../reference/wksxp.html">wksxp()</a></code>, <code><a href="../../reference/xy.html">xy()</a></code>, <code><a href="../../reference/rct.html">rct()</a></code>, and could be implemented for any number of in-memory and on-disk forms. When writing a new <strong>reader</strong>, this is the method you’re defining for your data type. While you don’t technically have to do implement the <code><a href="../../reference/wk_void_handler.html">wk_handle()</a></code> generic, doing so makes functions that use <strong>handlers</strong> work for your data type without having to know anything about your type/package! For example, the <code><a href="../../reference/wk_void_handler.html">wk_debug()</a></code> function uses this under the hood to support multiple input types with one line of code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeea883c40&gt;</span>
-<span class="co">#&gt;   feature_start (1) &lt;0x7ffeea883c40&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeea883ac8&gt;</span>
-<span class="co">#&gt;       coord (1) &lt;0x7ffeea883ac8&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeea883ac8&gt; </span>
-<span class="co">#&gt;   feature_end (1) &lt;0x7ffeea883c40&gt;</span>
-<span class="co">#&gt; vector_end &lt;0x7ffeea883c40&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee3237c40&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee3237c40&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffee3237ac8&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee3237ac8&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffee3237ac8&gt; </span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee3237c40&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee3237c40&gt;</span>
 <span class="co">#&gt; vector_finally</span>
 <span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeea886a40&gt;</span>
-<span class="co">#&gt;   feature_start (1) &lt;0x7ffeea886a40&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT[1] &lt;0x7ffeea8869a0&gt;</span>
-<span class="co">#&gt;       coord (1) &lt;0x7ffeea8869a0&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0) &lt;0x7ffeea8869a0&gt; </span>
-<span class="co">#&gt;   feature_end (1) &lt;0x7ffeea886a40&gt;</span>
-<span class="co">#&gt; vector_end &lt;0x7ffeea886a40&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee323aa50&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee323aa50&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT[1] &lt;0x7ffee323a9b0&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee323a9b0&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffee323a9b0&gt; </span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee323aa50&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee323aa50&gt;</span>
 <span class="co">#&gt; vector_finally</span></code></pre></div>
 </div>
 <div id="a-handler-in-c" class="section level2">
@@ -160,7 +160,7 @@
 <span id="cb3-9"><a href="#cb3-9"></a><span class="kw">public</span>:</span>
 <span id="cb3-10"><a href="#cb3-10"></a>  BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}</span>
 <span id="cb3-11"><a href="#cb3-11"></a>  </span>
-<span id="cb3-12"><a href="#cb3-12"></a>  <span class="dt">char</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="dt">wk_coord_t</span> coord, <span class="dt">uint32_t</span> coord_id) {</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="dt">int</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="dt">wk_coord_t</span> coord, <span class="dt">uint32_t</span> coord_id) {</span>
 <span id="cb3-13"><a href="#cb3-13"></a>    <span class="kw">this</span>-&gt;xmin = <span class="bu">std::</span>min(coord.v[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmin);</span>
 <span id="cb3-14"><a href="#cb3-14"></a>    <span class="kw">this</span>-&gt;ymin = <span class="bu">std::</span>min(coord.v[<span class="dv">1</span>], <span class="kw">this</span>-&gt;ymin);</span>
 <span id="cb3-15"><a href="#cb3-15"></a>    <span class="kw">this</span>-&gt;xmax = <span class="bu">std::</span>max(coord.v[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmax);</span>
@@ -168,7 +168,7 @@
 <span id="cb3-17"><a href="#cb3-17"></a>    <span class="cf">return</span> WK_CONTINUE; </span>
 <span id="cb3-18"><a href="#cb3-18"></a>  }</span>
 <span id="cb3-19"><a href="#cb3-19"></a>  </span>
-<span id="cb3-20"><a href="#cb3-20"></a>  SEXP vector_end(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta) {</span>
+<span id="cb3-20"><a href="#cb3-20"></a>  SEXP vector_end(<span class="at">const</span> <span class="dt">wk_vector_meta_t</span>* meta) {</span>
 <span id="cb3-21"><a href="#cb3-21"></a>    writable::doubles output = {<span class="kw">this</span>-&gt;xmin, <span class="kw">this</span>-&gt;ymin, <span class="kw">this</span>-&gt;xmax, <span class="kw">this</span>-&gt;ymax};</span>
 <span id="cb3-22"><a href="#cb3-22"></a>    output.names() = {<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>};</span>
 <span id="cb3-23"><a href="#cb3-23"></a>    <span class="cf">return</span> output;</span>
@@ -190,7 +190,7 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900003fa0&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900003fb6&gt;</span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span>
@@ -245,7 +245,7 @@
 <span id="cb8-10"><a href="#cb8-10"></a>  <span class="dt">double</span> xmin, ymin, xmax, ymax;</span>
 <span id="cb8-11"><a href="#cb8-11"></a>} bbox_handler_data_t;</span>
 <span id="cb8-12"><a href="#cb8-12"></a></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="dt">char</span> bbox_handler_coord(<span class="dt">const</span> wk_meta_t* meta, <span class="dt">const</span> wk_coord_t coord, </span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="dt">int</span> bbox_handler_coord(<span class="dt">const</span> wk_meta_t* meta, <span class="dt">const</span> wk_coord_t coord, </span>
 <span id="cb8-14"><a href="#cb8-14"></a>                        <span class="dt">uint32_t</span> coord_id, <span class="dt">void</span>* handler_data) {</span>
 <span id="cb8-15"><a href="#cb8-15"></a>  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;</span>
 <span id="cb8-16"><a href="#cb8-16"></a>  data-&gt;xmin = MIN(coord.v[<span class="dv">0</span>], data-&gt;xmin);</span>
@@ -255,10 +255,10 @@
 <span id="cb8-20"><a href="#cb8-20"></a>  <span class="cf">return</span> WK_CONTINUE;</span>
 <span id="cb8-21"><a href="#cb8-21"></a>}</span>
 <span id="cb8-22"><a href="#cb8-22"></a></span>
-<span id="cb8-23"><a href="#cb8-23"></a>SEXP bbox_handler_vector_end(<span class="dt">const</span> wk_meta_t* meta, <span class="dt">void</span>* handler_data) {</span>
+<span id="cb8-23"><a href="#cb8-23"></a>SEXP bbox_handler_vector_end(<span class="dt">const</span> wk_vector_meta_t* meta, <span class="dt">void</span>* handler_data) {</span>
 <span id="cb8-24"><a href="#cb8-24"></a>  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;</span>
 <span id="cb8-25"><a href="#cb8-25"></a>  </span>
-<span id="cb8-26"><a href="#cb8-26"></a>  <span class="dt">const</span> <span class="dt">char</span> *names[] = {<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>, <span class="st">""</span>};</span>
+<span id="cb8-26"><a href="#cb8-26"></a>  <span class="dt">const</span> <span class="dt">char</span>* names[] = {<span class="st">"xmin"</span>, <span class="st">"ymin"</span>, <span class="st">"xmax"</span>, <span class="st">"ymax"</span>, <span class="st">""</span>};</span>
 <span id="cb8-27"><a href="#cb8-27"></a>  SEXP output = PROTECT(Rf_mkNamed(REALSXP, names));</span>
 <span id="cb8-28"><a href="#cb8-28"></a>  REAL(output)[<span class="dv">0</span>] = data-&gt;xmin;</span>
 <span id="cb8-29"><a href="#cb8-29"></a>  REAL(output)[<span class="dv">1</span>] = data-&gt;ymin;</span>
@@ -315,6 +315,10 @@
 <div id="a-reader-in-c-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#a-reader-in-c-1" class="anchor"></a>A reader in C</h2>
+</div>
+<div id="r-infrastructure-revisited" class="section level2">
+<h2 class="hasAnchor">
+<a href="#r-infrastructure-revisited" class="anchor"></a>R infrastructure, revisited</h2>
 </div>
   </div>
 
