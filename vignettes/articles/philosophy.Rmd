@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-At the heart of the wk philosophy is the concept of a **handler**, whose job it is to respond to bits of geometric information as they are iterated over by the **reader**. These bits of information have a very specific structure and order such that the messages can be guaranteed to be backward-compatible for all time (for each version of the API). This means that the **reader** can focus on iterating over the data structure and **handlers** can focus on computing a value (usually) based on the geometries. The advantage of this system is that readers and handlers can be mixed and matched so that handlers can be used with many data structures! As an example, the wk package itself uses readers and handlers to power validation of and conversion between `wkt()`, `wkb()`, and `wksxp()` classes.
+At the heart of the wk philosophy is the concept of a **handler**, whose job it is to respond to bits of geometric information as they are iterated over by the **reader**. These bits of information have a very specific structure and order such that the messages can be guaranteed to be backward-compatible for all time (for each version of the API). This means that the **reader** can focus on iterating over the data structure and **handlers** can focus on computing a value (usually) based on the geometries. The advantage of this system is that readers and handlers can be mixed and matched so that handlers can be used with many data structures! As an example, the wk package itself uses readers and handlers to power validation of and conversion among `wkt()`, `wkb()`, `xy()`, and `rct()` classes.
 
 The wk API works with a **vector** of **features**: readers iterate over such vectors and handlers compute a value based on some or all of the features in the vector. Each **feature** can be `NULL` or contain exactly one **geometry** (although this geometry can be a collection or multi-geometry which can contain a tree of other geometries). A good way to visualize the structure, order, and type of messages passed to a **handler** is to use the `wk_debug_handler()` on some well-known text (WKT):
 
@@ -26,7 +26,7 @@ The concept of a **vector** was inspired by the `sf::sfc()` data type and draws 
 
 ## R infrastructure
 
-The `wk_handle()` function is an S3 generic for which methods are defined for `wkb()`, `wkt()`, `wksxp()`, `xy()`, `rct()`, and could be implemented for any number of in-memory and on-disk forms. When writing a new **reader**, this is the method you're defining for your data type. While you don't technically have to do implement the `wk_handle()` generic, doing so makes functions that use **handlers** work for your data type without having to know anything about your type/package! For example, the `wk_debug()` function uses this under the hood to support multiple input types with one line of code.
+The `wk_handle()` function is an S3 generic for which methods are defined for `wkb()`, `wkt()`, `xy()`, `rct()`, and could be implemented for any number of in-memory and on-disk forms. When writing a new **reader**, this is the method you're defining for your data type. While you don't technically have to do implement the `wk_handle()` generic, doing so makes functions that use **handlers** work for your data type without having to know anything about your type/package! For example, the `wk_debug()` function uses this under the hood to support multiple input types with one line of code.
 
 ```{r}
 wk_debug(wkt("POINT (0 1)"))

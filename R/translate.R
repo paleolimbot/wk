@@ -107,10 +107,6 @@ rct_translate_wkb <- function(rct, endian = wk_platform_endian(), buffer_size = 
   cpp_translate_rct_wkb(rct, endian, bufferSize = buffer_size)
 }
 
-rct_translate_wksxp <- function(rct) {
-  cpp_translate_rct_wksxp(rct)
-}
-
 wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
   xyzm_trim(cpp_translate_wkt_xyzm(wkt), include_z, include_m)
 }
