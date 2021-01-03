@@ -57,7 +57,7 @@ public:
     return WK_CONTINUE; 
   }
   
-  SEXP vector_end(const wk_meta_t* meta) {
+  SEXP vector_end(const wk_vector_meta_t* meta) {
     writable::doubles output = {this->xmin, this->ymin, this->xmax, this->ymax};
     output.names() = {"xmin", "ymin", "xmax", "ymax"};
     return output;
@@ -153,7 +153,7 @@ int bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord,
   return WK_CONTINUE;
 }
 
-SEXP bbox_handler_vector_end(const wk_meta_t* meta, void* handler_data) {
+SEXP bbox_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   
   const char* names[] = {"xmin", "ymin", "xmax", "ymax", ""};
