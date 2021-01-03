@@ -18,8 +18,8 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
         data_ptr[j] = REAL(VECTOR_ELT(data, j));
     }
 
-    wk_meta_t vector_meta;
-    WK_META_RESET(vector_meta, WK_POINT);
+    wk_vector_meta_t vector_meta;
+    WK_VECTOR_META_RESET(vector_meta, WK_POINT);
     vector_meta.size = n_features;
 
     if (Rf_inherits(data, "wk_xyz") || Rf_inherits(data, "wk_xyzm")) {

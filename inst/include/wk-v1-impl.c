@@ -2,15 +2,15 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-int wk_handler_void_vector_start(const wk_meta_t* meta, void* handler_data) {
+int wk_handler_void_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   return WK_CONTINUE;
 }
 
-SEXP wk_handler_void_vector_end(const wk_meta_t* meta, void* handler_data) {
+SEXP wk_handler_void_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   return R_NilValue;
 }
 
-int wk_handler_void_feature(const wk_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wk_handler_void_feature(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
   return WK_CONTINUE;
 }
 

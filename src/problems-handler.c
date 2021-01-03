@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <Rinternals.h>
 
-int wk_handler_problems_vector_start(const wk_meta_t* meta, void* handler_data) {
+int wk_handler_problems_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   SEXP output = PROTECT(Rf_allocVector(STRSXP, meta->size));
   R_xlen_t n_features = meta->size;
   for (R_xlen_t i = 0; i < n_features; i++) {
@@ -20,7 +20,7 @@ int wk_handler_problems_error(uint64_t feat_id, int code, const char* message, v
   return WK_ABORT_FEATURE;
 }
 
-SEXP wk_handler_problems_vector_end(const wk_meta_t* meta, void* handler_data) {
+SEXP wk_handler_problems_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   return R_ExternalPtrProtected((SEXP) handler_data);
 }
 

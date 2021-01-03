@@ -100,14 +100,14 @@ void wkb_write_doubles(wkb_write_buffer_t* write_buffer, const double* value, ui
     write_buffer->offset += sizeof(double) * nValues;
 }
 
-int wkb_writer_vector_start(const wk_meta_t* meta, void* handler_data) {
+int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     write_buffer->result = Rf_allocVector(VECSXP, meta->size);
     R_PreserveObject(write_buffer->result);
     return WK_CONTINUE;
 }
 
-int wkb_writer_feature_start(const wk_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wkb_writer_feature_start(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     write_buffer->offset = 0;
     write_buffer->recursion_level = 0;
@@ -194,13 +194,13 @@ int wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coo
     return WK_CONTINUE;
 }
 
-int wkb_writer_feature_null(const wk_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wkb_writer_feature_null(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     SET_VECTOR_ELT(write_buffer->result, feat_id, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 
-int wkb_writer_feature_end(const wk_meta_t* meta, uint64_t feat_id, void* handler_data) {
+int wkb_writer_feature_end(const wk_vector_meta_t* meta, uint64_t feat_id, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     SEXP item = PROTECT(Rf_allocVector(RAWSXP, write_buffer->offset));
     memcpy(RAW(item), write_buffer->buffer, write_buffer->offset);
@@ -209,7 +209,7 @@ int wkb_writer_feature_end(const wk_meta_t* meta, uint64_t feat_id, void* handle
     return WK_CONTINUE;
 }
 
-SEXP wkb_writer_vector_end(const wk_meta_t* meta, void* handler_data) {
+SEXP wkb_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     return write_buffer->result;
 }

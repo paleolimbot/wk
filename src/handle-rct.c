@@ -17,8 +17,8 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
         data_ptr[j] = REAL(VECTOR_ELT(data, j));
     }
 
-    wk_meta_t vector_meta;
-    WK_META_RESET(vector_meta, WK_POLYGON);
+    wk_vector_meta_t vector_meta;
+    WK_VECTOR_META_RESET(vector_meta, WK_POLYGON);
     vector_meta.size = n_features;
     
     if (handler->vector_start(&vector_meta, handler->handler_data) == WK_CONTINUE) {

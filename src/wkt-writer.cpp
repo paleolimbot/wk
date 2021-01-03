@@ -27,18 +27,18 @@ public:
       (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
-  int vector_start(const wk_meta_t* meta) {
+  int vector_start(const wk_vector_meta_t* meta) {
     result = cpp11::writable::strings(meta->size);
     return WK_CONTINUE;
   }
 
-  int feature_start(const wk_meta_t* meta, uint64_t feat_id) {
+  int feature_start(const wk_vector_meta_t* meta, uint64_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
   }
 
-  int null_feature(const wk_meta_t* meta, uint64_t feat_id) {
+  int null_feature(const wk_vector_meta_t* meta, uint64_t feat_id) {
     result[(R_xlen_t) feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
@@ -136,12 +136,12 @@ public:
     return WK_CONTINUE;
   }
 
-  int feature_end(const wk_meta_t* meta, uint64_t feat_id) {
+  int feature_end(const wk_vector_meta_t* meta, uint64_t feat_id) {
     result[(R_xlen_t) feat_id] = this->out.str();
     return WK_CONTINUE;
   }
 
-  SEXP vector_end(const wk_meta_t* meta) {
+  SEXP vector_end(const wk_vector_meta_t* meta) {
     return this->result;
   }
 

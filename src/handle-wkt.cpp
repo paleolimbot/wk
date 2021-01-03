@@ -437,7 +437,7 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  int readFeature(wk_meta_t* meta, SEXP item, uint64_t feat_id) {
+  int readFeature(wk_vector_meta_t* meta, SEXP item, uint64_t feat_id) {
     int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
@@ -698,8 +698,8 @@ private:
 [[cpp11::register]]
 SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   R_xlen_t n_features = Rf_xlength(wkt);
-  wk_meta_t globalMeta;
-  WK_META_RESET(globalMeta, WK_GEOMETRY);
+  wk_vector_meta_t globalMeta;
+  WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);
   globalMeta.size = n_features;
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 

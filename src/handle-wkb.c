@@ -80,8 +80,8 @@ SEXP wk_c_read_wkb(SEXP data, SEXP handlerXptr) {
 SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
   R_xlen_t n_features = Rf_xlength(data);
 
-  wk_meta_t vectorMeta;
-  WK_META_RESET(vectorMeta, WK_GEOMETRY);
+  wk_vector_meta_t vectorMeta;
+  WK_VECTOR_META_RESET(vectorMeta, WK_GEOMETRY);
   vectorMeta.size = n_features;
   vectorMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
