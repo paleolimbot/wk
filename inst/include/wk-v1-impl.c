@@ -2,31 +2,31 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-char wk_handler_void_vector_start(const wk_meta_t* meta, void* handler_data) {
+int wk_handler_void_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   return WK_CONTINUE;
 }
 
-SEXP wk_handler_void_vector_end(const wk_meta_t* meta, void* handler_data) {
+SEXP wk_handler_void_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   return R_NilValue;
 }
 
-char wk_handler_void_feature(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_handler_void_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_geometry(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+int wk_handler_void_geometry(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_ring(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+int wk_handler_void_ring(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int wk_handler_void_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-char wk_handler_void_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_handler_void_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }

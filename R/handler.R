@@ -107,6 +107,20 @@ wk_handle.wk_wkt <- function(x, handler, ...) {
   wk_cpp_handle_wkt(x, handler)
 }
 
+#' @rdname wk_void_handler
+#' @export
+wk_handle.wk_xy <- function(x, handler, ...) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_xy, x, handler)
+}
+
+#' @rdname wk_void_handler
+#' @export
+wk_handle.wk_rct <- function(x, handler, ...) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_rct, x, handler)
+}
+
 #' @export
 print.wk_handler <- function(x, ...) {
   cat(sprintf("<%s at %s>\n", class(x)[1], .Call(wk_c_handler_addr)))
