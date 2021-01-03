@@ -150,8 +150,6 @@
   buffer_size <span class='op'>=</span> <span class='fl'>2048</span>
 <span class='op'>)</span>
 
-<span class='fu'>wkb_translate_wksxp</span><span class='op'>(</span><span class='va'>wkb</span>, include_z <span class='op'>=</span> <span class='cn'>NA</span>, include_m <span class='op'>=</span> <span class='cn'>NA</span>, include_srid <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
-
 <span class='fu'>wkt_translate_wkt</span><span class='op'>(</span>
   <span class='va'>wkt</span>,
   include_z <span class='op'>=</span> <span class='cn'>NA</span>,
@@ -169,28 +167,6 @@
   endian <span class='op'>=</span> <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>,
   buffer_size <span class='op'>=</span> <span class='fl'>2048</span>
 <span class='op'>)</span>
-
-<span class='fu'>wkt_translate_wksxp</span><span class='op'>(</span><span class='va'>wkt</span>, include_z <span class='op'>=</span> <span class='cn'>NA</span>, include_m <span class='op'>=</span> <span class='cn'>NA</span>, include_srid <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
-
-<span class='fu'>wksxp_translate_wkt</span><span class='op'>(</span>
-  <span class='va'>wksxp</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  precision <span class='op'>=</span> <span class='fl'>16</span>,
-  trim <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
-
-<span class='fu'>wksxp_translate_wkb</span><span class='op'>(</span>
-  <span class='va'>wksxp</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  endian <span class='op'>=</span> <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>,
-  buffer_size <span class='op'>=</span> <span class='fl'>2048</span>
-<span class='op'>)</span>
-
-<span class='fu'>wksxp_translate_wksxp</span><span class='op'>(</span><span class='va'>wksxp</span>, include_z <span class='op'>=</span> <span class='cn'>NA</span>, include_m <span class='op'>=</span> <span class='cn'>NA</span>, include_srid <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
 <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span></pre>
 
@@ -235,20 +211,14 @@ to a larger number may result in less copying.</p></td>
       <th>wkt</th>
       <td><p>A character vector containing well-known text.</p></td>
     </tr>
-    <tr>
-      <th>wksxp</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of classed objects</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>*_translate_wkt()</code> returns a character vector of
 well-known text; <code>*_translate_wkb()</code> returns a list
-of raw vectors, and <code>*_translate_wksxp()</code> returns an unclassed
-list of <code><a href='wksxp.html'>wksxp()</a></code> geometries. Unlike <code><a href='wkb.html'>as_wkb()</a></code>, <code><a href='wkt.html'>as_wkt()</a></code>, and
-<code><a href='wksxp.html'>as_wksxp()</a></code>, these functions do not attach
-a class to the output.</p>
+of raw vectors. Unlike <code><a href='wkb.html'>as_wkb()</a></code>, <code><a href='wkt.html'>as_wkt()</a></code>,
+these functions do not attach a class to the output.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># translate between WKT and WKB</span>

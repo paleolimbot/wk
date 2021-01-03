@@ -110,52 +110,23 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wk/">wk</a></span><span class="op">)</span></code></pre></div>
 </div>
-<div id="basic-vector-classes-for-wkt-and-wkb" class="section level2">
+<div id="basic-vector-classes-for-wkt-wkb-points-and-rectangles" class="section level2">
 <h2 class="hasAnchor">
-<a href="#basic-vector-classes-for-wkt-and-wkb" class="anchor"></a>Basic vector classes for WKT and WKB</h2>
-<p>Use <code><a href="reference/wkt.html">wkt()</a></code> to mark a character vector as containing well-known text, or <code><a href="reference/wkb.html">wkb()</a></code> to mark a vector as well-known binary. These have some basic vector features built in, which means you can subset, repeat, concatenate, and put these objects in a data frame or tibble. These come with built-in <code><a href="https://rdrr.io/r/base/format.html">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> methods.</p>
+<a href="#basic-vector-classes-for-wkt-wkb-points-and-rectangles" class="anchor"></a>Basic vector classes for WKT, WKB, points, and rectangles</h2>
+<p>Use <code><a href="reference/wkt.html">wkt()</a></code> to mark a character vector as containing well-known text, or <code><a href="reference/wkb.html">wkb()</a></code> to mark a vector as well-known binary. Use <code><a href="reference/xy.html">xy()</a></code>, <code><a href="reference/xy.html">xyz()</a></code>, <code><a href="reference/xy.html">xym()</a></code>, and <code><a href="reference/xy.html">xyzm()</a></code> to create vectors of points, and <code><a href="reference/rct.html">rct()</a></code> to create vectors of rectangles. These classes have full <a href="https://vctrs.r-lib.org">vctrs</a> support and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>/<code><a href="https://rdrr.io/r/base/format.html">format()</a></code> methods to make them as frictionless as possible working in R and RStudio.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_wkt[1]&gt;</span>
 <span class="co">#&gt; [1] POINT (30 10)</span>
 <span class="fu"><a href="reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="fu"><a href="reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_wkb[1]&gt;</span>
-<span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span></code></pre></div>
-</div>
-<div id="well-known-r-objects" class="section level2">
-<h2 class="hasAnchor">
-<a href="#well-known-r-objects" class="anchor"></a>Well-known R objects</h2>
-<p>The wk package experimentally generates (and parses) a plain R object format, which is needed because well-known binary can’t natively represent the empty point and reading/writing well-known text is too slow. The format of the <code><a href="reference/wksxp.html">wksxp()</a></code> object is designed to be as close as possible to well-known text and well-known binary to make the translation code as clean as possible.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/wkb_translate_wkt.html">wkt_translate_wksxp</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
-<span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]   30   10</span>
-<span class="co">#&gt; attr(,"class")</span>
-<span class="co">#&gt; [1] "wk_point"</span></code></pre></div>
-</div>
-<div id="wkutils" class="section level2">
-<h2 class="hasAnchor">
-<a href="#wkutils" class="anchor"></a>wkutils</h2>
-<p>To keep the footprint (i.e., compile time) of this package as slim as possible, utilities to work with WKT, WKB, and well-known R objects are located in the <a href="https://paleolimbot.github.io/wkutils/">wkutils package</a>. One of the main drawbacks to passing around geometries in WKB is that the format is opaque to R users, who need coordinates as R objects rather than binary vectors. The wkutils package provides <code>wk*_meta()</code> and <code>wk*_coords()</code> functions (among others) to extract usable coordinates and feature meta.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_coords.html">wkt_coords</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 7</span>
-<span class="co">#&gt;   feature_id part_id ring_id     x     y     z     m</span>
-<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1          1       1       0     1     2     3     4</span>
-<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_meta.html">wkt_meta</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 7</span>
-<span class="co">#&gt;   feature_id part_id type_id  size  srid has_z has_m</span>
-<span class="co">#&gt;        &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
-<span class="co">#&gt; 1          1       1       1     1    NA TRUE  TRUE</span>
-<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/wkb_ranges.html">wkt_ranges</a></span><span class="op">(</span><span class="st">"POINT ZM (1 2 3 4)"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax</span>
-<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1     1     2     3     4     1     2     3     4</span>
-<span class="fu">wkutils</span><span class="fu">::</span><span class="fu"><a href="https://paleolimbot.github.io/wkutils/reference/coords_point_translate_wkt.html">coords_point_translate_wkt</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
-<span class="co">#&gt; [1] "POINT ZM (1 2 3 4)"</span></code></pre></div>
+<span class="co">#&gt; [1] &lt;POINT (30 10)&gt;</span>
+<span class="fu"><a href="reference/xy.html">xy</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>
+<span class="co">#&gt; &lt;wk_xy[1]&gt;</span>
+<span class="co">#&gt; [1] (1 2)</span>
+<span class="fu"><a href="reference/rct.html">rct</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
+<span class="co">#&gt; &lt;wk_rct[1]&gt;</span>
+<span class="co">#&gt; [1] [1 2 3 4]</span></code></pre></div>
 </div>
 </div>
   </div>
