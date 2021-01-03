@@ -3,7 +3,7 @@
 .onLoad <- function(...) {
 
   # Register S3 methods for Suggests
-  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp",
+  for (cls in c("wk_wkb", "wk_wkt",
                 "wk_xy", "wk_xyz", "wk_xym", "wk_xyzm", "wk_rct")) {
     s3_register("vctrs::vec_proxy", cls)
     s3_register("vctrs::vec_restore", cls)
@@ -12,7 +12,7 @@
 
   }
 
-  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp", "wk_xy", "wk_rct")) {
+  for (cls in c("wk_wkb", "wk_wkt", "wk_xy", "wk_rct")) {
     s3_register("sf::st_as_sfc", cls)
     s3_register("sf::st_as_sf", cls)
   }

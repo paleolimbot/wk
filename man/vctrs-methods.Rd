@@ -6,8 +6,6 @@
 \alias{vec_ptype2.wk_wkb}
 \alias{vec_cast.wk_wkt}
 \alias{vec_ptype2.wk_wkt}
-\alias{vec_cast.wk_wksxp}
-\alias{vec_ptype2.wk_wksxp}
 \alias{vec_cast.wk_xy}
 \alias{vec_ptype2.wk_xy}
 \alias{vec_cast.wk_xyz}
@@ -27,10 +25,6 @@ vec_ptype2.wk_wkb(x, y, ...)
 vec_cast.wk_wkt(x, to, ...)
 
 vec_ptype2.wk_wkt(x, y, ...)
-
-vec_cast.wk_wksxp(x, to, ...)
-
-vec_ptype2.wk_wksxp(x, y, ...)
 
 vec_cast.wk_xy(x, to, ...)
 

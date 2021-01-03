@@ -27,19 +27,6 @@ as_wkt.sfc <- function(x, ...) {
 }
 
 #' @export
-as_wksxp.sfc <- function(x, ...) {
-  wksxp <- as_wksxp(
-    as_wkb(
-      sf::st_as_binary(x, ..., precision = 0, EWKB = FALSE)
-    )
-  )
-
-  is_empty_point <- sf::st_is_empty(x) & (sf::st_geometry_type(x) == "POINT")
-  wksxp[is_empty_point] <- wkt("POINT EMPTY", crs = wk_crs_inherit())
-  wk_set_crs(wksxp, wk_crs_from_sf(x))
-}
-
-#' @export
 as_xy.sfc <- function(x, ...) {
   if (length(x) == 0) {
     xy(crs = wk_crs_from_sf(x))
@@ -109,11 +96,6 @@ as_wkt.sf <- function(x, ...) {
 }
 
 #' @export
-as_wksxp.sf <- function(x, ..., dims = NULL) {
-  as_wksxp(sf::st_geometry(x), ..., dims = dims)
-}
-
-#' @export
 as_xy.sf <- function(x, ..., dims = NULL) {
   as_xy(sf::st_geometry(x), ..., dims = dims)
 }
@@ -139,18 +121,6 @@ st_as_sf.wk_wkt <- function(x, ...) {
   sf::st_as_sf(
     new_data_frame(
       list(geometry = st_as_sfc.wk_wkt(x, ...))
-    )
-  )
-}
-
-st_as_sfc.wk_wksxp <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x), ...)
-}
-
-st_as_sf.wk_wksxp <- function(x, ...) {
-  sf::st_as_sf(
-    new_data_frame(
-      list(geometry = st_as_sfc.wk_wksxp(x, ...))
     )
   )
 }
