@@ -41,39 +41,39 @@ public:
     handler->vector_finally(handler->handler_data);
   }
 
-  char vector_start(const wk_meta_t* meta) {
+  int vector_start(const wk_meta_t* meta) {
     return cpp11::safe[handler->vector_start](meta, handler->handler_data);
   }
 
-  char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->feature_start](meta, feat_id, handler->handler_data);
   }
 
-  char null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->null_feature](meta, feat_id, handler->handler_data);
   }
 
-  char geometry_start(const wk_meta_t* meta, uint32_t partId) {
+  int geometry_start(const wk_meta_t* meta, uint32_t partId) {
     return cpp11::safe[handler->geometry_start](meta, partId, handler->handler_data);
   }
 
-  char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
+  int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
     return cpp11::safe[handler->ring_start](meta, size, ringId, handler->handler_data);
   }
 
-  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
     return cpp11::safe[handler->coord](meta, coord, coord_id, handler->handler_data);
   }
 
-  char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
+  int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
     return cpp11::safe[handler->ring_end](meta, size, ringId, handler->handler_data);
   }
 
-  char geometry_end(const wk_meta_t* meta, uint32_t partId) {
+  int geometry_end(const wk_meta_t* meta, uint32_t partId) {
     return cpp11::safe[handler->geometry_end](meta, partId, handler->handler_data);
   }
 
-  char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
     return cpp11::safe[handler->feature_end](meta, feat_id, handler->handler_data);
   }
 
@@ -81,7 +81,7 @@ public:
     return cpp11::safe[handler->vector_end](meta, handler->handler_data);
   }
 
-  char error(R_xlen_t feat_id, int code, const char* message) {
+  int error(R_xlen_t feat_id, int code, const char* message) {
     return cpp11::safe[handler->error](feat_id, code, message, handler->handler_data);
   }
 
@@ -96,39 +96,39 @@ public:
   WKVoidHandler() {}
   virtual ~WKVoidHandler() {}
 
-  virtual char vector_start(const wk_meta_t* meta) {
+  virtual int vector_start(const wk_meta_t* meta) {
     return WK_CONTINUE;
   }
 
-  virtual char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
+  virtual int feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual char null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
+  virtual int null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
-  virtual char geometry_start(const wk_meta_t* meta, uint32_t part_id) {
+  virtual int geometry_start(const wk_meta_t* meta, uint32_t part_id) {
     return WK_CONTINUE;
   }
 
-  virtual char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
+  virtual int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     return WK_CONTINUE;
   }
 
-  virtual char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
     return WK_CONTINUE;
   }
 
-  virtual char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
+  virtual int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     return WK_CONTINUE;
   }
 
-  virtual char geometry_end(const wk_meta_t* meta, uint32_t part_id) {
+  virtual int geometry_end(const wk_meta_t* meta, uint32_t part_id) {
     return WK_CONTINUE;
   }
 
-  virtual char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
+  virtual int feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
     return WK_CONTINUE;
   }
 
@@ -140,7 +140,7 @@ public:
      
   }
 
-  virtual char error(R_xlen_t feat_id, int code, const char* message) {
+  virtual int error(R_xlen_t feat_id, int code, const char* message) {
     cpp11::stop(message);
   }
 };
@@ -216,63 +216,63 @@ private:
     }
   }
 
-  static char vector_start(const wk_meta_t* meta, void* handler_data) noexcept {
+  static int vector_start(const wk_meta_t* meta, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->vector_start(meta);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static int feature_start(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->feature_start(meta, feat_id);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char null_feature(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static int null_feature(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->null_feature(meta, feat_id);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char geometry_start(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
+  static int geometry_start(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->geometry_start(meta, partId);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
+  static int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->ring_start(meta, size, ringId);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) noexcept {
+  static int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->coord(meta, coord, coord_id);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
+  static int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->ring_end(meta, size, ringId);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char geometry_end(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
+  static int geometry_end(const wk_meta_t* meta, uint32_t partId, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->geometry_end(meta, partId);
     WK_END_CPP11(WK_ABORT)
   }
 
-  static char feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static int feature_end(const wk_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->feature_end(meta, feat_id);
@@ -293,7 +293,7 @@ private:
     WK_END_CPP11()
   }
 
-  static char error(R_xlen_t feat_id, int code, const char* message, void* handler_data) noexcept {
+  static int error(R_xlen_t feat_id, int code, const char* message, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->error(feat_id, code, message);

@@ -49,7 +49,7 @@ class BBoxHandler: public WKVoidHandler {
 public:
   BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
   
-  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
     this->xmin = std::min(coord.v[0], this->xmin);
     this->ymin = std::min(coord.v[1], this->ymin);
     this->xmax = std::max(coord.v[0], this->xmax);
@@ -143,7 +143,7 @@ typedef struct {
   double xmin, ymin, xmax, ymax;
 } bbox_handler_data_t;
 
-char bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
+int bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
                         uint32_t coord_id, void* handler_data) {
   bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   data->xmin = MIN(coord.v[0], data->xmin);
@@ -156,7 +156,7 @@ char bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord,
 SEXP bbox_handler_vector_end(const wk_meta_t* meta, void* handler_data) {
   bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   
-  const char *names[] = {"xmin", "ymin", "xmax", "ymax", ""};
+  const char* names[] = {"xmin", "ymin", "xmax", "ymax", ""};
   SEXP output = PROTECT(Rf_mkNamed(REALSXP, names));
   REAL(output)[0] = data->xmin;
   REAL(output)[1] = data->ymin;

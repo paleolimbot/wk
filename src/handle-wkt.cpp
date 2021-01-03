@@ -437,8 +437,8 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  char readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
-    char result;
+  int readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
+    int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
     if (item == NA_STRING) {
@@ -454,9 +454,9 @@ public:
 
 protected:
 
-  char readGeometryWithType(WKTV1String& s, uint32_t part_id) {
+  int readGeometryWithType(WKTV1String& s, uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
-    char result;
+    int result;
     HANDLE_OR_RETURN(this->handler.geometry_start(&meta, part_id));
 
     switch (meta.geometry_type) {
@@ -496,9 +496,9 @@ protected:
     return this->handler.geometry_end(&meta, part_id);
   }
 
-  char readPoint(WKTV1String& s, const wk_meta_t* meta) {
+  int readPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
-      char result;
+      int result;
       HANDLE_OR_RETURN(this->readPointCoordinate(s, meta));
       s.assert_(')');
     }
@@ -506,22 +506,22 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readLineString(WKTV1String& s, const wk_meta_t* meta) {
+  int readLineString(WKTV1String& s, const wk_meta_t* meta) {
     return this->readCoordinates(s, meta);
   }
 
-  char readPolygon(WKTV1String& s, const wk_meta_t* meta)  {
+  int readPolygon(WKTV1String& s, const wk_meta_t* meta)  {
     return this->readLinearRings(s, meta);
   }
 
-  char readMultiPoint(WKTV1String& s, const wk_meta_t* meta) {
+  int readMultiPoint(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
     wk_meta_t childMeta;
     uint32_t part_id = 0;
-    char result;
+    int result;
 
     if (s.isNumber()) { // (0 0, 1 1)
       do {
@@ -552,14 +552,14 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readMultiLineString(WKTV1String& s, const wk_meta_t* meta) {
+  int readMultiLineString(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
     wk_meta_t childMeta;
     uint32_t part_id = 0;
-    char result;
+    int result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_LINESTRING);
@@ -580,7 +580,7 @@ protected:
 
     wk_meta_t childMeta;
     uint32_t part_id = 0;
-    char result;
+    int result;
 
     do {
       childMeta = this->childMeta(s, meta, WK_POLYGON);
@@ -593,13 +593,13 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readGeometryCollection(WKTV1String& s, const wk_meta_t* meta) {
+  int readGeometryCollection(WKTV1String& s, const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
 
     uint32_t part_id = 0;
-    char result;
+    int result;
 
     do {
       HANDLE_OR_RETURN(this->readGeometryWithType(s, part_id));
@@ -615,7 +615,7 @@ protected:
     }
 
     uint32_t ring_id = 0;
-    char result;
+    int result;
 
     do {
       HANDLE_OR_RETURN(this->handler.ring_start(meta, WK_SIZE_UNKNOWN, ring_id));
@@ -632,9 +632,9 @@ protected:
   // writers are unlikely to expect a point geometry with many coordinates).
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
-  char readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
+  int readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
     wk_coord_t coord;
-    char result;
+    int result;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
@@ -644,7 +644,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  char readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
+  int readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
     wk_coord_t coord;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
@@ -655,7 +655,7 @@ protected:
     }
 
     uint32_t coord_id = 0;
-    char result;
+    int result;
 
     do {
       this->readCoordinate(s, &coord, coordSize);

@@ -27,23 +27,23 @@ public:
       (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
-  char vector_start(const wk_meta_t* meta) {
+  int vector_start(const wk_meta_t* meta) {
     result = cpp11::writable::strings(meta->size);
     return WK_CONTINUE;
   }
 
-  char feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
   }
 
-  char null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
     result[feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
 
-  char geometry_start(const wk_meta_t* meta, uint32_t part_id) {
+  int geometry_start(const wk_meta_t* meta, uint32_t part_id) {
     if ((part_id != 0) && (this->stack.size() > 0)) {
       out << ", ";
     }
@@ -101,12 +101,12 @@ public:
     return WK_CONTINUE;
   }
 
-  char ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
+  int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     out << "(";
     return WK_CONTINUE;
   }
 
-  char coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
     if (coord_id > 0) {
       out << ", ";
     }
@@ -121,12 +121,12 @@ public:
     return WK_CONTINUE;
   }
 
-  char ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
+  int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     out << ")";
     return WK_CONTINUE;
   }
 
-  char geometry_end(const wk_meta_t* meta, uint32_t part_id) {
+  int geometry_end(const wk_meta_t* meta, uint32_t part_id) {
     this->stack.pop_back();
 
     if (meta->size != 0) {
@@ -136,7 +136,7 @@ public:
     return WK_CONTINUE;
   }
 
-  char feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
     result[feat_id] = this->out.str();
     return WK_CONTINUE;
   }
