@@ -437,7 +437,7 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  int readFeature(wk_meta_t* meta, SEXP item, R_xlen_t feat_id) {
+  int readFeature(wk_meta_t* meta, SEXP item, uint64_t feat_id) {
     int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 

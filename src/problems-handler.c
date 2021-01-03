@@ -15,7 +15,7 @@ int wk_handler_problems_vector_start(const wk_meta_t* meta, void* handler_data) 
   return WK_CONTINUE;
 }
 
-int wk_handler_problems_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_handler_problems_error(uint64_t feat_id, int code, const char* message, void* handler_data) {
   SET_STRING_ELT(R_ExternalPtrProtected((SEXP) handler_data), feat_id, Rf_mkChar(message));
   return WK_ABORT_FEATURE;
 }

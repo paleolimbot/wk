@@ -32,14 +32,14 @@ public:
     return WK_CONTINUE;
   }
 
-  int feature_start(const wk_meta_t* meta, R_xlen_t feat_id) {
+  int feature_start(const wk_meta_t* meta, uint64_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
   }
 
-  int null_feature(const wk_meta_t* meta, R_xlen_t feat_id) {
-    result[feat_id] = NA_STRING;
+  int null_feature(const wk_meta_t* meta, uint64_t feat_id) {
+    result[(R_xlen_t) feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
 
@@ -136,8 +136,8 @@ public:
     return WK_CONTINUE;
   }
 
-  int feature_end(const wk_meta_t* meta, R_xlen_t feat_id) {
-    result[feat_id] = this->out.str();
+  int feature_end(const wk_meta_t* meta, uint64_t feat_id) {
+    result[(R_xlen_t) feat_id] = this->out.str();
     return WK_CONTINUE;
   }
 
