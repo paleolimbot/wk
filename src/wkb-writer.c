@@ -218,6 +218,7 @@ void wkb_writer_vector_finally(void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     if (write_buffer->result != R_NilValue) {
         R_ReleaseObject(write_buffer->result);
+        write_buffer->result = R_NilValue;
     }
 }
 
