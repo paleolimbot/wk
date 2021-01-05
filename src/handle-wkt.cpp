@@ -534,7 +534,7 @@ protected:
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
 
         part_id++;
       } while (s.assertOneOf(",)") != ')');
@@ -678,6 +678,7 @@ protected:
   wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometry_type) {
     wk_meta_t childMeta;
     WK_META_RESET(childMeta, geometry_type);
+    childMeta.flags = parent->flags;
     childMeta.srid = parent->srid;
 
     childMeta.geometry_type = geometry_type;

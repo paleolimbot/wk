@@ -38,14 +38,7 @@ wkb_translate_wkb <- function(wkb, ...) {
 #' @rdname wkb_translate_wkt
 #' @export
 wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
-  cpp_wkt_translate_wkt(
-    wkt,
-    includeZ = NA,
-    includeM = NA,
-    includeSRID = NA,
-    precision = precision,
-    trim = trim
-  )
+  wk_handle.wk_wkt(wkt, wkt_writer(precision, trim))
 }
 
 #' @rdname wkb_translate_wkt
