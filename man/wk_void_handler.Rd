@@ -35,7 +35,7 @@ wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
 
-wkt_format_handler(max_coords = 5, precision = 16, trim = TRUE)
+wkt_format_handler(precision = 7, trim = TRUE, max_coords = 6)
 
 wkb_writer()
 
