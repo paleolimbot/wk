@@ -23,11 +23,11 @@
 #' )
 #'
 wkb_format <- function(wkb, max_coords = 3, precision = 6, trim = TRUE) {
-  cpp_format_wkb(wkb, maxCoords = max_coords, precision = precision, trim = trim)
+  wk_handle.wk_wkb(wkb, wkt_format_handler(precision, trim, max_coords))
 }
 
 #' @rdname wkb_format
 #' @export
 wkt_format <- function(wkt, max_coords = 3, precision = 6, trim = TRUE) {
-  cpp_format_wkt(wkt, maxCoords = max_coords, precision = precision, trim = trim)
+  wk_handle.wk_wkt(wkt, wkt_format_handler(precision, trim, max_coords))
 }

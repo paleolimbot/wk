@@ -12,7 +12,7 @@ public:
   wk_meta_t parentMeta;
   std::vector<const wk_meta_t*> stack;
 
-  WKTWriterHandler(int precision = 16, bool trim = true) {
+  WKTWriterHandler(int precision, bool trim) {
     this->out.imbue(std::locale::classic());
     this->out.precision(precision);
     if (trim) {
@@ -32,13 +32,13 @@ public:
     return WK_CONTINUE;
   }
 
-  int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
   }
 
-  int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     result[feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
@@ -110,7 +110,7 @@ public:
     return WK_CONTINUE;
   }
 
-  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
     if (coord_id > 0) {
       out << ", ";
     }
@@ -154,7 +154,54 @@ public:
   }
 };
 
+class WKTFormatHandler: public WKTWriterHandler {
+public:
+  WKTFormatHandler(int precision, bool trim, int max_coords): 
+    WKTWriterHandler(precision, trim), 
+    current_coords(0), 
+    max_coords(max_coords),
+    current_feat_id(0) {}
+
+  virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+    this->current_coords = 0;
+    this->current_feat_id = feat_id;
+    return WKTWriterHandler::feature_start(meta, feat_id);
+  }
+
+  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+    this->out << "<null feature>";
+    return WK_CONTINUE;
+  }
+
+  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+    WKTWriterHandler::coord(meta, coord, coord_id);
+    if (++this->current_coords >= this->max_coords) {
+      this->out << "...";
+      this->result[this->current_feat_id] = this->out.str();
+      return WK_ABORT_FEATURE;
+    } else {
+      return WK_CONTINUE;
+    }
+  }
+
+  int error(R_xlen_t feat_id, int code, const char* message) {
+    this->out << "!!! " << message;
+    this->result[this->current_feat_id] = this->out.str();
+    return WK_ABORT_FEATURE;
+  }
+
+private:
+  int current_coords;
+  int max_coords;
+  R_xlen_t current_feat_id;
+};
+
 [[cpp11::register]]
 cpp11::sexp wk_cpp_wkt_writer(int precision = 16, bool trim = true) {
   return WKHandlerFactory<WKTWriterHandler>::create_xptr(new WKTWriterHandler(precision, trim));
+}
+
+[[cpp11::register]]
+cpp11::sexp wk_cpp_wkt_formatter(int precision = 16, bool trim = true, int max_coords = 5) {
+  return WKHandlerFactory<WKTFormatHandler>::create_xptr(new WKTFormatHandler(precision, trim, max_coords));
 }

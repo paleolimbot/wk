@@ -83,7 +83,22 @@ test_that("validating handlers return a character vector of problems", {
   wkb_bad[[1]][2] <- as.raw(0xff)
   expect_identical(
     wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler()),
-    c("Unrecognized geometry type code: 255", rep(NA_character_, length(wkb_good) - 1))
+    c("Unrecognized geometry type code '255'", rep(NA_character_, length(wkb_good) - 1))
+  )
+})
+
+test_that("format handlers return abbreviated WKT", {
+  expect_identical(
+    wk_handle(
+      new_wk_wkt(c(NA, "LINESTRING (0 1, 1 2)", "LINESTRING (0 1, 2 3, 4 5)", "NOT WKT")),
+      wkt_format_handler(max_coords = 3)
+    ),
+    c(
+      "<null feature>",
+      "LINESTRING (0 1, 1 2)",
+      "LINESTRING (0 1, 2 3, 4 5...",
+      "!!! Expected geometry type or 'SRID=' but found 'NOT' (:1)"
+    )
   )
 })
 

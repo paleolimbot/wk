@@ -11,3 +11,4 @@
 ^CRAN-RELEASE$
 ^data-raw$
 ^vignettes/articles$
+^\.covrignore$
