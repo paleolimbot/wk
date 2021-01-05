@@ -44,14 +44,7 @@ wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
 #' @rdname wkb_translate_wkt
 #' @export
 wkt_translate_wkb <- function(wkt, ...) {
-  cpp_wkt_translate_wkb(
-    wkt,
-    includeZ = NA,
-    includeM = NA,
-    includeSRID = NA,
-    endian = wk_platform_endian(),
-    bufferSize = 2048
-  )
+  wk_handle.wk_wkt(wkt, wkb_writer())
 }
 
 # ----- leaving these unexported until the arguments are stable
