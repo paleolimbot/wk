@@ -30,8 +30,6 @@ extern "C" SEXP _wk_wk_cpp_wkt_formatter(SEXP precision, SEXP trim, SEXP max_coo
 
 extern "C" {
 /* .Call calls */
-extern SEXP _wk_cpp_format_wkb(SEXP, SEXP, SEXP, SEXP);
-extern SEXP _wk_cpp_format_wkt(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_handle_wkt(SEXP, SEXP);
 extern SEXP _wk_wk_cpp_wkt_formatter(SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_wkt_writer(SEXP, SEXP);
@@ -46,8 +44,6 @@ extern SEXP wk_c_wkb_writer_new();
 extern SEXP wk_c_xyzm_writer_new();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wk_cpp_format_wkb",        (DL_FUNC) &_wk_cpp_format_wkb,        4},
-    {"_wk_cpp_format_wkt",        (DL_FUNC) &_wk_cpp_format_wkt,        4},
     {"_wk_wk_cpp_handle_wkt",     (DL_FUNC) &_wk_wk_cpp_handle_wkt,     2},
     {"_wk_wk_cpp_wkt_formatter",  (DL_FUNC) &_wk_wk_cpp_wkt_formatter,  3},
     {"_wk_wk_cpp_wkt_writer",     (DL_FUNC) &_wk_wk_cpp_wkt_writer,     2},
