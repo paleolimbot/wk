@@ -132,41 +132,13 @@
     <p>Translate between WKB and WKT</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_translate_wkt</span><span class='op'>(</span>
-  <span class='va'>wkb</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  precision <span class='op'>=</span> <span class='fl'>16</span>,
-  trim <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wkb_translate_wkt</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>wkb_translate_wkb</span><span class='op'>(</span>
-  <span class='va'>wkb</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  endian <span class='op'>=</span> <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>,
-  buffer_size <span class='op'>=</span> <span class='fl'>2048</span>
-<span class='op'>)</span>
+<span class='fu'>wkb_translate_wkb</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wkt_translate_wkt</span><span class='op'>(</span>
-  <span class='va'>wkt</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  precision <span class='op'>=</span> <span class='fl'>16</span>,
-  trim <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
+<span class='fu'>wkt_translate_wkt</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>wkt_translate_wkb</span><span class='op'>(</span>
-  <span class='va'>wkt</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NA</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NA</span>,
-  endian <span class='op'>=</span> <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>,
-  buffer_size <span class='op'>=</span> <span class='fl'>2048</span>
-<span class='op'>)</span>
+<span class='fu'>wkt_translate_wkb</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span></pre>
 
@@ -179,12 +151,9 @@
 returned by <code><a href='https://r-spatial.github.io/sf/reference/st_as_binary.html'>sf::st_as_binary()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>include_z, include_m, include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
+      <th>...</th>
+      <td><p>Used to keep backward compatibility with previous
+versions of these functions.</p></td>
     </tr>
     <tr>
       <th>precision</th>
@@ -194,18 +163,6 @@ is no value present in the original.</p></td>
     <tr>
       <th>trim</th>
       <td><p>Trim unnecessary zeroes in the output?</p></td>
-    </tr>
-    <tr>
-      <th>endian</th>
-      <td><p>For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to <code>wk_platform_endian()</code> (slightly faster).</p></td>
-    </tr>
-    <tr>
-      <th>buffer_size</th>
-      <td><p>For WKB writing, the initial buffer size to use for
-each feature, in bytes. This will be extended when needed, but if you
-are calling this repeatedly with huge geometries, setting this value
-to a larger number may result in less copying.</p></td>
     </tr>
     <tr>
       <th>wkt</th>
@@ -229,10 +186,7 @@ these functions do not attach a class to the output.</p>
 </div><div class='output co'>#&gt; [1] "POINT (30 10)"</div><div class='input'>
 <span class='co'># some basic creation options are also available</span>
 <span class='fu'>wkt_translate_wkt</span><span class='op'>(</span><span class='st'>"POINT (30 10)"</span>, trim <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "POINT (30.0000000000000000 10.0000000000000000)"</div><div class='input'><span class='fu'>wkb_translate_wkb</span><span class='op'>(</span><span class='va'>wkb</span>, endian <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
-#&gt;  [1] 00 00 00 00 01 40 3e 00 00 00 00 00 00 40 24 00 00 00 00 00 00
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; [1] "POINT (30.0000000000000000 10.0000000000000000)"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
