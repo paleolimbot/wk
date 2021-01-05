@@ -7,6 +7,8 @@
 #' @param precision If `trim` is `TRUE`, the total number of significant digits to keep
 #'   for each result or the number of digits after the decimal place otherwise.
 #' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
+#' @param max_coords The maximum number of coordinates to include
+#'   in the formatted output.
 #' @param x A geometry vector (e.g., [wkb()] or [wkt()]).
 #' @param ... Unused
 #' @return A WK handler.

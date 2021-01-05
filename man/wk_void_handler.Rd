@@ -67,6 +67,9 @@ for each result or the number of digits after the decimal place otherwise.}
 
 \item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
 
+\item{max_coords}{The maximum number of coordinates to include
+in the formatted output.}
+
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 
 \item{subclass}{The handler subclass}
