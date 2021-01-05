@@ -8,41 +8,13 @@
 \alias{wk_platform_endian}
 \title{Translate between WKB and WKT}
 \usage{
-wkb_translate_wkt(
-  wkb,
-  include_z = NA,
-  include_m = NA,
-  include_srid = NA,
-  precision = 16,
-  trim = TRUE
-)
+wkb_translate_wkt(wkb, ..., precision = 16, trim = TRUE)
 
-wkb_translate_wkb(
-  wkb,
-  include_z = NA,
-  include_m = NA,
-  include_srid = NA,
-  endian = wk_platform_endian(),
-  buffer_size = 2048
-)
+wkb_translate_wkb(wkb, ...)
 
-wkt_translate_wkt(
-  wkt,
-  include_z = NA,
-  include_m = NA,
-  include_srid = NA,
-  precision = 16,
-  trim = TRUE
-)
+wkt_translate_wkt(wkt, ..., precision = 16, trim = TRUE)
 
-wkt_translate_wkb(
-  wkt,
-  include_z = NA,
-  include_m = NA,
-  include_srid = NA,
-  endian = wk_platform_endian(),
-  buffer_size = 2048
-)
+wkt_translate_wkb(wkt, ...)
 
 wk_platform_endian()
 }
@@ -50,24 +22,13 @@ wk_platform_endian()
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
 returned by \code{sf::st_as_binary()}.}
 
-\item{include_z, include_m, include_srid}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
+\item{...}{Used to keep backward compatibility with previous
+versions of these functions.}
 
 \item{precision}{The rounding precision to use when writing
 (number of decimal places).}
 
 \item{trim}{Trim unnecessary zeroes in the output?}
-
-\item{endian}{For WKB writing, 0 for big endian, 1 for little endian.
-Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
-
-\item{buffer_size}{For WKB writing, the initial buffer size to use for
-each feature, in bytes. This will be extended when needed, but if you
-are calling this repeatedly with huge geometries, setting this value
-to a larger number may result in less copying.}
 
 \item{wkt}{A character vector containing well-known text.}
 }
@@ -87,6 +48,5 @@ wkb_translate_wkt(wkb)
 
 # some basic creation options are also available
 wkt_translate_wkt("POINT (30 10)", trim = FALSE)
-wkb_translate_wkb(wkb, endian = 0)
 
 }
