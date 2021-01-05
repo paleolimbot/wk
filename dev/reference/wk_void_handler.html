@@ -146,6 +146,8 @@
 
 <span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
+<span class='fu'>wkt_format_handler</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>7</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span>, max_coords <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
+
 <span class='fu'>wkb_writer</span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='fu'>xyzm_writer</span><span class='op'>(</span><span class='op'>)</span>
@@ -189,6 +191,11 @@ for each result or the number of digits after the decimal place otherwise.</p></
     <tr>
       <th>trim</th>
       <td><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></td>
+    </tr>
+    <tr>
+      <th>max_coords</th>
+      <td><p>The maximum number of coordinates to include
+in the formatted output.</p></td>
     </tr>
     <tr>
       <th>handler_ptr</th>

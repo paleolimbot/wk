@@ -101,23 +101,23 @@
   <span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug_handler</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;     null_feature (1) &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;   feature_start (2): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeeb484788&gt;</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffeeb484788&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeb484788&gt; </span>
-<span class="co">#&gt;   feature_end (2): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;   feature_start (3): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffeeb484788&gt;</span>
-<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffeeb484698&gt;</span>
-<span class="co">#&gt;         coord (1): &lt;0x7ffeeb484698&gt; (2.000000 3.000000)</span>
-<span class="co">#&gt;       geometry_end (1): &lt;0x7ffeeb484698&gt; </span>
-<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeb484788&gt; </span>
-<span class="co">#&gt;   feature_end (3): &lt;0x7ffeeb484900&gt;</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffeeb484900&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;     null_feature (1) &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;   feature_start (2): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeeacd4788&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeeacd4788&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeacd4788&gt; </span>
+<span class="co">#&gt;   feature_end (2): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;   feature_start (3): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt;     geometry_start (0): GEOMETRYCOLLECTION &lt;0x7ffeeacd4788&gt;</span>
+<span class="co">#&gt;       geometry_start (1): POINT &lt;0x7ffeeacd4698&gt;</span>
+<span class="co">#&gt;         coord (1): &lt;0x7ffeeacd4698&gt; (2.000000 3.000000)</span>
+<span class="co">#&gt;       geometry_end (1): &lt;0x7ffeeacd4698&gt; </span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeacd4788&gt; </span>
+<span class="co">#&gt;   feature_end (3): &lt;0x7ffeeacd4900&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeeacd4900&gt;</span>
 <span class="co">#&gt; vector_finally</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
@@ -127,22 +127,22 @@
 <p>The <code><a href="../../reference/wk_void_handler.html">wk_handle()</a></code> function is an S3 generic for which methods are defined for <code><a href="../../reference/wkb.html">wkb()</a></code>, <code><a href="../../reference/wkt.html">wkt()</a></code>, <code><a href="../../reference/xy.html">xy()</a></code>, <code><a href="../../reference/rct.html">rct()</a></code>, and could be implemented for any number of in-memory and on-disk forms. When writing a new <strong>reader</strong>, this is the method you’re defining for your data type. While you don’t technically have to do implement the <code><a href="../../reference/wk_void_handler.html">wk_handle()</a></code> generic, doing so makes functions that use <strong>handlers</strong> work for your data type without having to know anything about your type/package! For example, the <code><a href="../../reference/wk_void_handler.html">wk_debug()</a></code> function uses this under the hood to support multiple input types with one line of code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeb483c40&gt;</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeb483c40&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeeb483ac8&gt;</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffeeb483ac8&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeb483ac8&gt; </span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeb483c40&gt;</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffeeb483c40&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeacd3c40&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeacd3c40&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT &lt;0x7ffeeacd3ac8&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeeacd3ac8&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeacd3ac8&gt; </span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeacd3c40&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeeacd3c40&gt;</span>
 <span class="co">#&gt; vector_finally</span>
 <span class="fu"><a href="../../reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeb486a50&gt;</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeb486a50&gt;</span>
-<span class="co">#&gt;     geometry_start (0): POINT[1] &lt;0x7ffeeb4869b0&gt;</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffeeb4869b0&gt; (0.000000 1.000000)</span>
-<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeb4869b0&gt; </span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeb486a50&gt;</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffeeb486a50&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeacd6a50&gt;</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeeacd6a50&gt;</span>
+<span class="co">#&gt;     geometry_start (0): POINT[1] &lt;0x7ffeeacd69b0&gt;</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeeacd69b0&gt; (0.000000 1.000000)</span>
+<span class="co">#&gt;     geometry_end (0): &lt;0x7ffeeacd69b0&gt; </span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeeacd6a50&gt;</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeeacd6a50&gt;</span>
 <span class="co">#&gt; vector_finally</span></code></pre></div>
 </div>
 <div id="a-handler-in-c" class="section level2">
@@ -190,7 +190,7 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c789490000445a&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900005a0a&gt;</span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span>
