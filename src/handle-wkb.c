@@ -150,7 +150,7 @@ int wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.size)));
   }
 
-  HANDLE_OR_RETURN(handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
+  HANDLE_OR_RETURN(handler->geometry_start(&meta, part_id, handler->handler_data));
 
   switch (meta.geometry_type) {
   case WK_POINT:

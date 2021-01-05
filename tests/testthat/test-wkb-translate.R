@@ -23,7 +23,7 @@ test_that("wkb_translate_wkt() works with multiple endians", {
   expect_identical(wkb_translate_wkt(list(point_le)), "POINT (30 10)")
   expect_error(
     wkb_translate_wkt(list(point_le[1:5])),
-    "Reached end of RawVector input", class = "WKParseException"
+    "Unexpected end of buffer"
   )
 })
 
@@ -285,7 +285,7 @@ test_that("wkb--wkb translation works for nested collections", {
 })
 
 test_that("wkb_translate_* doesn't segfault on other inputs", {
-  expect_error(wkb_translate_wkt("POINT (30 10)"), "can only be applied to a 'raw'")
+  expect_error(wkb_translate_wkt("POINT (30 10)"), "can only be applied to a 'list'")
 })
 
 test_that("wkb reader can read 1000-3000 style WKB input", {

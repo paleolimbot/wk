@@ -26,14 +26,7 @@
 #' wkt_translate_wkt("POINT (30 10)", trim = FALSE)
 #'
 wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
-  cpp_wkb_translate_wkt(
-    wkb,
-    includeZ = NA,
-    includeM = NA,
-    includeSRID = NA,
-    precision = precision,
-    trim = trim
-  )
+  wk_handle.wk_wkb(wkb, wkt_writer(precision, trim))
 }
 
 #' @rdname wkb_translate_wkt
