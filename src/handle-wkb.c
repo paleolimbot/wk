@@ -139,6 +139,10 @@ int wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
   wk_meta_t meta;
   WK_META_RESET(meta, WK_GEOMETRY);
   wkb_parse_geometry_type(geometry_type, &meta);
+  if (meta.geometry_type < WK_POINT || meta.geometry_type > WK_GEOMETRYCOLLECTION) {
+    wkb_set_errorf(buffer, "Unrecognized geometry type code '%d'", meta.geometry_type);
+    return WK_ABORT_FEATURE;
+  }
   
   if ((geometry_type & EWKB_SRID_BIT) != 0) {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
@@ -175,8 +179,9 @@ int wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     }
     break;
   default:
-    wkb_set_errorf(buffer, "Unrecognized geometry type code: %d", meta.geometry_type);
-    return WK_ABORT_FEATURE;
+    // this should never be reached as the type is checked above
+    wkb_set_errorf(buffer, "Unrecognized geometry type code '%d'", meta.geometry_type); // # nocov
+    return WK_ABORT_FEATURE; // # nocov
   }
 
   return handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data);

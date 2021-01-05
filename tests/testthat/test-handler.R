@@ -83,7 +83,7 @@ test_that("validating handlers return a character vector of problems", {
   wkb_bad[[1]][2] <- as.raw(0xff)
   expect_identical(
     wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler()),
-    c("Unrecognized geometry type code: 255", rep(NA_character_, length(wkb_good) - 1))
+    c("Unrecognized geometry type code '255'", rep(NA_character_, length(wkb_good) - 1))
   )
 })
 
