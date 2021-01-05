@@ -20,12 +20,20 @@ extern "C" SEXP _wk_wk_cpp_wkt_writer(SEXP precision, SEXP trim) {
     return cpp11::as_sexp(wk_cpp_wkt_writer(cpp11::as_cpp<cpp11::decay_t<int>>(precision), cpp11::as_cpp<cpp11::decay_t<bool>>(trim)));
   END_CPP11
 }
+// wkt-writer.cpp
+cpp11::sexp wk_cpp_wkt_formatter(int precision, bool trim, int max_coords);
+extern "C" SEXP _wk_wk_cpp_wkt_formatter(SEXP precision, SEXP trim, SEXP max_coords) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(wk_cpp_wkt_formatter(cpp11::as_cpp<cpp11::decay_t<int>>(precision), cpp11::as_cpp<cpp11::decay_t<bool>>(trim), cpp11::as_cpp<cpp11::decay_t<int>>(max_coords)));
+  END_CPP11
+}
 
 extern "C" {
 /* .Call calls */
 extern SEXP _wk_cpp_format_wkb(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_cpp_format_wkt(SEXP, SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_handle_wkt(SEXP, SEXP);
+extern SEXP _wk_wk_cpp_wkt_formatter(SEXP, SEXP, SEXP);
 extern SEXP _wk_wk_cpp_wkt_writer(SEXP, SEXP);
 extern SEXP wk_c_handler_addr();
 extern SEXP wk_c_handler_debug_new();
@@ -41,6 +49,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_format_wkb",        (DL_FUNC) &_wk_cpp_format_wkb,        4},
     {"_wk_cpp_format_wkt",        (DL_FUNC) &_wk_cpp_format_wkt,        4},
     {"_wk_wk_cpp_handle_wkt",     (DL_FUNC) &_wk_wk_cpp_handle_wkt,     2},
+    {"_wk_wk_cpp_wkt_formatter",  (DL_FUNC) &_wk_wk_cpp_wkt_formatter,  3},
     {"_wk_wk_cpp_wkt_writer",     (DL_FUNC) &_wk_wk_cpp_wkt_writer,     2},
     {"wk_c_handler_addr",         (DL_FUNC) &wk_c_handler_addr,         0},
     {"wk_c_handler_debug_new",    (DL_FUNC) &wk_c_handler_debug_new,    0},

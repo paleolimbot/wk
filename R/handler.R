@@ -54,6 +54,12 @@ wkt_writer <- function(precision = 16, trim = TRUE) {
 
 #' @rdname wk_void_handler
 #' @export
+wkt_format_handler <- function(precision = 16, trim = TRUE, max_coords = 5) {
+  new_wk_handler(wk_cpp_wkt_formatter(precision, trim, max_coords), "wk_wkt_writer")
+}
+
+#' @rdname wk_void_handler
+#' @export
 wkb_writer <- function() {
   new_wk_handler(.Call(wk_c_wkb_writer_new), "wk_wkb_writer")
 }

@@ -7,3 +7,7 @@ wk_cpp_handle_wkt <- function(wkt, xptr) {
 wk_cpp_wkt_writer <- function(precision, trim) {
   .Call("_wk_wk_cpp_wkt_writer", precision, trim, PACKAGE = "wk")
 }
+
+wk_cpp_wkt_formatter <- function(precision, trim, max_coords) {
+  .Call("_wk_wk_cpp_wkt_formatter", precision, trim, max_coords, PACKAGE = "wk")
+}

@@ -8,6 +8,7 @@
 \alias{wk_problems_handler}
 \alias{wk_problems}
 \alias{wkt_writer}
+\alias{wkt_format_handler}
 \alias{wkb_writer}
 \alias{xyzm_writer}
 \alias{new_wk_handler}
@@ -33,6 +34,8 @@ wk_problems_handler()
 wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
+
+wkt_format_handler(max_coords = 5, precision = 16, trim = TRUE)
 
 wkb_writer()
 
