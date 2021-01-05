@@ -36,7 +36,8 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
             ymin = data_ptr[1][i];
             xmax = data_ptr[2][i];
             ymax = data_ptr[3][i];
-            int rect_empty = ISNA(xmin) && ISNA(ymin) && ISNA(xmax) && ISNA(ymax);
+            int rect_na = ISNA(xmin) && ISNA(ymin) && ISNA(xmax) && ISNA(ymax);
+            int rect_empty = rect_na || ((xmax - xmin) == R_NegInf) || ((ymax - ymin) == R_NegInf);
 
             if (rect_empty) {
                 meta.size = 0;

@@ -253,7 +253,7 @@ test_that("wk_handle.wk_xy() works", {
 
 test_that("wk_handle.wk_rct() works", {
   expect_identical(
-    wk_handle(rct(c(1, NA), c(2, NA), c(3, NA), c(4, NA)), wkt_writer()),
-    c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", "POLYGON EMPTY")
+    wk_handle(rct(c(1, NA, Inf, 0), c(2, NA, 0, Inf), c(3, NA, 1, 1), c(4, NA, 1, 1)), wkt_writer()),
+    c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", "POLYGON EMPTY", "POLYGON EMPTY", "POLYGON EMPTY")
   )
 })
