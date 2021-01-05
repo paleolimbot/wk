@@ -47,7 +47,7 @@ extern SEXP wk_c_read_rct(SEXP, SEXP);
 extern SEXP wk_c_read_wkb(SEXP, SEXP);
 extern SEXP wk_c_read_xy(SEXP, SEXP);
 extern SEXP wk_c_wkb_writer_new();
-extern SEXP wk_c_xy_writer_new();
+extern SEXP wk_c_xyzm_writer_new();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_wk_cpp_format_wkb",         (DL_FUNC) &_wk_cpp_format_wkb,         4},
@@ -74,7 +74,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_read_wkb",              (DL_FUNC) &wk_c_read_wkb,              2},
     {"wk_c_read_xy",               (DL_FUNC) &wk_c_read_xy,               2},
     {"wk_c_wkb_writer_new",        (DL_FUNC) &wk_c_wkb_writer_new,        0},
-    {"wk_c_xy_writer_new",         (DL_FUNC) &wk_c_xy_writer_new,         0},
+    {"wk_c_xyzm_writer_new",       (DL_FUNC) &wk_c_xyzm_writer_new,       0},
     {NULL, NULL, 0}
 };
 }

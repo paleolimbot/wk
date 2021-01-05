@@ -9,7 +9,7 @@
 \alias{wk_problems}
 \alias{wkt_writer}
 \alias{wkb_writer}
-\alias{xy_writer}
+\alias{xyzm_writer}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
@@ -36,7 +36,7 @@ wkt_writer(precision = 16, trim = TRUE)
 
 wkb_writer()
 
-xy_writer()
+xyzm_writer()
 
 new_wk_handler(handler_ptr, subclass = character())
 
