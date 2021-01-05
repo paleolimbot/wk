@@ -54,23 +54,23 @@ xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
 }
 
 xyzm_translate_wkb <- function(xyzm) {
-  cpp_translate_xyzm_wkb(xyzm, wk_platform_endian(), bufferSize = 2048)
+  wk_handle.wk_xy(xyzm, wkb_writer())
 }
 
 rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
-  cpp_translate_rct_wkt(rct, precision, trim)
+  wk_handle.wk_rct(rct, wkt_writer(precision, trim))
 }
 
 rct_translate_wkb <- function(rct) {
-  cpp_translate_rct_wkb(rct, wk_platform_endian(), bufferSize = 2048)
+  wk_handle.wk_rct(rct, wkb_writer())
 }
 
 wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
-  xyzm_trim(cpp_translate_wkt_xyzm(wkt), include_z, include_m)
+  xyzm_trim(wk_handle.wk_wkt(wkt, xyzm_writer()), include_z, include_m)
 }
 
 wkb_translate_xyzm <- function(wkb, include_z = NA, include_m = NA) {
-  xyzm_trim(cpp_translate_wkb_xyzm(wkb), include_z, include_m)
+  xyzm_trim(wk_handle.wk_wkb(wkb, xyzm_writer()), include_z, include_m)
 }
 
 xyzm_trim <- function(result, include_z, include_m) {

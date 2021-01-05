@@ -31,9 +31,9 @@ test_that("wkt_translate_xyzm() works", {
     unclass(xy(1, 2))
   )
 
-  expect_identical(wkt_translate_xyzm(NA_character_), unclass(xy(NaN, NaN)))
-  expect_identical(wkt_translate_xyzm("POINT EMPTY"), unclass(xy(NaN, NaN)))
-  expect_error(wkt_translate_xyzm("LINESTRING (0 0, 1 1)"), "Can't create xy", class = "error")
+  expect_identical(wkt_translate_xyzm(NA_character_), unclass(xy(NA, NA)))
+  expect_identical(wkt_translate_xyzm("POINT EMPTY"), unclass(xy(NA, NA)))
+  expect_error(wkt_translate_xyzm("LINESTRING (0 0, 1 1)"), "Can't convert geometry")
 })
 
 test_that("xyzm_translate_wkb() works", {

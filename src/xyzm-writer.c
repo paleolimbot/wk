@@ -76,8 +76,8 @@ int xyzm_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t co
     data->result_ptr[1][data->feat_id] = coord.v[1];
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        data->result_ptr[2][data->feat_id] = NA_REAL;
-        data->result_ptr[3][data->feat_id] = NA_REAL;
+        data->result_ptr[2][data->feat_id] = coord.v[2];
+        data->result_ptr[3][data->feat_id] = coord.v[3];
     } else if(meta->flags & WK_FLAG_HAS_Z) {
         data->result_ptr[2][data->feat_id] = coord.v[2];   
     } else if(meta->flags & WK_FLAG_HAS_M) {
