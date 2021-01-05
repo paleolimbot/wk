@@ -229,6 +229,45 @@ test_that("wkb_writer() errors when the recursion limit is too high", {
   )
 })
 
+test_that("xyzm_writer() works", {
+  empties <- wkt(
+    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+      "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+      "GEOMETRYCOLLECTION EMPTY"
+    )
+  )
+
+  expect_identical(
+    wk_handle(empties, xyzm_writer()),
+    unclass(rep(xyzm(NA, NA, NA, NA), length(empties)))
+  )
+
+  expect_identical(
+    wk_handle(wkt("POINT (0 1)"), xyzm_writer()),
+    unclass(xyzm(0, 1, NA, NA))
+  )
+
+  expect_identical(
+    wk_handle(wkt("MULTIPOINT ((0 1))"), xyzm_writer()),
+    unclass(xyzm(0, 1, NA, NA))
+  )
+
+  expect_identical(
+    wk_handle(wkt("GEOMETRYCOLLECTION (MULTIPOINT ((0 1)))"), xyzm_writer()),
+    unclass(xyzm(0, 1, NA, NA))
+  )
+
+  expect_error(
+    wk_handle(wkt("LINESTRING (0 1, 1 2)"), xyzm_writer()),
+    "Can't convert geometry"
+  )
+
+  expect_error(
+    wk_handle(wkt("MULTIPOINT (0 1, 1 2)"), xyzm_writer()),
+    "contains more than one coordinate"
+  )
+})
+
 test_that("wk_handle.wk_xy() works", {
   expect_identical(
     wk_handle(xy(c(NA, 2, 3, NA), c(NA, NA, 4, 5)), wkt_writer()),
@@ -253,7 +292,7 @@ test_that("wk_handle.wk_xy() works", {
 
 test_that("wk_handle.wk_rct() works", {
   expect_identical(
-    wk_handle(rct(c(1, NA), c(2, NA), c(3, NA), c(4, NA)), wkt_writer()),
-    c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", "POLYGON EMPTY")
+    wk_handle(rct(c(1, NA, Inf, 0), c(2, NA, 0, Inf), c(3, NA, 1, 1), c(4, NA, 1, 1)), wkt_writer()),
+    c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", "POLYGON EMPTY", "POLYGON EMPTY", "POLYGON EMPTY")
   )
 })

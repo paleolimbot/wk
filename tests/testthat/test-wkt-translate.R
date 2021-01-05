@@ -286,25 +286,19 @@ test_that("wkt_translate_wkb() works with nested collections", {
 })
 
 test_that("wkt_translate_* has reasonable error messages", {
-  # different versions of Rcpp may treat exceptions differently on
-  # e.g., MacOS 3.6.2/CRAN, so skip these checks on CRAN
-  skip_on_cran()
-
   # close enough to inf to trigger the parse check
-  expect_error(wkt_translate_wkt("MULTIPOINT (iambic 3)"), class = "WKParseException")
-  expect_error(wkt_translate_wkt(""), class = "WKParseException")
-  expect_error(wkt_translate_wkt("SRID=fish;POINT (30 10)"), class = "WKParseException")
-  expect_error(wkt_translate_wkt("SRID="), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT (fish fish)"), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT ("), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT (3"), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT"), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT "), class = "WKParseException")
-  expect_error(wkt_translate_wkt("POINT (30 10="), class = "WKParseException")
-  # keeping commented out until the end-of-input assertion is added
-  # expect_error(wkt_translate_wkt("POINT (30 10)P"), class = "WKParseException")
-  expect_error(wkt_translate_wkt("LINESTRING (30 10, 0 0="), class = "WKParseException")
-
+  expect_error(wkt_translate_wkt("MULTIPOINT (iambic 3)"), "^Expected")
+  expect_error(wkt_translate_wkt(""), "^Expected")
+  expect_error(wkt_translate_wkt("SRID=fish;POINT (30 10)"), "^Expected")
+  expect_error(wkt_translate_wkt("SRID="), "^Expected")
+  expect_error(wkt_translate_wkt("POINT (fish fish)"), "^Expected")
+  expect_error(wkt_translate_wkt("POINT ("), "^Expected")
+  expect_error(wkt_translate_wkt("POINT (3"), "^Expected")
+  expect_error(wkt_translate_wkt("POINT"), "^Expected")
+  expect_error(wkt_translate_wkt("POINT "), "^Expected")
+  expect_error(wkt_translate_wkt("POINT (30 10="), "^Expected")
+  expect_error(wkt_translate_wkt("POINT (30 10)P"), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30 10, 0 0="), "^Expected")
 })
 
 test_that("wkt_translate_* can handle non-finite values", {
@@ -312,5 +306,5 @@ test_that("wkt_translate_* can handle non-finite values", {
 })
 
 test_that("wkt_translate_* doesn't segfault on other inputs", {
-  expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), class = "Rcpp::not_compatible")
+  expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), "^STRING_ELT")
 })

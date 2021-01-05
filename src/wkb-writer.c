@@ -27,11 +27,13 @@ unsigned char wkb_writer_platform_endian() {
     return (char) *cp;
 }
 
-uint32_t wkb_writer_encode_type(const wk_meta_t* meta) {
+uint32_t wkb_writer_encode_type(const wk_meta_t* meta, int recursion_level) {
     uint32_t out = meta->geometry_type;
     if (meta->flags & WK_FLAG_HAS_Z) out |= EWKB_Z_BIT;
     if (meta->flags & WK_FLAG_HAS_M) out |= EWKB_M_BIT;
-    if (meta->srid != WK_SRID_NONE) out |= EWKB_SRID_BIT;
+    if (recursion_level == 0) {
+        if (meta->srid != WK_SRID_NONE) out |= EWKB_SRID_BIT;
+    }
     return out;
   }
 
@@ -121,7 +123,11 @@ int wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     }
 
     wkb_write_uchar(write_buffer, write_buffer->endian);
-    wkb_write_uint(write_buffer, wkb_writer_encode_type(meta));
+    wkb_write_uint(write_buffer, wkb_writer_encode_type(meta, write_buffer->recursion_level));
+    if (write_buffer->recursion_level == 0 && (meta->srid != WK_SRID_NONE)) {
+        wkb_write_uint(write_buffer, meta->srid);
+    }
+
     if (meta->geometry_type != WK_POINT) {
         if (write_buffer->recursion_level >= WKB_MAX_RECURSION_DEPTH) {
             Rf_error(
@@ -135,6 +141,20 @@ int wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         write_buffer->current_size[write_buffer->recursion_level] = 0;
         wkb_write_uint(write_buffer, 0);
     }
+
+    // handle empty point as nan nan here (coord() will not get called)
+    if (meta->geometry_type == WK_POINT && meta->size == 0) {
+        int coord_size = 2;
+        if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
+        if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
+        double empty_coord[4];
+        empty_coord[0] = NAN;
+        empty_coord[1] = NAN;
+        empty_coord[2] = NAN;
+        empty_coord[3] = NAN;
+        wkb_write_doubles(write_buffer, empty_coord, coord_size);
+    }
+
     write_buffer->recursion_level++;
 
     return WK_CONTINUE;
@@ -218,6 +238,7 @@ void wkb_writer_vector_finally(void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     if (write_buffer->result != R_NilValue) {
         R_ReleaseObject(write_buffer->result);
+        write_buffer->result = R_NilValue;
     }
 }
 

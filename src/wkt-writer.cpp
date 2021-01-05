@@ -102,6 +102,10 @@ public:
   }
 
   int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
+    if (ring_id > 0) {
+      out << ", ";
+    }
+    
     out << "(";
     return WK_CONTINUE;
   }

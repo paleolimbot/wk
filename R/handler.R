@@ -60,6 +60,12 @@ wkb_writer <- function() {
 
 #' @rdname wk_void_handler
 #' @export
+xyzm_writer <- function() {
+  new_wk_handler(.Call(wk_c_xyzm_writer_new), "wk_xyzm_writer")
+}
+
+#' @rdname wk_void_handler
+#' @export
 new_wk_handler <- function(handler_ptr, subclass = character()) {
   stopifnot(typeof(handler_ptr) == "externalptr")
   structure(handler_ptr, class = union(subclass, "wk_handler"))

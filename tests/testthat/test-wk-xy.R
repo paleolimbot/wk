@@ -141,7 +141,7 @@ test_that("coercion from wk* vectors works", {
   expect_identical(as_xy(wkt("POINT Z (1 2 3)")), xyz(1, 2, 3))
   expect_identical(as_xy(wkt("POINT M (1 2 4)")), xym(1, 2, 4))
   expect_identical(as_xy(wkt("POINT ZM (1 2 3 4)")), xyzm(1, 2, 3, 4))
-  expect_identical(as_xy(wkt("POINT (1 2)"), dims = c("x", "y", "z", "m")), xyzm(1, 2, NaN, NaN))
+  expect_identical(as_xy(wkt("POINT (1 2)"), dims = c("x", "y", "z", "m")), xyzm(1, 2, NA, NA))
 
   expect_identical(as_xy(as_wkb("POINT (1 2)")), xy(1, 2))
 

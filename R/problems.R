@@ -18,11 +18,11 @@
 #' wkb_problems(list(wkb, wkb_bad))
 #'
 wkb_problems <- function(wkb) {
-  cpp_problems_wkb(wkb)
+  wk_handle(new_wk_wkb(unclass(wkb)), wk_problems_handler())
 }
 
 #' @rdname wkb_problems
 #' @export
 wkt_problems <- function(wkt) {
-  cpp_problems_wkt(wkt)
+  wk_handle(new_wk_wkt(unclass(wkt)), wk_problems_handler())
 }

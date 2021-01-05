@@ -23,7 +23,7 @@ test_that("wkb_translate_wkt() works with multiple endians", {
   expect_identical(wkb_translate_wkt(list(point_le)), "POINT (30 10)")
   expect_error(
     wkb_translate_wkt(list(point_le[1:5])),
-    "Reached end of RawVector input", class = "WKParseException"
+    "Unexpected end of buffer"
   )
 })
 
@@ -75,55 +75,6 @@ test_that("wkb_translate_wkt() works with ND points and SRID", {
   expect_identical(wkb_translate_wkt(list(point_zm)), "POINT ZM (30 10 2 1)")
   expect_identical(wkb_translate_wkt(list(point_s)), "SRID=199;POINT (30 10)")
   expect_identical(wkb_translate_wkt(list(point_zms)), "SRID=4326;POINT ZM (30 10 12 14)")
-})
-
-test_that("wkb_translate_wkt() works with creation options", {
-  point_zms <- as.raw(c(0x01,
-                        0x01, 0x00, 0x00, 0xe0,
-                        0xe6, 0x10, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x40))
-  expect_identical(
-    wkb_translate_wkt(list(point_zms)),
-    "SRID=4326;POINT ZM (30 10 12 14)"
-  )
-
-  expect_identical(
-    wkb_translate_wkt(list(point_zms), include_z = FALSE),
-    "SRID=4326;POINT M (30 10 14)"
-  )
-
-  expect_identical(
-    wkb_translate_wkt(list(point_zms), include_m = FALSE),
-    "SRID=4326;POINT Z (30 10 12)"
-  )
-
-  expect_identical(
-    wkb_translate_wkt(list(point_zms), include_srid = FALSE),
-    "POINT ZM (30 10 12 14)"
-  )
-})
-
-test_that("wkb_translate_wkt() errors when inappropriate creation options are set", {
-  point_xy <- as.raw(c(0x01, #
-                       0x01, 0x00, 0x00, 0x00, # type
-                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, # x
-                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40)) # y
-
-  expect_error(
-    wkb_translate_wkt(list(point_xy), include_z = TRUE),
-    "Can't include Z values", class = "C++Error"
-  )
-  expect_error(
-    wkb_translate_wkt(list(point_xy), include_m = TRUE),
-    "Can't include M values", class = "C++Error"
-  )
-  expect_error(
-    wkb_translate_wkt(list(point_xy), include_srid = TRUE),
-    "Can't include SRID values", class = "C++Error"
-  )
 })
 
 test_that("wkb_translate_wkt() works simple geometries", {
@@ -262,26 +213,6 @@ test_that("wkb_translate_wkb() works with missing values", {
   expect_identical(wkb_translate_wkb(list(NULL, point), endian = 1), list(NULL, point))
 })
 
-test_that("RcppRawVectorListWriter automatically extends the buffer size", {
-  point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x24, 0x40))
-  # this requires more than one buffer extension for a single read operation
-  expect_identical(wkb_translate_wkb(list(point), endian = 1, buffer_size = 1), list(point))
-
-  # zero length buffers are a problem because doubling their size doesn't make them bigger!
-  expect_error(
-    wkb_translate_wkb(list(point), buffer_size  = 0),
-    "Attempt to set zero or negative", class = "C++Error"
-  )
-
-  # this would fail with a reasonable error message anyway, but this is slightly better
-  expect_error(
-    wkb_translate_wkb(list(point), buffer_size  = -1),
-    "Attempt to set zero or negative", class = "C++Error"
-  )
-})
-
 test_that("wkb_translate_wkt() respects trim and rounding options", {
   # POINT (30 10)
   point <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -308,50 +239,6 @@ test_that("wkb_translate_wkt() respects trim and rounding options", {
   expect_identical(
     wkb_translate_wkt(list(point_repeating), precision = 5, trim = FALSE),
     "POINT (30.33333 10.33333)"
-  )
-})
-
-test_that("wkb--wkb translation works with multiple endians", {
-  point_be <- as.raw(c(0x00, 0x00, 0x00, 0x00, 0x01, 0x40, 0x3e,
-                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x24, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00))
-
-  point_le <- as.raw(c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x00, 0x00, 0x00, 0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
-                       0x00, 0x24, 0x40))
-
-  expect_identical(wkb_translate_wkb(list(point_be), endian = 0),  list(point_be))
-  expect_identical(wkb_translate_wkb(list(point_be), endian = 1),  list(point_le))
-  expect_identical(wkb_translate_wkb(list(point_le), endian = 0),  list(point_be))
-  expect_identical(wkb_translate_wkb(list(point_le), endian = 1),  list(point_le))
-})
-
-test_that("wkb--wkb translation works with include SRID, include M, and include Z options", {
-  # SRID=4326;POINT ZM (30 10 12 14)
-  point_zms <- as.raw(c(0x01,
-                        0x01, 0x00, 0x00, 0xe0,
-                        0xe6, 0x10, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x40,
-                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x40))
-
-  expect_identical(wkb_translate_wkb(list(point_zms)), list(point_zms))
-  expect_identical(
-    wkb_translate_wkt(wkb_translate_wkb(list(point_zms))),
-    "SRID=4326;POINT ZM (30 10 12 14)"
-  )
-  expect_identical(
-    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_z = FALSE)),
-    "SRID=4326;POINT M (30 10 14)"
-  )
-  expect_identical(
-    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_m = FALSE)),
-    "SRID=4326;POINT Z (30 10 12)"
-  )
-  expect_identical(
-    wkb_translate_wkt(wkb_translate_wkb(list(point_zms), include_srid = FALSE)),
-    "POINT ZM (30 10 12 14)"
   )
 })
 
@@ -398,7 +285,7 @@ test_that("wkb--wkb translation works for nested collections", {
 })
 
 test_that("wkb_translate_* doesn't segfault on other inputs", {
-  expect_error(wkb_translate_wkt("POINT (30 10)"), "can only be applied to a 'raw'")
+  expect_error(wkb_translate_wkt("POINT (30 10)"), "can only be applied to a 'list'")
 })
 
 test_that("wkb reader can read 1000-3000 style WKB input", {
