@@ -7,17 +7,8 @@
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
-#' @param endian For WKB writing, 0 for big endian, 1 for little endian.
-#'   Defaults to [wk_platform_endian()] (slightly faster).
-#' @param include_z,include_m,include_srid Include the
-#'   values of the Z and M coordinates and/or SRID
-#'   in the output? Use `FALSE` to omit, `TRUE` to include, or `NA` to include
-#'   only if present. Note that using `TRUE` may result in an error if there
-#'   is no value present in the original.
-#' @param buffer_size For WKB writing, the initial buffer size to use for
-#'   each feature, in bytes. This will be extended when needed, but if you
-#'   are calling this repeatedly with huge geometries, setting this value
-#'   to a larger number may result in less copying.
+#' @param ... Used to keep backward compatibility with previous
+#'   versions of these functions.
 #'
 #' @return `*_translate_wkt()` returns a character vector of
 #'   well-known text; `*_translate_wkb()` returns a list
@@ -33,15 +24,13 @@
 #'
 #' # some basic creation options are also available
 #' wkt_translate_wkt("POINT (30 10)", trim = FALSE)
-#' wkb_translate_wkb(wkb, endian = 0)
 #'
-wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
-                              precision = 16, trim = TRUE) {
+wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
   cpp_wkb_translate_wkt(
     wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
+    includeZ = NA,
+    includeM = NA,
+    includeSRID = NA,
     precision = precision,
     trim = trim
   )
@@ -49,27 +38,25 @@ wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wk_platform_endian(), buffer_size = 2048) {
+wkb_translate_wkb <- function(wkb, ...) {
   cpp_wkb_translate_wkb(
     wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
+    includeZ = NA,
+    includeM = NA,
+    includeSRID = NA,
+    endian = wk_platform_endian(),
+    bufferSize = 2048
   )
 }
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
-                              precision = 16, trim = TRUE) {
+wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
   cpp_wkt_translate_wkt(
     wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
+    includeZ = NA,
+    includeM = NA,
+    includeSRID = NA,
     precision = precision,
     trim = trim
   )
@@ -77,15 +64,14 @@ wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid 
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wk_platform_endian(), buffer_size = 2048) {
+wkt_translate_wkb <- function(wkt, ...) {
   cpp_wkt_translate_wkb(
     wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
+    includeZ = NA,
+    includeM = NA,
+    includeSRID = NA,
+    endian = wk_platform_endian(),
+    bufferSize = 2048
   )
 }
 
@@ -95,16 +81,16 @@ xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
   cpp_translate_xyzm_wkt(xyzm, precision, trim)
 }
 
-xyzm_translate_wkb <- function(xyzm, endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_translate_xyzm_wkb(xyzm, endian, bufferSize = buffer_size)
+xyzm_translate_wkb <- function(xyzm) {
+  cpp_translate_xyzm_wkb(xyzm, wk_platform_endian(), bufferSize = 2048)
 }
 
 rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
   cpp_translate_rct_wkt(rct, precision, trim)
 }
 
-rct_translate_wkb <- function(rct, endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_translate_rct_wkb(rct, endian, bufferSize = buffer_size)
+rct_translate_wkb <- function(rct) {
+  cpp_translate_rct_wkb(rct, wk_platform_endian(), bufferSize = 2048)
 }
 
 wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
