@@ -91,30 +91,30 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
     WKBBuffer_t buffer;
 
     for (R_xlen_t i = 0; i < n_features; i++) {
+      buffer.feat_id = i;
       item = VECTOR_ELT(data, i);
 
       HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vectorMeta, i, handler->handler_data));
 
       if (item == R_NilValue) {
         HANDLE_CONTINUE_OR_BREAK(handler->null_feature(&vectorMeta, i, handler->handler_data));
-      }
+      } else {
+        buffer.buffer = RAW(item);
+        buffer.size = Rf_xlength(item);
+        buffer.offset = 0;
+        buffer.errorCode = WK_NO_ERROR_CODE;
+        memset(buffer.errorMessage, 0, 1024);
 
-      buffer.feat_id = i;
-      buffer.buffer = RAW(item);
-      buffer.size = Rf_xlength(item);
-      buffer.offset = 0;
-      buffer.errorCode = WK_NO_ERROR_CODE;
-      memset(buffer.errorMessage, 0, 1024);
-
-      result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE);
-      if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
-        result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->handler_data);
-      }
-      
-      if (result == WK_ABORT_FEATURE) {
-        continue;
-      } else if (result == WK_ABORT) {
-        break;
+        result = wkb_read_geometry(handler, &buffer, WK_PART_ID_NONE);
+        if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
+          result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->handler_data);
+        }
+        
+        if (result == WK_ABORT_FEATURE) {
+          continue;
+        } else if (result == WK_ABORT) {
+          break;
+        }
       }
 
       if (handler->feature_end(&vectorMeta, i, handler->handler_data) == WK_ABORT) {
