@@ -32,14 +32,7 @@ wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
 #' @rdname wkb_translate_wkt
 #' @export
 wkb_translate_wkb <- function(wkb, ...) {
-  cpp_wkb_translate_wkb(
-    wkb,
-    includeZ = NA,
-    includeM = NA,
-    includeSRID = NA,
-    endian = wk_platform_endian(),
-    bufferSize = 2048
-  )
+  wk_handle.wk_wkb(wkb, wkb_writer())
 }
 
 #' @rdname wkb_translate_wkt
