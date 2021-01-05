@@ -7,10 +7,6 @@
   if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
 
 SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
-    if (!Rf_inherits(data, "wk_xy")) {
-        Rf_error("Object does not inherit from 'wk_xy'");
-    }
-
     R_xlen_t n_features = Rf_xlength(VECTOR_ELT(data, 0));
     int coord_size = Rf_length(data);
     double* data_ptr[coord_size];

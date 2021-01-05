@@ -3,9 +3,9 @@ test_that("xyzm_translate_wkt() works", {
   expect_identical(xyzm_translate_wkt(xyzm()), character(0))
   expect_identical(xyzm_translate_wkt(xyzm(NA, NA, NA, NA)), "POINT EMPTY")
   expect_identical(xyzm_translate_wkt(xyzm(1, 2, 3, 4)), "POINT ZM (1 2 3 4)")
-  expect_identical(xyzm_translate_wkt(xyzm(1, 2, NA, NA)), "POINT (1 2)")
-  expect_identical(xyzm_translate_wkt(xyzm(1, 2, 3, NA)), "POINT Z (1 2 3)")
-  expect_identical(xyzm_translate_wkt(xyzm(1, 2, NA, 4)), "POINT M (1 2 4)")
+  expect_identical(xyzm_translate_wkt(xyzm(1, 2, NA, NA)), "POINT ZM (1 2 nan nan)")
+  expect_identical(xyzm_translate_wkt(xyzm(1, 2, 3, NA)), "POINT ZM (1 2 3 nan)")
+  expect_identical(xyzm_translate_wkt(xyzm(1, 2, NA, 4)), "POINT ZM (1 2 nan 4)")
 })
 
 test_that("wkt_translate_xyzm() works", {

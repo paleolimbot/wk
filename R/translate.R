@@ -50,7 +50,7 @@ wkt_translate_wkb <- function(wkt, ...) {
 # ----- leaving these unexported until the arguments are stable
 
 xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
-  cpp_translate_xyzm_wkt(xyzm, precision, trim)
+  wk_handle.wk_xy(xyzm, wkt_writer(precision, trim))
 }
 
 xyzm_translate_wkb <- function(xyzm) {
