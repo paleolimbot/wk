@@ -1,94 +1,10 @@
 
-#ifndef WK_V1_HPP_INCLUDED
-#define WK_V1_HPP_INCLUDED
+#ifndef WK_V1_HANDLER_HPP_INCLUDED
+#define WK_V1_HANDLER_HPP_INCLUDED
 
-#include "cpp11/external_pointer.hpp"
 #include "cpp11/protect.hpp"
 #include "cpp11/declarations.hpp"
-#include <string>
-#include <stdexcept>
 #include "wk-v1.h"
-
-class WKParseException: public std::runtime_error {
-public:
-  WKParseException(int code, std::string message): std::runtime_error(message), exceptionCode(code) {}
-  WKParseException(std::string message): std::runtime_error(message), exceptionCode(WK_DEFAULT_ERROR_CODE) {}
-
-  int code() {
-    return this->exceptionCode;
-  }
-
-private:
-  int exceptionCode;
-};
-
-class WKHandler {
-public:
-
-  // The constructor and deleter are replacements for the run_handler_xptr() function.
-  // Instead, the scope of the WKHandler is used to guarantee that (1) the handler
-  // is not being re-used and (2) vectorFinalize() is called and is called
-  // as soon as possible.
-  WKHandler(wk_handler_t* handler): handler(handler) {
-    if (handler->dirty) {
-      throw std::runtime_error("Can't re-use a wk_handler");
-    } else {
-      handler->dirty = 1;
-    }
-  }
-
-  ~WKHandler() {
-    handler->vector_finally(handler->handler_data);
-  }
-
-  int vector_start(const wk_vector_meta_t* meta) {
-    return cpp11::safe[handler->vector_start](meta, handler->handler_data);
-  }
-
-  int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->feature_start](meta, feat_id, handler->handler_data);
-  }
-
-  int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->null_feature](meta, feat_id, handler->handler_data);
-  }
-
-  int geometry_start(const wk_meta_t* meta, uint32_t partId) {
-    return cpp11::safe[handler->geometry_start](meta, partId, handler->handler_data);
-  }
-
-  int ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
-    return cpp11::safe[handler->ring_start](meta, size, ringId, handler->handler_data);
-  }
-
-  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
-    return cpp11::safe[handler->coord](meta, coord, coord_id, handler->handler_data);
-  }
-
-  int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ringId) {
-    return cpp11::safe[handler->ring_end](meta, size, ringId, handler->handler_data);
-  }
-
-  int geometry_end(const wk_meta_t* meta, uint32_t partId) {
-    return cpp11::safe[handler->geometry_end](meta, partId, handler->handler_data);
-  }
-
-  int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->feature_end](meta, feat_id, handler->handler_data);
-  }
-
-  SEXP vector_end(const wk_vector_meta_t* meta) {
-    return cpp11::safe[handler->vector_end](meta, handler->handler_data);
-  }
-
-  int error(R_xlen_t feat_id, int code, const char* message) {
-    return cpp11::safe[handler->error](feat_id, code, message, handler->handler_data);
-  }
-
-private:
-  wk_handler_t* handler;
-};
-
 
 // ---- the class one should extend when writing handlers in C++ ---
 class WKVoidHandler {
