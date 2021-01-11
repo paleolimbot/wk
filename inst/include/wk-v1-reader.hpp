@@ -2,6 +2,7 @@
 #ifndef WK_V1_READER_HPP_INCLUDED
 #define WK_V1_READER_HPP_INCLUDED
 
+#include "cpp11/external_pointer.hpp"
 #include "cpp11/protect.hpp"
 #include <string>
 #include <stdexcept>
@@ -27,11 +28,11 @@ public:
   // Instead, the scope of the WKHandler is used to guarantee that (1) the handler
   // is not being re-used and (2) vectorFinalize() is called and is called
   // as soon as possible.
-  WKHandlerXPtr(wk_handler_t* handler): handler(handler) {
-    if (handler->dirty) {
+  WKHandlerXPtr(SEXP handler_xptr): handler(handler_xptr) {
+    if (this->handler->dirty) {
       throw std::runtime_error("Can't re-use a wk_handler");
     } else {
-      handler->dirty = 1;
+      this->handler->dirty = 1;
     }
   }
 
@@ -84,7 +85,7 @@ public:
   }
 
 private:
-  wk_handler_t* handler;
+  cpp11::external_pointer<wk_handler_t> handler;
 };
 
 #endif
