@@ -71,7 +71,6 @@ Plot well-known geometry vectors
 if (requireNamespace("wkutils")) {
   plot(as_wkt("LINESTRING (0 0, 1 1)"))
   plot(as_wkb("LINESTRING (0 0, 1 1)"))
-  plot(as_wksxp("LINESTRING (0 0, 1 1)"))
 }
 
 }
