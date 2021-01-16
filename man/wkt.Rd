@@ -8,76 +8,28 @@
 \alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
 \alias{as_wkt.wk_wkb}
-\alias{as_wkt.wk_wksxp}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x = character())
+wkt(x = character(), crs = wk_crs_auto())
 
-parse_wkt(x)
+parse_wkt(x, crs = wk_crs_auto())
 
 as_wkt(x, ...)
 
 \method{as_wkt}{default}(x, ...)
 
-\method{as_wkt}{character}(x, ...)
+\method{as_wkt}{character}(x, ..., crs = NULL)
 
-\method{as_wkt}{wk_wkt}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  precision = NULL,
-  trim = NULL
-)
+\method{as_wkt}{wk_wkt}(x, ...)
 
-\method{as_wkt}{wk_wkb}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  precision = NULL,
-  trim = NULL
-)
-
-\method{as_wkt}{wk_wksxp}(
-  x,
-  ...,
-  include_z = NULL,
-  include_m = NULL,
-  include_srid = NULL,
-  precision = NULL,
-  trim = NULL
-)
+\method{as_wkt}{wk_wkb}(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=character]{character()}} vector containing well-known text.}
 
+\item{crs}{A value to be propagated as the CRS for this vector.}
+
 \item{...}{Unused}
-
-\item{include_z}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_m}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{include_srid}{Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use \code{FALSE} to omit, \code{TRUE} to include, or \code{NA} to include
-only if present. Note that using \code{TRUE} may result in an error if there
-is no value present in the original.}
-
-\item{precision}{The rounding precision to use when writing
-(number of decimal places).}
-
-\item{trim}{Trim unnecessary zeroes in the output?}
 }
 \value{
 A \code{\link[=new_wk_wkt]{new_wk_wkt()}}

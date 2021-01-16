@@ -100,13 +100,11 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
   expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "m")), xym(1, 2, NA))
   expect_identical(as_xy(data.frame(x = 1, y = 2), dims = c("x", "y", "z", "m")), xyzm(1, 2, NA, NA))
 
+  expect_error(as_xy(data.frame(x = 1, y = 2), dims = "L"), "Unknown dims")
+
   expect_identical(
-    as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4)), dims = NULL),
+    as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4))),
     xyzm(1, 2, 3, 4)
-  )
-  expect_identical(
-    as_xy(as.matrix(data.frame(x = 1, y = 2, z = 3, m = 4)), dims = c("x", "y")),
-    xy(1, 2)
   )
   expect_identical(
     as_xy(matrix(1:2, nrow = 1)),
@@ -120,4 +118,51 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
     as_xy(matrix(1:4, nrow = 1)),
     xyzm(1, 2, 3, 4)
   )
+
+  expect_identical(
+    as_xy(matrix(1:2, nrow = 1, dimnames = list(NULL, c("x", "y")))),
+    xy(1, 2)
+  )
+  expect_identical(
+    as_xy(matrix(1:3, nrow = 1, dimnames = list(NULL, c("x", "y", "m")))),
+    xym(1, 2, 3)
+  )
+
+  expect_error(as_xy(matrix(1:10, nrow = 1)), "Can't guess dimensions")
+})
+
+test_that("coercion to wk* vectors works", {
+  expect_identical(as_wkt(xy(1, 2)), wkt("POINT (1 2)"))
+  expect_identical(as_wkb(xy(1, 2)), as_wkb("POINT (1 2)"))
+})
+
+test_that("coercion from wk* vectors works", {
+  expect_identical(as_xy(wkt("POINT (1 2)")), xy(1, 2))
+  expect_identical(as_xy(wkt("POINT Z (1 2 3)")), xyz(1, 2, 3))
+  expect_identical(as_xy(wkt("POINT M (1 2 4)")), xym(1, 2, 4))
+  expect_identical(as_xy(wkt("POINT ZM (1 2 3 4)")), xyzm(1, 2, 3, 4))
+  expect_identical(as_xy(wkt("POINT (1 2)"), dims = c("x", "y", "z", "m")), xyzm(1, 2, NA, NA))
+
+  expect_identical(as_xy(as_wkb("POINT (1 2)")), xy(1, 2))
+
+  expect_error(as_xy(wkt("POINT (1 2)"), dims = "L"), "Unknown dimensions")
+})
+
+test_that("subset-assign works for wk_xy", {
+  x <- xyzm(1:2, 2, 3, 4)
+  x[2] <- xy(10, 20)
+  expect_identical(x[2], xyzm(10, 20, NA, NA))
+})
+
+test_that("xy() propagates CRS", {
+  x <- xy(1, 2)
+  wk_crs(x) <- 1234
+
+  expect_identical(wk_crs(x[1]), 1234)
+  expect_identical(wk_crs(c(x, x)), 1234)
+  expect_identical(wk_crs(rep(x, 2)), 1234)
+
+  expect_error(x[1] <- wk_set_crs(x, NULL), "are not equal")
+  x[1] <- wk_set_crs(x, 1234L)
+  expect_identical(wk_crs(x), 1234)
 })

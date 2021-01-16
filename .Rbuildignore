@@ -8,3 +8,7 @@
 ^pkgdown$
 ^LICENSE\.md$
 ^cran-comments\.md$
+^CRAN-RELEASE$
+^data-raw$
+^vignettes/articles$
+^\.covrignore$

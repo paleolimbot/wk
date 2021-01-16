@@ -3,7 +3,8 @@
 \name{plot.wk_wkt}
 \alias{plot.wk_wkt}
 \alias{plot.wk_wkb}
-\alias{plot.wk_wksxp}
+\alias{plot.wk_xy}
+\alias{plot.wk_rct}
 \title{Plot well-known geometry vectors}
 \usage{
 \method{plot}{wk_wkt}(
@@ -28,16 +29,9 @@
   add = FALSE
 )
 
-\method{plot}{wk_wksxp}(
-  x,
-  ...,
-  asp = 1,
-  bbox = NULL,
-  xlab = "",
-  ylab = "",
-  rule = "evenodd",
-  add = FALSE
-)
+\method{plot}{wk_xy}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
+
+\method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link[=wkt]{wkt()}} or \code{\link[=wkb]{wkb()}} vector.}

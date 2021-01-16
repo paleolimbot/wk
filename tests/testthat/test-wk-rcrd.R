@@ -16,6 +16,7 @@ test_that("wk_rcrd works", {
 
   expect_identical(expect_output(print(xy_rcrd), "wk_rcrd"), xy_rcrd)
   expect_output(print(xy_rcrd[integer(0)]), "wk_rcrd")
+  expect_output(print(wk_set_crs(xy_rcrd, 1234)), "CRS=1234")
   expect_length(format(xy_rcrd), 2)
   expect_length(as.character(xy_rcrd), 2)
 
@@ -49,5 +50,10 @@ test_that("wk_rcrd works", {
   expect_identical(
     as.data.frame(xy_rcrd),
     data.frame(x = c(1, 2, 3), y = c(2, 2, 2))
+  )
+
+  expect_identical(
+    data.frame(col_name = xy_rcrd),
+    new_data_frame(list(col_name = xy_rcrd))
   )
 })

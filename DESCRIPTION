@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.3.4
+Version: 0.3.4.9000
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -30,9 +30,9 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 LinkingTo: 
-    Rcpp
+    cpp11
 Imports: 
-    Rcpp
+    cpp11
 Suggests: 
     testthat,
     vctrs (>= 0.3.0),

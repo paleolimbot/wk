@@ -50,8 +50,44 @@ plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
 
 #' @rdname plot.wk_wkt
 #' @export
-plot.wk_wksxp <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
-                          rule = "evenodd", add = FALSE) {
-  warning("plot.wk_wksxp() is defunct and will be removed in a future version")
+plot.wk_xy <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE) {
+  x_bare <- unclass(x)
+
+  if (!add) {
+    graphics::plot(
+      double(), double(),
+      xlim = range(x_bare$x, finite = TRUE),
+      ylim = range(x_bare$y, finite = TRUE),
+      xlab = xlab,
+      ylab = ylab
+    )
+  }
+
+  graphics::points(x_bare$x, x_bare$y, ...)
+
+  invisible(x)
+}
+
+#' @rdname plot.wk_wkt
+#' @export
+plot.wk_rct <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE) {
+  x_bare <- unclass(x)
+
+  if (!add) {
+    xlim_min <- range(x_bare$xmin, finite = TRUE)
+    xlim_max <- range(x_bare$xmax, finite = TRUE)
+    ylim_min <- range(x_bare$ymin, finite = TRUE)
+    ylim_max <- range(x_bare$ymax, finite = TRUE)
+
+    graphics::plot(
+      double(), double(),
+      xlim = range(c(xlim_min, xlim_max), finite = TRUE),
+      ylim = range(c(ylim_min, ylim_max), finite = TRUE),
+      xlab = xlab,
+      ylab = ylab
+    )
+  }
+
+  graphics::rect(x_bare$xmin, x_bare$ymin, x_bare$xmax, x_bare$ymax, ...)
   invisible(x)
 }

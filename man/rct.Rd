@@ -3,23 +3,31 @@
 \name{rct}
 \alias{rct}
 \alias{as_rct}
-\alias{as_rct.rct}
+\alias{as_rct.wk_rct}
 \alias{as_rct.matrix}
 \alias{as_rct.data.frame}
 \title{2D rectangle vectors}
 \usage{
-rct(xmin = double(), ymin = double(), xmax = double(), ymax = double())
+rct(
+  xmin = double(),
+  ymin = double(),
+  xmax = double(),
+  ymax = double(),
+  crs = wk_crs_auto()
+)
 
 as_rct(x, ...)
 
-\method{as_rct}{rct}(x, ...)
+\method{as_rct}{wk_rct}(x, ...)
 
-\method{as_rct}{matrix}(x, ...)
+\method{as_rct}{matrix}(x, ..., crs = NULL)
 
-\method{as_rct}{data.frame}(x, ...)
+\method{as_rct}{data.frame}(x, ..., crs = NULL)
 }
 \arguments{
 \item{xmin, ymin, xmax, ymax}{Rectangle bounds.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{x}{An object to be converted to a \code{\link[=rct]{rct()}}.}
 

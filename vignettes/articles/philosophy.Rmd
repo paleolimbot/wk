@@ -1,0 +1,346 @@
+---
+title: "Understanding the wk C and C++ API"
+---
+
+```{r, include = FALSE}
+library(cpp11)
+Sys.setenv(
+  PKG_CFLAGS = paste0("-I", system.file("include", package = "wk"))
+)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+At the heart of the wk philosophy is the concept of a **handler**, whose job it is to respond to bits of geometric information as they are iterated over by the **reader**. These bits of information have a very specific structure and order such that the messages can be guaranteed to be backward-compatible for all time (for each version of the API). This means that the **reader** can focus on iterating over the data structure and **handlers** can focus on computing a value (usually) based on the geometries. The advantage of this system is that readers and handlers can be mixed and matched so that handlers can be used with many data structures! As an example, the wk package itself uses readers and handlers to power validation of and conversion among `wkt()`, `wkb()`, `xy()`, and `rct()` classes.
+
+The wk API works with a **vector** of **features**: readers iterate over such vectors and handlers compute a value based on some or all of the features in the vector. Each **feature** can be `NULL` or contain exactly one **geometry** (although this geometry can be a collection or multi-geometry which can contain a tree of other geometries). A good way to visualize the structure, order, and type of messages passed to a **handler** is to use the `wk_debug_handler()` on some well-known text (WKT):
+
+```{r}
+library(wk)
+wk_handle(
+  wkt(c(NA, "POINT (0 1)", "GEOMETRYCOLLECTION (POINT (2 3))")),
+  wk_debug_handler()
+)
+```
+
+The concept of a **vector** was inspired by the `sf::sfc()` data type and draws heavily from the [vctrs](https://vctrs.r-lib.org) framework. The concept of a **feature** draws from the implementations of the simple features specification in most databases and the support in R for "missing" values, which are not quite the same as an EMPTY geometry (in the same way that `NaN` and `NA` can be distinguished in R). The concept of a **geometry** is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.
+
+## R infrastructure
+
+The `wk_handle()` function is an S3 generic for which methods are defined for `wkb()`, `wkt()`, `xy()`, `rct()`, and could be implemented for any number of in-memory and on-disk forms. When writing a new **reader**, this is the method you're defining for your data type. While you don't technically have to do implement the `wk_handle()` generic, doing so makes functions that use **handlers** work for your data type without having to know anything about your type/package! For example, the `wk_debug()` function uses this under the hood to support multiple input types with one line of code.
+
+```{r}
+wk_debug(wkt("POINT (0 1)"))
+wk_debug(as_wkb("POINT (0 1)"))
+```
+
+## A handler in C++
+
+As an example, I'll write a handler that computes the 2D bounding box of its input (assuming Euclidean space). One way to go about this is to use the C++ extension of the C API. The approach is probably familiar: keep a running tally of the greatest and least values so far, updating every time information about a new coordinate is available.
+
+```{cpp11}
+#include <cmath>
+#include "cpp11.hpp"
+using namespace cpp11;
+namespace writable = cpp11::writable;
+#include "wk-v1-handler.hpp"
+#include "wk-v1-impl.c"
+
+class BBoxHandler: public WKVoidHandler {
+public:
+  BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
+  
+  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+    this->xmin = std::min(coord.v[0], this->xmin);
+    this->ymin = std::min(coord.v[1], this->ymin);
+    this->xmax = std::max(coord.v[0], this->xmax);
+    this->ymax = std::max(coord.v[1], this->ymax);
+    return WK_CONTINUE; 
+  }
+  
+  SEXP vector_end(const wk_vector_meta_t* meta) {
+    writable::doubles output = {this->xmin, this->ymin, this->xmax, this->ymax};
+    output.names() = {"xmin", "ymin", "xmax", "ymax"};
+    return output;
+  }
+  
+private:
+  double xmin, ymin, xmax, ymax;
+};
+
+[[cpp11::linking_to(wk)]]
+[[cpp11::register]]
+sexp cpp_bbox_handler_new() {
+  return WKHandlerFactory<BBoxHandler>::create_xptr(new BBoxHandler());
+}
+```
+
+In this handler, we only care about two types of events: the appearance of a coordinate and the end of the vector. In the wk API, the `vector_end()` method is where the return value is computed. We need a tiny bit more code to generate the handler in the form it can be used in R. This guarantees that other functions know that the object you've returned from C++ is a pointer to a wk handler.
+
+```{r}
+bbox_handler <- function() {
+  new_wk_handler(cpp_bbox_handler_new(), "bbox_wk_handler")
+}
+
+bbox_handler()
+```
+
+Once you have the object in R, you can use it with wk's `handle_*()` functions such as `handle_wkt()` or `handle_wkb()`:
+
+```{r}
+wk_handle(
+  wkt(c(NA, "POINT (0 1)", "GEOMETRYCOLLECTION (POINT (2 3))")),
+  bbox_handler()
+)
+```
+
+## Lifecycle of a C++ handler
+
+The most important thing about a `wk_handler` is that, once created, it can only be used once:
+
+```{r, error = TRUE}
+handler <- bbox_handler()
+wk_handle(wkt(), handler)
+wk_handle(wkt(), handler)
+```
+
+If you need to program with user-supplied handlers, you can pass a function wherever a `wk_handler` was expected (the reader will call the function to obtain the fresh handler).
+
+```{r}
+handler <- function() bbox_handler()
+wk_handle(wkt(), handler)
+wk_handle(wkt(), handler)
+```
+
+When writing a handler, it is also important to consider cleaning up the resources you allocate. With a C++ handler some of this is taken care of for you because the deleter for the object is called at some point after the object is garbage collected. This is taken care of in the magical `WKHandlerFactory<T>::create_xptr(new T())`, which registers the deleter and catches any exceptions you may have thrown so that the your handling functions are safe to call from C. The default deleter will clean up any class members you've declared which is sufficient for most handlers you might want to write. 
+
+One situation in which you will specifically not want to rely on the deleter is a handler that writes to a file: because you have no control over *when* the deleter will run, you may reserve file access for longer than you intend. In these situations, you should open the file in `vector_start()` and clean it up in `vector_finally()`, which is guaranteed to run if `vector_start()` is called.
+
+A few more things to keep in mind when writing handlers:
+
+- `vector_start()` may not run at all (e.g., if a handler object is created but never used).
+- You can and should throw exceptions to signify an error unless the method is marked `noexcept` (the deleter, `vector_finally()`, and `error()`).
+
+## A handler in C
+
+Depending on your background and the other libraries with which you are working, it may be easier or faster to write a handler in C. The below example is a direct translation of the C++ bounding box handler from above.
+
+```{c, results = "hide"}
+#include <Rinternals.h>
+#include <stdlib.h>
+#include "wk-v1.h"
+#include "wk-v1-impl.c"
+
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b)) 
+
+typedef struct {
+  double xmin, ymin, xmax, ymax;
+} bbox_handler_data_t;
+
+int bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
+                        uint32_t coord_id, void* handler_data) {
+  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
+  data->xmin = MIN(coord.v[0], data->xmin);
+  data->ymin = MIN(coord.v[1], data->ymin);
+  data->xmax = MAX(coord.v[0], data->xmax);
+  data->ymax = MAX(coord.v[1], data->ymax);
+  return WK_CONTINUE;
+}
+
+SEXP bbox_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
+  
+  const char* names[] = {"xmin", "ymin", "xmax", "ymax", ""};
+  SEXP output = PROTECT(Rf_mkNamed(REALSXP, names));
+  REAL(output)[0] = data->xmin;
+  REAL(output)[1] = data->ymin;
+  REAL(output)[2] = data->xmax;
+  REAL(output)[3] = data->ymax;
+  
+  UNPROTECT(1);
+  return output;
+}
+
+void bbox_handler_finalize(void* handler_data) {
+    bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
+    free(data);
+}
+
+SEXP c_bbox_handler_new() {
+  wk_handler_t* handler = wk_handler_create();
+
+  handler->coord = &bbox_handler_coord;
+  handler->vector_end = &bbox_handler_vector_end;
+  
+  bbox_handler_data_t* data = (bbox_handler_data_t*) malloc(sizeof(bbox_handler_data_t));
+  data->xmin = R_PosInf;
+  data->ymin = R_PosInf;
+  data->xmax = R_NegInf;
+  data->ymax = R_NegInf;
+  handler->handler_data = data;
+  
+  return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
+}
+```
+
+We need the same infrastructure on the R end (`new_wk_handler()`) to make sure read functions understand that the value is a pointer to a freshly created handler:
+
+```{r}
+bbox_handler_c <- function() {
+  new_wk_handler(.Call("c_bbox_handler_new"))
+}
+
+wk_handle(
+  wkt(c(NA, "POINT (0 1)", "GEOMETRYCOLLECTION (POINT (2 3))")),
+  bbox_handler_c()
+)
+```
+
+## Lifecycle of a C handler
+
+The notes above about the lifecycle of a handler written in C++ apply to a handler written in C except that for the C handler you will have to explicitly `free()` anything you `malloc()`ed. In the above example, the `finalize()` method was used to free the `BboxHandlerData_t`. Another common pattern is to allocate an R object in `vector_start()` (because this is where you have information about how may items are in the vector that is about to be read). This pattern of creating objects isn't well-supported by the `PROTECT()`/`UNPROTECT()` pattern and is better-suited to `R_PreserveObject()` and `R_ReleaseObject()`. You can also use the fact that `VECSXP` vectors protect their elements to keep your R allocations from being garbage-collected while the handler is running.
+
+Note that you can and should use the R API within your functions! This includes using `Rf_error()`, `Rf_allocVector()` and all the other functions that might `longjmp`: any reader calling handler functions through the wk C++ headers are designed with this in mind.
+
+## A reader in C++
+
+The wk API was optimized for the simplicity of writing handlers much more than readers (after all, there are many more things one can *do* with geometry than there are ways to store it). This means that writing readers can be finicky! As an example, I'll demonstrate a reader that iterates over a data frame of coordinates (e.g., `data.frame(x = c(1, 2, 3), y = c(4, 5, 6))`) as points.
+
+```{cpp11}
+#include "cpp11.hpp"
+using namespace cpp11;
+#include "wk-v1-reader.hpp"
+#include "wk-v1-impl.c"
+
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
+
+[[cpp11::linking_to(wk)]]
+[[cpp11::register]]
+sexp cpp_handle_xy(data_frame input, sexp handler_xptr) {
+  doubles x = input["x"];
+  cpp11::doubles y = input["y"];
+  R_xlen_t n_features = x.size();
+
+  WKHandlerXPtr handler(handler_xptr);
+  
+  wk_vector_meta_t vector_meta;
+  WK_VECTOR_META_RESET(vector_meta, WK_POINT);
+  vector_meta.size = n_features;
+
+  wk_meta_t geometry_meta;
+  WK_META_RESET(geometry_meta, WK_POINT);
+  geometry_meta.size = 1;
+
+  handler.vector_start(&vector_meta);
+  wk_coord_t coord;
+  int result;
+  
+  for (R_xlen_t i = 0; i < n_features; i++) {
+    HANDLE_CONTINUE_OR_BREAK(handler.feature_start(&vector_meta, i));
+    HANDLE_CONTINUE_OR_BREAK(handler.geometry_start(&geometry_meta, WK_PART_ID_NONE));
+
+    coord.v[0] = x[i];
+    coord.v[1] = y[i];
+    HANDLE_CONTINUE_OR_BREAK(handler.coord(&geometry_meta, coord, 0));
+
+    HANDLE_CONTINUE_OR_BREAK(handler.geometry_end(&geometry_meta, WK_PART_ID_NONE));
+    HANDLE_CONTINUE_OR_BREAK(handler.feature_end(&vector_meta, i));
+  }
+
+  return handler.vector_end(&vector_meta);
+}
+```
+
+The first thing you might notice is the `HANDLE_CONTINUE_OR_BREAK()` macro. You may have noticed that the handler functions we wrote all return `WK_CONTINUE`. Sometimes it's *really nice* when you're writing a handler to be able to tell the reader to stop! One example is the `wk_format_handler()`, which only needs the first few coordinates to spit out a reasonable summary. When iterating over features that could be gigabytes in size this saves a lot of time and several important handlers need this for the framework to do its magic. It does, however, make writing readers a lot harder.
+
+You might wonder why I didn't just use exceptions to implement this feature in the C++ wrapper since they would simplify the code a great deal. The initial version of the API did this and was *really really really slow* for handlers that returned early. If you have a better idea of how to make this work, I'm all ears. In practice, having a macro that does an early `return`, a `continue`, or a `break` keeps the code implementing the readers from getting out of hand.
+
+The second C++-specific item is the `WKHandlerXPtr` wrapper around the handler. Under the hood the handler is one of R's `externalptr` objects that points to a `wk_handler_t` struct. The wrapper makes sure that the handler is "fresh", that it is actually an `externalptr`, and makes sure that any R errors resulting from its methods are converted to C++ exceptions (using `cpp11:safe()`).
+
+On the R side there is usually a thin wrapper to validate arguments. If your object has a class you should implement this as `wk_handle.your_class_name()` so that handler functions like the ones we created above can accept your geometry class as input! It is also important to use `as_wk_handler()` on the `handler` argument as it applies consistent rules for generating handlers everywhere (e.g., the function trick described above).
+
+```{r}
+handle_xy <- function(input, handler) {
+  input$x <- as.numeric(input$x)
+  input$y <- as.numeric(input$y)
+  cpp_handle_xy(input, as_wk_handler(handler))
+}
+```
+
+From here, you can test! A good first handler to try is the `wkt_writer()`, which is sensitive to mistakes in the reader and is unlikely to crash.
+
+```{r}
+df <- data.frame(x = 1:3, y = 2:4)
+handle_xy(df, wkt_writer())
+```
+
+Another useful handler is the `wk_debug_handler()`, which will give more detailed information about each call of a handler method.
+
+## A reader in C
+
+The above reader without the help of C++ and cpp11 looks similar, except we need some help from wk's C API to fill out a couple of details.
+
+```{c, results = "hide"}
+#include <Rinternals.h>
+#include "wk-v1.h"
+#include "wk-v1-impl.c"
+
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
+
+SEXP c_handle_xy_impl(SEXP input, wk_handler_t* handler) {
+  double* x = REAL(VECTOR_ELT(input, 0));
+  double* y = REAL(VECTOR_ELT(input, 1));
+  R_xlen_t n_features = Rf_xlength(VECTOR_ELT(input, 0));
+  
+  wk_vector_meta_t vector_meta;
+  WK_VECTOR_META_RESET(vector_meta, WK_POINT);
+  vector_meta.size = n_features;
+
+  wk_meta_t geometry_meta;
+  WK_META_RESET(geometry_meta, WK_POINT);
+  geometry_meta.size = 1;
+
+  handler->vector_start(&vector_meta, handler->handler_data);
+  wk_coord_t coord;
+  int result;
+  
+  for (R_xlen_t i = 0; i < n_features; i++) {
+    HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
+    HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
+
+    coord.v[0] = x[i];
+    coord.v[1] = y[i];
+    HANDLE_CONTINUE_OR_BREAK(handler->coord(&geometry_meta, coord, 0, handler->handler_data));
+
+    HANDLE_CONTINUE_OR_BREAK(handler->geometry_end(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
+    HANDLE_CONTINUE_OR_BREAK(handler->feature_end(&vector_meta, i, handler->handler_data));
+  }
+  
+  return handler->vector_end(&vector_meta, handler->handler_data);
+}
+
+SEXP c_handle_xy(SEXP input, SEXP handler_xptr) {
+  return wk_handler_run_xptr(&c_handle_xy_impl, input, handler_xptr);
+}
+```
+
+The main oddity here is that we need to use `wk_handler_run_xptr()` to run a handler. This function performs a similar task as the `WKHandlerXPtr` wrapper in C++. Notably, it makes sure that the handler's `finalize()` method gets called *no matter what*. This pattern was inspired by the [excellent blog post on this topic by Gábor Csárdi and Lionel Henry](https://www.tidyverse.org/blog/2019/05/resource-cleanup-in-c-and-the-r-api/). It does mean that you will need an "inner" function with signature `(SEXP, wk_handler_t*)` (e.g., `c_handle_xy_impl()`), and an "outer" method that calls `wk_handler_run_xptr()`.
+
+The wrapper on the R side is much the same, except you may want to perform more checks since these are comparatively harder to write using R's C API.
+
+```{r}
+handle_xy <- function(input, handler) {
+  input$x <- as.numeric(input$x)
+  input$y <- as.numeric(input$y)
+  .Call("c_handle_xy", input, as_wk_handler(handler))
+}
+
+handle_xy(df, wkt_writer())
+```

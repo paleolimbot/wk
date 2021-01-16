@@ -3,14 +3,11 @@
 \name{wkb_format}
 \alias{wkb_format}
 \alias{wkt_format}
-\alias{wksxp_format}
 \title{Format well-known geometry for printing}
 \usage{
-wkb_format(wkb, max_coords = 3)
+wkb_format(wkb, max_coords = 3, precision = 6, trim = TRUE)
 
-wkt_format(wkt, max_coords = 3)
-
-wksxp_format(wksxp, max_coords = 3)
+wkt_format(wkt, max_coords = 3, precision = 6, trim = TRUE)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
@@ -19,9 +16,12 @@ returned by \code{sf::st_as_binary()}.}
 \item{max_coords}{The maximum number of coordinates to include
 in the output.}
 
-\item{wkt}{A character vector containing well-known text.}
+\item{precision}{The rounding precision to use when writing
+(number of decimal places).}
 
-\item{wksxp}{A \code{list()} of classed objects}
+\item{trim}{Trim unnecessary zeroes in the output?}
+
+\item{wkt}{A character vector containing well-known text.}
 }
 \value{
 A character vector of abbreviated well-known text.

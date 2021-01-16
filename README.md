@@ -44,13 +44,14 @@ If you can load the package, you’re good to go\!
 library(wk)
 ```
 
-## Basic vector classes for WKT and WKB
+## Basic vector classes for WKT, WKB, points, and rectangles
 
 Use `wkt()` to mark a character vector as containing well-known text, or
-`wkb()` to mark a vector as well-known binary. These have some basic
-vector features built in, which means you can subset, repeat,
-concatenate, and put these objects in a data frame or tibble. These come
-with built-in `format()` and `print()` methods.
+`wkb()` to mark a vector as well-known binary. Use `xy()`, `xyz()`,
+`xym()`, and `xyzm()` to create vectors of points, and `rct()` to create
+vectors of rectangles. These classes have full
+[vctrs](https://vctrs.r-lib.org) support and `plot()`/`format()` methods
+to make them as frictionless as possible working in R and RStudio.
 
 ``` r
 wkt("POINT (30 10)")
@@ -59,192 +60,10 @@ wkt("POINT (30 10)")
 as_wkb(wkt("POINT (30 10)"))
 #> <wk_wkb[1]>
 #> [1] <POINT (30 10)>
-```
-
-## Well-known R objects
-
-The wk package experimentally generates (and parses) a plain R object
-format, which is needed because well-known binary can’t natively
-represent the empty point and reading/writing well-known text is too
-slow. The format of the `wksxp()` object is designed to be as close as
-possible to well-known text and well-known binary to make the
-translation code as clean as possible.
-
-``` r
-wkt_translate_wksxp("POINT (30 10)")
-#> [[1]]
-#>      [,1] [,2]
-#> [1,]   30   10
-#> attr(,"class")
-#> [1] "wk_point"
-```
-
-## wkutils
-
-To keep the footprint (i.e., compile time) of this package as slim as
-possible, utilities to work with WKT, WKB, and well-known R objects are
-located in the [wkutils
-package](https://paleolimbot.github.io/wkutils/). One of the main
-drawbacks to passing around geometries in WKB is that the format is
-opaque to R users, who need coordinates as R objects rather than binary
-vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()`
-functions (among others) to extract usable coordinates and feature meta.
-
-``` r
-wkutils::wkt_coords("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id ring_id     x     y     z     m
-#>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
-#> 1          1       1       0     1     2     3     4
-wkutils::wkt_meta("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id type_id  size  srid has_z has_m
-#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>
-#> 1          1       1       1     1    NA TRUE  TRUE
-wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 8
-#>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1     1     2     3     4     1     2     3     4
-wkutils::coords_point_translate_wkt(1, 2, 3, 4)
-#> [1] "POINT ZM (1 2 3 4)"
-```
-
-## Dependencies
-
-The wk package imports [Rcpp](https://cran.r-project.org/package=Rcpp).
-
-## Using the C++ headers
-
-The wk package takes an event-based approach to parsing inspired by the
-event-based SAX XML parser. This makes the readers and writers highly
-re-usable\! This system is class-based, so you will have to make your
-own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do
-anything useful.
-
-``` cpp
-// If you're writing code in a package, you'll also
-// have to put 'wk' in your `LinkingTo:` description field
-// [[Rcpp::depends(wk)]]
-
-#include <Rcpp.h>
-#include "wk/rcpp-io.hpp"
-#include "wk/wkt-reader.hpp"
-using namespace Rcpp;
-
-class CustomHandler: public WKGeometryHandler {
-public:
-  
-  void nextFeatureStart(size_t featureId) {
-    Rcout << "Do something before feature " << featureId << "\n";
-  }
-  
-  void nextFeatureEnd(size_t featureId) {
-    Rcout << "Do something after feature " << featureId << "\n";
-  }
-};
-
-// [[Rcpp::export]]
-void wkt_read_custom(CharacterVector wkt) {
-  WKCharacterVectorProvider provider(wkt);
-  WKTReader reader(provider);
-  
-  CustomHandler handler;
-  reader.setHandler(&handler);
-  
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-}
-```
-
-On our example point, this prints the following:
-
-``` r
-wkt_read_custom("POINT (30 10)")
-#> Do something before feature 0
-#> Do something after feature 0
-```
-
-The full handler interface includes methods for the start and end of
-features, geometries (which may be nested), linear rings, coordinates,
-and parse errors. You can preview what will get called for a given
-geometry using `wkutils::wkb|wkt_debug()` functions.
-
-``` r
-library(wkutils) # remotes::install_github("paleolimbot/wkutils")
-#> Warning: package 'wkutils' was built under R version 4.0.2
-wkt_debug("POINT (30 10)")
-#> nextFeatureStart(0)
-#>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
-#>         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
-#>     nextGeometryEnd(POINT [1], WKReader::PART_ID_NONE)
-#> nextFeatureEnd(0)
-```
-
-## Performance
-
-This package was designed to stand alone and be flexible, but also
-happens to be really fast for some common operations.
-
-Read WKB + Write WKB:
-
-``` r
-bench::mark(
-  wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
-  sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
-  check = FALSE
-)
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            236µs    300µs     3072.   110.1KB     21.3
-#> 2 sf            425µs    548µs     1523.    99.1KB     12.4
-```
-
-Read WKB + Write WKT:
-
-``` r
-bench::mark(
-  wk = wk:::wkb_translate_wkt(nc_wkb),
-  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
-  check = FALSE
-)
-#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.13ms   4.63ms    209.      3.32KB      0  
-#> 2 sf         246.44ms 255.17ms      3.92  566.67KB     17.6
-```
-
-Read WKT + Write WKB:
-
-``` r
-bench::mark(
-  wk = wk:::wkt_translate_wkb(nc_wkt),
-  sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
-  check = FALSE
-)
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           2.12ms   2.38ms      387.    49.5KB     2.03
-#> 2 sf           3.67ms   5.71ms      165.   185.7KB     4.24
-```
-
-Read WKT + Write WKT:
-
-``` r
-bench::mark(
-  wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
-  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
-  check = FALSE
-)
-#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.26ms    6.9ms    123.      63.8KB     1.99
-#> 2 sf         254.41ms  254.5ms      3.93   234.9KB    17.7
+xy(1, 2)
+#> <wk_xy[1]>
+#> [1] (1 2)
+rct(1, 2, 3, 4)
+#> <wk_rct[1]>
+#> [1] [1 2 3 4]
 ```

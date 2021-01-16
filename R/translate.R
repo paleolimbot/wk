@@ -4,28 +4,16 @@
 #' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by `sf::st_as_binary()`.
 #' @param wkt A character vector containing well-known text.
-#' @param wksxp A `list()` of classed objects
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
-#' @param endian For WKB writing, 0 for big endian, 1 for little endian.
-#'   Defaults to [wk_platform_endian()] (slightly faster).
-#' @param include_z,include_m,include_srid Include the
-#'   values of the Z and M coordinates and/or SRID
-#'   in the output? Use `FALSE` to omit, `TRUE` to include, or `NA` to include
-#'   only if present. Note that using `TRUE` may result in an error if there
-#'   is no value present in the original.
-#' @param buffer_size For WKB writing, the initial buffer size to use for
-#'   each feature, in bytes. This will be extended when needed, but if you
-#'   are calling this repeatedly with huge geometries, setting this value
-#'   to a larger number may result in less copying.
+#' @param ... Used to keep backward compatibility with previous
+#'   versions of these functions.
 #'
 #' @return `*_translate_wkt()` returns a character vector of
 #'   well-known text; `*_translate_wkb()` returns a list
-#'   of raw vectors, and `*_translate_wksxp()` returns an unclassed
-#'   list of [wksxp()] geometries. Unlike [as_wkb()], [as_wkt()], and
-#'   [as_wksxp()], these functions do not attach
-#'   a class to the output.
+#'   of raw vectors. Unlike [as_wkb()], [as_wkt()],
+#'   these functions do not attach a class to the output.
 #'
 #' @export
 #'
@@ -36,121 +24,69 @@
 #'
 #' # some basic creation options are also available
 #' wkt_translate_wkt("POINT (30 10)", trim = FALSE)
-#' wkb_translate_wkb(wkb, endian = 0)
 #'
-wkb_translate_wkt <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
-                              precision = 16, trim = TRUE) {
-  cpp_wkb_translate_wkt(
-    wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    precision = precision,
-    trim = trim
-  )
+wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
+  wk_handle.wk_wkb(wkb, wkt_writer(precision, trim))
 }
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wkb <- function(wkb, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_wkb_translate_wkb(
-    wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
-  )
+wkb_translate_wkb <- function(wkb, ...) {
+  wk_handle.wk_wkb(wkb, wkb_writer())
 }
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkb_translate_wksxp <- function(wkb, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wkb_translate_wksxp(
-    wkb,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
-  )
+wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
+  wk_handle.wk_wkt(wkt, wkt_writer(precision, trim))
 }
 
 #' @rdname wkb_translate_wkt
 #' @export
-wkt_translate_wkt <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
-                              precision = 16, trim = TRUE) {
-  cpp_wkt_translate_wkt(
-    wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    precision = precision,
-    trim = trim
-  )
+wkt_translate_wkb <- function(wkt, ...) {
+  wk_handle.wk_wkt(wkt, wkb_writer())
 }
 
-#' @rdname wkb_translate_wkt
-#' @export
-wkt_translate_wkb <- function(wkt, include_z = NA, include_m = NA, include_srid = NA,
-                              endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_wkt_translate_wkb(
-    wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
-  )
+# ----- leaving these unexported until the arguments are stable
+
+xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
+  wk_handle.wk_xy(xyzm, wkt_writer(precision, trim))
 }
 
-#' @rdname wkb_translate_wkt
-#' @export
-wkt_translate_wksxp <- function(wkt, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wkt_translate_wksxp(
-    wkt,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
-  )
+xyzm_translate_wkb <- function(xyzm) {
+  wk_handle.wk_xy(xyzm, wkb_writer())
 }
 
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wkt <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
-                                 precision = 16, trim = TRUE) {
-  cpp_wksxp_translate_wkt(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    precision = precision,
-    trim = trim
-  )
+rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
+  wk_handle.wk_rct(rct, wkt_writer(precision, trim))
 }
 
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wkb <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA,
-                                endian = wk_platform_endian(), buffer_size = 2048) {
-  cpp_wksxp_translate_wkb(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid,
-    endian = endian,
-    bufferSize = buffer_size
-  )
+rct_translate_wkb <- function(rct) {
+  wk_handle.wk_rct(rct, wkb_writer())
 }
 
-#' @rdname wkb_translate_wkt
-#' @export
-wksxp_translate_wksxp <- function(wksxp, include_z = NA, include_m = NA, include_srid = NA) {
-  cpp_wksxp_translate_wksxp(
-    wksxp,
-    includeZ = include_z,
-    includeM = include_m,
-    includeSRID = include_srid
-  )
+wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
+  xyzm_trim(wk_handle.wk_wkt(wkt, xyzm_writer()), include_z, include_m)
+}
+
+wkb_translate_xyzm <- function(wkb, include_z = NA, include_m = NA) {
+  xyzm_trim(wk_handle.wk_wkb(wkb, xyzm_writer()), include_z, include_m)
+}
+
+xyzm_trim <- function(result, include_z, include_m) {
+  if (identical(include_z, NA) && all(is.na(result$z))) {
+    result$z <- NULL
+  } else if (identical(include_z, FALSE)) {
+    result$z <- NULL
+  }
+
+  if (identical(include_m, NA) && all(is.na(result$m))) {
+    result$m <- NULL
+  } else if (identical(include_m, FALSE)) {
+    result$m <- NULL
+  }
+
+  result
 }
 
 #' @rdname wkb_translate_wkt

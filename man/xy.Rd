@@ -12,13 +12,19 @@
 \alias{as_xy.data.frame}
 \title{Efficient point vectors}
 \usage{
-xy(x = double(), y = double())
+xy(x = double(), y = double(), crs = wk_crs_auto())
 
-xyz(x = double(), y = double(), z = double())
+xyz(x = double(), y = double(), z = double(), crs = wk_crs_auto())
 
-xym(x = double(), y = double(), m = double())
+xym(x = double(), y = double(), m = double(), crs = wk_crs_auto())
 
-xyzm(x = double(), y = double(), z = double(), m = double())
+xyzm(
+  x = double(),
+  y = double(),
+  z = double(),
+  m = double(),
+  crs = wk_crs_auto()
+)
 
 xy_dims(x)
 
@@ -26,12 +32,14 @@ as_xy(x, ...)
 
 \method{as_xy}{wk_xy}(x, ..., dims = NULL)
 
-\method{as_xy}{matrix}(x, ..., dims = NULL)
+\method{as_xy}{matrix}(x, ..., crs = NULL)
 
-\method{as_xy}{data.frame}(x, ..., dims = NULL)
+\method{as_xy}{data.frame}(x, ..., dims = NULL, crs = NULL)
 }
 \arguments{
 \item{x, y, z, m}{Coordinate values.}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 
 \item{...}{Passed to methods.}
 

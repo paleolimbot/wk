@@ -6,7 +6,7 @@
 \alias{is_wk_wkb}
 \title{S3 Details for wk_wkb}
 \usage{
-new_wk_wkb(x = list())
+new_wk_wkb(x = list(), crs = NULL)
 
 validate_wk_wkb(x)
 
@@ -14,6 +14,8 @@ is_wk_wkb(x)
 }
 \arguments{
 \item{x}{A (possibly) \code{\link[=wkb]{wkb()}} vector}
+
+\item{crs}{A value to be propagated as the CRS for this vector.}
 }
 \description{
 S3 Details for wk_wkb

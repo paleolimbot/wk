@@ -1,3 +1,8 @@
+# wk (development version)
+
+* Removed `wksxp()` in favour of improved `sfc()` support 
+  (#21).
+
 # wk 0.3.4
 
 * Fixed reference to `wkutils::plot.wk_wksxp()`, which
@@ -5,7 +10,7 @@
 
 # wk 0.3.3
 
-* Fixed WKB import of ZM geometries that do not use EWKB
+* Fixed WKB import of ZM geometries that do not use EWKB.
 * Added `xy()`, `xyz()`, `xym()` and `xyzm()` classes
   to efficiently store point geometries.
 * Added the `rct()` vector class to efficiently store

@@ -7,7 +7,7 @@ new_wk_rcrd <- function(x, template) {
     all(names(x) != "")
   )
 
-  structure(x, class = unique(class(template)))
+  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
 }
 
 validate_wk_rcrd <- function(x) {
@@ -29,7 +29,13 @@ format.wk_rcrd <- function(x, ...) {
 
 #' @export
 print.wk_rcrd <- function(x, ...) {
-  cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
+  crs <- wk_crs(x)
+  if (is.null(crs)) {
+    cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
+  } else {
+    cat(sprintf("<%s[%s] with CRS=%s>\n", class(x)[1], length(x), format(crs)))
+  }
+
   if (length(x) == 0) {
     return(invisible(x))
   }
@@ -104,19 +110,20 @@ c.wk_rcrd <- function(...) {
     stop("Can't combine 'wk_rcrd' objects that do not have identical classes.", call. = FALSE)
   }
 
-  result <- new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
-  validator <- get(
-    paste0("validate_", classes[[1]][1]),
-    mode = "function",
-    envir = asNamespace("wk")
-  )
-  validator(result)
-  result
+  # check CRS compatibility
+  Reduce(wk_crs_output, dots)
+
+  new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }
 
+# data.frame() will call as.data.frame() with optional = TRUE
 #' @export
-as.data.frame.wk_rcrd <- function(x, ...) {
-  new_data_frame(unclass(x))
+as.data.frame.wk_rcrd <- function(x, ..., optional = FALSE) {
+  if (!optional) {
+    new_data_frame(unclass(x))
+  } else {
+    new_data_frame(list(x))
+  }
 }
 
 #' @export
