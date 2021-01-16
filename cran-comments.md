@@ -1,4 +1,7 @@
 
+This release fixes new warnings on the package check page 
+following the release of wkutils 0.1.1.
+
 ## Test environments
 
 * local (MacOS, R 4.0.1)

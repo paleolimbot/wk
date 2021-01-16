@@ -3,6 +3,11 @@
 * Removed `wksxp()` in favour of improved `sfc()` support 
   (#21).
 
+# wk 0.3.4
+
+* Fixed reference to `wkutils::plot.wk_wksxp()`, which
+  no longer exists.
+
 # wk 0.3.3
 
 * Fixed WKB import of ZM geometries that do not use EWKB.

@@ -89,6 +89,5 @@ plot.wk_rct <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add 
   }
 
   graphics::rect(x_bare$xmin, x_bare$ymin, x_bare$xmax, x_bare$ymax, ...)
-
   invisible(x)
 }
