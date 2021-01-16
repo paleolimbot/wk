@@ -128,6 +128,7 @@ A few more things to keep in mind when writing handlers:
 Depending on your background and the other libraries with which you are working, it may be easier or faster to write a handler in C. The below example is a direct translation of the C++ bounding box handler from above.
 
 ```{c, results = "hide"}
+#include <R.h>
 #include <Rinternals.h>
 #include <stdlib.h>
 #include "wk-v1.h"
@@ -286,6 +287,7 @@ Another useful handler is the `wk_debug_handler()`, which will give more detaile
 The above reader without the help of C++ and cpp11 looks similar, except we need some help from wk's C API to fill out a couple of details.
 
 ```{c, results = "hide"}
+#include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
 #include "wk-v1-impl.c"

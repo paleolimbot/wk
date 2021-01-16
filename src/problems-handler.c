@@ -1,7 +1,9 @@
 
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
 #include <stdlib.h>
-#include <Rinternals.h>
 
 int wk_handler_problems_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   SEXP output = PROTECT(Rf_allocVector(STRSXP, meta->size));

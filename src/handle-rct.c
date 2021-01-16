@@ -1,6 +1,8 @@
 
-#include "wk-v1.h"
+#define R_NO_REMAP
+#include <R.h>
 #include <Rinternals.h>
+#include "wk-v1.h"
 
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
   result = expr;                                               \
@@ -20,7 +22,7 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
     wk_vector_meta_t vector_meta;
     WK_VECTOR_META_RESET(vector_meta, WK_POLYGON);
     vector_meta.size = n_features;
-    
+
     if (handler->vector_start(&vector_meta, handler->handler_data) == WK_CONTINUE) {
         int result;
         double xmin, ymin, xmax, ymax;
@@ -28,7 +30,7 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POLYGON);
         meta.flags = vector_meta.flags;
-        
+
         for (R_xlen_t i = 0; i < n_features; i++) {
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 

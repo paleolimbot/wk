@@ -1,8 +1,10 @@
 
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
 #include <stdlib.h>
 #include <memory.h>
-#include <Rinternals.h>
 
 #define EWKB_Z_BIT    0x80000000
 #define EWKB_M_BIT    0x40000000
@@ -17,7 +19,7 @@ typedef struct {
     size_t size;
     size_t offset;
     size_t current_size_offset[WKB_MAX_RECURSION_DEPTH + 3];
-    uint32_t current_size[WKB_MAX_RECURSION_DEPTH + 3]; 
+    uint32_t current_size[WKB_MAX_RECURSION_DEPTH + 3];
     size_t recursion_level;
 } wkb_write_buffer_t;
 
@@ -131,11 +133,11 @@ int wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     if (meta->geometry_type != WK_POINT) {
         if (write_buffer->recursion_level >= WKB_MAX_RECURSION_DEPTH) {
             Rf_error(
-                "Can't write WKB with maximum recursion depth greater than %d", 
+                "Can't write WKB with maximum recursion depth greater than %d",
                 WKB_MAX_RECURSION_DEPTH
             );
         }
-        
+
         // reserve space for the size and record where it is
         write_buffer->current_size_offset[write_buffer->recursion_level] = write_buffer->offset;
         write_buffer->current_size[write_buffer->recursion_level] = 0;
@@ -179,7 +181,7 @@ int wkb_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
 
     if (write_buffer->recursion_level >= WKB_MAX_RECURSION_DEPTH) {
         Rf_error(
-            "Can't write WKB with maximum recursion depth greater than %d", 
+            "Can't write WKB with maximum recursion depth greater than %d",
             WKB_MAX_RECURSION_DEPTH
         );
     }

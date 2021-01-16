@@ -1,6 +1,8 @@
 
-#include "wk-v1.h"
+#define R_NO_REMAP
+#include <R.h>
 #include <Rinternals.h>
+#include "wk-v1.h"
 
 SEXP wk_c_handler_void_new() {
   return wk_handler_create_xptr(wk_handler_create(), R_NilValue, R_NilValue);

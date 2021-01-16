@@ -1,8 +1,10 @@
 
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
 #include <stdlib.h>
 #include <memory.h>
-#include <Rinternals.h>
 
 typedef struct {
     SEXP result;
@@ -20,7 +22,7 @@ int xyzm_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     SET_VECTOR_ELT(data->result, 1, Rf_allocVector(REALSXP, meta->size));
     SET_VECTOR_ELT(data->result, 2, Rf_allocVector(REALSXP, meta->size));
     SET_VECTOR_ELT(data->result, 3, Rf_allocVector(REALSXP, meta->size));
-    
+
     data->result_ptr[0] = REAL(VECTOR_ELT(data->result, 0));
     data->result_ptr[1] = REAL(VECTOR_ELT(data->result, 1));
     data->result_ptr[2] = REAL(VECTOR_ELT(data->result, 2));
@@ -79,11 +81,11 @@ int xyzm_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t co
         data->result_ptr[2][data->feat_id] = coord.v[2];
         data->result_ptr[3][data->feat_id] = coord.v[3];
     } else if(meta->flags & WK_FLAG_HAS_Z) {
-        data->result_ptr[2][data->feat_id] = coord.v[2];   
+        data->result_ptr[2][data->feat_id] = coord.v[2];
     } else if(meta->flags & WK_FLAG_HAS_M) {
         data->result_ptr[3][data->feat_id] = coord.v[2];
     }
-    
+
     return WK_CONTINUE;
 }
 
@@ -117,7 +119,7 @@ SEXP wk_c_xyzm_writer_new() {
     handler->vector_end = &xyzm_writer_vector_end;
     handler->vector_finally = &xyzm_writer_vector_finally;
     handler->finalizer = &xyzm_writer_finalize;
-    
+
     xyzm_writer_data_t* data = (xyzm_writer_data_t*) malloc(sizeof(xyzm_writer_data_t));
     data->feat_id = 0;
     data->has_coord = 0;

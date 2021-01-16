@@ -1,9 +1,11 @@
 
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
 #include <memory.h>
 #include <stdint.h>
 #include <stdarg.h>
-#include <Rinternals.h>
 
 #define EWKB_Z_BIT    0x80000000
 #define EWKB_M_BIT    0x40000000
@@ -109,7 +111,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
         if (result == WK_ABORT_FEATURE && buffer.errorCode != WK_NO_ERROR_CODE) {
           result = handler->error(i, buffer.errorCode, buffer.errorMessage, handler->handler_data);
         }
-        
+
         if (result == WK_ABORT_FEATURE) {
           continue;
         } else if (result == WK_ABORT) {
@@ -143,7 +145,7 @@ int wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     wkb_set_errorf(buffer, "Unrecognized geometry type code '%d'", meta.geometry_type);
     return WK_ABORT_FEATURE;
   }
-  
+
   if ((geometry_type & EWKB_SRID_BIT) != 0) {
     HANDLE_OR_RETURN(wkb_read_uint(handler, buffer, &(meta.srid)));
   }
