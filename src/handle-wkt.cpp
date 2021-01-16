@@ -1,6 +1,6 @@
 
 #include "cpp11.hpp"
-#include "wk-v1.hpp"
+#include "wk-v1-reader.hpp"
 #include <clocale>
 #include <cstring>
 #include <sstream>
@@ -421,7 +421,7 @@ public:
 class WKTStreamingHandler {
 public:
 
-  WKTStreamingHandler(WKHandler& handler): handler(handler) {
+  WKTStreamingHandler(WKHandlerXPtr& handler): handler(handler) {
     // constructor and deleter set the thread locale while the object is in use
 #ifdef _MSC_VER
     _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
@@ -693,7 +693,7 @@ protected:
 
 private:
   std::string saved_locale;
-  WKHandler& handler;
+  WKHandlerXPtr& handler;
 };
 
 [[cpp11::register]]
@@ -704,8 +704,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   globalMeta.size = n_features;
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
-  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
-  WKHandler cppHandler(handler);
+  WKHandlerXPtr cppHandler(xptr);
   WKTStreamingHandler streamer(cppHandler);
 
   cppHandler.vector_start(&globalMeta);

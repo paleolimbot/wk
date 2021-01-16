@@ -4,6 +4,9 @@ title: "Understanding the wk C and C++ API"
 
 ```{r, include = FALSE}
 library(cpp11)
+Sys.setenv(
+  PKG_CFLAGS = paste0("-I", system.file("include", package = "wk"))
+)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -42,7 +45,7 @@ As an example, I'll write a handler that computes the 2D bounding box of its inp
 #include "cpp11.hpp"
 using namespace cpp11;
 namespace writable = cpp11::writable;
-#include "wk-v1.hpp"
+#include "wk-v1-handler.hpp"
 #include "wk-v1-impl.c"
 
 class BBoxHandler: public WKVoidHandler {
@@ -124,12 +127,6 @@ A few more things to keep in mind when writing handlers:
 
 Depending on your background and the other libraries with which you are working, it may be easier or faster to write a handler in C. The below example is a direct translation of the C++ bounding box handler from above.
 
-```{r, include=FALSE}
-Sys.setenv(
-  PKG_CFLAGS = paste0("-I", system.file("include", package = "wk"))
-)
-```
-
 ```{c, results = "hide"}
 #include <Rinternals.h>
 #include <stdlib.h>
@@ -206,11 +203,144 @@ wk_handle(
 
 The notes above about the lifecycle of a handler written in C++ apply to a handler written in C except that for the C handler you will have to explicitly `free()` anything you `malloc()`ed. In the above example, the `finalize()` method was used to free the `BboxHandlerData_t`. Another common pattern is to allocate an R object in `vector_start()` (because this is where you have information about how may items are in the vector that is about to be read). This pattern of creating objects isn't well-supported by the `PROTECT()`/`UNPROTECT()` pattern and is better-suited to `R_PreserveObject()` and `R_ReleaseObject()`. You can also use the fact that `VECSXP` vectors protect their elements to keep your R allocations from being garbage-collected while the handler is running.
 
-Note that you can and should use the R API within your functions! This includes using `Rf_error()`, `Rf_allocVector()` and all the other functions that might `longjmp`: any reader calling handler functions from C++ use `cpp11::safe` to convert these to exceptions.
+Note that you can and should use the R API within your functions! This includes using `Rf_error()`, `Rf_allocVector()` and all the other functions that might `longjmp`: any reader calling handler functions through the wk C++ headers are designed with this in mind.
 
 ## A reader in C++
 
+The wk API was optimized for the simplicity of writing handlers much more than readers (after all, there are many more things one can *do* with geometry than there are ways to store it). This means that writing readers can be finicky! As an example, I'll demonstrate a reader that iterates over a data frame of coordinates (e.g., `data.frame(x = c(1, 2, 3), y = c(4, 5, 6))`) as points.
+
+```{cpp11}
+#include "cpp11.hpp"
+using namespace cpp11;
+#include "wk-v1-reader.hpp"
+#include "wk-v1-impl.c"
+
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
+
+[[cpp11::linking_to(wk)]]
+[[cpp11::register]]
+sexp cpp_handle_xy(data_frame input, sexp handler_xptr) {
+  doubles x = input["x"];
+  cpp11::doubles y = input["y"];
+  R_xlen_t n_features = x.size();
+
+  WKHandlerXPtr handler(handler_xptr);
+  
+  wk_vector_meta_t vector_meta;
+  WK_VECTOR_META_RESET(vector_meta, WK_POINT);
+  vector_meta.size = n_features;
+
+  wk_meta_t geometry_meta;
+  WK_META_RESET(geometry_meta, WK_POINT);
+  geometry_meta.size = 1;
+
+  handler.vector_start(&vector_meta);
+  wk_coord_t coord;
+  int result;
+  
+  for (R_xlen_t i = 0; i < n_features; i++) {
+    HANDLE_CONTINUE_OR_BREAK(handler.feature_start(&vector_meta, i));
+    HANDLE_CONTINUE_OR_BREAK(handler.geometry_start(&geometry_meta, WK_PART_ID_NONE));
+
+    coord.v[0] = x[i];
+    coord.v[1] = y[i];
+    HANDLE_CONTINUE_OR_BREAK(handler.coord(&geometry_meta, coord, 0));
+
+    HANDLE_CONTINUE_OR_BREAK(handler.geometry_end(&geometry_meta, WK_PART_ID_NONE));
+    HANDLE_CONTINUE_OR_BREAK(handler.feature_end(&vector_meta, i));
+  }
+
+  return handler.vector_end(&vector_meta);
+}
+```
+
+The first thing you might notice is the `HANDLE_CONTINUE_OR_BREAK()` macro. You may have noticed that the handler functions we wrote all return `WK_CONTINUE`. Sometimes it's *really nice* when you're writing a handler to be able to tell the reader to stop! One example is the `wk_format_handler()`, which only needs the first few coordinates to spit out a reasonable summary. When iterating over features that could be gigabytes in size this saves a lot of time and several important handlers need this for the framework to do its magic. It does, however, make writing readers a lot harder.
+
+You might wonder why I didn't just use exceptions to implement this feature in the C++ wrapper since they would simplify the code a great deal. The initial version of the API did this and was *really really really slow* for handlers that returned early. If you have a better idea of how to make this work, I'm all ears. In practice, having a macro that does an early `return`, a `continue`, or a `break` keeps the code implementing the readers from getting out of hand.
+
+The second C++-specific item is the `WKHandlerXPtr` wrapper around the handler. Under the hood the handler is one of R's `externalptr` objects that points to a `wk_handler_t` struct. The wrapper makes sure that the handler is "fresh", that it is actually an `externalptr`, and makes sure that any R errors resulting from its methods are converted to C++ exceptions (using `cpp11:safe()`).
+
+On the R side there is usually a thin wrapper to validate arguments. If your object has a class you should implement this as `wk_handle.your_class_name()` so that handler functions like the ones we created above can accept your geometry class as input! It is also important to use `as_wk_handler()` on the `handler` argument as it applies consistent rules for generating handlers everywhere (e.g., the function trick described above).
+
+```{r}
+handle_xy <- function(input, handler) {
+  input$x <- as.numeric(input$x)
+  input$y <- as.numeric(input$y)
+  cpp_handle_xy(input, as_wk_handler(handler))
+}
+```
+
+From here, you can test! A good first handler to try is the `wkt_writer()`, which is sensitive to mistakes in the reader and is unlikely to crash.
+
+```{r}
+df <- data.frame(x = 1:3, y = 2:4)
+handle_xy(df, wkt_writer())
+```
+
+Another useful handler is the `wk_debug_handler()`, which will give more detailed information about each call of a handler method.
 
 ## A reader in C
 
-## R infrastructure, revisited
+The above reader without the help of C++ and cpp11 looks similar, except we need some help from wk's C API to fill out a couple of details.
+
+```{c, results = "hide"}
+#include <Rinternals.h>
+#include "wk-v1.h"
+#include "wk-v1-impl.c"
+
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
+
+SEXP c_handle_xy_impl(SEXP input, wk_handler_t* handler) {
+  double* x = REAL(VECTOR_ELT(input, 0));
+  double* y = REAL(VECTOR_ELT(input, 1));
+  R_xlen_t n_features = Rf_xlength(VECTOR_ELT(input, 0));
+  
+  wk_vector_meta_t vector_meta;
+  WK_VECTOR_META_RESET(vector_meta, WK_POINT);
+  vector_meta.size = n_features;
+
+  wk_meta_t geometry_meta;
+  WK_META_RESET(geometry_meta, WK_POINT);
+  geometry_meta.size = 1;
+
+  handler->vector_start(&vector_meta, handler->handler_data);
+  wk_coord_t coord;
+  int result;
+  
+  for (R_xlen_t i = 0; i < n_features; i++) {
+    HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
+    HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
+
+    coord.v[0] = x[i];
+    coord.v[1] = y[i];
+    HANDLE_CONTINUE_OR_BREAK(handler->coord(&geometry_meta, coord, 0, handler->handler_data));
+
+    HANDLE_CONTINUE_OR_BREAK(handler->geometry_end(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
+    HANDLE_CONTINUE_OR_BREAK(handler->feature_end(&vector_meta, i, handler->handler_data));
+  }
+  
+  return handler->vector_end(&vector_meta, handler->handler_data);
+}
+
+SEXP c_handle_xy(SEXP input, SEXP handler_xptr) {
+  return wk_handler_run_xptr(&c_handle_xy_impl, input, handler_xptr);
+}
+```
+
+The main oddity here is that we need to use `wk_handler_run_xptr()` to run a handler. This function performs a similar task as the `WKHandlerXPtr` wrapper in C++. Notably, it makes sure that the handler's `finalize()` method gets called *no matter what*. This pattern was inspired by the [excellent blog post on this topic by Gábor Csárdi and Lionel Henry](https://www.tidyverse.org/blog/2019/05/resource-cleanup-in-c-and-the-r-api/). It does mean that you will need an "inner" function with signature `(SEXP, wk_handler_t*)` (e.g., `c_handle_xy_impl()`), and an "outer" method that calls `wk_handler_run_xptr()`.
+
+The wrapper on the R side is much the same, except you may want to perform more checks since these are comparatively harder to write using R's C API.
+
+```{r}
+handle_xy <- function(input, handler) {
+  input$x <- as.numeric(input$x)
+  input$y <- as.numeric(input$y)
+  .Call("c_handle_xy", input, as_wk_handler(handler))
+}
+
+handle_xy(df, wkt_writer())
+```

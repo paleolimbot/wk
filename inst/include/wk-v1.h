@@ -19,7 +19,7 @@
 
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
-#define WK_VECTOR_SIZE_UNKNOWN UINT64_MAX
+#define WK_VECTOR_SIZE_UNKNOWN -1
 #define WK_SRID_NONE UINT32_MAX
 
 enum wk_geometery_type_enum {
