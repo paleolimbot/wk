@@ -316,8 +316,18 @@ test_that("wk_handle.sfc() works", {
   skip_if_not_installed("sf")
 
   expect_identical(
-    wk_handle(sf::st_sfc(sf::st_point(), sf::st_linestring(), sf::st_polygon()), wkt_writer()),
-    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY")
+    wk_handle(
+      sf::st_sfc(
+        sf::st_point(), sf::st_linestring(), sf::st_polygon(),
+        sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+        sf::st_geometrycollection()
+      ),
+      wkt_writer()
+    ),
+    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+      "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+      "GEOMETRYCOLLECTION EMPTY"
+    )
   )
 
   expect_identical(
