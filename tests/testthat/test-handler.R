@@ -311,3 +311,37 @@ test_that("wk_handle.wk_rct() works", {
     c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", "POLYGON EMPTY", "POLYGON EMPTY", "POLYGON EMPTY")
   )
 })
+
+test_that("wk_handle.sfc() works", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_point(c(1, 2))), wkt_writer()),
+    "POINT (1 2)"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 3))), wkt_writer()),
+    "POINT Z (1 2 3)"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 4), "XYM")), wkt_writer()),
+    "POINT M (1 2 4)"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 3, 4))), wkt_writer()),
+    "POINT ZM (1 2 3 4)"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_linestring(rbind(c(1, 2), c(2, 3)))), wkt_writer()),
+    "LINESTRING (1 2, 2 3)"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(1, 0), c(0, 1), c(0, 0))))), wkt_writer()),
+    "POLYGON ((0 0, 1 0, 0 1, 0 0))"
+  )
+})
