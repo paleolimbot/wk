@@ -1,6 +1,8 @@
 
-#include "wk-v1.h"
+#define R_NO_REMAP
+#include <R.h>
 #include <Rinternals.h>
+#include "wk-v1.h"
 
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
   result = expr;                                               \
@@ -25,14 +27,14 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
     if (Rf_inherits(data, "wk_xym") || Rf_inherits(data, "wk_xyzm")) {
         vector_meta.flags |= WK_FLAG_HAS_M;
     }
-    
+
     if (handler->vector_start(&vector_meta, handler->handler_data) == WK_CONTINUE) {
         int result;
         wk_coord_t coord;
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POINT);
         meta.flags = vector_meta.flags;
-        
+
         for (R_xlen_t i = 0; i < n_features; i++) {
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 

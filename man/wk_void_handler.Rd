@@ -19,6 +19,7 @@
 \alias{wk_handle.wk_wkt}
 \alias{wk_handle.wk_xy}
 \alias{wk_handle.wk_rct}
+\alias{wk_handle.sfc}
 \title{Test handlers}
 \usage{
 wk_void_handler()
@@ -56,6 +57,8 @@ wk_handle(x, handler, ...)
 \method{wk_handle}{wk_xy}(x, handler, ...)
 
 \method{wk_handle}{wk_rct}(x, handler, ...)
+
+\method{wk_handle}{sfc}(x, handler, ...)
 }
 \arguments{
 \item{x}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}} or \code{\link[=wkt]{wkt()}}).}

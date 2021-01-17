@@ -1,6 +1,8 @@
 
-#include "wk-v1.h"
+#define R_NO_REMAP
+#include <R.h>
 #include <Rinternals.h>
+#include "wk-v1.h"
 
 // this is not a pretty solution to the vector_meta*/meta* issue
 void wk_handler_debug_print_vector_meta(const wk_vector_meta_t* meta) {
