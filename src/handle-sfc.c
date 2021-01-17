@@ -17,6 +17,11 @@ int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id);
 int wk_sfc_read_point(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 int wk_sfc_read_linestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 int wk_sfc_read_polygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
+int wk_sfc_read_multipoint(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
+int wk_sfc_read_multilinestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
+int wk_sfc_read_multipolygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
+int wk_sfc_read_geometrycollection(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
+void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta);
 
 SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
     R_xlen_t n_features = Rf_xlength(data);
@@ -52,21 +57,6 @@ SEXP wk_c_read_sfc(SEXP data, SEXP handler_xptr) {
     return wk_handler_run_xptr(&wk_c_read_sfc_impl, data, handler_xptr);
 }
 
-void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta) {
-    if (Rf_inherits(x, "XY")) {
-        // don't need to do anything here; default meta is xy
-    } else if (Rf_inherits(x, "XYZ")) {
-        meta->flags |= WK_FLAG_HAS_Z;
-    } else if (Rf_inherits(x, "XYM")) {
-        meta->flags |= WK_FLAG_HAS_M;
-    } else if (Rf_inherits(x, "XYZM")) {
-        meta->flags |= WK_FLAG_HAS_Z;
-        meta->flags |= WK_FLAG_HAS_M;
-    } else if (Rf_inherits(x, "sfg")) {
-        Rf_error("Can't guess dimensions from class of 'sfg'");
-    }
-}
-
 int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id) {
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
@@ -78,11 +68,22 @@ int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id) {
         return wk_sfc_read_linestring(x, handler, &meta, part_id);
     } else if (Rf_inherits(x, "POLYGON")) {
         return wk_sfc_read_polygon(x, handler, &meta, part_id);
-    }  else if (Rf_inherits(x, "sfg")) {
+    } else if (Rf_inherits(x, "MULTIPOINT")) {
+        return wk_sfc_read_multipoint(x, handler, &meta, part_id);
+    } else if (Rf_inherits(x, "MULTILINESTRING")) {
+        return wk_sfc_read_multilinestring(x, handler, &meta, part_id);
+    } else if (Rf_inherits(x, "MULTIPOLYGON")) {
+        return wk_sfc_read_multipolygon(x, handler, &meta, part_id);
+    } else if (Rf_inherits(x, "GEOMETRYCOLLECTION")) {
+        return wk_sfc_read_geometrycollection(x, handler, &meta, part_id);
+    } else if (Rf_inherits(x, "sfg")) {
         Rf_error("Unsupported sfg type");
     } else {
         Rf_error("Element of sfc list must inherit from 'sfg'");
     }
+
+    // should never be reached
+    return WK_ABORT; // # nocov
 }
 
 int wk_sfc_read_point(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id) {
@@ -162,4 +163,95 @@ int wk_sfc_read_polygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t
 
     HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
     return WK_CONTINUE;
+}
+
+int wk_sfc_read_multipoint(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id) {
+    int result;
+    meta->geometry_type = WK_MULTIPOINT;
+    meta->size = Rf_nrows(x);
+    int coord_size = Rf_ncols(x);
+
+    wk_meta_t child_meta;
+    WK_META_RESET(child_meta, WK_POINT);
+    child_meta.size = 1;
+    child_meta.flags = meta->flags;
+    
+    HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
+
+    wk_coord_t coord;
+    double* coords = REAL(x);
+    for (uint32_t i = 0; i < meta->size; i++) {
+        for (int j = 0; j < coord_size; j++) {
+             coord.v[j] = coords[j * meta->size + i];
+        }
+        HANDLE_OR_RETURN(handler->geometry_start(&child_meta, i, handler->handler_data));
+        HANDLE_OR_RETURN(handler->coord(&child_meta, coord, 0, handler->handler_data));
+        HANDLE_OR_RETURN(handler->geometry_end(&child_meta, i, handler->handler_data));
+    }
+
+    HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
+    return WK_CONTINUE;
+}
+
+int wk_sfc_read_multilinestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id) {
+    int result;
+    meta->geometry_type = WK_MULTILINESTRING;
+    wk_meta_t child_meta;
+    WK_META_RESET(child_meta, WK_LINESTRING);
+    child_meta.flags = meta->flags;
+    meta->size = Rf_xlength(x);
+
+    HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
+    for (uint32_t child_part_id = 0; child_part_id < meta->size; child_part_id++) {
+        HANDLE_OR_RETURN(wk_sfc_read_linestring(VECTOR_ELT(x, child_part_id), handler, &child_meta, child_part_id));
+    }
+    HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
+
+    return WK_CONTINUE;
+}
+
+int wk_sfc_read_multipolygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id) {
+    int result;
+    meta->geometry_type = WK_MULTIPOLYGON;
+    wk_meta_t child_meta;
+    WK_META_RESET(child_meta, WK_POLYGON);
+    child_meta.flags = meta->flags;
+    meta->size = Rf_xlength(x);
+
+    HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
+    for (uint32_t child_part_id = 0; child_part_id < meta->size; child_part_id++) {
+        HANDLE_OR_RETURN(wk_sfc_read_polygon(VECTOR_ELT(x, child_part_id), handler, &child_meta, child_part_id));
+    }
+    HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
+
+    return WK_CONTINUE;
+}
+
+int wk_sfc_read_geometrycollection(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id) {
+    int result;
+    meta->geometry_type = WK_GEOMETRYCOLLECTION;
+    meta->size = Rf_xlength(x);
+
+    HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
+    for (uint32_t child_part_id = 0; child_part_id < meta->size; child_part_id++) {
+        HANDLE_OR_RETURN(wk_sfc_read_sfg(VECTOR_ELT(x, child_part_id), handler, child_part_id));
+    }
+    HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
+
+    return WK_CONTINUE;
+}
+
+void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta) {
+    if (Rf_inherits(x, "XY")) {
+        // don't need to do anything here; default meta is xy
+    } else if (Rf_inherits(x, "XYZ")) {
+        meta->flags |= WK_FLAG_HAS_Z;
+    } else if (Rf_inherits(x, "XYM")) {
+        meta->flags |= WK_FLAG_HAS_M;
+    } else if (Rf_inherits(x, "XYZM")) {
+        meta->flags |= WK_FLAG_HAS_Z;
+        meta->flags |= WK_FLAG_HAS_M;
+    } else if (Rf_inherits(x, "sfg")) {
+        Rf_error("Can't guess dimensions from class of 'sfg'");
+    }
 }

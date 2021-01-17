@@ -316,6 +316,11 @@ test_that("wk_handle.sfc() works", {
   skip_if_not_installed("sf")
 
   expect_identical(
+    wk_handle(sf::st_sfc(sf::st_point(), sf::st_linestring(), sf::st_polygon()), wkt_writer()),
+    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY")
+  )
+
+  expect_identical(
     wk_handle(sf::st_sfc(sf::st_point(c(1, 2))), wkt_writer()),
     "POINT (1 2)"
   )
@@ -343,5 +348,77 @@ test_that("wk_handle.sfc() works", {
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(1, 0), c(0, 1), c(0, 0))))), wkt_writer()),
     "POLYGON ((0 0, 1 0, 0 1, 0 0))"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(2, 3)))), wkt_writer()),
+    "MULTIPOINT ((1 2), (2 3))"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(2, 3))))), wkt_writer()),
+    "MULTILINESTRING ((1 2, 2 3))"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_multipolygon(list(list(rbind(c(0, 0), c(1, 0), c(0, 1), c(0, 0)))))), wkt_writer()),
+    "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))"
+  )
+
+  expect_identical(
+    wk_handle(sf::st_sfc(sf::st_geometrycollection(list(sf::st_point(c(1, 2))))), wkt_writer()),
+    "GEOMETRYCOLLECTION (POINT (1 2))"
+  )
+})
+
+test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
+  skip_if_not_installed("sf")
+
+  nc_multipolygon <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))$geometry
+  nc_multilines <- sf::st_boundary(nc_multipolygon)
+  nc_multipoints <- sf::st_cast(nc_multilines, "MULTIPOINT")
+  nc_polygon <- sf::st_cast(nc_multipolygon, "POLYGON")
+  nc_lines <- sf::st_cast(nc_multilines, "LINESTRING")
+  nc_points <- sf::st_cast(nc_lines, "POINT")
+  nc_collection <- sf::st_sfc(sf::st_geometrycollection(nc_multipolygon))
+
+  expect_identical(
+    unclass(as_xy(sf::st_coordinates(nc_points))),
+    xyzm_trim(wk_handle(nc_points, xyzm_writer()), FALSE, FALSE)
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_points)),
+    wk_handle(nc_points, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_lines)),
+    wk_handle(nc_lines, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_polygon)),
+    wk_handle(nc_polygon, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_multipoints)),
+    wk_handle(nc_multipoints, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_multilines)),
+    wk_handle(nc_multilines, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_multipolygon)),
+    wk_handle(nc_multipolygon, wkb_writer())
+  )
+
+  expect_identical(
+    unclass(sf::st_as_binary(nc_collection)),
+    wk_handle(nc_collection, wkb_writer())
   )
 })

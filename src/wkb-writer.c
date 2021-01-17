@@ -61,8 +61,6 @@ wkb_write_buffer_t* wkb_write_buffer_new(size_t size) {
 }
 
 void wkb_write_buffer_ensure_size(wkb_write_buffer_t* write_buffer, size_t size) {
-    Rprintf("Attempting to realloc to size %d\n", size);
-
     unsigned char* new_buffer = realloc(write_buffer->buffer, size);
     if (new_buffer == NULL) {
         Rf_error("Can't reallocate buffer of size %d", size);
