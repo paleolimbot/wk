@@ -10,6 +10,7 @@
 \alias{wkt_writer}
 \alias{wkt_format_handler}
 \alias{wkb_writer}
+\alias{sfc_writer}
 \alias{xyzm_writer}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
@@ -39,6 +40,8 @@ wkt_writer(precision = 16, trim = TRUE)
 wkt_format_handler(precision = 7, trim = TRUE, max_coords = 6)
 
 wkb_writer()
+
+sfc_writer()
 
 xyzm_writer()
 

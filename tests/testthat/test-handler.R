@@ -432,3 +432,26 @@ test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
     wk_handle(nc_collection, wkb_writer())
   )
 })
+
+test_that("sfc_writer() works with streaming input", {
+  skip_if_not_installed("sf")
+
+  # test attributes
+  expect_identical(wk_handle(wkt(), sfc_writer()), sf::st_sfc())
+
+  wkb_good <- as_wkb(
+    c(
+      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))",
+      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))",
+      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+    )
+  )
+
+  expect_identical(
+    sf::st_bbox(wk_handle(wkb_good, sfc_writer())),
+    sf::st_bbox(c(xmin = -1, ymin = -2, xmax = 3, ymax = 4))
+  )
+
+  expect_identical(wk_handle(wkb_good[1], sfc_writer()), sf::st_sfc(sf::st_point(c(1, 1))))
+})
