@@ -441,17 +441,35 @@ test_that("sfc_writer() works with streaming input", {
 
   wkb_good <- as_wkb(
     c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))",
+      "POINT (1 1)", "LINESTRING (1 2, 3 4)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+      "MULTIPOINT ((1 2), (3 4))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))",
       "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))",
       "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
     )
   )
 
+  # expect_identical(
+  #   sf::st_bbox(wk_handle(wkb_good, sfc_writer())),
+  #   sf::st_bbox(c(xmin = -1, ymin = -2, xmax = 3, ymax = 4))
+  # )
+
   expect_identical(
-    sf::st_bbox(wk_handle(wkb_good, sfc_writer())),
-    sf::st_bbox(c(xmin = -1, ymin = -2, xmax = 3, ymax = 4))
+    wk_handle(wkb_good[1], sfc_writer()),
+    sf::st_sfc(sf::st_point(c(1, 1)))
   )
 
-  expect_identical(wk_handle(wkb_good[1], sfc_writer()), sf::st_sfc(sf::st_point(c(1, 1))))
+  expect_identical(
+    wk_handle(wkb_good[2], sfc_writer()),
+    sf::st_sfc(sf::st_linestring(rbind(c(1, 2), c(3, 4))))
+  )
+
+  expect_identical(
+    wk_handle(wkb_good[4], sfc_writer()),
+    sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(3, 4))))
+  )
+
+  expect_identical(
+    wk_handle(wkb_good[5], sfc_writer()),
+    sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(3, 4)))))
+  )
 })

@@ -13,7 +13,7 @@
 
 typedef struct {
     SEXP sfc;
-    SEXP geom[SFC_MAX_RECURSION_DEPTH];
+    SEXP geom[SFC_MAX_RECURSION_DEPTH + 1];
     size_t recursion_level;
     // xmin, ymin, xmax, ymax
     double bbox[4];
@@ -28,7 +28,10 @@ typedef struct {
     // however, most readers have no way of knowing the dimensions of
     // an empty
     R_xlen_t first_flags_id;
+    // helpful to keep track of the last feature id and coord size
     R_xlen_t feat_id;
+    int coord_size;
+    uint32_t coord_id;
 } sfc_writer_t;
 
 sfc_writer_t* sfc_writer_new() {
@@ -57,6 +60,7 @@ sfc_writer_t* sfc_writer_new() {
     writer->n_empty = 0;
     writer->first_flags_id = -1;
     writer->feat_id = -1;
+    writer->coord_size = 2;
 
     return writer;
 }
@@ -93,6 +97,8 @@ SEXP sfc_class_sfg(int geometry_type, uint32_t flags) {
         SET_STRING_ELT(class, 0, Rf_mkChar("XYZ"));
     } else if (flags & WK_FLAG_HAS_M) {
         SET_STRING_ELT(class, 0, Rf_mkChar("XYM"));
+    } else {
+        SET_STRING_ELT(class, 0, Rf_mkChar("XY"));
     }
 
     switch (geometry_type) {
@@ -125,22 +131,9 @@ SEXP sfc_class_sfg(int geometry_type, uint32_t flags) {
     return class;
 }
 
-SEXP sfc_alloc_sfg(int geometry_type, uint32_t size, uint32_t flags) {
-    if (flags == SFC_FLAGS_NOT_YET_DEFINED) {
-        flags = 0;
-    }
-
+SEXP sfc_alloc_sfg(int geometry_type, uint32_t size, int coord_size) {
     SEXP result = R_NilValue;
 
-    int coord_size = 2;
-    if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
-        coord_size = 4;
-    } else if (flags & WK_FLAG_HAS_Z) {
-        coord_size = 3;
-    } else if (flags & WK_FLAG_HAS_M) {
-        coord_size = 3;
-    }
-    
     switch (geometry_type) {
     case WK_POINT:
         result = PROTECT(Rf_allocVector(REALSXP, coord_size));
@@ -174,6 +167,16 @@ SEXP sfc_alloc_sfg(int geometry_type, uint32_t size, uint32_t flags) {
 
     UNPROTECT(1);
     return result;
+}
+
+int sfc_writer_is_nesting_geometrycollection(sfc_writer_t* writer) {
+    return (writer->recursion_level > 0) &&
+        Rf_inherits(writer->geom[writer->recursion_level - 1], "GEOMETRYCOLLECTION");
+}
+
+int sfc_writer_is_nesting_multipoint(sfc_writer_t* writer) {
+    return (writer->recursion_level > 0) &&
+        Rf_inherits(writer->geom[writer->recursion_level - 1], "MULTIPOINT");
 }
 
 void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta) {
@@ -237,40 +240,100 @@ int sfc_writer_feature_start(const wk_vector_meta_t* vector_meta, R_xlen_t feat_
 
 int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+
     if (writer->recursion_level == 0) {
         sfc_writer_update_vector_attributes(writer, meta);
+    } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
+        Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
     }
 
+    if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        writer->coord_size = 4;
+    } else if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        writer->coord_size = 3;
+    } else {
+        writer->coord_size = 2;
+    }
+
+    // start of POINT nested in MULTIPOINT
+    if (sfc_writer_is_nesting_multipoint(writer)) {
+        return WK_CONTINUE;
+    }
+
+    // swap out previous geom with a newly alocated one
+    if (writer->geom[writer->recursion_level] != R_NilValue) {
+        R_ReleaseObject(writer->geom[writer->recursion_level]);
+    }
+    SEXP geom = PROTECT(sfc_alloc_sfg(meta->geometry_type, meta->size, writer->coord_size));
+
+    // new geometry might need a class attribute if it's a top-level geometry or if it's
+    // inside a geonetry collection
+    if (writer->recursion_level == 0 || sfc_writer_is_nesting_geometrycollection(writer)) {
+        Rf_setAttrib(geom, R_ClassSymbol, sfc_class_sfg(meta->geometry_type, meta->flags));
+    }
+    
+    R_PreserveObject(geom);
+    writer->geom[writer->recursion_level] = geom;
+    UNPROTECT(1);
+
+    writer->coord_id = 0;
     writer->recursion_level++;
     return WK_CONTINUE;
 }
 
 int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+
+    // update the bounding box and assign writer->coord_size
     sfc_writer_update_ranges(writer, meta, coord);
+
+    // push the coordinate to the current coordinate sequence
+    SEXP current_geom = writer->geom[writer->recursion_level - 1];
+
+    // not a matrix in the case of a point
+    int n_rows;
+    if ((meta->geometry_type == WK_POINT) && !sfc_writer_is_nesting_multipoint(writer)) {
+        n_rows = 1;
+    } else {
+        n_rows = Rf_nrows(current_geom);
+    }
+
+    if ((writer->coord_size * (writer->coord_id + 1)) > Rf_xlength(current_geom)) {
+        Rf_error("Attempt to set out-of-bounds coordinate", writer->coord_id, n_rows);
+    }
+
+    double* current_values = REAL(current_geom);
+    for (int i = 0; i < writer->coord_size; i++) {
+        current_values[i * n_rows + writer->coord_id] = coord.v[i];
+    }
+
+    writer->coord_id++;
     return WK_CONTINUE;
 }
 
 int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+    // end of POINT nested in MULTIPOINT
+    if (sfc_writer_is_nesting_multipoint(writer)) {
+        return WK_CONTINUE;
+    }
+
     writer->recursion_level--;
+    if ((writer->recursion_level > 1) && (TYPEOF(writer->geom[writer->recursion_level]) == VECSXP)) {
+        SEXP geom = writer->geom[writer->recursion_level + 1];
+        SET_VECTOR_ELT(writer->geom[writer->recursion_level], part_id, geom);
+        R_ReleaseObject(geom);
+        writer->geom[writer->recursion_level + 1] = R_NilValue;
+    }
+
     return WK_CONTINUE;
 }
 
 int sfc_writer_feature_end(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-    SEXP result = PROTECT(Rf_allocVector(VECSXP, 0));
-
-    SEXP class = PROTECT(Rf_allocVector(STRSXP, 3));
-    SET_STRING_ELT(class, 0, Rf_mkChar("XY"));
-    SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
-    SET_STRING_ELT(class, 2, Rf_mkChar("sfg"));
-
-    Rf_setAttrib(result, R_ClassSymbol, class);
-    UNPROTECT(1);
-
-    SET_VECTOR_ELT(writer->sfc, feat_id, result);
-    UNPROTECT(1);
+    SET_VECTOR_ELT(writer->sfc, feat_id, writer->geom[0]);
+    R_ReleaseObject(writer->geom[0]);
+    writer->geom[0] = R_NilValue;
 
     return WK_CONTINUE;
 }
