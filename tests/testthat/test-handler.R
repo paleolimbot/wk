@@ -470,6 +470,10 @@ test_that("sfc_writer() works with streaming input", {
 
   expect_identical(
     wk_handle(wkb_good[5], sfc_writer()),
-    sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(3, 4)))))
+    sf::st_sfc(
+      sf::st_multilinestring(
+        list(rbind(c(1, 1), c(2, 2)), rbind(c(2, 2), c(3, 4)))
+      )
+    )
   )
 })

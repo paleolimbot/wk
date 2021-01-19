@@ -186,7 +186,7 @@ int wkb_read_geometry(const wk_handler_t* handler, WKBBuffer_t* buffer,
     return WK_ABORT_FEATURE; // # nocov
   }
 
-  return handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data);
+  return handler->geometry_end(&meta, part_id, handler->handler_data);
 }
 
 inline int wkb_read_endian(const wk_handler_t* handler, WKBBuffer_t* buffer) {
