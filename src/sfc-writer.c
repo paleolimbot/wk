@@ -76,6 +76,15 @@ sfc_writer_t* sfc_writer_new() {
     return writer;
 }
 
+int sfc_writer_is_nesting_geometrycollection(sfc_writer_t* writer) {
+    return (writer->recursion_level > 0) &&
+        Rf_inherits(writer->geom[writer->recursion_level - 1], "GEOMETRYCOLLECTION");
+}
+
+int sfc_writer_is_nesting_multipoint(sfc_writer_t* writer) {
+    return Rf_inherits(writer->coord_seq, "MULTIPOINT");
+}
+
 // this is intended to replicate NA_crs_
 SEXP sfc_na_crs() {
     const char* crs_names[] = {"input", "wkt", ""};
@@ -94,62 +103,50 @@ SEXP sfc_na_crs() {
 }
 
 void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk_meta_t* meta) {
-    if (writer->recursion_level > 0 && 
-        (meta->geometry_type == WK_LINESTRING || meta->geometry_type == WK_POLYGON)) {
-            return;
+    if (writer->recursion_level == 0 || sfc_writer_is_nesting_geometrycollection(writer)) {
+        // in the form XY(ZM), GEOM_TYPE, sfg
+        SEXP class = PROTECT(Rf_allocVector(STRSXP, 3));
+        SET_STRING_ELT(class, 2, Rf_mkChar("sfg"));
+
+        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+            SET_STRING_ELT(class, 0, Rf_mkChar("XYZM"));
+        } else if (meta->flags & WK_FLAG_HAS_Z) {
+            SET_STRING_ELT(class, 0, Rf_mkChar("XYZ"));
+        } else if (meta->flags & WK_FLAG_HAS_M) {
+            SET_STRING_ELT(class, 0, Rf_mkChar("XYM"));
+        } else {
+            SET_STRING_ELT(class, 0, Rf_mkChar("XY"));
         }
 
-    // in the form XY(ZM), GEOM_TYPE, sfg
-    SEXP class = PROTECT(Rf_allocVector(STRSXP, 3));
-    SET_STRING_ELT(class, 2, Rf_mkChar("sfg"));
+        switch (meta->geometry_type) {
+        case WK_POINT:
+            SET_STRING_ELT(class, 1, Rf_mkChar("POINT"));
+            break;
+        case WK_LINESTRING:
+            SET_STRING_ELT(class, 1, Rf_mkChar("LINESTRING"));
+            break;
+        case WK_POLYGON:
+            SET_STRING_ELT(class, 1, Rf_mkChar("POLYGON"));
+            break;
+        case WK_MULTIPOINT:
+            SET_STRING_ELT(class, 1, Rf_mkChar("MULTIPOINT"));
+            break;
+        case WK_MULTILINESTRING:
+            SET_STRING_ELT(class, 1, Rf_mkChar("MULTILINESTRING"));
+            break;
+        case WK_MULTIPOLYGON:
+            SET_STRING_ELT(class, 1, Rf_mkChar("MULTIPOLYGON"));
+            break;
+        case WK_GEOMETRYCOLLECTION:
+            SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
+            break;
+        default:
+            Rf_error("Can't generate empty 'sfg' for geometry type '%d'", meta->geometry_type);
+        }
 
-    if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        SET_STRING_ELT(class, 0, Rf_mkChar("XYZM"));
-    } else if (meta->flags & WK_FLAG_HAS_Z) {
-        SET_STRING_ELT(class, 0, Rf_mkChar("XYZ"));
-    } else if (meta->flags & WK_FLAG_HAS_M) {
-        SET_STRING_ELT(class, 0, Rf_mkChar("XYM"));
-    } else {
-        SET_STRING_ELT(class, 0, Rf_mkChar("XY"));
+        Rf_setAttrib(item, R_ClassSymbol, class);
+        UNPROTECT(1);
     }
-
-    switch (meta->geometry_type) {
-    case WK_POINT:
-        SET_STRING_ELT(class, 1, Rf_mkChar("POINT"));
-        break;
-    case WK_LINESTRING:
-        SET_STRING_ELT(class, 1, Rf_mkChar("LINESTRING"));
-        break;
-    case WK_POLYGON:
-        SET_STRING_ELT(class, 1, Rf_mkChar("POLYGON"));
-        break;
-    case WK_MULTIPOINT:
-        SET_STRING_ELT(class, 1, Rf_mkChar("MULTIPOINT"));
-        break;
-    case WK_MULTILINESTRING:
-        SET_STRING_ELT(class, 1, Rf_mkChar("MULTILINESTRING"));
-        break;
-    case WK_MULTIPOLYGON:
-        SET_STRING_ELT(class, 1, Rf_mkChar("MULTIPOLYGON"));
-        break;
-    case WK_GEOMETRYCOLLECTION:
-        SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
-        break;
-    default:
-        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", meta->geometry_type);
-    }
-
-    Rf_setAttrib(item, R_ClassSymbol, class);
-    UNPROTECT(1);
-}
-
-int sfc_writer_is_nesting_geometrycollection(sfc_writer_t* writer) {
-    return (writer->recursion_level > 0) &&
-        Rf_inherits(writer->geom[writer->recursion_level - 1], "GEOMETRYCOLLECTION");
-}
-
-int sfc_writer_is_nesting_multipoint(sfc_writer_t* writer) {
-    return Rf_inherits(writer->coord_seq, "MULTIPOINT");
 }
 
 void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta) {
@@ -213,10 +210,9 @@ int sfc_writer_feature_start(const wk_vector_meta_t* vector_meta, R_xlen_t feat_
 int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
-    if (writer->recursion_level == 0) {
-        sfc_writer_update_vector_attributes(writer, meta);
-    } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
-        Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
+    // ignore start of POINT nested in MULTIPOINT
+    if (sfc_writer_is_nesting_multipoint(writer)) {
+        return WK_CONTINUE;
     }
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
@@ -227,9 +223,10 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         writer->coord_size = 2;
     }
 
-    // ignore start of POINT nested in MULTIPOINT
-    if (sfc_writer_is_nesting_multipoint(writer)) {
-        return WK_CONTINUE;
+    if (writer->recursion_level == 0) {
+        sfc_writer_update_vector_attributes(writer, meta);
+    } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
+        Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
     }
 
     // if POINT, LINESTRING, or MULTIPOINT

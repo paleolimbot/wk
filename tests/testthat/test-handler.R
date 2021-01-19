@@ -476,4 +476,16 @@ test_that("sfc_writer() works with streaming input", {
       )
     )
   )
+
+  expect_identical(
+    wk_handle(wkb_good[7], sfc_writer()),
+    sf::st_sfc(
+      sf::st_geometrycollection(
+        list(
+          sf::st_point(c(1, 1)),
+          sf::st_linestring(rbind(c(1, 1), c(2, 2)))
+        )
+      )
+    )
+  )
 })
