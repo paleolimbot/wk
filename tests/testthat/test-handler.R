@@ -433,48 +433,52 @@ test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
   )
 })
 
-test_that("sfc_writer() works with streaming input", {
+test_that("sfc_writer() works with fixed-length input", {
   skip_if_not_installed("sf")
 
-  # test attributes
-  expect_identical(wk_handle(wkt(), sfc_writer()), sf::st_sfc())
+  # zero-length
+  expect_identical(wk_handle(wkb(), sfc_writer()), sf::st_sfc())
 
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 2, 3 4)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 2), (3 4))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+  # empties (equal because of NaN/NA difference for POINT)
+  expect_equal(
+    wk_handle(
+      as_wkb(
+        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+          "GEOMETRYCOLLECTION EMPTY"
+        )
+      ),
+      sfc_writer()
+    ),
+    sf::st_sfc(
+      sf::st_point(), sf::st_linestring(), sf::st_polygon(),
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_geometrycollection()
     )
   )
 
-  # expect_identical(
-  #   sf::st_bbox(wk_handle(wkb_good, sfc_writer())),
-  #   sf::st_bbox(c(xmin = -1, ymin = -2, xmax = 3, ymax = 4))
-  # )
-
   expect_identical(
-    wk_handle(wkb_good[1], sfc_writer()),
+    wk_handle(as_wkb("POINT (1 1)"), sfc_writer()),
     sf::st_sfc(sf::st_point(c(1, 1)))
   )
 
   expect_identical(
-    wk_handle(wkb_good[2], sfc_writer()),
+    wk_handle(as_wkb("LINESTRING (1 2, 3 4)"), sfc_writer()),
     sf::st_sfc(sf::st_linestring(rbind(c(1, 2), c(3, 4))))
   )
 
   expect_identical(
-    wk_handle(wkb_good[3], sfc_writer()),
+    wk_handle(as_wkb("POLYGON ((0 0, 0 1, 1 0, 0 0))"), sfc_writer()),
     sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0)))))
   )
 
   expect_identical(
-    wk_handle(wkb_good[4], sfc_writer()),
+    wk_handle(as_wkb("MULTIPOINT ((1 2), (3 4))"), sfc_writer()),
     sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(3, 4))))
   )
 
   expect_identical(
-    wk_handle(wkb_good[5], sfc_writer()),
+    wk_handle(as_wkb("MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))"), sfc_writer()),
     sf::st_sfc(
       sf::st_multilinestring(
         list(rbind(c(1, 1), c(2, 2)), rbind(c(2, 2), c(3, 4)))
@@ -483,7 +487,10 @@ test_that("sfc_writer() works with streaming input", {
   )
 
   expect_identical(
-    wk_handle(wkb_good[6], sfc_writer()),
+    wk_handle(
+      as_wkb("MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))"),
+      sfc_writer()
+    ),
     sf::st_sfc(
       sf::st_multipolygon(
         list(
@@ -495,7 +502,7 @@ test_that("sfc_writer() works with streaming input", {
   )
 
   expect_identical(
-    wk_handle(wkb_good[7], sfc_writer()),
+    wk_handle(as_wkb("GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"), sfc_writer()),
     sf::st_sfc(
       sf::st_geometrycollection(
         list(

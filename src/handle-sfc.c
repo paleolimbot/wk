@@ -91,10 +91,11 @@ int wk_sfc_read_point(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t p
     meta->geometry_type = WK_POINT;
     meta->size = 0;
 
+    double* values = REAL(x);
     int coord_size = Rf_length(x);
     int all_na = 1;
     for (int i = 0; i < coord_size; i++) {
-        if (!ISNA(REAL(x)[i])) {
+        if (!ISNA(values[i]) && !ISNAN(values[i])) {
             all_na = 0;
             meta->size = 1;
             break;

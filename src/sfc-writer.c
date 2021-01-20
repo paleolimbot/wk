@@ -35,6 +35,11 @@ typedef struct {
     double m_range[2];
     // used to tell if all items are the same type for output class
     int geometry_type;
+    // when all elements are empty, sfc holds the classes of these objects
+    // so in addition to knowing the common geometry type, we need to know
+    // all types that were encountered in the off chance that they are all empty
+    // using a bitwise OR  with (1 << (wk geometry type))
+    int all_geometry_types;
     // used to enforce requirement that all sub geometries to have the same dimensions
     uint32_t flags;
     // attr(sfc, "n_empty")
@@ -69,6 +74,7 @@ sfc_writer_t* sfc_writer_new() {
     writer->m_range[1] = R_NegInf;
 
     writer->geometry_type = SFC_GEOMETRY_TYPE_NOT_YET_DEFINED;
+    writer->all_geometry_types = 0;
     writer->flags = SFC_FLAGS_NOT_YET_DEFINED;
     writer->n_empty = 0;
     writer->feat_id = -1;
@@ -159,6 +165,8 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
     } else if (writer->geometry_type != meta->geometry_type) {
         writer->geometry_type = WK_GEOMETRY;
     }
+
+    writer->all_geometry_types = writer->all_geometry_types | (1 << (meta->geometry_type - 1));
 
     // sfc objects must have consistent dimensions!
     if (writer->flags == SFC_FLAGS_NOT_YET_DEFINED) {
@@ -355,7 +363,7 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     case WK_MULTIPOLYGON:
     case WK_GEOMETRYCOLLECTION:
         geom = PROTECT(writer->geom[writer->recursion_level]);
-        // R_RelaseObject() is called on `geom` in finalize() or
+        // R_ReleaseObject() is called on `geom` in finalize() or
         // when it is replaced in geometry_start()
         break;
     default:
@@ -367,6 +375,20 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
         SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], part_id, geom);
+    } else if (meta->geometry_type == WK_POINT) {
+        // at the top level, we have to check if all point coordinates are NA
+        // because this is 'empty' for the purposes of sfc
+        double* values = REAL(geom);
+        int all_na = 1;
+        for (int i = 0; i < writer->coord_size; i++) {
+            if (!ISNA(values[i]) && !ISNAN(values[i])) {
+                all_na = 0;
+                break;
+            }
+        }
+        if (all_na) writer->n_empty++;
+
+        SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
     } else {
         SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
     }
@@ -387,7 +409,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     Rf_setAttrib(bbox, R_ClassSymbol, Rf_mkString("bbox"));
 
     // the bounding box may or may not have a crs attribute
-    if (vector_meta->size == 0) {
+    if (vector_meta->size == writer->n_empty) {
         Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
     }
     
@@ -462,9 +484,28 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     Rf_setAttrib(writer->sfc, R_ClassSymbol, class);
     UNPROTECT(1);
 
-    // attr(sfc, "classes") (only for zero-length)
-    if (vector_meta->size == 0) {
-        Rf_setAttrib(writer->sfc, Rf_install("classes"), Rf_allocVector(STRSXP, 0));
+    // attr(sfc, "classes") (only for all empty)
+    if (vector_meta->size == writer->n_empty) {
+        int n_geometry_types = 0;
+        for (int i = 0; i < 7; i++) {
+            if (1 & (writer->all_geometry_types >> i)) n_geometry_types++;
+        }
+
+        const char* type_names[] = {
+            "POINT", "LINESTRING", "POLYGON",
+             "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", 
+             "GEOMETRYCOLLECTION" 
+             ""
+        };
+        
+        SEXP classes = PROTECT(Rf_allocVector(STRSXP, n_geometry_types));
+        for (int i = 0; i < 7; i++) {
+            if (1 & (writer->all_geometry_types >> i)) {
+                SET_STRING_ELT(classes, i, Rf_mkChar(type_names[i]));
+            }
+        }
+        Rf_setAttrib(writer->sfc, Rf_install("classes"), classes);
+        UNPROTECT(1);
     }
 
     return writer->sfc;

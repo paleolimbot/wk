@@ -4,6 +4,8 @@
 #include <Rinternals.h>
 #include "wk-v1.h"
 
+#define REAL_NA(val) (ISNA(val) || ISNAN(val))
+
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
   result = expr;                                               \
   if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
@@ -38,7 +40,7 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
             ymin = data_ptr[1][i];
             xmax = data_ptr[2][i];
             ymax = data_ptr[3][i];
-            int rect_na = ISNA(xmin) && ISNA(ymin) && ISNA(xmax) && ISNA(ymax);
+            int rect_na = REAL_NA(xmin) && REAL_NA(ymin) && REAL_NA(xmax) && REAL_NA(ymax);
             int rect_empty = rect_na || ((xmax - xmin) == R_NegInf) || ((ymax - ymin) == R_NegInf);
 
             if (rect_empty) {
