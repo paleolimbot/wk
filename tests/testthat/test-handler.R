@@ -483,6 +483,18 @@ test_that("sfc_writer() works with streaming input", {
   )
 
   expect_identical(
+    wk_handle(wkb_good[6], sfc_writer()),
+    sf::st_sfc(
+      sf::st_multipolygon(
+        list(
+          list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0))),
+          list(rbind(c(0, 0), c(0, -2), c(-1, 0), c(0, 0)))
+        )
+      )
+    )
+  )
+
+  expect_identical(
     wk_handle(wkb_good[7], sfc_writer()),
     sf::st_sfc(
       sf::st_geometrycollection(
