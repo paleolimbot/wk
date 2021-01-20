@@ -513,3 +513,56 @@ test_that("sfc_writer() works with fixed-length input", {
     )
   )
 })
+
+test_that("sfc_writer() reproduces all basic geometry types", {
+  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
+  nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)
+  nc_multilines <- sf::st_boundary(nc_multipolygon)
+  nc_multipoints <- sf::st_cast(nc_multilines, "MULTIPOINT")
+  nc_polygon <- sf::st_cast(nc_multipolygon, "POLYGON")
+  nc_lines <- sf::st_cast(nc_multilines, "LINESTRING")
+  nc_points <- sf::st_cast(nc_lines, "POINT")
+  collection_list <- nc_multipolygon
+  attributes(collection_list) <- NULL
+  nc_collection <- sf::st_sfc(sf::st_geometrycollection(collection_list))
+
+  attr(nc_multipoints, "ids") <- NULL
+  attr(nc_polygon, "ids") <- NULL
+  attr(nc_lines, "ids") <- NULL
+  attr(nc_points, "ids") <- NULL
+
+  expect_identical(
+    wk_handle(as_wkb(nc_multipolygon), sfc_writer()),
+    nc_multipolygon
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_multilines), sfc_writer()),
+    nc_multilines
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_multipoints), sfc_writer()),
+    nc_multipoints
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_polygon), sfc_writer()),
+    nc_polygon
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_lines), sfc_writer()),
+    nc_lines
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_points), sfc_writer()),
+    nc_points
+  )
+
+  expect_identical(
+    wk_handle(as_wkb(nc_collection), sfc_writer()),
+    nc_collection
+  )
+})
