@@ -282,6 +282,20 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     return WK_CONTINUE;
 }
 
+int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+    sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+
+    if (writer->coord_seq != R_NilValue) R_ReleaseObject(writer->coord_seq);
+    writer->coord_seq = PROTECT(Rf_allocMatrix(REALSXP, size, writer->coord_size));
+    R_PreserveObject(writer->coord_seq);
+    UNPROTECT(1);
+    writer->coord_id = 0;
+    writer->coord_seq_rows = size;
+
+    writer->recursion_level++;
+    return WK_CONTINUE;
+}
+
 int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
@@ -293,13 +307,27 @@ int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id,
     }
 
     // could be faster to store current_values in writer, but REAL()
-    // providess a nice check that the pointer will be valid
+    // provides a nice check that the pointer will be valid
     double* current_values = REAL(writer->coord_seq);
     for (int i = 0; i < writer->coord_size; i++) {
         current_values[i * writer->coord_seq_rows + writer->coord_id] = coord.v[i];
     }
 
     writer->coord_id++;
+    return WK_CONTINUE;
+}
+
+int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+    sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+    writer->recursion_level--;
+
+    SEXP geom = PROTECT(writer->coord_seq);
+    R_ReleaseObject(writer->coord_seq);
+    writer->coord_seq = R_NilValue;
+
+    SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], ring_id, geom);
+    UNPROTECT(1);
+
     return WK_CONTINUE;
 }
 
@@ -338,18 +366,12 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     // if we're above a top-level geometry, this geometry needs to be added to the parent
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
-        // check that we did not under allocate the container
-        SEXP container = writer->geom[writer->recursion_level - 1];
-        SET_VECTOR_ELT(container, part_id, geom);
+        SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], part_id, geom);
     } else {
         SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
     }
 
     UNPROTECT(1);
-    return WK_CONTINUE;
-}
-
-int sfc_writer_feature_end(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
     return WK_CONTINUE;
 }
 
@@ -483,9 +505,10 @@ SEXP wk_c_sfc_writer_new() {
     handler->vector_start = &sfc_writer_vector_start;
     handler->feature_start = &sfc_writer_feature_start;
     handler->geometry_start = &sfc_writer_geometry_start;
+    handler->ring_start = &sfc_writer_ring_start;
     handler->coord = &sfc_writer_coord;
+    handler->ring_end = &sfc_writer_ring_end;
     handler->geometry_end = &sfc_writer_geometry_end;
-    handler->feature_end = &sfc_writer_feature_end;
     handler->vector_end = &sfc_writer_vector_end;
     handler->vector_finally = &sfc_writer_vector_finally;
 
