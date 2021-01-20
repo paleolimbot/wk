@@ -514,6 +514,27 @@ test_that("sfc_writer() works with fixed-length input", {
   )
 })
 
+test_that("sfc_writer() turns NULLs into EMPTY", {
+  all_types <- as_wkb(
+    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+      "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+      "GEOMETRYCOLLECTION EMPTY"
+    )
+  )
+
+  for (i in seq_along(all_types)) {
+    expect_equal(
+      wk_handle(c(all_types[i], wkb(list(NULL))), sfc_writer()),
+      wk_handle(c(all_types[i], all_types[i]), sfc_writer())
+    )
+  }
+
+  expect_identical(
+    wk_handle(c(all_types[1:2], wkb(list(NULL))), sfc_writer()),
+    wk_handle(c(all_types[1:2], as_wkb("GEOMETRYCOLLECTION EMPTY")), sfc_writer())
+  )
+})
+
 test_that("sfc_writer() reproduces all basic geometry types", {
   nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
   nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)

@@ -44,6 +44,9 @@ typedef struct {
     uint32_t flags;
     // attr(sfc, "n_empty")
     R_xlen_t n_empty;
+    // sfc views NULL as equivalent to EMPTY, but we can skip this replacement if
+    // there were not any NULLs (almost 100% of the time)
+    int any_null;
     // needed to access feat_id in geometry handlers
     R_xlen_t feat_id;
 } sfc_writer_t;
@@ -77,6 +80,7 @@ sfc_writer_t* sfc_writer_new() {
     writer->all_geometry_types = 0;
     writer->flags = SFC_FLAGS_NOT_YET_DEFINED;
     writer->n_empty = 0;
+    writer->any_null = 0;
     writer->feat_id = -1;
 
     return writer;
@@ -106,6 +110,51 @@ SEXP sfc_na_crs() {
     Rf_setAttrib(crs, R_ClassSymbol, Rf_mkString("crs"));
     UNPROTECT(1);
     return crs;
+}
+
+SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
+    SEXP result = R_NilValue;
+
+    int coord_size;
+    if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
+        coord_size = 4;
+    } else if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
+        coord_size = 3;
+    } else {
+        coord_size = 2;
+    }
+
+    switch (geometry_type) {
+    case WK_POINT:
+        result = PROTECT(Rf_allocVector(REALSXP, coord_size));
+        for (int i = 0; i < coord_size; i++) {
+            REAL(result)[i] = NA_REAL;
+        }
+        break;
+    case WK_LINESTRING:
+        result = PROTECT(Rf_allocMatrix(REALSXP, 0, coord_size));
+        break;
+    case WK_POLYGON:
+        result = PROTECT(Rf_allocVector(VECSXP, 0));
+        break;
+    case WK_MULTIPOINT:
+        result = PROTECT(Rf_allocMatrix(REALSXP, 0, coord_size));
+        break;
+    case WK_MULTILINESTRING:
+        result = PROTECT(Rf_allocVector(VECSXP, 0));
+        break;
+    case WK_MULTIPOLYGON:
+        result = PROTECT(Rf_allocVector(VECSXP, 0));
+        break;
+    case WK_GEOMETRYCOLLECTION:
+        result = PROTECT(Rf_allocVector(VECSXP, 0));
+        break;
+    default:
+        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", geometry_type);
+    }
+
+    UNPROTECT(1);
+    return result;
 }
 
 void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk_meta_t* meta) {
@@ -213,6 +262,16 @@ int sfc_writer_feature_start(const wk_vector_meta_t* vector_meta, R_xlen_t feat_
     writer->feat_id = feat_id;
     writer->recursion_level = 0;
     return WK_CONTINUE;
+}
+
+int sfc_writer_null_feature(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
+    sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+    // sfc doesn't do NULLs and replaces them with GEOMETRYCOLLECTION EMPTY
+    // however, as the dimensions have to align among features we asign a NULL here and fix
+    // in vector_end()
+    writer->any_null = 1;
+    SET_VECTOR_ELT(writer->sfc, feat_id, R_NilValue);
+    return WK_ABORT_FEATURE;
 }
 
 int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
@@ -400,7 +459,34 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
 SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
+    // replace NULLs with EMPTY of an appropriate type
+    if (writer->any_null) {
+        wk_meta_t meta;
+        if (writer->geometry_type == WK_GEOMETRY) {
+            WK_META_RESET(meta, WK_GEOMETRYCOLLECTION);
+            // also update the type list for attr(sfc, "classes")
+            writer->all_geometry_types = writer->all_geometry_types | (1 << (WK_GEOMETRYCOLLECTION - 1));
+        } else {
+            WK_META_RESET(meta, writer->geometry_type);
+        }
+        meta.flags = writer->flags;
+        meta.size = 0;
+        writer->recursion_level = 0;
+        SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
+        sfc_writer_maybe_add_class_to_sfg(writer, empty, &meta);
+
+        for (R_xlen_t i = 0; i < vector_meta->size; i++) {
+            if (VECTOR_ELT(writer->sfc, i) == R_NilValue) {
+                writer->n_empty++;
+                SET_VECTOR_ELT(writer->sfc, i, empty);
+            }
+        }
+
+        UNPROTECT(1);
+    }
+
     // attr(sfc, "precision")
+    // this should really be parrt of wk_meta_t!
     Rf_setAttrib(writer->sfc, Rf_install("precision"), Rf_ScalarReal(0));
 
     // attr(sfc, "bbox")
@@ -497,11 +583,13 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
              "GEOMETRYCOLLECTION" 
              ""
         };
-        
+
         SEXP classes = PROTECT(Rf_allocVector(STRSXP, n_geometry_types));
+        int classes_index = 0;
         for (int i = 0; i < 7; i++) {
             if (1 & (writer->all_geometry_types >> i)) {
-                SET_STRING_ELT(classes, i, Rf_mkChar(type_names[i]));
+                SET_STRING_ELT(classes, classes_index, Rf_mkChar(type_names[i]));
+                classes_index++;
             }
         }
         Rf_setAttrib(writer->sfc, Rf_install("classes"), classes);
@@ -545,6 +633,7 @@ SEXP wk_c_sfc_writer_new() {
     handler->finalizer = &sfc_writer_finalize;
     handler->vector_start = &sfc_writer_vector_start;
     handler->feature_start = &sfc_writer_feature_start;
+    handler->null_feature = &sfc_writer_null_feature;
     handler->geometry_start = &sfc_writer_geometry_start;
     handler->ring_start = &sfc_writer_ring_start;
     handler->coord = &sfc_writer_coord;
