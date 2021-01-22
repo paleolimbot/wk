@@ -289,7 +289,7 @@ void sfc_writer_realloc_coord_seq(sfc_writer_t* writer, int new_size) {
     writer->coord_seq_rows = new_size;
     if (Rf_inherits(writer->coord_seq, "sfg")) {
         SEXP class = PROTECT(Rf_getAttrib(writer->coord_seq, R_ClassSymbol));
-        Rf_setAttrib(new_coord_seq, R_ClassSymbol, Rf_duplicate(class));
+        Rf_setAttrib(new_coord_seq, R_ClassSymbol, class);
         UNPROTECT(1);
     }
 
