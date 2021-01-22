@@ -262,10 +262,8 @@ void sfc_writer_realloc_coord_seq(sfc_writer_t* writer, int new_size) {
         return;
     }
 
-    Rf_error("Shouldn't get here yet!");
-
     if (!Rf_isMatrix(writer->coord_seq)) {
-        Rf_error("Can't re-allocate a coordinate sequence that is not a matrix");
+        Rf_error("Can't re-allocate a coordinate sequence that is not a matrix"); // # nocov
     }
 
     SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, writer->coord_size));        
@@ -289,8 +287,10 @@ void sfc_writer_realloc_coord_seq(sfc_writer_t* writer, int new_size) {
     }
 
     writer->coord_seq_rows = new_size;
-    if (Rf_isObject(writer->coord_seq)) {
-        Rf_setAttrib(new_coord_seq, R_ClassSymbol, Rf_getAttrib(writer->coord_seq, R_ClassSymbol));
+    if (Rf_inherits(writer->coord_seq, "sfg")) {
+        SEXP class = PROTECT(Rf_getAttrib(writer->coord_seq, R_ClassSymbol));
+        Rf_setAttrib(new_coord_seq, R_ClassSymbol, Rf_duplicate(class));
+        UNPROTECT(1);
     }
 
     R_ReleaseObject(writer->coord_seq);
@@ -414,9 +414,9 @@ int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id,
 
     sfc_writer_update_ranges(writer, meta, coord);
 
-    // check that coord_seq isn't under-allocated
-    if ((writer->coord_size * (writer->coord_id + 1)) > Rf_xlength(writer->coord_seq)) {
-        Rf_error("Attempt to set out-of-bounds coordinate");
+    // realloc the coordinate sequence if necessary
+    if (coord_id >= writer->coord_seq_rows) {
+        sfc_writer_realloc_coord_seq(writer, coord_id * 1.5 + 1);
     }
 
     // could be faster to store current_values in writer, but REAL()
@@ -433,6 +433,10 @@ int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id,
 int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
     writer->recursion_level--;
+
+    // the realloc here constrains writer->coord_seq to the actual number of coords
+    // if the size was correct at the outset, this will do nothing
+    sfc_writer_realloc_coord_seq(writer, writer->coord_id);
 
     SEXP geom = PROTECT(writer->coord_seq);
     R_ReleaseObject(writer->coord_seq);
@@ -456,9 +460,17 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
 
     SEXP geom;
     switch(meta->geometry_type) {
-    case WK_POINT:
     case WK_LINESTRING:
     case WK_MULTIPOINT:
+        // the realloc here constrains writer->coord_seq to the actual number of coords
+        // if the size was correct at the outset, this will do nothing
+        // don't do this for points, which should never be reallocated
+        sfc_writer_realloc_coord_seq(writer, writer->coord_id);
+        geom = PROTECT(writer->coord_seq);
+        R_ReleaseObject(writer->coord_seq);
+        writer->coord_seq = R_NilValue;
+        break;
+    case WK_POINT:
         geom = PROTECT(writer->coord_seq);
         R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = R_NilValue;
