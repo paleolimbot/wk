@@ -30,3 +30,10 @@ test_that("wk_meta() works", {
     c(NA_integer_, 12L)
   )
 })
+
+test_that("wk_vector_meta() works", {
+  expect_identical(
+    wk_vector_meta(wkt()),
+    data.frame(geometry_type = 0L, has_z = NA, has_m = NA, size = 0L)
+  )
+})

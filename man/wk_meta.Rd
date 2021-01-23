@@ -3,11 +3,17 @@
 \name{wk_meta}
 \alias{wk_meta}
 \alias{wk_meta_handler}
-\title{Extract feature-level meta}
+\alias{wk_vector_meta}
+\alias{wk_vector_meta_handler}
+\title{Extract vector- and feature-level meta}
 \usage{
 wk_meta(x)
 
 wk_meta_handler()
+
+wk_vector_meta(x)
+
+wk_vector_meta_handler()
 }
 \arguments{
 \item{x}{An object with a \code{\link[=wk_handle]{wk_handle()}} method.}
@@ -17,5 +23,10 @@ A data.frame with columns \code{geometry_type}, \code{has_z},
 \code{has_m}, \code{srid}, and \code{size}.
 }
 \description{
-Extract feature-level meta
+Extract vector- and feature-level meta
+}
+\examples{
+wk_meta(wkt("POINT (1 2)"))
+wk_vector_meta(wkt("POINT (1 2)"))
+
 }
