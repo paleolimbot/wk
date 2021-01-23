@@ -37,7 +37,7 @@ public:
   }
 
   ~WKHandlerXPtr() {
-    handler->vector_finally(handler->handler_data);
+    handler->deinitialize(handler->handler_data);
   }
 
   int vector_start(const wk_vector_meta_t* meta) {

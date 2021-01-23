@@ -57,7 +57,7 @@ wk_handler_t* wk_handler_create() {
   handler->coord = &wk_handler_void_coord;
 
   handler->error = &wk_handler_void_error;
-  handler->vector_finally = &wk_handler_void_finalizer;
+  handler->deinitialize = &wk_handler_void_finalizer;
   handler->finalizer = &wk_handler_void_finalizer;
 
   return handler;
@@ -88,7 +88,7 @@ struct wk_handler_run_data {
 
 void wk_handler_run_cleanup(void* data) {
   struct wk_handler_run_data* runData = (struct wk_handler_run_data*) data;
-  runData->handler->vector_finally(runData->handler->handler_data);
+  runData->handler->deinitialize(runData->handler->handler_data);
 }
 
 SEXP wk_handler_run_internal(void* data) {

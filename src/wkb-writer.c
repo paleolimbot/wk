@@ -234,7 +234,7 @@ SEXP wkb_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     return write_buffer->result;
 }
 
-void wkb_writer_vector_finally(void* handler_data) {
+void wkb_writer_deinitialize(void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
     if (write_buffer->result != R_NilValue) {
         R_ReleaseObject(write_buffer->result);
@@ -263,7 +263,7 @@ SEXP wk_c_wkb_writer_new() {
     handler->null_feature = &wkb_writer_feature_null;
     handler->feature_end = &wkb_writer_feature_end;
     handler->vector_end = &wkb_writer_vector_end;
-    handler->vector_finally = &wkb_writer_vector_finally;
+    handler->deinitialize = &wkb_writer_deinitialize;
     handler->finalizer = &wkb_writer_finalize;
 
     handler->handler_data = wkb_write_buffer_new(1024);

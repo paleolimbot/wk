@@ -52,7 +52,7 @@ public:
     return R_NilValue;
   }
 
-  virtual void vector_finally() {
+  virtual void deinitialize() {
      
   }
 
@@ -112,7 +112,7 @@ public:
 
     handler->error = &error;
 
-    handler->vector_finally = &vector_finally;
+    handler->deinitialize = &deinitialize;
     handler->finalizer = &finalizer;
 
     return handler;
@@ -202,10 +202,10 @@ private:
     WK_END_CPP11(R_NilValue)
   }
 
-  static void vector_finally(void* handler_data) noexcept {
+  static void deinitialize(void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    cpp_handler->vector_finally();
+    cpp_handler->deinitialize();
     WK_END_CPP11()
   }
 

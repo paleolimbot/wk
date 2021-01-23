@@ -80,7 +80,7 @@ typedef struct {
   int (*feature_end)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
   SEXP (*vector_end)(const wk_vector_meta_t* meta, void* handler_data);
   int (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
-  void (*vector_finally)(void* handler_data);
+  void (*deinitialize)(void* handler_data);
   void (*finalizer)(void* handler_data);
 } wk_handler_t;
 
