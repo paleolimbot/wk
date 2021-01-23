@@ -246,57 +246,78 @@ void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, wk_co
     }
 }
 
-void sfc_writer_realloc_coord_seq(sfc_writer_t* writer, int new_size) {
-    if (new_size == WK_SIZE_UNKNOWN) {
-        new_size = SFC_INITIAL_SIZE_IF_UNKNOWN;
+SEXP sfc_writer_alloc_coord_seq(uint32_t size_hint, int coord_size) {
+    if (size_hint == WK_SIZE_UNKNOWN) {
+        size_hint = SFC_INITIAL_SIZE_IF_UNKNOWN;
     }
 
-    if (writer->coord_seq == R_NilValue) {
-        writer->coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, writer->coord_size));
-        writer->coord_seq_rows = new_size;
-        R_PreserveObject(writer->coord_seq);
-        UNPROTECT(1);
-        return;
-    } else if (new_size == writer->coord_seq_rows) {
-        // don't need to reallocate!
-        return;
-    }
+    return Rf_allocMatrix(REALSXP, size_hint, coord_size);
+}
 
-    if (!Rf_isMatrix(writer->coord_seq)) {
+SEXP sfc_writer_realloc_coord_seq(SEXP coord_seq, uint32_t new_size) {
+    if (!Rf_isMatrix(coord_seq)) {
         Rf_error("Can't re-allocate a coordinate sequence that is not a matrix"); // # nocov
     }
 
-    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, writer->coord_size));        
+    uint32_t current_size = Rf_nrows(coord_seq);
+    int coord_size = Rf_ncols(coord_seq);
     
-    double* old_values = REAL(writer->coord_seq);
-    double* new_values = REAL(new_coord_seq);
-
-    int copy_size;
-    if (new_size > writer->coord_seq_rows) {
-        copy_size = writer->coord_seq_rows;
-    } else {
-        copy_size = new_size;
+    if (new_size <= current_size) {
+        Rf_error("Can't re-allocate a coordinate sequence to fewer rows"); // # nocov
     }
 
-    for (int j = 0; j < writer->coord_size; j++) {
+    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, coord_size));        
+    
+    double* old_values = REAL(coord_seq);
+    double* new_values = REAL(new_coord_seq);
+
+    for (int j = 0; j < coord_size; j++) {
         memcpy(
             new_values + (j * new_size),
-            old_values + (j * writer->coord_seq_rows), 
-            sizeof(double) * copy_size
+            old_values + (j * current_size), 
+            sizeof(double) * current_size
         );
     }
 
-    writer->coord_seq_rows = new_size;
-    if (Rf_inherits(writer->coord_seq, "sfg")) {
-        SEXP class = PROTECT(Rf_getAttrib(writer->coord_seq, R_ClassSymbol));
+    if (Rf_inherits(coord_seq, "sfg")) {
+        SEXP class = PROTECT(Rf_getAttrib(coord_seq, R_ClassSymbol));
         Rf_setAttrib(new_coord_seq, R_ClassSymbol, class);
         UNPROTECT(1);
     }
 
-    R_ReleaseObject(writer->coord_seq);
-    writer->coord_seq = new_coord_seq;
-    R_PreserveObject(writer->coord_seq);
     UNPROTECT(1);
+    return new_coord_seq;
+}
+
+SEXP sfc_writer_finalize_coord_seq(SEXP coord_seq, uint32_t final_size) {
+    if (!Rf_isMatrix(coord_seq)) {
+        Rf_error("Can't finalize a coordinate sequence that is not a matrix"); // # nocov
+    }
+
+    uint32_t current_size = Rf_nrows(coord_seq);
+    int coord_size = Rf_ncols(coord_seq);
+
+    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, final_size, coord_size));        
+    
+    double* old_values = REAL(coord_seq);
+    double* new_values = REAL(new_coord_seq);
+
+    for (int j = 0; j < coord_size; j++) {
+        memcpy(
+            new_values + (j * final_size),
+            old_values + (j * current_size), 
+            sizeof(double) * final_size
+        );
+    }
+
+    if (Rf_inherits(coord_seq, "sfg")) {
+        SEXP class = PROTECT(Rf_getAttrib(coord_seq, R_ClassSymbol));
+        Rf_setAttrib(new_coord_seq, R_ClassSymbol, class);
+        UNPROTECT(1);
+    }
+
+    UNPROTECT(1);
+    return new_coord_seq;
 }
 
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
@@ -373,9 +394,15 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         break;
     case WK_LINESTRING:
     case WK_MULTIPOINT:
-        sfc_writer_realloc_coord_seq(writer, meta->size);
+        if (writer->coord_seq != R_NilValue) {
+            R_ReleaseObject(writer->coord_seq);
+        }
+        writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
         sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
+        R_PreserveObject(writer->coord_seq);
+        UNPROTECT(1);
         writer->coord_id = 0;
+        writer->coord_seq_rows = Rf_nrows(writer->coord_seq);
         break;
     case WK_POLYGON:
     case WK_MULTILINESTRING:
@@ -392,7 +419,7 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         break;
     default:
         Rf_error("Can't convert geometry type '%d' to sfg", meta->geometry_type); // # nocov
-        break; // # nocov
+        break;
     }
 
     writer->recursion_level++;
@@ -402,8 +429,16 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
 int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
-    sfc_writer_realloc_coord_seq(writer, size);
+    if (writer->coord_seq != NULL) {
+        R_ReleaseObject(writer->coord_seq);
+    }
+
+    writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
+    sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
+    R_PreserveObject(writer->coord_seq);
+    UNPROTECT(1);
     writer->coord_id = 0;
+    writer->coord_seq_rows = Rf_nrows(writer->coord_seq);
 
     writer->recursion_level++;
     return WK_CONTINUE;
@@ -415,12 +450,15 @@ int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id,
     sfc_writer_update_ranges(writer, meta, coord);
 
     // realloc the coordinate sequence if necessary
-    if (coord_id >= writer->coord_seq_rows) {
-        sfc_writer_realloc_coord_seq(writer, coord_id * 1.5 + 1);
+    if (writer->coord_id >= writer->coord_seq_rows) {
+        SEXP new_coord_seq = PROTECT(sfc_writer_realloc_coord_seq(writer->coord_seq, writer->coord_id * 1.5 + 1));
+        R_ReleaseObject(writer->coord_seq);
+        writer->coord_seq = new_coord_seq;
+        R_PreserveObject(writer->coord_seq);
+        UNPROTECT(1);
+        writer->coord_seq_rows = Rf_nrows(writer->coord_seq);
     }
 
-    // could be faster to store current_values in writer, but REAL()
-    // provides a nice check that the pointer will be valid
     double* current_values = REAL(writer->coord_seq);
     for (int i = 0; i < writer->coord_size; i++) {
         current_values[i * writer->coord_seq_rows + writer->coord_id] = coord.v[i];
@@ -434,11 +472,13 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
     writer->recursion_level--;
 
-    // the realloc here constrains writer->coord_seq to the actual number of coords
-    // if the size was correct at the outset, this will do nothing
-    sfc_writer_realloc_coord_seq(writer, writer->coord_id);
+    SEXP geom;
+    if (writer->coord_id < Rf_nrows(writer->coord_seq)) {
+        geom = PROTECT(sfc_writer_finalize_coord_seq(writer->coord_seq, writer->coord_id));
+    } else {
+        geom = PROTECT(writer->coord_seq);
+    }
 
-    SEXP geom = PROTECT(writer->coord_seq);
     R_ReleaseObject(writer->coord_seq);
     writer->coord_seq = R_NilValue;
 
@@ -460,18 +500,18 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
 
     SEXP geom;
     switch(meta->geometry_type) {
-    case WK_LINESTRING:
-    case WK_MULTIPOINT:
-        // the realloc here constrains writer->coord_seq to the actual number of coords
-        // if the size was correct at the outset, this will do nothing
-        // don't do this for points, which should never be reallocated
-        sfc_writer_realloc_coord_seq(writer, writer->coord_id);
+    case WK_POINT:
         geom = PROTECT(writer->coord_seq);
         R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = R_NilValue;
         break;
-    case WK_POINT:
-        geom = PROTECT(writer->coord_seq);
+    case WK_LINESTRING:
+    case WK_MULTIPOINT:
+        if (writer->coord_id < Rf_nrows(writer->coord_seq)) {
+            geom = PROTECT(sfc_writer_finalize_coord_seq(writer->coord_seq, writer->coord_id));
+        } else {
+            geom = PROTECT(writer->coord_seq);
+        }
         R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = R_NilValue;
         break;

@@ -615,10 +615,10 @@ test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
   #   nc_multilines
   # )
   #
-  # expect_identical(
-  #   wk_handle(as_wkt(nc_multipoints), sfc_writer()),
-  #   nc_multipoints
-  # )
+  expect_equal(
+    wk_handle(as_wkt(nc_multipoints), sfc_writer()),
+    nc_multipoints
+  )
   #
   # expect_identical(
   #   wk_handle(as_wkt(nc_polygon), sfc_writer()),
