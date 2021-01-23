@@ -605,25 +605,25 @@ test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
   attr(nc_lines, "ids") <- NULL
   attr(nc_points, "ids") <- NULL
 
-  # expect_identical(
-  #   wk_handle(as_wkt(nc_multipolygon), sfc_writer()),
-  #   nc_multipolygon
-  # )
-  #
-  # expect_identical(
-  #   wk_handle(as_wkt(nc_multilines), sfc_writer()),
-  #   nc_multilines
-  # )
-  #
+  expect_equal(
+    wk_handle(as_wkt(nc_multipolygon), sfc_writer()),
+    nc_multipolygon
+  )
+
+  expect_equal(
+    wk_handle(as_wkt(nc_multilines), sfc_writer()),
+    nc_multilines
+  )
+
   expect_equal(
     wk_handle(as_wkt(nc_multipoints), sfc_writer()),
     nc_multipoints
   )
-  #
-  # expect_identical(
-  #   wk_handle(as_wkt(nc_polygon), sfc_writer()),
-  #   nc_polygon
-  # )
+
+  expect_equal(
+    wk_handle(as_wkt(nc_polygon), sfc_writer()),
+    nc_polygon
+  )
 
   expect_equal(
     wk_handle(as_wkt(nc_lines), sfc_writer()),
@@ -635,8 +635,8 @@ test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
     nc_points
   )
 
-  # expect_identical(
-  #   wk_handle(as_wkt(nc_collection), sfc_writer()),
-  #   nc_collection
-  # )
+  expect_equal(
+    wk_handle(as_wkt(nc_collection), sfc_writer()),
+    nc_collection
+  )
 })

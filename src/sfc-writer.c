@@ -319,10 +319,18 @@ SEXP sfc_writer_alloc_geom(uint32_t size_hint) {
 
 SEXP sfc_writer_realloc_geom(SEXP geom, R_xlen_t new_size) {
     R_xlen_t current_size = Rf_xlength(geom);
+    
     SEXP new_geom = PROTECT(Rf_allocVector(VECSXP, new_size));
     for (R_xlen_t i = 0; i < current_size; i++) {
         SET_VECTOR_ELT(new_geom, i, VECTOR_ELT(geom, i));
     }
+
+    if (Rf_inherits(geom, "sfg")) {
+        SEXP class = PROTECT(Rf_getAttrib(geom, R_ClassSymbol));
+        Rf_setAttrib(new_geom, R_ClassSymbol, class);
+        UNPROTECT(1);
+    }
+
     UNPROTECT(1);
     return new_geom;
 }
@@ -332,6 +340,13 @@ SEXP sfc_writer_finalize_geom(SEXP geom, R_xlen_t final_size) {
     for (R_xlen_t i = 0; i < final_size; i++) {
         SET_VECTOR_ELT(new_geom, i, VECTOR_ELT(geom, i));
     }
+
+    if (Rf_inherits(geom, "sfg")) {
+        SEXP class = PROTECT(Rf_getAttrib(geom, R_ClassSymbol));
+        Rf_setAttrib(new_geom, R_ClassSymbol, class);
+        UNPROTECT(1);
+    }
+
     UNPROTECT(1);
     return new_geom;
 }
@@ -502,7 +517,12 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
     // may need to reallocate the container
     R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
     if (ring_id >= container_len) {
-        SEXP new_geom = PROTECT(sfc_writer_realloc_geom(geom, container_len * 1.5 + 1));
+        SEXP new_geom = PROTECT(
+            sfc_writer_realloc_geom(
+                writer->geom[writer->recursion_level - 1], 
+                container_len * 1.5 + 1
+            )
+        );
         R_ReleaseObject(writer->geom[writer->recursion_level - 1]);
         writer->geom[writer->recursion_level - 1] = new_geom;
         R_PreserveObject(writer->geom[writer->recursion_level - 1]);
@@ -573,7 +593,12 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         // may need to reallocate the container
         R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
         if (part_id >= container_len) {
-            SEXP new_geom = PROTECT(sfc_writer_realloc_geom(geom, container_len * 1.5 + 1));
+            SEXP new_geom = PROTECT(
+                sfc_writer_realloc_geom(
+                    writer->geom[writer->recursion_level - 1], 
+                    container_len * 1.5 + 1
+                )
+            );
             R_ReleaseObject(writer->geom[writer->recursion_level - 1]);
             writer->geom[writer->recursion_level - 1] = new_geom;
             R_PreserveObject(writer->geom[writer->recursion_level - 1]);
