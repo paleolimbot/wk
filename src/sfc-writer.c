@@ -252,7 +252,7 @@ SEXP sfc_writer_alloc_coord_seq(uint32_t size_hint, int coord_size) {
     if (size_hint == WK_SIZE_UNKNOWN) {
         size_hint = SFC_INITIAL_SIZE_IF_UNKNOWN;
     }
-
+    
     return Rf_allocMatrix(REALSXP, size_hint, coord_size);
 }
 
@@ -465,8 +465,7 @@ int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
         R_ReleaseObject(writer->coord_seq);
     }
 
-    writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
-    sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
+    writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(size, writer->coord_size));
     R_PreserveObject(writer->coord_seq);
     UNPROTECT(1);
     writer->coord_id = 0;
