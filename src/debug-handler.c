@@ -161,7 +161,11 @@ int wk_handler_debug_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id,
 
 int wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("geometry_start (%d): ", part_id + 1);
+  if (part_id == WK_PART_ID_NONE) {
+    Rprintf("geometry_start (<none>): ", part_id + 1);
+  } else {
+    Rprintf("geometry_start (%d): ", part_id + 1);
+  }
 
   wk_handler_debug_print_meta(meta);
   Rprintf("\n");
@@ -172,7 +176,11 @@ int wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t part_id, voi
 int wk_handler_debug_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   wk_handler_debug_dedent(handler_data);
   wk_handler_debug_print_indent(handler_data);
-  Rprintf("geometry_end (%d): <%p> \n", part_id + 1, meta);
+  if (part_id == WK_PART_ID_NONE) {
+    Rprintf("geometry_end (<none>)\n", part_id + 1);
+  } else {
+    Rprintf("geometry_end (%d)\n", part_id + 1);
+  }
 
   return WK_CONTINUE;
 }
