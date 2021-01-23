@@ -12,6 +12,14 @@ public:
   WKVoidHandler() {}
   virtual ~WKVoidHandler() {}
 
+  virtual void initialize(int* dirty) {
+    if (*dirty) {
+      cpp11::stop("Can't re-use this wk_handler");
+    }
+
+    *dirty = 1;
+  }
+
   virtual int vector_start(const wk_vector_meta_t* meta) {
     return WK_CONTINUE;
   }
@@ -95,6 +103,7 @@ public:
     wk_handler_t* handler = wk_handler_create();
     handler->handler_data = handler_data;
 
+    handler->initialize = &initialize;
     handler->vector_start = &vector_start;
     handler->vector_end = &vector_end;
 
@@ -130,6 +139,13 @@ private:
     if (cpp_handler != NULL) {
       delete cpp_handler;
     }
+  }
+
+  static void initialize(int* dirty, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
+    HandlerType* cpp_handler = (HandlerType*) handler_data;
+    return cpp_handler->initialize(dirty);
+    WK_END_CPP11()
   }
 
   static int vector_start(const wk_vector_meta_t* meta, void* handler_data) noexcept {

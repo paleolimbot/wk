@@ -69,6 +69,7 @@ typedef struct {
   int api_version;
   int dirty;
   void* handler_data;
+  void (*initialize)(int* dirty, void* handler_data);
   int (*vector_start)(const wk_vector_meta_t* meta, void* handler_data);
   int (*feature_start)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
   int (*null_feature)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);

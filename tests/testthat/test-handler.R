@@ -41,7 +41,7 @@ test_that("void handlers do nothing", {
 test_that("void handlers cannot be re-used", {
   handler <- wk_void_handler()
   expect_null(wk_handle(as_wkb("POINT (1 1)"), handler))
-  expect_error(wk_handle(as_wkb("POINT (1 1)"), handler), "Can't re-use a wk_handler")
+  expect_error(wk_handle(as_wkb("POINT (1 1)"), handler), "Can't re-use this wk_handler")
 })
 
 test_that("debug handlers print messages from the wkb handler", {
@@ -140,7 +140,7 @@ test_that("void handlers do nothing when passed to the wkt handler", {
 test_that("void handlers cannot be re-used when called from C++", {
   handler <- wk_void_handler()
   expect_null(wk_handle(as_wkt("POINT (1 1)"), handler))
-  expect_error(wk_handle(as_wkt("POINT (1 1)"), handler), "Can't re-use a wk_handler")
+  expect_error(wk_handle(as_wkt("POINT (1 1)"), handler), "Can't re-use this wk_handler")
 })
 
 test_that("validating handlers return a character vector of problems for WKT", {

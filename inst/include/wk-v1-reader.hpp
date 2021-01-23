@@ -29,11 +29,7 @@ public:
   // is not being re-used and (2) vectorFinalize() is called and is called
   // as soon as possible.
   WKHandlerXPtr(SEXP handler_xptr): handler(handler_xptr) {
-    if (this->handler->dirty) {
-      throw std::runtime_error("Can't re-use a wk_handler");
-    } else {
-      this->handler->dirty = 1;
-    }
+    cpp11::safe[this->handler->initialize](&(this->handler->dirty), this->handler->handler_data);
   }
 
   ~WKHandlerXPtr() {
