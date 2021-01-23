@@ -2,7 +2,7 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-void wk_handler_void_initialize(int* dirty, void* handler_data) {
+void wk_default_handler_initialize(int* dirty, void* handler_data) {
   if (*dirty) {
     Rf_error("Can't re-use this wk_handler");
   }
@@ -10,36 +10,36 @@ void wk_handler_void_initialize(int* dirty, void* handler_data) {
   *dirty = 1;
 }
 
-int wk_handler_void_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+int wk_default_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   return WK_CONTINUE;
 }
 
-SEXP wk_handler_void_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+SEXP wk_default_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   return R_NilValue;
 }
 
-int wk_handler_void_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_default_handler_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_handler_void_geometry(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+int wk_default_handler_geometry(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_handler_void_ring(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+int wk_default_handler_ring(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_handler_void_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int wk_default_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_handler_void_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_default_handler_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }
 
-void wk_handler_void_finalizer(void* handler_data) {
+void wk_default_handler_finalizer(void* handler_data) {
 
 }
 
@@ -49,25 +49,25 @@ wk_handler_t* wk_handler_create() {
   handler->dirty = 0;
   handler->handler_data = NULL;
 
-  handler->initialize = &wk_handler_void_initialize;
-  handler->vector_start = &wk_handler_void_vector_start;
-  handler->vector_end = &wk_handler_void_vector_end;
+  handler->initialize = &wk_default_handler_initialize;
+  handler->vector_start = &wk_default_handler_vector_start;
+  handler->vector_end = &wk_default_handler_vector_end;
 
-  handler->feature_start = &wk_handler_void_feature;
-  handler->null_feature = &wk_handler_void_feature;
-  handler->feature_end = &wk_handler_void_feature;
+  handler->feature_start = &wk_default_handler_feature;
+  handler->null_feature = &wk_default_handler_feature;
+  handler->feature_end = &wk_default_handler_feature;
 
-  handler->geometry_start = &wk_handler_void_geometry;
-  handler->geometry_end = &wk_handler_void_geometry;
+  handler->geometry_start = &wk_default_handler_geometry;
+  handler->geometry_end = &wk_default_handler_geometry;
 
-  handler->ring_start = &wk_handler_void_ring;
-  handler->ring_end = &wk_handler_void_ring;
+  handler->ring_start = &wk_default_handler_ring;
+  handler->ring_end = &wk_default_handler_ring;
 
-  handler->coord = &wk_handler_void_coord;
+  handler->coord = &wk_default_handler_coord;
 
-  handler->error = &wk_handler_void_error;
-  handler->deinitialize = &wk_handler_void_finalizer;
-  handler->finalizer = &wk_handler_void_finalizer;
+  handler->error = &wk_default_handler_error;
+  handler->deinitialize = &wk_default_handler_finalizer;
+  handler->finalizer = &wk_default_handler_finalizer;
 
   return handler;
 }
