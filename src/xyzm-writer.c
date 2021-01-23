@@ -124,7 +124,7 @@ SEXP wk_c_xyzm_writer_new() {
     data->feat_id = 0;
     data->has_coord = 0;
     data->result = R_NilValue;
-    memset(data->result_ptr, 0, 4);
+    memset(data->result_ptr, 0, sizeof(double) * 4);
 
     handler->handler_data = data;
 
