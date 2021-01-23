@@ -38,7 +38,6 @@ typedef struct {
 } wk_coord_t;
 
 typedef struct {
-  void* meta_data;
   uint32_t geometry_type;
   uint32_t flags;
   uint32_t srid;
@@ -48,7 +47,6 @@ typedef struct {
 } wk_meta_t;
 
 typedef struct {
-  void* vector_meta_data;
   uint32_t geometry_type;
   uint32_t flags;
   R_xlen_t size;
@@ -57,14 +55,12 @@ typedef struct {
 } wk_vector_meta_t;
 
 #define WK_META_RESET(meta, geometry_type_)                    \
-  meta.meta_data = NULL;                                       \
   meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
   meta.size = WK_SIZE_UNKNOWN
 
 #define WK_VECTOR_META_RESET(meta, geometry_type_)             \
-  meta.vector_meta_data = NULL;                                \
   meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
   meta.size = WK_VECTOR_SIZE_UNKNOWN
