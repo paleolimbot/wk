@@ -18,8 +18,9 @@ typedef struct {
     SEXP sfc;
     // container list() geometries
     SEXP geom[SFC_WRITER_GEOM_LENGTH];
-    // keep track of recursion level
+    // keep track of recursion level and number of parts seen in a geometry
     size_t recursion_level;
+    R_xlen_t part_id[SFC_WRITER_GEOM_LENGTH];
     
     // the current coordinate sequence and information about
     // where we are in the coordinate sequence
@@ -58,6 +59,7 @@ sfc_writer_t* sfc_writer_new() {
     writer->sfc = R_NilValue;
     for (int i = 0; i < SFC_MAX_RECURSION_DEPTH; i++) {
         writer->geom[i] = R_NilValue;
+        writer->part_id[i] = 0;
     }
     writer->recursion_level = 0;
 
@@ -255,16 +257,8 @@ SEXP sfc_writer_alloc_coord_seq(uint32_t size_hint, int coord_size) {
 }
 
 SEXP sfc_writer_realloc_coord_seq(SEXP coord_seq, uint32_t new_size) {
-    if (!Rf_isMatrix(coord_seq)) {
-        Rf_error("Can't re-allocate a coordinate sequence that is not a matrix"); // # nocov
-    }
-
     uint32_t current_size = Rf_nrows(coord_seq);
     int coord_size = Rf_ncols(coord_seq);
-    
-    if (new_size <= current_size) {
-        Rf_error("Can't re-allocate a coordinate sequence to fewer rows"); // # nocov
-    }
 
     SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, coord_size));        
     
@@ -290,10 +284,6 @@ SEXP sfc_writer_realloc_coord_seq(SEXP coord_seq, uint32_t new_size) {
 }
 
 SEXP sfc_writer_finalize_coord_seq(SEXP coord_seq, uint32_t final_size) {
-    if (!Rf_isMatrix(coord_seq)) {
-        Rf_error("Can't finalize a coordinate sequence that is not a matrix"); // # nocov
-    }
-
     uint32_t current_size = Rf_nrows(coord_seq);
     int coord_size = Rf_ncols(coord_seq);
 
@@ -318,6 +308,32 @@ SEXP sfc_writer_finalize_coord_seq(SEXP coord_seq, uint32_t final_size) {
 
     UNPROTECT(1);
     return new_coord_seq;
+}
+
+SEXP sfc_writer_alloc_geom(uint32_t size_hint) {
+    if (size_hint == WK_SIZE_UNKNOWN) {
+        size_hint = SFC_INITIAL_SIZE_IF_UNKNOWN;
+    }
+    return Rf_allocVector(VECSXP, size_hint);
+}
+
+SEXP sfc_writer_realloc_geom(SEXP geom, R_xlen_t new_size) {
+    R_xlen_t current_size = Rf_xlength(geom);
+    SEXP new_geom = PROTECT(Rf_allocVector(VECSXP, new_size));
+    for (R_xlen_t i = 0; i < current_size; i++) {
+        SET_VECTOR_ELT(new_geom, i, VECTOR_ELT(geom, i));
+    }
+    UNPROTECT(1);
+    return new_geom;
+}
+
+SEXP sfc_writer_finalize_geom(SEXP geom, R_xlen_t final_size) {
+    SEXP new_geom = PROTECT(Rf_allocVector(VECSXP, final_size));
+    for (R_xlen_t i = 0; i < final_size; i++) {
+        SET_VECTOR_ELT(new_geom, i, VECTOR_ELT(geom, i));
+    }
+    UNPROTECT(1);
+    return new_geom;
 }
 
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
@@ -412,10 +428,11 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
             R_ReleaseObject(writer->geom[writer->recursion_level]);
         }
 
-        writer->geom[writer->recursion_level] = PROTECT(Rf_allocVector(VECSXP, meta->size));
+        writer->geom[writer->recursion_level] = PROTECT(sfc_writer_alloc_geom(meta->size));
         sfc_writer_maybe_add_class_to_sfg(writer, writer->geom[writer->recursion_level], meta);
         R_PreserveObject(writer->geom[writer->recursion_level]);
         UNPROTECT(1);
+        writer->part_id[writer->recursion_level] = 0;
         break;
     default:
         Rf_error("Can't convert geometry type '%d' to sfg", meta->geometry_type); // # nocov
@@ -482,7 +499,18 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
     R_ReleaseObject(writer->coord_seq);
     writer->coord_seq = R_NilValue;
 
+    // may need to reallocate the container
+    R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
+    if (ring_id >= container_len) {
+        SEXP new_geom = PROTECT(sfc_writer_realloc_geom(geom, container_len * 1.5 + 1));
+        R_ReleaseObject(writer->geom[writer->recursion_level - 1]);
+        writer->geom[writer->recursion_level - 1] = new_geom;
+        R_PreserveObject(writer->geom[writer->recursion_level - 1]);
+        UNPROTECT(1);
+    }
+
     SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], ring_id, geom);
+    writer->part_id[writer->recursion_level - 1]++;
     UNPROTECT(1);
 
     return WK_CONTINUE;
@@ -519,7 +547,17 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     case WK_MULTILINESTRING:
     case WK_MULTIPOLYGON:
     case WK_GEOMETRYCOLLECTION:
-        geom = PROTECT(writer->geom[writer->recursion_level]);
+        if (writer->part_id[writer->recursion_level] < Rf_xlength(writer->geom[writer->recursion_level])) {
+            geom = PROTECT(
+                sfc_writer_finalize_geom(
+                    writer->geom[writer->recursion_level], 
+                    writer->part_id[writer->recursion_level]
+                )
+            );
+        } else {
+            geom = PROTECT(writer->geom[writer->recursion_level]);
+        }
+        
         // R_ReleaseObject() is called on `geom` in finalize() or
         // when it is replaced in geometry_start()
         break;
@@ -531,7 +569,19 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     // if we're above a top-level geometry, this geometry needs to be added to the parent
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
+
+        // may need to reallocate the container
+        R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
+        if (part_id >= container_len) {
+            SEXP new_geom = PROTECT(sfc_writer_realloc_geom(geom, container_len * 1.5 + 1));
+            R_ReleaseObject(writer->geom[writer->recursion_level - 1]);
+            writer->geom[writer->recursion_level - 1] = new_geom;
+            R_PreserveObject(writer->geom[writer->recursion_level - 1]);
+            UNPROTECT(1);
+        }
+
         SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], part_id, geom);
+        writer->part_id[writer->recursion_level - 1]++;
     } else if (meta->geometry_type == WK_POINT) {
         // at the top level, we have to check if all point coordinates are NA
         // because this is 'empty' for the purposes of sfc
