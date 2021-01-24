@@ -136,9 +136,9 @@
 
 <span class='fu'>wk_void</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_debug_handler</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>wk_debug_filter</span><span class='op'>(</span>handler <span class='op'>=</span> <span class='fu'>wk_void_handler</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>x</span>, handler <span class='op'>=</span> <span class='fu'>wk_void_handler</span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>wk_problems_handler</span><span class='op'>(</span><span class='op'>)</span>
 
@@ -189,6 +189,10 @@
       <td><p>Unused</p></td>
     </tr>
     <tr>
+      <th>handler</th>
+      <td><p>An object created with <code>new_wk_handler()</code>.</p></td>
+    </tr>
+    <tr>
       <th>precision</th>
       <td><p>If <code>trim</code> is <code>TRUE</code>, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.</p></td>
@@ -209,10 +213,6 @@ in the formatted output.</p></td>
     <tr>
       <th>subclass</th>
       <td><p>The handler subclass</p></td>
-    </tr>
-    <tr>
-      <th>handler</th>
-      <td><p>An object created with <code>new_wk_handler()</code>.</p></td>
     </tr>
     </table>
 

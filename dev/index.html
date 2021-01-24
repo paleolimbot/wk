@@ -95,7 +95,7 @@
 <a href="#wk" class="anchor"></a>wk</h1></div>
 <!-- badges: start -->
 
-<p>The goal of wk is to provide lightweight R and C++ infrastructure for packages to use well-known formats (well-known binary and well-known text) as input and/or output without requiring external software. Well-known binary is very fast to read and write, whereas well-known text is human-readable and human-writable. Together, these formats allow for efficient interchange between software packages (WKB), and highly readable tests and examples (WKT).</p>
+<p>The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, segments, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics (<code><a href="reference/wk_void_handler.html">wk_handle()</a></code> and <code>wk_translate()</code>) for event-based iteration over vectors of geometries that allows clear separation code and distribution of responsibility among multiple packages.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -110,9 +110,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wk/">wk</a></span><span class="op">)</span></code></pre></div>
 </div>
-<div id="basic-vector-classes-for-wkt-wkb-points-and-rectangles" class="section level2">
+<div id="vector-classes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#basic-vector-classes-for-wkt-wkb-points-and-rectangles" class="anchor"></a>Basic vector classes for WKT, WKB, points, and rectangles</h2>
+<a href="#vector-classes" class="anchor"></a>Vector classes</h2>
 <p>Use <code><a href="reference/wkt.html">wkt()</a></code> to mark a character vector as containing well-known text, or <code><a href="reference/wkb.html">wkb()</a></code> to mark a vector as well-known binary. Use <code><a href="reference/xy.html">xy()</a></code>, <code><a href="reference/xy.html">xyz()</a></code>, <code><a href="reference/xy.html">xym()</a></code>, and <code><a href="reference/xy.html">xyzm()</a></code> to create vectors of points, and <code><a href="reference/rct.html">rct()</a></code> to create vectors of rectangles. These classes have full <a href="https://vctrs.r-lib.org">vctrs</a> support and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>/<code><a href="https://rdrr.io/r/base/format.html">format()</a></code> methods to make them as frictionless as possible working in R and RStudio.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (30 10)"</span><span class="op">)</span>
@@ -127,6 +127,78 @@
 <span class="fu"><a href="reference/rct.html">rct</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_rct[1]&gt;</span>
 <span class="co">#&gt; [1] [1 2 3 4]</span></code></pre></div>
+</div>
+<div id="generics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#generics" class="anchor"></a>Generics</h2>
+<p>The wk package is made up of readers, handlers, and filters. Readers parse the various formats supported by the wk package, handlers calculate values based on information from the readers (e.g., translating a vector of geometries into another format), and filters transform information from the readers (e.g., transforming coordinates) on the fly. The <code><a href="reference/wk_void_handler.html">wk_handle()</a></code> and <code>wk_translate()</code> generics power operations for many geometry vector formats without having to explicitly support each one.</p>
+</div>
+<div id="c-api" class="section level2">
+<h2 class="hasAnchor">
+<a href="#c-api" class="anchor"></a>C API</h2>
+<p>The distributed nature of the wk framework is powered by a <a href="https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h">~100-line header</a> describing the types of information that parsers typically encounter when reading geometries and the order in which that information is typically organized. Detailed information is available in the <a href="https://paleolimbot.github.io/wk/dev/articles/articles/philosophy.html">C and C++ API article</a>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span>
+  <span class="fu"><a href="reference/wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (1 1, 2 2, 3 3)"</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/wk_void_handler.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeecb08058&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeecb08058&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING &lt;0x7ffeecb07ec8&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeecb07ec8&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x7ffeecb07ec8&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeecb08058&gt;</span>
+<span class="co">#&gt; deinitialize</span>
+<span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
+</div>
+<div id="sf-support" class="section level2">
+<h2 class="hasAnchor">
+<a href="#sf-support" class="anchor"></a>sf support</h2>
+<p>The wk package implements a reader and writer for sfc objects so you can use them wherever you’d use an <code><a href="reference/xy.html">xy()</a></code>, <code><a href="reference/rct.html">rct()</a></code>, <code>crc()</code>, <code>seg()</code>, <code><a href="reference/wkb.html">wkb()</a></code>, or <code><a href="reference/wkt.html">wkt()</a></code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/wk_void_handler.html">wk_debug</a></span><span class="op">(</span>
+  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_linestring</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/wk_void_handler.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeecb0b298&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeecb0b298&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[3] &lt;0x7ffeecb0b210&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeecb0b210&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x7ffeecb0b210&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeecb0b298&gt;</span>
+<span class="co">#&gt; deinitialize</span>
+<span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
+</div>
+<div id="lightweight" class="section level2">
+<h2 class="hasAnchor">
+<a href="#lightweight" class="anchor"></a>Lightweight</h2>
+<p>The wk package has one recursive dependency (<a href="https://cpp11.r-lib.org">cpp11</a>), compiles in ~10 seconds, and runs all 600 expectations in ~4 seconds. The package can read and write WKB at approximately the same speed as the sf package.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">geometry</span>
+<span class="va">nc_wkb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span>
+
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  <span class="fu"><a href="reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fu"><a href="reference/wk_void_handler.html">wkb_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/r/base/class.html">unclass</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_binary.html">st_as_binary</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="co">#&gt; # A tibble: 2 x 6</span>
+<span class="co">#&gt;   expression                         min   median `itr/sec` mem_alloc `gc/sec`</span>
+<span class="co">#&gt;   &lt;bch:expr&gt;                    &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 wk_handle(nc, wkb_writer())     89.2µs    120µs     6676.      47KB     6.95</span>
+<span class="co">#&gt; 2 unclass(sf::st_as_binary(nc))  332.4µs    389µs     2023.      52KB     4.19</span>
+
+<span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
+  <span class="fu"><a href="reference/wk_void_handler.html">wk_handle</a></span><span class="op">(</span><span class="va">nc_wkb</span>, <span class="fu"><a href="reference/wk_void_handler.html">sfc_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span><span class="op">(</span><span class="va">nc_wkb</span>, class <span class="op">=</span> <span class="st">"WKB"</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="co">#&gt; # A tibble: 2 x 6</span>
+<span class="co">#&gt;   expression                                        min median `itr/sec`</span>
+<span class="co">#&gt;   &lt;bch:expr&gt;                                      &lt;bch&gt; &lt;bch:&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 wk_handle(nc_wkb, sfc_writer())                 251µs  290µs     2981.</span>
+<span class="co">#&gt; 2 sf::st_as_sfc(structure(nc_wkb, class = "WKB")) 744µs  873µs      984.</span>
+<span class="co">#&gt; # … with 2 more variables: mem_alloc &lt;bch:byt&gt;, `gc/sec` &lt;dbl&gt;</span></code></pre></div>
 </div>
 </div>
   </div>
