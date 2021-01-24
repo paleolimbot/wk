@@ -11,6 +11,8 @@
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
+#' @param ... Used to keep backward compatibility with previous
+#'   versions of these functions.
 #'
 #' @rdname deprecated
 #'
@@ -34,4 +36,52 @@ wkb_problems <- function(wkb) {
 #' @export
 wkt_problems <- function(wkt) {
   wk_handle(new_wk_wkt(unclass(wkt)), wk_problems_handler())
+}
+
+wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
+  wk_handle.wk_wkb(wkb, wkt_writer(precision, trim))
+}
+
+#' @rdname deprecated
+#' @export
+wkb_translate_wkb <- function(wkb, ...) {
+  wk_handle.wk_wkb(wkb, wkb_writer())
+}
+
+#' @rdname deprecated
+#' @export
+wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
+  wk_handle.wk_wkt(wkt, wkt_writer(precision, trim))
+}
+
+#' @rdname deprecated
+#' @export
+wkt_translate_wkb <- function(wkt, ...) {
+  wk_handle.wk_wkt(wkt, wkb_writer())
+}
+
+# ----- these were never exported but are still deprecated ----
+
+xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
+  wk_handle.wk_xy(xyzm, wkt_writer(precision, trim))
+}
+
+xyzm_translate_wkb <- function(xyzm) {
+  wk_handle.wk_xy(xyzm, wkb_writer())
+}
+
+rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
+  wk_handle.wk_rct(rct, wkt_writer(precision, trim))
+}
+
+rct_translate_wkb <- function(rct) {
+  wk_handle.wk_rct(rct, wkb_writer())
+}
+
+wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
+  xyzm_trim(wk_handle.wk_wkt(wkt, xyzm_writer()), include_z, include_m)
+}
+
+wkb_translate_xyzm <- function(wkb, include_z = NA, include_m = NA) {
+  xyzm_trim(wk_handle.wk_wkb(wkb, xyzm_writer()), include_z, include_m)
 }

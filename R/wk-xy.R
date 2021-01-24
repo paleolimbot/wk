@@ -227,6 +227,21 @@ as_xy_wkx <- function(x, translator, dims) {
   }
 }
 
+xyzm_trim <- function(result, include_z, include_m) {
+  if (identical(include_z, NA) && all(is.na(result$z))) {
+    result$z <- NULL
+  } else if (identical(include_z, FALSE)) {
+    result$z <- NULL
+  }
+
+  if (identical(include_m, NA) && all(is.na(result$m))) {
+    result$m <- NULL
+  } else if (identical(include_m, FALSE)) {
+    result$m <- NULL
+  }
+
+  result
+}
 
 #' S3 details for xy objects
 #'

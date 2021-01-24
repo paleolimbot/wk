@@ -5,6 +5,9 @@
 \alias{wkt_format}
 \alias{wkb_problems}
 \alias{wkt_problems}
+\alias{wkb_translate_wkb}
+\alias{wkt_translate_wkt}
+\alias{wkt_translate_wkb}
 \title{Deprecated functions}
 \usage{
 wkb_format(wkb, max_coords = 3, precision = 6, trim = TRUE)
@@ -14,6 +17,12 @@ wkt_format(wkt, max_coords = 3, precision = 6, trim = TRUE)
 wkb_problems(wkb)
 
 wkt_problems(wkt)
+
+wkb_translate_wkb(wkb, ...)
+
+wkt_translate_wkt(wkt, ..., precision = 16, trim = TRUE)
+
+wkt_translate_wkb(wkt, ...)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
@@ -28,6 +37,9 @@ in the output.}
 \item{trim}{Trim unnecessary zeroes in the output?}
 
 \item{wkt}{A character vector containing well-known text.}
+
+\item{...}{Used to keep backward compatibility with previous
+versions of these functions.}
 }
 \description{
 These functions are deprecated and will be removed in a future version.
