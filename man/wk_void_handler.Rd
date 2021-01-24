@@ -3,8 +3,6 @@
 \name{wk_void_handler}
 \alias{wk_void_handler}
 \alias{wk_void}
-\alias{wk_debug_filter}
-\alias{wk_debug}
 \alias{wk_problems_handler}
 \alias{wk_problems}
 \alias{wkt_writer}
@@ -25,10 +23,6 @@
 wk_void_handler()
 
 wk_void(x, ...)
-
-wk_debug_filter(handler = wk_void_handler())
-
-wk_debug(x, handler = wk_void_handler(), ...)
 
 wk_problems_handler()
 
@@ -65,8 +59,6 @@ wk_handle(x, handler, ...)
 
 \item{...}{Unused}
 
-\item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
-
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.}
 
@@ -75,6 +67,8 @@ for each result or the number of digits after the decimal place otherwise.}
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 
 \item{subclass}{The handler subclass}
+
+\item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
 }
 \value{
 A WK handler.
