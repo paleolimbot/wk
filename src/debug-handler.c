@@ -4,6 +4,11 @@
 #include <Rinternals.h>
 #include "wk-v1.h"
 
+typedef struct {
+  int level;
+  wk_handler_t* next;
+} debug_handler_t;
+
 // this is not a pretty solution to the vector_meta*/meta* issue
 void wk_handler_debug_print_vector_meta(const wk_vector_meta_t* meta) {
   switch (meta->geometry_type) {
@@ -100,67 +105,75 @@ void wk_handler_debug_print_meta(const wk_meta_t* meta) {
   Rprintf(" <%p>", (void*) meta);
 }
 
-void wk_handler_debug_print_indent(void* handler_data) {
-  int* intData = (int*) handler_data;
-  for (int i = 0; i < intData[0]; i++) {
+void wk_handler_debug_print_indent(debug_handler_t* debug_handler) {
+  for (int i = 0; i < debug_handler->level; i++) {
     Rprintf("  ");
   }
 }
 
-void wk_handler_debug_reset(void* handler_data) {
-  int* intData = (int*) handler_data;
-  intData[0] = 0;
+void wk_handler_debug_reset(debug_handler_t* debug_handler) {
+  debug_handler->level = 0;
 }
 
-void wk_handler_debug_indent(void* handler_data) {
-  int* intData = (int*) handler_data;
-  intData[0]++;
+void wk_handler_debug_indent(debug_handler_t* debug_handler) {
+  debug_handler->level++;
 }
 
-void wk_handler_debug_dedent(void* handler_data) {
-  int* intData = (int*) handler_data;
-  intData[0]--;
+void wk_handler_debug_dedent(debug_handler_t* debug_handler) {
+  debug_handler->level--;
 }
 
 int wk_handler_debug_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-  wk_handler_debug_reset(handler_data);
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_reset(debug_handler);
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("vector_start: ");
   wk_handler_debug_print_vector_meta(meta);
   Rprintf("\n");
-  wk_handler_debug_indent(handler_data);
+  wk_handler_debug_indent(debug_handler);
   return WK_CONTINUE;
 }
 
 SEXP wk_handler_debug_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-  wk_handler_debug_dedent(handler_data);
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_dedent(debug_handler);
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("vector_end: <%p>\n", meta);
   return R_NilValue;
 }
 
 int wk_handler_debug_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("feature_start (%d): <%p>\n", feat_id + 1, meta);
-  wk_handler_debug_indent(handler_data);
+  wk_handler_debug_indent(debug_handler);
   return WK_CONTINUE;
 }
 
 int wk_handler_debug_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("null_feature (%d) <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
 int wk_handler_debug_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  wk_handler_debug_dedent(handler_data);
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_dedent(debug_handler);
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("feature_end (%d): <%p>\n", feat_id + 1, meta);
   return WK_CONTINUE;
 }
 
 int wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   if (part_id == WK_PART_ID_NONE) {
     Rprintf("geometry_start (<none>): ", part_id + 1);
   } else {
@@ -174,8 +187,10 @@ int wk_handler_debug_geometry_start(const wk_meta_t* meta, uint32_t part_id, voi
 }
 
 int wk_handler_debug_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-  wk_handler_debug_dedent(handler_data);
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_dedent(debug_handler);
+  wk_handler_debug_print_indent(debug_handler);
   if (part_id == WK_PART_ID_NONE) {
     Rprintf("geometry_end (<none>)\n", part_id + 1);
   } else {
@@ -186,19 +201,23 @@ int wk_handler_debug_geometry_end(const wk_meta_t* meta, uint32_t part_id, void*
 }
 
 int wk_handler_debug_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   if (size != WK_SIZE_UNKNOWN) {
     Rprintf("ring_start[%d] (%d): <%p>\n", size, ring_id + 1, meta);
   } else {
     Rprintf("ring_start (%d): <%p>\n", ring_id + 1, meta);
   }
-  wk_handler_debug_indent(handler_data);
+  wk_handler_debug_indent(debug_handler);
   return WK_CONTINUE;
 }
 
 int wk_handler_debug_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  wk_handler_debug_dedent(handler_data);
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_dedent(debug_handler);
+  wk_handler_debug_print_indent(debug_handler);
   if (size != WK_SIZE_UNKNOWN) {
     Rprintf("ring_end[%d] (%d): <%p>\n", size, ring_id + 1, meta);
   } else {
@@ -208,22 +227,35 @@ int wk_handler_debug_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t rin
 }
 
 int wk_handler_debug_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("coord (%d): <%p> (%f %f", coord_id + 1, meta, coord.v[0], coord.v[1]);
   if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[2]);
   if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[3]);
   Rprintf(")\n");
+
   return WK_CONTINUE;
 }
 
 int wk_handler_debug_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
-  wk_handler_debug_print_indent(handler_data);
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+
+  wk_handler_debug_print_indent(debug_handler);
   Rprintf("error [i=%d](%d): %s\n", feat_id, code, message);
   return WK_ABORT;
 }
 
 void wk_handler_debug_deinitialize(void* handler_data) {
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
   Rprintf("deinitialize\n");
+}
+
+void wk_handler_debug_finalize(void* handler_data) {
+  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+  if (debug_handler != NULL) {
+    free(debug_handler);
+  }
 }
 
 SEXP wk_c_handler_debug_new() {
@@ -247,13 +279,12 @@ SEXP wk_c_handler_debug_new() {
   handler->error = &wk_handler_debug_error;
 
   handler->deinitialize = &wk_handler_debug_deinitialize;
+  handler->finalizer = &wk_handler_debug_finalize;
 
-  SEXP recursiveDepth = PROTECT(Rf_allocVector(INTSXP, 1));
-  int* pRecursiveDepth = INTEGER(recursiveDepth);
-  pRecursiveDepth[0] = 0;
-  handler->handler_data = pRecursiveDepth;
+  debug_handler_t* debug_handler = (debug_handler_t*) malloc(sizeof(debug_handler_t));
+  debug_handler->level = 0;
+  debug_handler->next = NULL;
+  handler->handler_data = debug_handler;
 
-  SEXP xptr = wk_handler_create_xptr(handler, recursiveDepth, R_NilValue);
-  UNPROTECT(1);
-  return xptr;
+  return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
 }
