@@ -96,12 +96,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x7ffedfc04088> => WK_CONTINUE
-#>   feature_start (1): <0x7ffedfc04088>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING <0x7ffedfc03ef8> => WK_CONTINUE
-#>       coord (1): <0x7ffedfc03ef8> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffedfc03ef8> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#>     vector_end: <0x7ffedfc04088>
+#> vector_start: <Unknown type / 0>[1] <0x7ffeecb08058> => WK_CONTINUE
+#>   feature_start (1): <0x7ffeecb08058>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING <0x7ffeecb07ec8> => WK_CONTINUE
+#>       coord (1): <0x7ffeecb07ec8> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffeecb07ec8> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffeecb08058>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -118,12 +118,45 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x7ffedfc072c8> => WK_CONTINUE
-#>   feature_start (1): <0x7ffedfc072c8>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x7ffedfc07240> => WK_CONTINUE
-#>       coord (1): <0x7ffedfc07240> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffedfc07240> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#>     vector_end: <0x7ffedfc072c8>
+#> vector_start: <Unknown type / 0>[1] <0x7ffeecb0b298> => WK_CONTINUE
+#>   feature_start (1): <0x7ffeecb0b298>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x7ffeecb0b210> => WK_CONTINUE
+#>       coord (1): <0x7ffeecb0b210> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffeecb0b210> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffeecb0b298>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
+```
+
+## Lightweight
+
+The wk package has one recursive dependency
+([cpp11](https://cpp11.r-lib.org)), compiles in \~10 seconds, and runs
+all 600 expectations in \~4 seconds. The package can read and write WKB
+at approximately the same speed as the sf package.
+
+``` r
+nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))$geometry
+nc_wkb <- as_wkb(nc)
+
+bench::mark(
+  wk_handle(nc, wkb_writer()),
+  unclass(sf::st_as_binary(nc))
+)
+#> # A tibble: 2 x 6
+#>   expression                         min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>                    <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 wk_handle(nc, wkb_writer())     89.2µs    120µs     6676.      47KB     6.95
+#> 2 unclass(sf::st_as_binary(nc))  332.4µs    389µs     2023.      52KB     4.19
+
+bench::mark(
+  wk_handle(nc_wkb, sfc_writer()),
+  sf::st_as_sfc(structure(nc_wkb, class = "WKB"))
+)
+#> # A tibble: 2 x 6
+#>   expression                                        min median `itr/sec`
+#>   <bch:expr>                                      <bch> <bch:>     <dbl>
+#> 1 wk_handle(nc_wkb, sfc_writer())                 251µs  290µs     2981.
+#> 2 sf::st_as_sfc(structure(nc_wkb, class = "WKB")) 744µs  873µs      984.
+#> # … with 2 more variables: mem_alloc <bch:byt>, `gc/sec` <dbl>
 ```

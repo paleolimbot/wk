@@ -164,7 +164,7 @@ SEXP wk_debug_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
   wk_debug_filter_dedent(debug_filter);
-  wk_debug_filter_print_indent(debug_filter);
+  // indenting here is more confusing than helpful
   Rprintf("vector_end: <%p>\n", meta);
   return debug_filter->next->vector_end(meta, debug_filter->next->handler_data);;
 }
