@@ -92,21 +92,6 @@ test_that("validating handlers return a character vector of problems", {
   )
 })
 
-test_that("format handlers return abbreviated WKT", {
-  expect_identical(
-    wk_handle(
-      new_wk_wkt(c(NA, "LINESTRING (0 1, 1 2)", "LINESTRING (0 1, 2 3, 4 5)", "NOT WKT")),
-      wkt_format_handler(max_coords = 3)
-    ),
-    c(
-      "<null feature>",
-      "LINESTRING (0 1, 1 2)",
-      "LINESTRING (0 1, 2 3, 4 5...",
-      "!!! Expected geometry type or 'SRID=' but found 'NOT' (:1)"
-    )
-  )
-})
-
 test_that("debug handlers print messages from the wkt handler", {
   wkt_good <- as_wkt(
     c(

@@ -28,10 +28,12 @@ Provides an abbreviated version of the well-known text
 representation of a geometry. This returns a constant
 number of coordinates for each geometry, so is safe to
 use for geometry vectors with many (potentially large)
-features.
+features. Parse errors are passed on to the format string
+and do not cause this handler to error.
 }
 \examples{
 wk_format(wkt("MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"))
+wk_format(new_wk_wkt("POINT ENTPY"))
 wk_handle(
   wkt("MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"),
   wkt_format_handler()
