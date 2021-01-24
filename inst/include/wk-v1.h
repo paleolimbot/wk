@@ -38,7 +38,6 @@ typedef struct {
 } wk_coord_t;
 
 typedef struct {
-  void* meta_data;
   uint32_t geometry_type;
   uint32_t flags;
   uint32_t srid;
@@ -48,7 +47,6 @@ typedef struct {
 } wk_meta_t;
 
 typedef struct {
-  void* vector_meta_data;
   uint32_t geometry_type;
   uint32_t flags;
   R_xlen_t size;
@@ -57,14 +55,12 @@ typedef struct {
 } wk_vector_meta_t;
 
 #define WK_META_RESET(meta, geometry_type_)                    \
-  meta.meta_data = NULL;                                       \
   meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
   meta.srid = WK_SRID_NONE;                                    \
   meta.size = WK_SIZE_UNKNOWN
 
 #define WK_VECTOR_META_RESET(meta, geometry_type_)             \
-  meta.vector_meta_data = NULL;                                \
   meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
   meta.size = WK_VECTOR_SIZE_UNKNOWN
@@ -73,6 +69,7 @@ typedef struct {
   int api_version;
   int dirty;
   void* handler_data;
+  void (*initialize)(int* dirty, void* handler_data);
   int (*vector_start)(const wk_vector_meta_t* meta, void* handler_data);
   int (*feature_start)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
   int (*null_feature)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
@@ -84,7 +81,7 @@ typedef struct {
   int (*feature_end)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
   SEXP (*vector_end)(const wk_vector_meta_t* meta, void* handler_data);
   int (*error)(R_xlen_t feat_id, int code, const char* message, void* handler_data);
-  void (*vector_finally)(void* handler_data);
+  void (*deinitialize)(void* handler_data);
   void (*finalizer)(void* handler_data);
 } wk_handler_t;
 

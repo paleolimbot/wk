@@ -94,7 +94,7 @@ SEXP xyzm_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     return data->result;
 }
 
-void xyzm_writer_vector_finally(void* handler_data) {
+void xyzm_writer_deinitialize(void* handler_data) {
     xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
     if (data->result != R_NilValue) {
         R_ReleaseObject(data->result);
@@ -117,7 +117,7 @@ SEXP wk_c_xyzm_writer_new() {
     handler->geometry_start = &xyzm_writer_geometry_start;
     handler->coord = &xyzm_writer_coord;
     handler->vector_end = &xyzm_writer_vector_end;
-    handler->vector_finally = &xyzm_writer_vector_finally;
+    handler->deinitialize = &xyzm_writer_deinitialize;
     handler->finalizer = &xyzm_writer_finalize;
 
     xyzm_writer_data_t* data = (xyzm_writer_data_t*) malloc(sizeof(xyzm_writer_data_t));

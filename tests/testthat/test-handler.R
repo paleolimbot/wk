@@ -2,8 +2,8 @@
 test_that("handlers can be created", {
   expect_is(wk_void_handler(), "wk_void_handler")
   expect_is(wk_void_handler(), "wk_handler")
-  expect_is(wk_debug_handler(), "wk_debug_handler")
-  expect_is(wk_debug_handler(), "wk_handler")
+  expect_is(wk_debug_filter(), "wk_debug_filter")
+  expect_is(wk_debug_filter(), "wk_handler")
   expect_is(wk_problems_handler(), "wk_problems_handler")
   expect_is(wk_problems_handler(), "wk_handler")
 })
@@ -41,7 +41,7 @@ test_that("void handlers do nothing", {
 test_that("void handlers cannot be re-used", {
   handler <- wk_void_handler()
   expect_null(wk_handle(as_wkb("POINT (1 1)"), handler))
-  expect_error(wk_handle(as_wkb("POINT (1 1)"), handler), "Can't re-use a wk_handler")
+  expect_error(wk_handle(as_wkb("POINT (1 1)"), handler), "Can't re-use this wk_handler")
 })
 
 test_that("debug handlers print messages from the wkb handler", {
@@ -55,13 +55,18 @@ test_that("debug handlers print messages from the wkb handler", {
   )
 
   expect_output(
-    wk_handle(wkb_good, wk_debug_handler()),
+    wk_handle(wkb_good, wk_debug_filter()),
     "POINT.*?LINESTRING.*?POLYGON.*?MULTIPOINT.*?MULTILINESTRING.*?MULTIPOLYGON.*?GEOMETRYCOLLECTION.*?POINT.*?LINESTRING"
   )
 
   wkb_bad <- unclass(wkb_good[1])
   wkb_bad[[1]][2] <- as.raw(0xff)
-  expect_output(wk_handle(new_wk_wkb(wkb_bad), wk_debug_handler()), "Unrecognized geometry type code")
+  expect_error(
+    expect_output(
+      wk_handle(new_wk_wkb(wkb_bad), wk_debug_filter()),
+      "Unrecognized geometry type code"
+    )
+  )
 })
 
 test_that("validating handlers return a character vector of problems", {
@@ -113,12 +118,18 @@ test_that("debug handlers print messages from the wkt handler", {
   )
 
   expect_output(
-    wk_handle(wkt_good, wk_debug_handler()),
+    wk_handle(wkt_good, wk_debug_filter()),
     "POINT.*?LINESTRING.*?POLYGON.*?MULTIPOINT.*?MULTILINESTRING.*?MULTIPOLYGON.*?GEOMETRYCOLLECTION.*?POINT.*?LINESTRING"
   )
 
   wkt_bad <- new_wk_wkt("NOT WKT")
-  expect_output(wk_handle(wkt_bad, wk_debug_handler()), "Expected geometry type or 'SRID='")
+  expect_error(
+    expect_output(
+      wk_handle(wkt_bad, wk_debug_filter()),
+      "Expected geometry type or 'SRID='"
+    ),
+    "Expected geometry type or 'SRID='"
+  )
 })
 
 test_that("void handlers do nothing when passed to the wkt handler", {
@@ -140,7 +151,7 @@ test_that("void handlers do nothing when passed to the wkt handler", {
 test_that("void handlers cannot be re-used when called from C++", {
   handler <- wk_void_handler()
   expect_null(wk_handle(as_wkt("POINT (1 1)"), handler))
-  expect_error(wk_handle(as_wkt("POINT (1 1)"), handler), "Can't re-use a wk_handler")
+  expect_error(wk_handle(as_wkt("POINT (1 1)"), handler), "Can't re-use this wk_handler")
 })
 
 test_that("validating handlers return a character vector of problems for WKT", {
@@ -536,6 +547,8 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
 })
 
 test_that("sfc_writer() reproduces all basic geometry types for WKB input", {
+  skip_if_not_installed("sf")
+
   nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
   nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)
   nc_multilines <- sf::st_boundary(nc_multipolygon)
@@ -589,6 +602,8 @@ test_that("sfc_writer() reproduces all basic geometry types for WKB input", {
 })
 
 test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
+  skip_if_not_installed("sf")
+
   nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
   nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)
   nc_multilines <- sf::st_boundary(nc_multipolygon)

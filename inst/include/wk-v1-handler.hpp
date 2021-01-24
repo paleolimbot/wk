@@ -12,6 +12,14 @@ public:
   WKVoidHandler() {}
   virtual ~WKVoidHandler() {}
 
+  virtual void initialize(int* dirty) {
+    if (*dirty) {
+      cpp11::stop("Can't re-use this wk_handler");
+    }
+
+    *dirty = 1;
+  }
+
   virtual int vector_start(const wk_vector_meta_t* meta) {
     return WK_CONTINUE;
   }
@@ -52,7 +60,7 @@ public:
     return R_NilValue;
   }
 
-  virtual void vector_finally() {
+  virtual void deinitialize() {
      
   }
 
@@ -95,6 +103,7 @@ public:
     wk_handler_t* handler = wk_handler_create();
     handler->handler_data = handler_data;
 
+    handler->initialize = &initialize;
     handler->vector_start = &vector_start;
     handler->vector_end = &vector_end;
 
@@ -112,7 +121,7 @@ public:
 
     handler->error = &error;
 
-    handler->vector_finally = &vector_finally;
+    handler->deinitialize = &deinitialize;
     handler->finalizer = &finalizer;
 
     return handler;
@@ -130,6 +139,13 @@ private:
     if (cpp_handler != NULL) {
       delete cpp_handler;
     }
+  }
+
+  static void initialize(int* dirty, void* handler_data) noexcept {
+    WK_BEGIN_CPP11
+    HandlerType* cpp_handler = (HandlerType*) handler_data;
+    return cpp_handler->initialize(dirty);
+    WK_END_CPP11()
   }
 
   static int vector_start(const wk_vector_meta_t* meta, void* handler_data) noexcept {
@@ -202,10 +218,10 @@ private:
     WK_END_CPP11(R_NilValue)
   }
 
-  static void vector_finally(void* handler_data) noexcept {
+  static void deinitialize(void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    cpp_handler->vector_finally();
+    cpp_handler->deinitialize();
     WK_END_CPP11()
   }
 

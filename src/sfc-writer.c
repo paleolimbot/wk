@@ -57,7 +57,7 @@ sfc_writer_t* sfc_writer_new() {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
 
     writer->sfc = R_NilValue;
-    for (int i = 0; i < SFC_MAX_RECURSION_DEPTH; i++) {
+    for (int i = 0; i < SFC_WRITER_GEOM_LENGTH; i++) {
         writer->geom[i] = R_NilValue;
         writer->part_id[i] = 0;
     }
@@ -771,7 +771,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     return writer->sfc;
 }
 
-void sfc_writer_vector_finally(void* handler_data) {
+void sfc_writer_deinitialize(void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     if (writer->sfc != R_NilValue) {
@@ -812,7 +812,7 @@ SEXP wk_c_sfc_writer_new() {
     handler->ring_end = &sfc_writer_ring_end;
     handler->geometry_end = &sfc_writer_geometry_end;
     handler->vector_end = &sfc_writer_vector_end;
-    handler->vector_finally = &sfc_writer_vector_finally;
+    handler->deinitialize = &sfc_writer_deinitialize;
 
     handler->handler_data = sfc_writer_new();
 
