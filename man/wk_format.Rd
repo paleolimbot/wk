@@ -12,10 +12,10 @@ wkt_format_handler(precision = 7, trim = TRUE, max_coords = 6)
 \arguments{
 \item{handleable}{Any object that can be iterated over by \code{\link[=wk_handle]{wk_handle()}}.}
 
-\item{precision}{The rounding precision to use when writing
-(number of decimal places).}
+\item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
+for each result or the number of digits after the decimal place otherwise.}
 
-\item{trim}{Trim unnecessary zeroes in the output?}
+\item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
 
 \item{max_coords}{The maximum number of coordinates to include
 in the output.}

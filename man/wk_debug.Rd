@@ -12,7 +12,7 @@ wk_debug_filter(handler = wk_void_handler())
 \arguments{
 \item{handleable}{Any object that can be iterated over by \code{\link[=wk_handle]{wk_handle()}}.}
 
-\item{handler}{A \link[=wk_void_handler]{wk_handler}.}
+\item{handler}{A \link[=wk_handle]{wk_handler}.}
 }
 \value{
 The result of the \code{handler}.

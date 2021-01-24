@@ -2,7 +2,7 @@
 #' Debug filters and handlers
 #'
 #' @param handleable Any object that can be iterated over by [wk_handle()].
-#' @param handler A [wk_handler][wk_void_handler].
+#' @param handler A [wk_handler][wk_handle].
 #'
 #' @return The result of the `handler`.
 #' @export

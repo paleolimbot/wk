@@ -9,9 +9,7 @@
 #' and do not cause this handler to error.
 #'
 #' @param handleable Any object that can be iterated over by [wk_handle()].
-#' @param trim Trim unnecessary zeroes in the output?
-#' @param precision The rounding precision to use when writing
-#'   (number of decimal places).
+#' @inheritParams wk_writer
 #' @param max_coords The maximum number of coordinates to include
 #'   in the output.
 #'
