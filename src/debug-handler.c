@@ -310,9 +310,8 @@ void wk_debug_filter_deinitialize(void* handler_data) {
 void wk_debug_filter_finalize(void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
   if (debug_filter != NULL) {
-    if (debug_filter->next != NULL) {
-      debug_filter->next->finalizer(debug_filter->next->handler_data);
-    }
+    // finalizer for debug_filter->next is run by the externalptr finalizer
+    // and should not be called here
     free(debug_filter);
   }
 }
@@ -351,5 +350,8 @@ SEXP wk_c_debug_filter_new(SEXP handler_xptr) {
 
   handler->handler_data = debug_filter;
 
+  // include the external pointer as a tag for this external pointer
+  // which guarnatees that it will not be garbage collected until
+  // this object is garbage collected
   return wk_handler_create_xptr(handler, handler_xptr, R_NilValue);
 }
