@@ -61,7 +61,12 @@ test_that("debug handlers print messages from the wkb handler", {
 
   wkb_bad <- unclass(wkb_good[1])
   wkb_bad[[1]][2] <- as.raw(0xff)
-  expect_output(wk_handle(new_wk_wkb(wkb_bad), wk_debug_handler()), "Unrecognized geometry type code")
+  expect_error(
+    expect_output(
+      wk_handle(new_wk_wkb(wkb_bad), wk_debug_handler()),
+      "Unrecognized geometry type code"
+    )
+  )
 })
 
 test_that("validating handlers return a character vector of problems", {
@@ -118,7 +123,13 @@ test_that("debug handlers print messages from the wkt handler", {
   )
 
   wkt_bad <- new_wk_wkt("NOT WKT")
-  expect_output(wk_handle(wkt_bad, wk_debug_handler()), "Expected geometry type or 'SRID='")
+  expect_error(
+    expect_output(
+      wk_handle(wkt_bad, wk_debug_handler()),
+      "Expected geometry type or 'SRID='"
+    ),
+    "Expected geometry type or 'SRID='"
+  )
 })
 
 test_that("void handlers do nothing when passed to the wkt handler", {

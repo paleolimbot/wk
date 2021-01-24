@@ -26,14 +26,14 @@ wk_void <- function(x, ...) {
 
 #' @rdname wk_void_handler
 #' @export
-wk_debug_handler <- function() {
-  new_wk_handler(.Call(wk_c_handler_debug_new), "wk_debug_handler")
+wk_debug_handler <- function(handler = wk_void_handler()) {
+  new_wk_handler(.Call(wk_c_handler_debug_new, handler), "wk_debug_handler")
 }
 
 #' @rdname wk_void_handler
 #' @export
-wk_debug <- function(x, ...) {
-  invisible(wk_handle(x, wk_debug_handler(), ...))
+wk_debug <- function(x, handler = wk_void_handler(), ...) {
+  wk_handle(x, wk_debug_handler(handler), ...)
 }
 
 #' @rdname wk_void_handler
