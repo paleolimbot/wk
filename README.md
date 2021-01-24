@@ -13,13 +13,14 @@ status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](http
 coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
-The goal of wk is to provide lightweight R and C++ infrastructure for
-packages to use well-known formats (well-known binary and well-known
-text) as input and/or output without requiring external software.
-Well-known binary is very fast to read and write, whereas well-known
-text is human-readable and human-writable. Together, these formats allow
-for efficient interchange between software packages (WKB), and highly
-readable tests and examples (WKT).
+The goal of wk is to provide lightweight R, C, and C++ infrastructure
+for a distributed ecosystem of packages that operate on collections of
+coordinates. First, wk provides vector classes for points, segments,
+circles, rectangles, well-known text (WKT), and well-known binary (WKB).
+Second, wk provides a C API and set of S3 generics (`wk_handle()` and
+`wk_translate()`) for event-based iteration over vectors of geometries
+that allows clear separation code and distribution of responsibility
+among multiple packages.
 
 ## Installation
 
@@ -44,7 +45,7 @@ If you can load the package, you’re good to go\!
 library(wk)
 ```
 
-## Basic vector classes for WKT, WKB, points, and rectangles
+## Vector classes
 
 Use `wkt()` to mark a character vector as containing well-known text, or
 `wkb()` to mark a vector as well-known binary. Use `xy()`, `xyz()`,
@@ -66,4 +67,63 @@ xy(1, 2)
 rct(1, 2, 3, 4)
 #> <wk_rct[1]>
 #> [1] [1 2 3 4]
+```
+
+## Generics
+
+The wk package is made up of readers, handlers, and filters. Readers
+parse the various formats supported by the wk package, handlers
+calculate values based on information from the readers (e.g.,
+translating a vector of geometries into another format), and filters
+transform information from the readers (e.g., transforming coordinates)
+on the fly. The `wk_handle()` and `wk_translate()` generics power
+operations for many geometry vector formats without having to explicitly
+support each one.
+
+## C API
+
+The distributed nature of the wk framework is powered by a [\~100-line
+header](https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h)
+describing the types of information that parsers typically encounter
+when reading geometries and the order in which that information is
+typically organized. Detailed information is available in the [C and C++
+API
+article](https://paleolimbot.github.io/wk/dev/articles/articles/philosophy.html).
+
+``` r
+wk_debug(
+  as_wkt("LINESTRING (1 1, 2 2, 3 3)"),
+  wkt_format_handler(max_coords = 2)
+)
+#> initialize (dirty = 0  -> 1)
+#> vector_start: <Unknown type / 0>[1] <0x7ffedfc04088> => WK_CONTINUE
+#>   feature_start (1): <0x7ffedfc04088>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING <0x7ffedfc03ef8> => WK_CONTINUE
+#>       coord (1): <0x7ffedfc03ef8> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffedfc03ef8> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#>     vector_end: <0x7ffedfc04088>
+#> deinitialize
+#> [1] "LINESTRING (1 1, 2 2..."
+```
+
+## sf support
+
+The wk package implements a reader and writer for sfc objects so you can
+use them wherever you’d use an `xy()`, `rct()`, `crc()`, `seg()`,
+`wkb()`, or `wkt()`:
+
+``` r
+wk_debug(
+  sf::st_sfc(sf::st_linestring(rbind(c(1, 1), c(2, 2), c(3, 3)))),
+  wkt_format_handler(max_coords = 2)
+)
+#> initialize (dirty = 0  -> 1)
+#> vector_start: <Unknown type / 0>[1] <0x7ffedfc072c8> => WK_CONTINUE
+#>   feature_start (1): <0x7ffedfc072c8>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x7ffedfc07240> => WK_CONTINUE
+#>       coord (1): <0x7ffedfc07240> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffedfc07240> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#>     vector_end: <0x7ffedfc072c8>
+#> deinitialize
+#> [1] "LINESTRING (1 1, 2 2..."
 ```
