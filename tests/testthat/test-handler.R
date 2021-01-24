@@ -2,8 +2,6 @@
 test_that("handlers can be created", {
   expect_is(wk_void_handler(), "wk_void_handler")
   expect_is(wk_void_handler(), "wk_handler")
-  expect_is(wk_problems_handler(), "wk_problems_handler")
-  expect_is(wk_problems_handler(), "wk_handler")
 })
 
 test_that("wk_handler class works", {
@@ -36,30 +34,6 @@ test_that("void handlers cannot be re-used", {
   expect_error(wk_handle(as_wkb("POINT (1 1)"), handler), "Can't re-use this wk_handler")
 })
 
-test_that("validating handlers return a character vector of problems", {
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
-  )
-
-  expect_identical(
-    wk_handle(wkb_good, wk_problems_handler()),
-    rep(NA_character_, length(wkb_good))
-  )
-
-  wkb_bad <- unclass(wkb_good)
-  wkb_bad[[1]][2] <- as.raw(0xff)
-  expect_identical(
-    wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler()),
-    c("Unrecognized geometry type code '255'", rep(NA_character_, length(wkb_good) - 1))
-  )
-})
-
-
 test_that("void handlers do nothing when passed to the wkt handler", {
   wkt_good <- as_wkt(
     c(
@@ -80,29 +54,6 @@ test_that("void handlers cannot be re-used when called from C++", {
   handler <- wk_void_handler()
   expect_null(wk_handle(as_wkt("POINT (1 1)"), handler))
   expect_error(wk_handle(as_wkt("POINT (1 1)"), handler), "Can't re-use this wk_handler")
-})
-
-test_that("validating handlers return a character vector of problems for WKT", {
-  wkt_good <- as_wkt(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
-  )
-
-  expect_identical(
-    wk_handle(wkt_good, wk_problems_handler()),
-    rep(NA_character_, length(wkt_good))
-  )
-
-  wkt_bad <- unclass(wkt_good)
-  wkt_bad[1] <- "NOT WKT"
-  expect_identical(
-    wk_handle(new_wk_wkt(wkt_bad), wk_problems_handler()),
-    c("Expected geometry type or 'SRID=' but found 'NOT' (:1)", rep(NA_character_, length(wkt_good) - 1))
-  )
 })
 
 test_that("wkt_writer() works", {

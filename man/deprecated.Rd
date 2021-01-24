@@ -3,11 +3,17 @@
 \name{wkb_format}
 \alias{wkb_format}
 \alias{wkt_format}
+\alias{wkb_problems}
+\alias{wkt_problems}
 \title{Deprecated functions}
 \usage{
 wkb_format(wkb, max_coords = 3, precision = 6, trim = TRUE)
 
 wkt_format(wkt, max_coords = 3, precision = 6, trim = TRUE)
+
+wkb_problems(wkb)
+
+wkt_problems(wkt)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that

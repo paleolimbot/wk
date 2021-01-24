@@ -3,8 +3,6 @@
 \name{wk_void_handler}
 \alias{wk_void_handler}
 \alias{wk_void}
-\alias{wk_problems_handler}
-\alias{wk_problems}
 \alias{wkt_writer}
 \alias{wkb_writer}
 \alias{sfc_writer}
@@ -23,10 +21,6 @@
 wk_void_handler()
 
 wk_void(x, ...)
-
-wk_problems_handler()
-
-wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
 

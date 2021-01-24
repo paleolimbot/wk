@@ -22,20 +22,6 @@ wk_void <- function(x, ...) {
   invisible(wk_handle(x, wk_void_handler(), ...))
 }
 
-
-
-#' @rdname wk_void_handler
-#' @export
-wk_problems_handler <- function() {
-  new_wk_handler(.Call(wk_c_handler_problems_new), "wk_problems_handler")
-}
-
-#' @rdname wk_void_handler
-#' @export
-wk_problems <- function(x, ...) {
-  wk_handle(x, wk_problems_handler(), ...)
-}
-
 #' @rdname wk_void_handler
 #' @export
 wkt_writer <- function(precision = 16, trim = TRUE) {
