@@ -8,7 +8,6 @@
 \alias{wk_problems_handler}
 \alias{wk_problems}
 \alias{wkt_writer}
-\alias{wkt_format_handler}
 \alias{wkb_writer}
 \alias{sfc_writer}
 \alias{xyzm_writer}
@@ -36,8 +35,6 @@ wk_problems_handler()
 wk_problems(x, ...)
 
 wkt_writer(precision = 16, trim = TRUE)
-
-wkt_format_handler(precision = 7, trim = TRUE, max_coords = 6)
 
 wkb_writer()
 
@@ -74,9 +71,6 @@ wk_handle(x, handler, ...)
 for each result or the number of digits after the decimal place otherwise.}
 
 \item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
-
-\item{max_coords}{The maximum number of coordinates to include
-in the formatted output.}
 
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 
