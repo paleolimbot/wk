@@ -57,7 +57,7 @@ sfc_writer_t* sfc_writer_new() {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
 
     writer->sfc = R_NilValue;
-    for (int i = 0; i < SFC_MAX_RECURSION_DEPTH; i++) {
+    for (int i = 0; i < SFC_WRITER_GEOM_LENGTH; i++) {
         writer->geom[i] = R_NilValue;
         writer->part_id[i] = 0;
     }

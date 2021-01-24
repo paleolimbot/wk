@@ -547,6 +547,8 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
 })
 
 test_that("sfc_writer() reproduces all basic geometry types for WKB input", {
+  skip_if_not_installed("sf")
+
   nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
   nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)
   nc_multilines <- sf::st_boundary(nc_multipolygon)
@@ -600,6 +602,8 @@ test_that("sfc_writer() reproduces all basic geometry types for WKB input", {
 })
 
 test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
+  skip_if_not_installed("sf")
+
   nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
   nc_multipolygon <- sf::st_set_crs(nc$geometry, NA)
   nc_multilines <- sf::st_boundary(nc_multipolygon)
