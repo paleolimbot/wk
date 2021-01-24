@@ -3,7 +3,7 @@
 \name{wk_void_handler}
 \alias{wk_void_handler}
 \alias{wk_void}
-\alias{wk_debug_handler}
+\alias{wk_debug_filter}
 \alias{wk_debug}
 \alias{wk_problems_handler}
 \alias{wk_problems}
@@ -27,7 +27,7 @@ wk_void_handler()
 
 wk_void(x, ...)
 
-wk_debug_handler(handler = wk_void_handler())
+wk_debug_filter(handler = wk_void_handler())
 
 wk_debug(x, handler = wk_void_handler(), ...)
 

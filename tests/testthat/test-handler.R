@@ -2,8 +2,8 @@
 test_that("handlers can be created", {
   expect_is(wk_void_handler(), "wk_void_handler")
   expect_is(wk_void_handler(), "wk_handler")
-  expect_is(wk_debug_handler(), "wk_debug_handler")
-  expect_is(wk_debug_handler(), "wk_handler")
+  expect_is(wk_debug_filter(), "wk_debug_filter")
+  expect_is(wk_debug_filter(), "wk_handler")
   expect_is(wk_problems_handler(), "wk_problems_handler")
   expect_is(wk_problems_handler(), "wk_handler")
 })
@@ -55,7 +55,7 @@ test_that("debug handlers print messages from the wkb handler", {
   )
 
   expect_output(
-    wk_handle(wkb_good, wk_debug_handler()),
+    wk_handle(wkb_good, wk_debug_filter()),
     "POINT.*?LINESTRING.*?POLYGON.*?MULTIPOINT.*?MULTILINESTRING.*?MULTIPOLYGON.*?GEOMETRYCOLLECTION.*?POINT.*?LINESTRING"
   )
 
@@ -63,7 +63,7 @@ test_that("debug handlers print messages from the wkb handler", {
   wkb_bad[[1]][2] <- as.raw(0xff)
   expect_error(
     expect_output(
-      wk_handle(new_wk_wkb(wkb_bad), wk_debug_handler()),
+      wk_handle(new_wk_wkb(wkb_bad), wk_debug_filter()),
       "Unrecognized geometry type code"
     )
   )
@@ -118,14 +118,14 @@ test_that("debug handlers print messages from the wkt handler", {
   )
 
   expect_output(
-    wk_handle(wkt_good, wk_debug_handler()),
+    wk_handle(wkt_good, wk_debug_filter()),
     "POINT.*?LINESTRING.*?POLYGON.*?MULTIPOINT.*?MULTILINESTRING.*?MULTIPOLYGON.*?GEOMETRYCOLLECTION.*?POINT.*?LINESTRING"
   )
 
   wkt_bad <- new_wk_wkt("NOT WKT")
   expect_error(
     expect_output(
-      wk_handle(wkt_bad, wk_debug_handler()),
+      wk_handle(wkt_bad, wk_debug_filter()),
       "Expected geometry type or 'SRID='"
     ),
     "Expected geometry type or 'SRID='"

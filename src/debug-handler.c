@@ -7,10 +7,10 @@
 typedef struct {
   int level;
   wk_handler_t* next;
-} debug_handler_t;
+} debug_filter_t;
 
 // this is not a pretty solution to the vector_meta*/meta* issue
-void wk_debug_handler_print_vector_meta(const wk_vector_meta_t* meta) {
+void wk_debug_filter_print_vector_meta(const wk_vector_meta_t* meta) {
   switch (meta->geometry_type) {
   case WK_POINT:
     Rprintf("POINT");
@@ -57,7 +57,7 @@ void wk_debug_handler_print_vector_meta(const wk_vector_meta_t* meta) {
   Rprintf(" <%p>", (void*) meta);
 }
 
-void wk_debug_handler_print_meta(const wk_meta_t* meta) {
+void wk_debug_filter_print_meta(const wk_meta_t* meta) {
   switch (meta->geometry_type) {
   case WK_POINT:
     Rprintf("POINT");
@@ -105,25 +105,25 @@ void wk_debug_handler_print_meta(const wk_meta_t* meta) {
   Rprintf(" <%p>", (void*) meta);
 }
 
-void wk_debug_handler_print_indent(debug_handler_t* debug_handler) {
-  for (int i = 0; i < debug_handler->level; i++) {
+void wk_debug_filter_print_indent(debug_filter_t* debug_filter) {
+  for (int i = 0; i < debug_filter->level; i++) {
     Rprintf("  ");
   }
 }
 
-void wk_debug_handler_reset(debug_handler_t* debug_handler, int value) {
-  debug_handler->level = value;
+void wk_debug_filter_reset(debug_filter_t* debug_filter, int value) {
+  debug_filter->level = value;
 }
 
-void wk_debug_handler_indent(debug_handler_t* debug_handler) {
-  debug_handler->level++;
+void wk_debug_filter_indent(debug_filter_t* debug_filter) {
+  debug_filter->level++;
 }
 
-void wk_debug_handler_dedent(debug_handler_t* debug_handler) {
-  debug_handler->level--;
+void wk_debug_filter_dedent(debug_filter_t* debug_filter) {
+  debug_filter->level--;
 }
 
-void wk_debug_handler_print_result(int result) {
+void wk_debug_filter_print_result(int result) {
   switch (result) {
   case WK_CONTINUE:
     Rprintf(" => WK_CONTINUE\n");
@@ -140,216 +140,216 @@ void wk_debug_handler_print_result(int result) {
   }
 }
 
-void wk_debug_handler_initialize(int* dirty, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
-  wk_debug_handler_reset(debug_handler, 0);
+void wk_debug_filter_initialize(int* dirty, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
+  wk_debug_filter_reset(debug_filter, 0);
   Rprintf("initialize (dirty = %d ", *dirty);
-  debug_handler->next->initialize(dirty, debug_handler->next->handler_data);
+  debug_filter->next->initialize(dirty, debug_filter->next->handler_data);
   Rprintf(" -> %d)\n", *dirty);
 }
 
-int wk_debug_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("vector_start: ");
-  wk_debug_handler_print_vector_meta(meta);
-  wk_debug_handler_indent(debug_handler);
-  int result = debug_handler->next->vector_start(meta, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  wk_debug_filter_print_vector_meta(meta);
+  wk_debug_filter_indent(debug_filter);
+  int result = debug_filter->next->vector_start(meta, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-SEXP wk_debug_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+SEXP wk_debug_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_dedent(debug_handler);
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_dedent(debug_filter);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("vector_end: <%p>\n", meta);
-  return debug_handler->next->vector_end(meta, debug_handler->next->handler_data);;
+  return debug_filter->next->vector_end(meta, debug_filter->next->handler_data);;
 }
 
-int wk_debug_handler_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("feature_start (%d): <%p> ", feat_id + 1, meta);
-  int result = debug_handler->next->feature_start(meta, feat_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->feature_start(meta, feat_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
 
-  wk_debug_handler_indent(debug_handler);
+  wk_debug_filter_indent(debug_filter);
   return result;
 }
 
-int wk_debug_handler_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("null_feature (%d) <%p> ", feat_id + 1, meta);
-  int result = debug_handler->next->null_feature(meta, feat_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->null_feature(meta, feat_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_dedent(debug_handler);
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_dedent(debug_filter);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("feature_end (%d): <%p> ", feat_id + 1, meta);
-  int result = debug_handler->next->feature_end(meta, feat_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->feature_end(meta, feat_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
     Rprintf("geometry_start (<none>): ", part_id + 1);
   } else {
     Rprintf("geometry_start (%d): ", part_id + 1);
   }
 
-  wk_debug_handler_print_meta(meta);
+  wk_debug_filter_print_meta(meta);
 
-  int result = debug_handler->next->geometry_start(meta, part_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->geometry_start(meta, part_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
 
-  wk_debug_handler_indent(handler_data);
+  wk_debug_filter_indent(handler_data);
   return result;
 }
 
-int wk_debug_handler_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_dedent(debug_handler);
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_dedent(debug_filter);
+  wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
     Rprintf("geometry_end (<none>) ", part_id + 1);
   } else {
     Rprintf("geometry_end (%d) ", part_id + 1);
   }
 
-  int result = debug_handler->next->geometry_end(meta, part_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->geometry_end(meta, part_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   if (size != WK_SIZE_UNKNOWN) {
     Rprintf("ring_start[%d] (%d): <%p> ", size, ring_id + 1, meta);
   } else {
     Rprintf("ring_start (%d): <%p> ", ring_id + 1, meta);
   }
-  wk_debug_handler_indent(debug_handler);
+  wk_debug_filter_indent(debug_filter);
 
-  int result = debug_handler->next->ring_start(meta, size, ring_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->ring_start(meta, size, ring_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_dedent(debug_handler);
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_dedent(debug_filter);
+  wk_debug_filter_print_indent(debug_filter);
   if (size != WK_SIZE_UNKNOWN) {
     Rprintf("ring_end[%d] (%d): <%p> ", size, ring_id + 1, meta);
   } else {
     Rprintf("ring_end (%d): <%p> ", ring_id + 1, meta);
   }
 
-  int result = debug_handler->next->ring_end(meta, size, ring_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->ring_end(meta, size, ring_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("coord (%d): <%p> (%f %f", coord_id + 1, meta, coord.v[0], coord.v[1]);
   if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[2]);
   if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[3]);
   Rprintf(") ");
 
-  int result = debug_handler->next->coord(meta, coord, coord_id, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->coord(meta, coord, coord_id, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
   return result;
 }
 
-int wk_debug_handler_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+int wk_debug_filter_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
-  wk_debug_handler_print_indent(debug_handler);
+  wk_debug_filter_print_indent(debug_filter);
   Rprintf("error [i=%d](%d): %s", feat_id, code, message);
-  int result = debug_handler->next->error(feat_id, code, message, debug_handler->next->handler_data);
-  wk_debug_handler_print_result(result);
+  int result = debug_filter->next->error(feat_id, code, message, debug_filter->next->handler_data);
+  wk_debug_filter_print_result(result);
 
   if (result == WK_ABORT_FEATURE) {
-    wk_debug_handler_reset(debug_handler, 1);
+    wk_debug_filter_reset(debug_filter, 1);
   } else if (result == WK_ABORT) {
-    wk_debug_handler_reset(debug_handler, 0);
+    wk_debug_filter_reset(debug_filter, 0);
   }
 
   return result;
 }
 
-void wk_debug_handler_deinitialize(void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
+void wk_debug_filter_deinitialize(void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
   Rprintf("deinitialize");
-  debug_handler->next->deinitialize(debug_handler->next->handler_data);
+  debug_filter->next->deinitialize(debug_filter->next->handler_data);
   Rprintf("\n");
 }
 
-void wk_debug_handler_finalize(void* handler_data) {
-  debug_handler_t* debug_handler = (debug_handler_t*) handler_data;
-  if (debug_handler != NULL) {
-    if (debug_handler->next != NULL) {
-      debug_handler->next->finalizer(debug_handler->next->handler_data);
+void wk_debug_filter_finalize(void* handler_data) {
+  debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
+  if (debug_filter != NULL) {
+    if (debug_filter->next != NULL) {
+      debug_filter->next->finalizer(debug_filter->next->handler_data);
     }
-    free(debug_handler);
+    free(debug_filter);
   }
 }
 
-SEXP wk_c_debug_handler_new(SEXP handler_xptr) {
+SEXP wk_c_debug_filter_new(SEXP handler_xptr) {
   wk_handler_t* handler = wk_handler_create();
 
-  handler->initialize = &wk_debug_handler_initialize;
-  handler->vector_start = &wk_debug_handler_vector_start;
-  handler->vector_end = &wk_debug_handler_vector_end;
+  handler->initialize = &wk_debug_filter_initialize;
+  handler->vector_start = &wk_debug_filter_vector_start;
+  handler->vector_end = &wk_debug_filter_vector_end;
 
-  handler->feature_start = &wk_debug_handler_feature_start;
-  handler->null_feature = &wk_debug_handler_feature_null;
-  handler->feature_end = &wk_debug_handler_feature_end;
+  handler->feature_start = &wk_debug_filter_feature_start;
+  handler->null_feature = &wk_debug_filter_feature_null;
+  handler->feature_end = &wk_debug_filter_feature_end;
 
-  handler->geometry_start = &wk_debug_handler_geometry_start;
-  handler->geometry_end = &wk_debug_handler_geometry_end;
+  handler->geometry_start = &wk_debug_filter_geometry_start;
+  handler->geometry_end = &wk_debug_filter_geometry_end;
 
-  handler->ring_start = &wk_debug_handler_ring_start;
-  handler->ring_end = &wk_debug_handler_ring_end;
+  handler->ring_start = &wk_debug_filter_ring_start;
+  handler->ring_end = &wk_debug_filter_ring_end;
 
-  handler->coord = &wk_debug_handler_coord;
+  handler->coord = &wk_debug_filter_coord;
 
-  handler->error = &wk_debug_handler_error;
+  handler->error = &wk_debug_filter_error;
 
-  handler->deinitialize = &wk_debug_handler_deinitialize;
-  handler->finalizer = &wk_debug_handler_finalize;
+  handler->deinitialize = &wk_debug_filter_deinitialize;
+  handler->finalizer = &wk_debug_filter_finalize;
 
-  debug_handler_t* debug_handler = (debug_handler_t*) malloc(sizeof(debug_handler_t));
-  debug_handler->level = 0;
+  debug_filter_t* debug_filter = (debug_filter_t*) malloc(sizeof(debug_filter_t));
+  debug_filter->level = 0;
 
-  debug_handler->next = R_ExternalPtrAddr(handler_xptr);
-  if (debug_handler->next->api_version != 1) {
-    Rf_error("Can't run a wk_handler with api_version '%d'", debug_handler->next->api_version);
+  debug_filter->next = R_ExternalPtrAddr(handler_xptr);
+  if (debug_filter->next->api_version != 1) {
+    Rf_error("Can't run a wk_handler with api_version '%d'", debug_filter->next->api_version);
   }
 
-  handler->handler_data = debug_handler;
+  handler->handler_data = debug_filter;
 
   return wk_handler_create_xptr(handler, handler_xptr, R_NilValue);
 }
