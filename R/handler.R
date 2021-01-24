@@ -27,7 +27,7 @@ wk_void <- function(x, ...) {
 #' @rdname wk_void_handler
 #' @export
 wk_debug_handler <- function(handler = wk_void_handler()) {
-  new_wk_handler(.Call(wk_c_handler_debug_new, handler), "wk_debug_handler")
+  new_wk_handler(.Call(wk_c_debug_handler_new, handler), "wk_debug_handler")
 }
 
 #' @rdname wk_void_handler
