@@ -1,32 +1,47 @@
 
 test_that("format() works for wkt", {
   expect_identical(
-    wkt_format("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)", max_coords = 3),
+    wk_format(wkt("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 3),
     "LINESTRING (0 1, 2 3, 4 5..."
   )
   expect_identical(
-    wkt_format("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)", max_coords = 10),
+    wk_format(wkt("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 10),
     "LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"
   )
-  expect_identical(wkt_format(NA_character_), "<null feature>")
+  expect_identical(wk_format(wkt(NA_character_)), "<null feature>")
 })
 
 test_that("format() works for wkb", {
   expect_identical(
-    wkb_format(wkt_translate_wkb("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 3),
+    wk_format(as_wkb("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 3),
     "LINESTRING (0 1, 2 3, 4 5..."
   )
   expect_identical(
-    wkb_format(wkt_translate_wkb("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 10),
+    wk_format(as_wkb("LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"), max_coords = 10),
     "LINESTRING (0 1, 2 3, 4 5, 6 7, 8 9)"
   )
-  expect_identical(wkb_format(list(NULL)), "<null feature>")
+  expect_identical(wk_format(wkb(list(NULL))), "<null feature>")
 })
 
 test_that("format() handles errors", {
   skip_if_not(wk_platform_endian() == 1)
-  bad_wkb <- wkt_translate_wkb("POINT (30 10)")
+  bad_wkb <- unclass(as_wkb("POINT (30 10)"))
   bad_wkb[[1]][2] <- as.raw(0xff)
-  expect_match(wkb_format(bad_wkb), "!!!")
-  expect_match(wkt_format("POINT ENTPY"), "!!!")
+  expect_match(wk_format(new_wk_wkb(bad_wkb)), "!!!")
+  expect_match(wk_format(new_wk_wkt("POINT ENTPY")), "!!!")
+})
+
+test_that("format handlers return abbreviated WKT", {
+  expect_identical(
+    wk_handle(
+      new_wk_wkt(c(NA, "LINESTRING (0 1, 1 2)", "LINESTRING (0 1, 2 3, 4 5)", "NOT WKT")),
+      wkt_format_handler(max_coords = 3)
+    ),
+    c(
+      "<null feature>",
+      "LINESTRING (0 1, 1 2)",
+      "LINESTRING (0 1, 2 3, 4 5...",
+      "!!! Expected geometry type or 'SRID=' but found 'NOT' (:1)"
+    )
+  )
 })

@@ -3,6 +3,7 @@
 \name{wkb}
 \alias{wkb}
 \alias{parse_wkb}
+\alias{wk_platform_endian}
 \alias{as_wkb}
 \alias{as_wkb.character}
 \alias{as_wkb.wk_wkb}
@@ -14,6 +15,8 @@
 wkb(x = list(), crs = wk_crs_auto())
 
 parse_wkb(x, crs = wk_crs_auto())
+
+wk_platform_endian()
 
 as_wkb(x, ...)
 

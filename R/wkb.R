@@ -29,6 +29,12 @@ parse_wkb <- function(x, crs = wk_crs_auto()) {
 
 #' @rdname wkb
 #' @export
+wk_platform_endian <- function() {
+  match(.Platform$endian, c("big", "little")) - 1L
+}
+
+#' @rdname wkb
+#' @export
 as_wkb <- function(x, ...) {
   UseMethod("as_wkb")
 }
