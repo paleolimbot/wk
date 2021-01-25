@@ -21,7 +21,9 @@ wk_void_handler()
 \description{
 This handler does nothing and returns \code{NULL}. It is useful for
 benchmarking readers and handlers and when using filters
-that have side-effects (e.g., \code{\link[=wk_debug]{wk_debug()}}).
+that have side-effects (e.g., \code{\link[=wk_debug]{wk_debug()}}). Note that this
+handler stops on the first parse error; to see a list of parse
+errors see the \code{\link[=wk_problems]{wk_problems()}} handler.
 }
 \examples{
 wk_void(wkt("POINT (1 4)"))

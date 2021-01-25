@@ -1,6 +1,10 @@
 
 #' Validate well-known binary and well-known text
 #'
+#' The problems handler returns a character vector of parse
+#' errors and can be used to validate input of any type
+#' for which [wk_handle()] is defined.
+#'
 #' @inheritParams wk_handle
 #'
 #' @return A character vector of parsing errors. `NA` signifies

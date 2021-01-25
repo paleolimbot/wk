@@ -35,5 +35,5 @@ wk_format <- function(handleable, precision = 7, trim = TRUE, max_coords = 6, ..
 #' @rdname wk_format
 #' @export
 wkt_format_handler <- function(precision = 7, trim = TRUE, max_coords = 6) {
-  new_wk_handler(wk_cpp_wkt_formatter(precision, trim, max_coords), "wk_wkt_writer")
+  new_wk_handler(wk_cpp_wkt_formatter(precision, trim, max_coords), "wk_wkt_formatter")
 }

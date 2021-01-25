@@ -1,6 +1,14 @@
 
 #' Read geometry vectors
 #'
+#' The handler is the basic building block of the wk package. In
+#' particular, the [wk_handle()] generic allows operations written
+#' as handlers to "just work" with many different input types. The
+#' wk package provides the [wk_void()] handler, the [wk_format()]
+#' handler, the [wk_debug()] handler, the [wk_problems()] handler,
+#' and [wk_writer()]s for [wkb()], [wkt()], [xy()], and [sf::st_sfc()])
+#' vectors.
+#'
 #' @param handler_ptr An external pointer to a newly created WK handler
 #' @param handler A [wk_handler][wk_handle] object.
 #' @param subclass The handler subclass

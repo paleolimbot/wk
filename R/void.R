@@ -3,7 +3,9 @@
 #'
 #' This handler does nothing and returns `NULL`. It is useful for
 #' benchmarking readers and handlers and when using filters
-#' that have side-effects (e.g., [wk_debug()]).
+#' that have side-effects (e.g., [wk_debug()]). Note that this
+#' handler stops on the first parse error; to see a list of parse
+#' errors see the [wk_problems()] handler.
 #'
 #' @inheritParams wk_handle
 #'

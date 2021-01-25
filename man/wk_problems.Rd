@@ -20,7 +20,9 @@ A character vector of parsing errors. \code{NA} signifies
 that there was no parsing error.
 }
 \description{
-Validate well-known binary and well-known text
+The problems handler returns a character vector of parse
+errors and can be used to validate input of any type
+for which \code{\link[=wk_handle]{wk_handle()}} is defined.
 }
 \examples{
 wk_problems(new_wk_wkt(c("POINT EMTPY", "POINT (20 30)")))
