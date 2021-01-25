@@ -5,12 +5,15 @@
 \alias{wk_problems_handler}
 \title{Validate well-known binary and well-known text}
 \usage{
-wk_problems(handleable)
+wk_problems(handleable, ...)
 
 wk_problems_handler()
 }
 \arguments{
-\item{handleable}{Placeholder for now}
+\item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
+\code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
+
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 }
 \value{
 A character vector of parsing errors. \code{NA} signifies

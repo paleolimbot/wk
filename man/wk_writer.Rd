@@ -31,9 +31,10 @@ sfc_writer()
 xyzm_writer()
 }
 \arguments{
-\item{handleable}{Placeholder}
+\item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
+\code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
-\item{...}{For S3 generic compatibility}
+\item{...}{Passed to the writer constructor.}
 
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.}

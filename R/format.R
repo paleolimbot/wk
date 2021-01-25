@@ -8,7 +8,7 @@
 #' features. Parse errors are passed on to the format string
 #' and do not cause this handler to error.
 #'
-#' @param handleable Any object that can be iterated over by [wk_handle()].
+#' @inheritParams wk_handle
 #' @inheritParams wk_writer
 #' @param max_coords The maximum number of coordinates to include
 #'   in the output.
@@ -24,10 +24,11 @@
 #'   wkt_format_handler()
 #' )
 #'
-wk_format <- function(handleable, precision = 7, trim = TRUE, max_coords = 6) {
+wk_format <- function(handleable, precision = 7, trim = TRUE, max_coords = 6, ...) {
   wk_handle(
     handleable,
-    wkt_format_handler(precision = precision, trim = trim, max_coords = max_coords)
+    wkt_format_handler(precision = precision, trim = trim, max_coords = max_coords),
+    ...
   )
 }
 

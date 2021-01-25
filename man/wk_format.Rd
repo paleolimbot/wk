@@ -5,12 +5,13 @@
 \alias{wkt_format_handler}
 \title{Format well-known geometry for printing}
 \usage{
-wk_format(handleable, precision = 7, trim = TRUE, max_coords = 6)
+wk_format(handleable, precision = 7, trim = TRUE, max_coords = 6, ...)
 
 wkt_format_handler(precision = 7, trim = TRUE, max_coords = 6)
 }
 \arguments{
-\item{handleable}{Any object that can be iterated over by \code{\link[=wk_handle]{wk_handle()}}.}
+\item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
+\code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{precision}{If \code{trim} is \code{TRUE}, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.}
@@ -19,6 +20,8 @@ for each result or the number of digits after the decimal place otherwise.}
 
 \item{max_coords}{The maximum number of coordinates to include
 in the output.}
+
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 }
 \value{
 A character vector of abbreviated well-known text.

@@ -2,63 +2,52 @@
 #' Read geometry vectors
 #'
 #' @param handler_ptr An external pointer to a newly created WK handler
-#' @param handler An object created with [new_wk_handler()].
+#' @param handler A [wk_handler][wk_handle] object.
 #' @param subclass The handler subclass
-#' @param x A geometry vector (e.g., [wkb()] or [wkt()]).
-#' @param ... Unused
+#' @param handleable A geometry vector (e.g., [wkb()], [wkt()], [xy()],
+#'   [rct()], or [sf::st_sfc()]) for which [wk_handle()] is defined.
+#' @param ... Passed to the [wk_handle()] method.
 #'
 #' @return A WK handler.
 #' @export
 #'
-wk_handle <- function(x, handler, ...) {
+wk_handle <- function(handleable, handler, ...) {
   UseMethod("wk_handle")
 }
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_wkb <- function(x, handler, ...) {
+wk_handle.wk_wkb <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  .Call(wk_c_read_wkb, x, handler)
+  .Call(wk_c_read_wkb, handleable, handler)
 }
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_wkt <- function(x, handler, ...) {
+wk_handle.wk_wkt <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  wk_cpp_handle_wkt(x, handler)
+  wk_cpp_handle_wkt(handleable, handler)
 }
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_xy <- function(x, handler, ...) {
+wk_handle.wk_xy <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  .Call(wk_c_read_xy, x, handler)
+  .Call(wk_c_read_xy, handleable, handler)
 }
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_rct <- function(x, handler, ...) {
+wk_handle.wk_rct <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  .Call(wk_c_read_rct, x, handler)
+  .Call(wk_c_read_rct, handleable, handler)
 }
 
 #' @rdname wk_handle
 #' @export
-wk_handle.sfc <- function(x, handler, ...) {
+wk_handle.sfc <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  .Call(wk_c_read_sfc, x, handler)
-}
-
-#' @rdname wk_handle
-#' @export
-wk_void_handler <- function() {
-  new_wk_handler(.Call(wk_c_handler_void_new), "wk_void_handler")
-}
-
-#' @rdname wk_handle
-#' @export
-wk_void <- function(x, ...) {
-  invisible(wk_handle(x, wk_void_handler(), ...))
+  .Call(wk_c_read_sfc, handleable, handler)
 }
 
 #' @rdname wk_handle

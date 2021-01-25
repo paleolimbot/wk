@@ -1,11 +1,11 @@
 
 #' Write geometry vectors
 #'
-#' @param handleable Placeholder
+#' @inheritParams wk_handle
 #' @param precision If `trim` is `TRUE`, the total number of significant digits to keep
 #'   for each result or the number of digits after the decimal place otherwise.
 #' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
-#' @param ... For S3 generic compatibility
+#' @param ... Passed to the writer constructor.
 #'
 #' @return A [wk_handler][wk_handle].
 #' @export

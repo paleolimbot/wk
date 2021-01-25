@@ -1,7 +1,7 @@
 
 #' Validate well-known binary and well-known text
 #'
-#' @param handleable Placeholder for now
+#' @inheritParams wk_handle
 #'
 #' @return A character vector of parsing errors. `NA` signifies
 #'   that there was no parsing error.
@@ -14,8 +14,8 @@
 #'   wk_problems_handler()
 #' )
 #'
-wk_problems <- function(handleable) {
-  wk_handle(handleable, wk_problems_handler())
+wk_problems <- function(handleable, ...) {
+  wk_handle(handleable, wk_problems_handler(), ...)
 }
 
 #' @rdname wk_problems

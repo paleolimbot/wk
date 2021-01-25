@@ -7,28 +7,22 @@
 \alias{wk_handle.wk_xy}
 \alias{wk_handle.wk_rct}
 \alias{wk_handle.sfc}
-\alias{wk_void_handler}
-\alias{wk_void}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
 \title{Read geometry vectors}
 \usage{
-wk_handle(x, handler, ...)
+wk_handle(handleable, handler, ...)
 
-\method{wk_handle}{wk_wkb}(x, handler, ...)
+\method{wk_handle}{wk_wkb}(handleable, handler, ...)
 
-\method{wk_handle}{wk_wkt}(x, handler, ...)
+\method{wk_handle}{wk_wkt}(handleable, handler, ...)
 
-\method{wk_handle}{wk_xy}(x, handler, ...)
+\method{wk_handle}{wk_xy}(handleable, handler, ...)
 
-\method{wk_handle}{wk_rct}(x, handler, ...)
+\method{wk_handle}{wk_rct}(handleable, handler, ...)
 
-\method{wk_handle}{sfc}(x, handler, ...)
-
-wk_void_handler()
-
-wk_void(x, ...)
+\method{wk_handle}{sfc}(handleable, handler, ...)
 
 new_wk_handler(handler_ptr, subclass = character())
 
@@ -37,11 +31,12 @@ is_wk_handler(handler)
 as_wk_handler(handler, ...)
 }
 \arguments{
-\item{x}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}} or \code{\link[=wkt]{wkt()}}).}
+\item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
+\code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
-\item{handler}{An object created with \code{\link[=new_wk_handler]{new_wk_handler()}}.}
+\item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
-\item{...}{Unused}
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 

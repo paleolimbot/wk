@@ -5,14 +5,17 @@
 \alias{wk_debug_filter}
 \title{Debug filters and handlers}
 \usage{
-wk_debug(handleable, handler = wk_void_handler())
+wk_debug(handleable, handler = wk_void_handler(), ...)
 
 wk_debug_filter(handler = wk_void_handler())
 }
 \arguments{
-\item{handleable}{Any object that can be iterated over by \code{\link[=wk_handle]{wk_handle()}}.}
+\item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
+\code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
-\item{handler}{A \link[=wk_handle]{wk_handler}.}
+\item{handler}{A \link[=wk_handle]{wk_handler} object.}
+
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 }
 \value{
 The result of the \code{handler}.
