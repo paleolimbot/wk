@@ -5,6 +5,7 @@
 \alias{wkt_format}
 \alias{wkb_problems}
 \alias{wkt_problems}
+\alias{wkb_translate_wkt}
 \alias{wkb_translate_wkb}
 \alias{wkt_translate_wkt}
 \alias{wkt_translate_wkb}
@@ -17,6 +18,8 @@ wkt_format(wkt, max_coords = 3, precision = 6, trim = TRUE)
 wkb_problems(wkb)
 
 wkt_problems(wkt)
+
+wkb_translate_wkt(wkb, ..., precision = 16, trim = TRUE)
 
 wkb_translate_wkb(wkb, ...)
 

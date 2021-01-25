@@ -38,6 +38,8 @@ wkt_problems <- function(wkt) {
   wk_handle(new_wk_wkt(unclass(wkt)), wk_problems_handler())
 }
 
+#' @rdname deprecated
+#' @export
 wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
   wk_handle.wk_wkb(wkb, wkt_writer(precision, trim))
 }
