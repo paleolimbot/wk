@@ -1,4 +1,23 @@
 
+#' @rdname wk_handle
+#' @export
+wk_handle.sfc <- function(handleable, handler, ...) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_sfc, handleable, handler)
+}
+
+#' @rdname wk_writer
+#' @export
+sfc_writer <- function() {
+  new_wk_handler(.Call(wk_c_sfc_writer_new), "wk_sfc_writer")
+}
+
+#' @rdname wk_writer
+#' @export
+wk_writer.sfc <- function(handleable, ...) {
+  sfc_writer()
+}
+
 #' @export
 wk_crs_equal_generic.crs <- function(x, y, ...) {
   x == sf::st_crs(y)
