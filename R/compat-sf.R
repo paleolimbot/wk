@@ -6,6 +6,18 @@ wk_handle.sfc <- function(handleable, handler, ...) {
   .Call(wk_c_read_sfc, handleable, handler)
 }
 
+#' @rdname wk_handle
+#' @export
+wk_handle.sfg <- function(handleable, handler, ...) {
+  wk_handle(sf::st_sfc(handleable), handler, ...)
+}
+
+#' @rdname wk_handle
+#' @export
+wk_handle.bbox <- function(handleable, handler, ...) {
+  wk_handle(as_rct(handleable), handler, ...)
+}
+
 #' @rdname wk_writer
 #' @export
 sfc_writer <- function() {

@@ -219,6 +219,23 @@ test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
   )
 })
 
+test_that("wk_handle.sfg works", {
+  skip_if_not_installed("sf")
+  expect_identical(
+    wk_handle(wkt("POINT (1 2)"), wkb_writer()),
+    wk_handle(sf::st_point(c(1, 2)), wkb_writer())
+  )
+})
+
+test_that("wk_handle.bbox works", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    wk_handle(sf::st_bbox(sf::st_linestring(rbind(c(0, 1), c(2, 3)))), wkb_writer()),
+    wk_handle(rct(0, 1, 2, 3), wkb_writer())
+  )
+})
+
 
 test_that("sfc_writer() works with fixed-length input", {
   skip_if_not_installed("sf")

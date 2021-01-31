@@ -2,6 +2,8 @@
 % Please edit documentation in R/compat-sf.R, R/handler.R
 \name{wk_handle.sfc}
 \alias{wk_handle.sfc}
+\alias{wk_handle.sfg}
+\alias{wk_handle.bbox}
 \alias{wk_handle}
 \alias{wk_handle.wk_wkb}
 \alias{wk_handle.wk_wkt}
@@ -13,6 +15,10 @@
 \title{Read geometry vectors}
 \usage{
 \method{wk_handle}{sfc}(handleable, handler, ...)
+
+\method{wk_handle}{sfg}(handleable, handler, ...)
+
+\method{wk_handle}{bbox}(handleable, handler, ...)
 
 wk_handle(handleable, handler, ...)
 
