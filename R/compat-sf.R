@@ -101,7 +101,7 @@ as_xy.sfc <- function(x, ...) {
       stop("Unknown dimensions.", call. = FALSE) # nocov
     }
   } else {
-    stop(sprintf("Can't create xy() from sfc with class %s", class(x)[1]), call. = FALSE)
+    NextMethod()
   }
 }
 

@@ -57,7 +57,7 @@ test_that("conversion from sf to xy works", {
   expect_identical(as_xy(sf), xy(c(NA, 0), c(NA, 1)))
 
   expect_identical(as_xy(sf::st_sfc()), xy(crs = NULL))
-  expect_error(as_xy(sf::st_sfc(sf::st_linestring())), "Can't create xy")
+  expect_identical(as_xy(sf::st_sfc(sf::st_linestring())), xy(NA, NA, crs = sf::NA_crs_))
 
   # check all dimensions
   expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2, 3, 4), dim = "XYZM"))), xyzm(1, 2, 3, 4))
