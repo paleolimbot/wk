@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read geometry vectors — wk_handle • wk</title>
+<title>Read geometry vectors — wk_handle.sfc • wk</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Read geometry vectors — wk_handle" />
+<meta property="og:title" content="Read geometry vectors — wk_handle.sfc" />
 <meta property="og:description" content="The handler is the basic building block of the wk package. In
 particular, the wk_handle() generic allows operations written
 as handlers to &quot;just work&quot; with many different input types. The
@@ -130,7 +130,7 @@ vectors." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Read geometry vectors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/handle.R'><code>R/handle.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-sf.R'><code>R/compat-sf.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/handler.R'><code>R/handler.R</code></a></small>
     <div class="hidden name"><code>wk_handle.Rd</code></div>
     </div>
 
@@ -140,11 +140,23 @@ particular, the <code>wk_handle()</code> generic allows operations written
 as handlers to "just work" with many different input types. The
 wk package provides the <code><a href='wk_void.html'>wk_void()</a></code> handler, the <code><a href='wk_format.html'>wk_format()</a></code>
 handler, the <code><a href='wk_debug.html'>wk_debug()</a></code> handler, the <code><a href='wk_problems.html'>wk_problems()</a></code> handler,
-and <code><a href='wk_writer.html'>wk_writer()</a></code>s for <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>, and <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>)
+and <code><a href='sfc_writer.html'>wk_writer()</a></code>s for <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>, and <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>)
 vectors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='co'># S3 method for sfc</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for sfg</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for sf</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for bbox</span>
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
 <span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -156,9 +168,6 @@ vectors.</p>
 <span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_rct</span>
-<span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for sfc</span>
 <span class='fu'>wk_handle</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>new_wk_handler</span><span class='op'>(</span><span class='va'>handler_ptr</span>, subclass <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>

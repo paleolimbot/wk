@@ -95,7 +95,7 @@
 <a href="#wk" class="anchor"></a>wk</h1></div>
 <!-- badges: start -->
 
-<p>The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, segments, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics (<code><a href="reference/wk_handle.html">wk_handle()</a></code> and <code>wk_translate()</code>) for event-based iteration over vectors of geometries that allows clear separation code and distribution of responsibility among multiple packages.</p>
+<p>The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, segments, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics (<code><a href="reference/wk_handle.sfc.html">wk_handle()</a></code> and <code><a href="reference/wk_translate.sfc.html">wk_translate()</a></code>) for event-based iteration over vectors of geometries that allows clear separation code and distribution of responsibility among multiple packages.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -131,7 +131,7 @@
 <div id="generics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generics" class="anchor"></a>Generics</h2>
-<p>The wk package is made up of readers, handlers, and filters. Readers parse the various formats supported by the wk package, handlers calculate values based on information from the readers (e.g., translating a vector of geometries into another format), and filters transform information from the readers (e.g., transforming coordinates) on the fly. The <code><a href="reference/wk_handle.html">wk_handle()</a></code> and <code>wk_translate()</code> generics power operations for many geometry vector formats without having to explicitly support each one.</p>
+<p>The wk package is made up of readers, handlers, and filters. Readers parse the various formats supported by the wk package, handlers calculate values based on information from the readers (e.g., translating a vector of geometries into another format), and filters transform information from the readers (e.g., transforming coordinates) on the fly. The <code><a href="reference/wk_handle.sfc.html">wk_handle()</a></code> and <code><a href="reference/wk_translate.sfc.html">wk_translate()</a></code> generics power operations for many geometry vector formats without having to explicitly support each one.</p>
 </div>
 <div id="c-api" class="section level2">
 <h2 class="hasAnchor">
@@ -180,7 +180,7 @@
 <span class="va">nc_wkb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span>
 
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
-  <span class="fu"><a href="reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fu"><a href="reference/wk_writer.html">wkb_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/wk_handle.sfc.html">wk_handle</a></span><span class="op">(</span><span class="va">nc</span>, <span class="fu"><a href="reference/sfc_writer.html">wkb_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu"><a href="https://rdrr.io/r/base/class.html">unclass</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_binary.html">st_as_binary</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>
@@ -190,7 +190,7 @@
 <span class="co">#&gt; 2 unclass(sf::st_as_binary(nc))  332.4µs    389µs     2023.      52KB     4.19</span>
 
 <span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span>
-  <span class="fu"><a href="reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="va">nc_wkb</span>, <span class="fu"><a href="reference/wk_writer.html">sfc_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/wk_handle.sfc.html">wk_handle</a></span><span class="op">(</span><span class="va">nc_wkb</span>, <span class="fu"><a href="reference/sfc_writer.html">sfc_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span><span class="op">(</span><span class="va">nc_wkb</span>, class <span class="op">=</span> <span class="st">"WKB"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; # A tibble: 2 x 6</span>

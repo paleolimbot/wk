@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Format well-known geometry for printing — wk_format • wk</title>
+<title>Translate geometry vectors — wk_translate.sfc • wk</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,8 @@
 
 
 
-<meta property="og:title" content="Format well-known geometry for printing — wk_format" />
-<meta property="og:description" content="Provides an abbreviated version of the well-known text
-representation of a geometry. This returns a constant
-number of coordinates for each geometry, so is safe to
-use for geometry vectors with many (potentially large)
-features. Parse errors are passed on to the format string
-and do not cause this handler to error." />
+<meta property="og:title" content="Translate geometry vectors — wk_translate.sfc" />
+<meta property="og:description" content="Translate geometry vectors" />
 
 
 <meta name="robots" content="noindex">
@@ -128,23 +123,22 @@ and do not cause this handler to error." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Format well-known geometry for printing</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/format.R'><code>R/format.R</code></a></small>
-    <div class="hidden name"><code>wk_format.Rd</code></div>
+    <h1>Translate geometry vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-sf.R'><code>R/compat-sf.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/translate.R'><code>R/translate.R</code></a></small>
+    <div class="hidden name"><code>wk_translate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Provides an abbreviated version of the well-known text
-representation of a geometry. This returns a constant
-number of coordinates for each geometry, so is safe to
-use for geometry vectors with many (potentially large)
-features. Parse errors are passed on to the format string
-and do not cause this handler to error.</p>
+    <p>Translate geometry vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_format</span><span class='op'>(</span><span class='va'>handleable</span>, precision <span class='op'>=</span> <span class='fl'>7</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span>, max_coords <span class='op'>=</span> <span class='fl'>6</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='co'># S3 method for sfc</span>
+<span class='fu'>wk_translate</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wkt_format_handler</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>7</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span>, max_coords <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span></pre>
+<span class='fu'>wk_translate</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>wk_translate</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -155,18 +149,8 @@ and do not cause this handler to error.</p>
 <code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfc.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
-      <th>precision</th>
-      <td><p>If <code>trim</code> is <code>TRUE</code>, the total number of significant digits to keep
-for each result or the number of digits after the decimal place otherwise.</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></td>
-    </tr>
-    <tr>
-      <th>max_coords</th>
-      <td><p>The maximum number of coordinates to include
-in the output.</p></td>
+      <th>to</th>
+      <td><p>A prototype object.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -174,19 +158,7 @@ in the output.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of abbreviated well-known text.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wk_format</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</div><div class='input'><span class='fu'>wk_format</span><span class='op'>(</span><span class='fu'><a href='new_wk_wkt.html'>new_wk_wkt</a></span><span class='op'>(</span><span class='st'>"POINT ENTPY"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "POINT (!!! Expected '(' or 'EMPTY' but found 'ENTPY' (:6)"</div><div class='input'><span class='fu'><a href='wk_handle.sfc.html'>wk_handle</a></span><span class='op'>(</span>
-  <span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span><span class='op'>)</span>,
-  <span class='fu'>wkt_format_handler</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

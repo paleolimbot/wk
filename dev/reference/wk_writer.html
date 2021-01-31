@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Write geometry vectors — wk_writer • wk</title>
+<title>Write geometry vectors — sfc_writer • wk</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Write geometry vectors — wk_writer" />
+<meta property="og:title" content="Write geometry vectors — sfc_writer" />
 <meta property="og:description" content="Write geometry vectors" />
 
 
@@ -124,7 +124,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Write geometry vectors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/writer.R'><code>R/writer.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-sf.R'><code>R/compat-sf.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/writer.R'><code>R/writer.R</code></a></small>
     <div class="hidden name"><code>wk_writer.Rd</code></div>
     </div>
 
@@ -132,15 +132,17 @@
     <p>Write geometry vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>sfc_writer</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='co'># S3 method for sfc</span>
+<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
 <span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for sfc</span>
 <span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_xy</span>
@@ -150,8 +152,6 @@
 
 <span class='fu'>wkb_writer</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>sfc_writer</span><span class='op'>(</span><span class='op'>)</span>
-
 <span class='fu'>xyzm_writer</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,7 +160,7 @@
     <tr>
       <th>handleable</th>
       <td><p>A geometry vector (e.g., <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>,
-<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.html'>wk_handle()</a></code> is defined.</p></td>
+<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfc.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -179,7 +179,7 @@ for each result or the number of digits after the decimal place otherwise.</p></
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <a href='wk_handle.html'>wk_handler</a>.</p>
+    <p>A <a href='wk_handle.sfc.html'>wk_handler</a>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
