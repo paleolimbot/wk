@@ -38,7 +38,7 @@ as_wkt <- function(x, ...) {
 #' @rdname wkt
 #' @export
 as_wkt.default <- function(x, ...) {
-  as_wkt(as_wkb(x), ...)
+  wk_translate(x, new_wk_wkt(crs = wk_crs_inherit()))
 }
 
 #' @rdname wkt
@@ -51,12 +51,6 @@ as_wkt.character <- function(x, ..., crs = NULL) {
 #' @export
 as_wkt.wk_wkt <- function(x, ...) {
   x
-}
-
-#' @rdname wkt
-#' @export
-as_wkt.wk_wkb <- function(x, ...) {
-  new_wk_wkt(wkb_translate_wkt(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' S3 Details for wk_wkt

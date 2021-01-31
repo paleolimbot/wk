@@ -1,4 +1,13 @@
 
+test_that("wk_translate.wkt works", {
+  expect_identical(
+    wk_translate(as_wkb("POINT (1 2)"), wkt()),
+    wkt("POINT (1 2)")
+  )
+})
+
+
+
 test_that("wkt writing is vectorized", {
   expect_identical(
     wkt_translate_wkt(c("POINT (20 20)", "POINT (30 30)")),

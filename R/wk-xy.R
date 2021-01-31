@@ -67,6 +67,18 @@ as_xy <- function(x, ...) {
 
 #' @rdname xy
 #' @export
+as_xy.default <- function(x, ..., dims = NULL) {
+  result <- wk_translate(x, new_wk_xy(crs = wk_crs_inherit()))
+
+  if (is.null(dims)) {
+    result
+  } else {
+    as_xy(result, dims = dims)
+  }
+}
+
+#' @rdname xy
+#' @export
 as_xy.wk_xy <- function(x, ..., dims = NULL) {
   if (is.null(dims)) {
     x
@@ -191,58 +203,6 @@ fill_missing_dims <- function(x, dims, len) {
   lapply(x[dims], as.double)
 }
 
-#' @export
-as_xy.wk_wkt <- function(x, ..., dims = NULL) {
-  as_xy_wkx(x, translator = wkt_translate_xyzm, dims = dims)
-}
-
-#' @export
-as_xy.wk_wkb <- function(x, ..., dims = NULL) {
-  as_xy_wkx(x, translator = wkb_translate_xyzm, dims = dims)
-}
-
-as_xy_wkx <- function(x, translator, dims) {
-  if (is.null(dims)) {
-    result <- translator(x, include_z = NA, include_m = NA)
-    dims <- names(result)
-  } else {
-    result <- translator(x, include_z = TRUE, include_m = TRUE)
-    dims <- intersect(c("x", "y", "z", "m"), dims)
-  }
-
-  if (identical(dims, c("x", "y"))) {
-    new_wk_xy(result[dims], crs = wk_crs(x))
-
-  } else if (identical(dims, c("x", "y", "z"))) {
-    new_wk_xyz(result[dims], crs = wk_crs(x))
-
-  } else if (identical(dims, c("x", "y", "m"))) {
-    new_wk_xym(result[dims], crs = wk_crs(x))
-
-  } else if (identical(dims, c("x", "y", "z", "m"))) {
-    new_wk_xyzm(result[dims], crs = wk_crs(x))
-
-  } else {
-    stop("Unknown dimensions.", call. = FALSE)
-  }
-}
-
-xyzm_trim <- function(result, include_z, include_m) {
-  if (identical(include_z, NA) && all(is.na(result$z))) {
-    result$z <- NULL
-  } else if (identical(include_z, FALSE)) {
-    result$z <- NULL
-  }
-
-  if (identical(include_m, NA) && all(is.na(result$m))) {
-    result$m <- NULL
-  } else if (identical(include_m, FALSE)) {
-    result$m <- NULL
-  }
-
-  result
-}
-
 #' S3 details for xy objects
 #'
 #' @param x A [xy()] object.
@@ -302,22 +262,6 @@ validate_wk_xyzm <- function(x) {
   validate_wk_rcrd(x)
   stopifnot(identical(names(unclass(x)), c("x", "y", "z", "m")))
   invisible(x)
-}
-
-#' @export
-as_wkt.wk_xy <- function(x, ...) {
-  new_wk_wkt(
-    xyzm_translate_wkt(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
-    crs = wk_crs(x)
-  )
-}
-
-#' @export
-as_wkb.wk_xy <- function(x, ...) {
-  new_wk_wkb(
-    xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
-    crs = wk_crs(x)
-  )
 }
 
 #' @export

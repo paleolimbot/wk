@@ -5,9 +5,9 @@
 \alias{parse_wkb}
 \alias{wk_platform_endian}
 \alias{as_wkb}
+\alias{as_wkb.default}
 \alias{as_wkb.character}
 \alias{as_wkb.wk_wkb}
-\alias{as_wkb.wk_wkt}
 \alias{as_wkb.blob}
 \alias{as_wkb.WKB}
 \title{Mark lists of raw vectors as well-known binary}
@@ -20,11 +20,11 @@ wk_platform_endian()
 
 as_wkb(x, ...)
 
+\method{as_wkb}{default}(x, ...)
+
 \method{as_wkb}{character}(x, ..., crs = NULL)
 
 \method{as_wkb}{wk_wkb}(x, ...)
-
-\method{as_wkb}{wk_wkt}(x, ...)
 
 \method{as_wkb}{blob}(x, ..., crs = NULL)
 

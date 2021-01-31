@@ -28,12 +28,6 @@ wk_writer.wk_wkb <- function(handleable, ...) {
 
 #' @rdname wk_writer
 #' @export
-wk_writer.sfc <- function(handleable, ...) {
-  sfc_writer()
-}
-
-#' @rdname wk_writer
-#' @export
 wk_writer.wk_xy <- function(handleable, ...) {
   xyzm_writer()
 }
@@ -48,12 +42,6 @@ wkt_writer <- function(precision = 16, trim = TRUE) {
 #' @export
 wkb_writer <- function() {
   new_wk_handler(.Call(wk_c_wkb_writer_new), "wk_wkb_writer")
-}
-
-#' @rdname wk_writer
-#' @export
-sfc_writer <- function() {
-  new_wk_handler(.Call(wk_c_sfc_writer_new), "wk_sfc_writer")
 }
 
 #' @rdname wk_writer

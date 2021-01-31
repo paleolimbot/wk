@@ -231,6 +231,13 @@ int wkb_writer_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void*
 
 SEXP wkb_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     wkb_write_buffer_t* write_buffer = (wkb_write_buffer_t*) handler_data;
+
+    SEXP wkb_class = PROTECT(Rf_allocVector(STRSXP, 2));
+    SET_STRING_ELT(wkb_class, 0, Rf_mkChar("wk_wkb"));
+    SET_STRING_ELT(wkb_class, 1, Rf_mkChar("wk_vctr"));
+    Rf_setAttrib(write_buffer->result, R_ClassSymbol, wkb_class);
+    UNPROTECT(1);
+    
     return write_buffer->result;
 }
 

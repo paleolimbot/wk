@@ -1,4 +1,62 @@
 
+#' @rdname wk_handle
+#' @export
+wk_handle.sfc <- function(handleable, handler, ...) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_sfc, handleable, handler)
+}
+
+#' @rdname wk_handle
+#' @export
+wk_handle.sfg <- function(handleable, handler, ...) {
+  wk_handle(sf::st_sfc(handleable), handler, ...)
+}
+
+#' @rdname wk_handle
+#' @export
+wk_handle.sf <- function(handleable, handler, ...) {
+  wk_handle(sf::st_geometry(handleable), handler, ...)
+}
+
+#' @rdname wk_handle
+#' @export
+wk_handle.bbox <- function(handleable, handler, ...) {
+  wk_handle(as_rct(handleable), handler, ...)
+}
+
+#' @rdname wk_writer
+#' @export
+sfc_writer <- function() {
+  new_wk_handler(.Call(wk_c_sfc_writer_new), "wk_sfc_writer")
+}
+
+#' @rdname wk_writer
+#' @export
+wk_writer.sfc <- function(handleable, ...) {
+  sfc_writer()
+}
+
+#' @rdname wk_translate
+#' @export
+wk_translate.sfc <- function(handleable, to, ...) {
+  result <- wk_handle(handleable, wk_writer(to), ...)
+  attr(result, "crs") <- sf::st_crs(wk_crs_output(handleable, to))
+  result
+}
+
+# these methods are unexported in the sf namespace, but for some reason
+# get called if there is no as_wkb() method explicitly set for sfc and/or sfg
+
+#' @export
+as_wkb.sfc <- function(x, ...) {
+  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
+}
+
+#' @export
+as_wkb.sfg <- function(x, ...) {
+  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
+}
+
 #' @export
 wk_crs_equal_generic.crs <- function(x, y, ...) {
   x == sf::st_crs(y)
@@ -11,19 +69,6 @@ wk_crs_from_sf <- function(x) {
 
 sf_crs_from_wk <- function(x) {
   sf::st_crs(wk_crs(x))
-}
-
-#' @export
-as_wkb.sfc <- function(x, ...) {
-  as_wkb(sf::st_as_binary(x, ..., precision = 0, EWKB = FALSE), crs = wk_crs_from_sf(x))
-}
-
-#' @export
-as_wkt.sfc <- function(x, ...) {
-  result <- as_wkt(as_wkb(x, ...))
-  is_empty_point <- sf::st_is_empty(x) & (sf::st_geometry_type(x) == "POINT")
-  result[is_empty_point] <- wkt("POINT EMPTY", crs = wk_crs_inherit())
-  wk_set_crs(result, wk_crs_from_sf(x))
 }
 
 #' @export
@@ -75,7 +120,7 @@ as_xy.sfc <- function(x, ...) {
       stop("Unknown dimensions.", call. = FALSE) # nocov
     }
   } else {
-    stop(sprintf("Can't create xy() from sfc with class %s", class(x)[1]), call. = FALSE)
+    NextMethod()
   }
 }
 
