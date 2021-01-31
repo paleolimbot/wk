@@ -305,14 +305,6 @@ validate_wk_xyzm <- function(x) {
 }
 
 #' @export
-as_wkt.wk_xy <- function(x, ...) {
-  new_wk_wkt(
-    xyzm_translate_wkt(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
-    crs = wk_crs(x)
-  )
-}
-
-#' @export
 format.wk_xy <- function(x, ...) {
   x <- unclass(x)
   sprintf("(%s %s)", format(x$x, ...), format(x$y, ...))

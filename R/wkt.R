@@ -53,12 +53,6 @@ as_wkt.wk_wkt <- function(x, ...) {
   x
 }
 
-#' @rdname wkt
-#' @export
-as_wkt.wk_wkb <- function(x, ...) {
-  new_wk_wkt(wkb_translate_wkt(x), crs = attr(x, "crs", exact = TRUE))
-}
-
 #' S3 Details for wk_wkt
 #'
 #' @param x A (possibly) [wkt()] vector

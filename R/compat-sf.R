@@ -53,19 +53,6 @@ sf_crs_from_wk <- function(x) {
 }
 
 #' @export
-as_wkb.sfc <- function(x, ...) {
-  as_wkb(sf::st_as_binary(x, ..., precision = 0, EWKB = FALSE), crs = wk_crs_from_sf(x))
-}
-
-#' @export
-as_wkt.sfc <- function(x, ...) {
-  result <- as_wkt(as_wkb(x, ...))
-  is_empty_point <- sf::st_is_empty(x) & (sf::st_geometry_type(x) == "POINT")
-  result[is_empty_point] <- wkt("POINT EMPTY", crs = wk_crs_inherit())
-  wk_set_crs(result, wk_crs_from_sf(x))
-}
-
-#' @export
 as_xy.sfc <- function(x, ...) {
   if (length(x) == 0) {
     xy(crs = wk_crs_from_sf(x))
