@@ -448,3 +448,12 @@ test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
     nc_collection
   )
 })
+
+test_that("wk_translate.sfc() works", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    wk_translate(wkt("POINT (1 2)", crs = 4326), sf::st_sfc(crs = 4326)),
+    sf::st_sfc(sf::st_point(c(1, 2)), crs = 4326)
+  )
+})

@@ -30,6 +30,14 @@ wk_writer.sfc <- function(handleable, ...) {
   sfc_writer()
 }
 
+#' @rdname wk_translate
+#' @export
+wk_translate.sfc <- function(handleable, to, ...) {
+  result <- wk_handle(handleable, wk_writer(to), ...)
+  attr(result, "crs") <- sf::st_crs(wk_crs_output(handleable, to))
+  result
+}
+
 #' @export
 wk_crs_equal_generic.crs <- function(x, y, ...) {
   x == sf::st_crs(y)
