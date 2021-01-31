@@ -40,7 +40,7 @@ test_that("wkb_writer() works", {
 
   expect_identical(
     wk_handle(wkb_good, wkb_writer()),
-    unclass(wkb_good)
+    wkb_good
   )
 
   wkb_bad <- unclass(wkb_good[1])
@@ -60,7 +60,7 @@ test_that("wkb_writer() works with streaming input", {
 
   expect_identical(
     wk_handle(as_wkt(wkb_good), wkb_writer()),
-    unclass(wkb_good)
+    wkb_good
   )
 })
 

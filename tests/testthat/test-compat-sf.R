@@ -185,37 +185,37 @@ test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
 
   expect_identical(
     unclass(sf::st_as_binary(nc_points)),
-    wk_handle(nc_points, wkb_writer())
+    unclass(wk_handle(nc_points, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_lines)),
-    wk_handle(nc_lines, wkb_writer())
+    unclass(wk_handle(nc_lines, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_polygon)),
-    wk_handle(nc_polygon, wkb_writer())
+    unclass(wk_handle(nc_polygon, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_multipoints)),
-    wk_handle(nc_multipoints, wkb_writer())
+    unclass(wk_handle(nc_multipoints, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_multilines)),
-    wk_handle(nc_multilines, wkb_writer())
+    unclass(wk_handle(nc_multilines, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_multipolygon)),
-    wk_handle(nc_multipolygon, wkb_writer())
+    unclass(wk_handle(nc_multipolygon, wkb_writer()))
   )
 
   expect_identical(
     unclass(sf::st_as_binary(nc_collection)),
-    wk_handle(nc_collection, wkb_writer())
+    unclass(wk_handle(nc_collection, wkb_writer()))
   )
 })
 

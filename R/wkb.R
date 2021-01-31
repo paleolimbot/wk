@@ -41,6 +41,12 @@ as_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
+as_wkb.default <- function(x, ...) {
+  wk_translate(x, wkb(), ...)
+}
+
+#' @rdname wkb
+#' @export
 as_wkb.character <- function(x, ..., crs = NULL) {
   as_wkb(wkt(x, crs = crs), ...)
 }
@@ -49,12 +55,6 @@ as_wkb.character <- function(x, ..., crs = NULL) {
 #' @export
 as_wkb.wk_wkb <- function(x, ...) {
   x
-}
-
-#' @rdname wkb
-#' @export
-as_wkb.wk_wkt <- function(x, ...) {
-  new_wk_wkb(wkt_translate_wkb(x), crs = attr(x, "crs", exact = TRUE))
 }
 
 #' @rdname wkb

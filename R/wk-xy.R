@@ -313,14 +313,6 @@ as_wkt.wk_xy <- function(x, ...) {
 }
 
 #' @export
-as_wkb.wk_xy <- function(x, ...) {
-  new_wk_wkb(
-    xyzm_translate_wkb(fill_missing_dims(unclass(x), c("x", "y", "z", "m"), length(x))),
-    crs = wk_crs(x)
-  )
-}
-
-#' @export
 format.wk_xy <- function(x, ...) {
   x <- unclass(x)
   sprintf("(%s %s)", format(x$x, ...), format(x$y, ...))
