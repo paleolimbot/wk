@@ -94,22 +94,22 @@ test_that("xyzm_writer() works", {
 
   expect_identical(
     wk_handle(empties, xyzm_writer()),
-    unclass(rep(xyzm(NA, NA, NA, NA), length(empties)))
+    rep(xy(NA, NA), length(empties))
   )
 
   expect_identical(
     wk_handle(wkt("POINT (0 1)"), xyzm_writer()),
-    unclass(xyzm(0, 1, NA, NA))
+    xy(0, 1)
   )
 
   expect_identical(
     wk_handle(wkt("MULTIPOINT ((0 1))"), xyzm_writer()),
-    unclass(xyzm(0, 1, NA, NA))
+    xy(0, 1)
   )
 
   expect_identical(
     wk_handle(wkt("GEOMETRYCOLLECTION (MULTIPOINT ((0 1)))"), xyzm_writer()),
-    unclass(xyzm(0, 1, NA, NA))
+    xy(0, 1)
   )
 
   expect_error(

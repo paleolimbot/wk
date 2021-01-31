@@ -11,6 +11,7 @@ typedef struct {
     double* result_ptr[4];
     R_xlen_t feat_id;
     int has_coord;
+    uint32_t flags;
 } xyzm_writer_data_t;
 
 int xyzm_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
@@ -48,19 +49,23 @@ int xyzm_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, vo
 }
 
 int xyzm_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+
     // EMPTY and any set of features that (could) contain a single point work with this
     // handler! (error otherwise)
     if (meta->size != 0 &&
         meta->geometry_type != WK_POINT &&
         meta->geometry_type != WK_MULTIPOINT &&
         meta->geometry_type != WK_GEOMETRYCOLLECTION) {
-        xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
         Rf_error(
             "[%d] Can't convert geometry with type '%d' to coordinate",
             data->feat_id + 1,
             meta->geometry_type
         );
     }
+
+    // keep track of zm flags to possibly trim output
+    data->flags |= meta->flags;
 
     return WK_CONTINUE;
 }
@@ -91,7 +96,65 @@ int xyzm_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t co
 
 SEXP xyzm_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
-    return data->result;
+
+    if ((data->flags & WK_FLAG_HAS_Z) && (data->flags & WK_FLAG_HAS_M)) {
+        SEXP xy_class = PROTECT(Rf_allocVector(STRSXP, 5));
+        SET_STRING_ELT(xy_class, 0, Rf_mkChar("wk_xyzm"));
+        SET_STRING_ELT(xy_class, 1, Rf_mkChar("wk_xyz"));
+        SET_STRING_ELT(xy_class, 2, Rf_mkChar("wk_xym"));
+        SET_STRING_ELT(xy_class, 3, Rf_mkChar("wk_xy"));
+        SET_STRING_ELT(xy_class, 4, Rf_mkChar("wk_rcrd"));
+
+        Rf_setAttrib(data->result, R_ClassSymbol, xy_class);
+        UNPROTECT(1);
+        return data->result;
+
+    } else if(data->flags & WK_FLAG_HAS_Z) {
+        const char* xyz_names[] = {"x", "y", "z", ""};
+        SEXP xyz = PROTECT(Rf_mkNamed(VECSXP, xyz_names));
+        for (int i = 0; i < 3; i++) {
+            SET_VECTOR_ELT(xyz, i, VECTOR_ELT(data->result, i));
+        }
+
+        SEXP xy_class = PROTECT(Rf_allocVector(STRSXP, 3));
+        SET_STRING_ELT(xy_class, 0, Rf_mkChar("wk_xyz"));
+        SET_STRING_ELT(xy_class, 1, Rf_mkChar("wk_xy"));
+        SET_STRING_ELT(xy_class, 2, Rf_mkChar("wk_rcrd"));
+
+        Rf_setAttrib(xyz, R_ClassSymbol, xy_class);
+        UNPROTECT(2);
+        return xyz;
+        
+    } else if(data->flags & WK_FLAG_HAS_M) {
+        const char* xym_names[] = {"x", "y", "m", ""};
+        SEXP xym = PROTECT(Rf_mkNamed(VECSXP, xym_names));
+        SET_VECTOR_ELT(xym, 0, VECTOR_ELT(data->result, 0));
+        SET_VECTOR_ELT(xym, 1, VECTOR_ELT(data->result, 1));
+        SET_VECTOR_ELT(xym, 2, VECTOR_ELT(data->result, 3));
+
+        SEXP xy_class = PROTECT(Rf_allocVector(STRSXP, 3));
+        SET_STRING_ELT(xy_class, 0, Rf_mkChar("wk_xym"));
+        SET_STRING_ELT(xy_class, 1, Rf_mkChar("wk_xy"));
+        SET_STRING_ELT(xy_class, 2, Rf_mkChar("wk_rcrd"));
+
+        Rf_setAttrib(xym, R_ClassSymbol, xy_class);
+        UNPROTECT(2);
+        return xym;
+    } else {
+        const char* xy_names[] = {"x", "y", ""};
+        SEXP xy = PROTECT(Rf_mkNamed(VECSXP, xy_names));
+        for (int i = 0; i < 2; i++) {
+            SET_VECTOR_ELT(xy, i, VECTOR_ELT(data->result, i));
+        }
+
+        SEXP xy_class = PROTECT(Rf_allocVector(STRSXP, 2));
+        SET_STRING_ELT(xy_class, 0, Rf_mkChar("wk_xy"));
+        SET_STRING_ELT(xy_class, 1, Rf_mkChar("wk_rcrd"));
+
+        Rf_setAttrib(xy, R_ClassSymbol, xy_class);
+        UNPROTECT(2);
+        return xy;
+    }
 }
 
 void xyzm_writer_deinitialize(void* handler_data) {
@@ -125,6 +188,7 @@ SEXP wk_c_xyzm_writer_new() {
     data->has_coord = 0;
     data->result = R_NilValue;
     memset(data->result_ptr, 0, sizeof(double) * 4);
+    data->flags = 0;
 
     handler->handler_data = data;
 

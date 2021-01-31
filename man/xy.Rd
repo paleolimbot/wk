@@ -7,6 +7,7 @@
 \alias{xyzm}
 \alias{xy_dims}
 \alias{as_xy}
+\alias{as_xy.default}
 \alias{as_xy.wk_xy}
 \alias{as_xy.matrix}
 \alias{as_xy.data.frame}
@@ -29,6 +30,8 @@ xyzm(
 xy_dims(x)
 
 as_xy(x, ...)
+
+\method{as_xy}{default}(x, ..., dims = NULL)
 
 \method{as_xy}{wk_xy}(x, ..., dims = NULL)
 

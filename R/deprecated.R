@@ -61,29 +61,3 @@ wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
 wkt_translate_wkb <- function(wkt, ...) {
   unclass(wk_handle.wk_wkt(wkt, wkb_writer()))
 }
-
-# ----- these were never exported but are still deprecated ----
-
-xyzm_translate_wkt <- function(xyzm, precision = 16, trim = TRUE) {
-  unclass(wk_handle.wk_xy(xyzm, wkt_writer(precision, trim)))
-}
-
-xyzm_translate_wkb <- function(xyzm) {
-  unclass(wk_handle.wk_xy(xyzm, wkb_writer()))
-}
-
-rct_translate_wkt <- function(rct, precision = 16, trim = TRUE) {
-  unclass(wk_handle.wk_rct(rct, wkt_writer(precision, trim)))
-}
-
-rct_translate_wkb <- function(rct) {
-  unclass(wk_handle.wk_rct(rct, wkb_writer()))
-}
-
-wkt_translate_xyzm <- function(wkt, include_z = NA, include_m = NA) {
-  xyzm_trim(wk_handle.wk_wkt(wkt, xyzm_writer()), include_z, include_m)
-}
-
-wkb_translate_xyzm <- function(wkb, include_z = NA, include_m = NA) {
-  xyzm_trim(wk_handle.wk_wkb(wkb, xyzm_writer()), include_z, include_m)
-}
