@@ -3,6 +3,7 @@
 \name{wk_handle.sfc}
 \alias{wk_handle.sfc}
 \alias{wk_handle.sfg}
+\alias{wk_handle.sf}
 \alias{wk_handle.bbox}
 \alias{wk_handle}
 \alias{wk_handle.wk_wkb}
@@ -17,6 +18,8 @@
 \method{wk_handle}{sfc}(handleable, handler, ...)
 
 \method{wk_handle}{sfg}(handleable, handler, ...)
+
+\method{wk_handle}{sf}(handleable, handler, ...)
 
 \method{wk_handle}{bbox}(handleable, handler, ...)
 

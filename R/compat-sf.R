@@ -14,6 +14,12 @@ wk_handle.sfg <- function(handleable, handler, ...) {
 
 #' @rdname wk_handle
 #' @export
+wk_handle.sf <- function(handleable, handler, ...) {
+  wk_handle(sf::st_geometry(handleable), handler, ...)
+}
+
+#' @rdname wk_handle
+#' @export
 wk_handle.bbox <- function(handleable, handler, ...) {
   wk_handle(as_rct(handleable), handler, ...)
 }
@@ -36,6 +42,19 @@ wk_translate.sfc <- function(handleable, to, ...) {
   result <- wk_handle(handleable, wk_writer(to), ...)
   attr(result, "crs") <- sf::st_crs(wk_crs_output(handleable, to))
   result
+}
+
+# these methods are unexported in the sf namespace, but for some reason
+# get called if there is no as_wkb() method explicitly set for sfc and/or sfg
+
+#' @export
+as_wkb.sfc <- function(x, ...) {
+  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
+}
+
+#' @export
+as_wkb.sfg <- function(x, ...) {
+  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
 }
 
 #' @export

@@ -38,6 +38,13 @@ test_that("conversion from sf to wkb works", {
   )
   expect_identical(wk_crs(as_wkb(sfc)), sf::st_crs(sfc))
 
+  sfg <- sf::st_point(c(0, 1))
+  expect_is(as_wkb(sfg), "wk_wkb")
+  expect_identical(
+    as.character(as_wkt(as_wkb(sfg))),
+    "POINT (0 1)"
+  )
+
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
   expect_identical(
     as.character(as_wkt(as_wkb(sf))),
