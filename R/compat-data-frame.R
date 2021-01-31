@@ -27,13 +27,20 @@ wk_translate.data.frame <- function(handleable, to, ..., .env = parent.frame()) 
 
   if (inherits(handleable, "data.frame")) {
     handleable_col <- handleable_column_name(handleable)
+    attributes(handleable) <- list(names = names(handleable))
     handleable[handleable_col] <- list(col_value)
-    handleable
+    new_data_frame(handleable)
   } else {
     df_raw <- list(col_value)
     names(df_raw) <- col
     new_data_frame(df_raw)
   }
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_translate.tbl_df <- function(handleable, to, ..., .env = parent.frame()) {
+  tibble::as_tibble(wk_translate.data.frame(handleable, to, ..., .env = .env))
 }
 
 handleable_column_name <- function(df, .env = parent.frame()) {

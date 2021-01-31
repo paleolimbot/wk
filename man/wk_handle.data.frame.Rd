@@ -3,11 +3,14 @@
 \name{wk_handle.data.frame}
 \alias{wk_handle.data.frame}
 \alias{wk_translate.data.frame}
+\alias{wk_translate.tbl_df}
 \title{Use data.frame with wk}
 \usage{
 \method{wk_handle}{data.frame}(handleable, handler, ..., .env = parent.frame())
 
 \method{wk_translate}{data.frame}(handleable, to, ..., .env = parent.frame())
+
+\method{wk_translate}{tbl_df}(handleable, to, ..., .env = parent.frame())
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
