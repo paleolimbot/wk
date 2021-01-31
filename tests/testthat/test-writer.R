@@ -18,13 +18,13 @@ test_that("wkt_writer() works", {
 
   expect_identical(
     wk_handle(wkt_good, wkt_writer()),
-    unclass(wkt_good)
+    wkt_good
   )
 
   expect_error(wk_handle(new_wk_wkt("NOT WKT"), wkt_writer()), "Expected geometry type or 'SRID")
   expect_identical(
     wk_handle(new_wk_wkt("POINT (1 1)"), wkt_writer(precision = 1, trim = FALSE)),
-    "POINT (1.0 1.0)"
+    wkt("POINT (1.0 1.0)")
   )
 })
 

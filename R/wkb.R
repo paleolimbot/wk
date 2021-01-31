@@ -42,7 +42,7 @@ as_wkb <- function(x, ...) {
 #' @rdname wkb
 #' @export
 as_wkb.default <- function(x, ...) {
-  wk_translate(x, wkb(), ...)
+  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()), ...)
 }
 
 #' @rdname wkb

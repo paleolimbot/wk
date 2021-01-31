@@ -145,7 +145,8 @@ public:
     return WK_CONTINUE;
   }
 
-  SEXP vector_end(const wk_vector_meta_t* meta) {
+  virtual SEXP vector_end(const wk_vector_meta_t* meta) {
+    this->result.attr("class") = {"wk_wkt", "wk_vctr"};
     return this->result;
   }
 
@@ -188,6 +189,10 @@ public:
     this->out << "!!! " << message;
     this->result[this->current_feat_id] = this->out.str();
     return WK_ABORT_FEATURE;
+  }
+
+  virtual SEXP vector_end(const wk_vector_meta_t* meta) {
+    return this->result;
   }
 
 private:

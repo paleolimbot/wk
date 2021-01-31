@@ -110,60 +110,62 @@ test_that("wk_handle.sfc() works", {
       ),
       wkt_writer()
     ),
-    c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
-      "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
-      "GEOMETRYCOLLECTION EMPTY"
+    wkt(
+      c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+        "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+        "GEOMETRYCOLLECTION EMPTY"
+      )
     )
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_point(c(1, 2))), wkt_writer()),
-    "POINT (1 2)"
+    wkt("POINT (1 2)")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 3))), wkt_writer()),
-    "POINT Z (1 2 3)"
+    wkt("POINT Z (1 2 3)")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 4), "XYM")), wkt_writer()),
-    "POINT M (1 2 4)"
+    wkt("POINT M (1 2 4)")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_point(c(1, 2, 3, 4))), wkt_writer()),
-    "POINT ZM (1 2 3 4)"
+    wkt("POINT ZM (1 2 3 4)")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_linestring(rbind(c(1, 2), c(2, 3)))), wkt_writer()),
-    "LINESTRING (1 2, 2 3)"
+    wkt("LINESTRING (1 2, 2 3)")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(1, 0), c(0, 1), c(0, 0))))), wkt_writer()),
-    "POLYGON ((0 0, 1 0, 0 1, 0 0))"
+    wkt("POLYGON ((0 0, 1 0, 0 1, 0 0))")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(2, 3)))), wkt_writer()),
-    "MULTIPOINT ((1 2), (2 3))"
+    wkt("MULTIPOINT ((1 2), (2 3))")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(2, 3))))), wkt_writer()),
-    "MULTILINESTRING ((1 2, 2 3))"
+    wkt("MULTILINESTRING ((1 2, 2 3))")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_multipolygon(list(list(rbind(c(0, 0), c(1, 0), c(0, 1), c(0, 0)))))), wkt_writer()),
-    "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))"
+    wkt("MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))")
   )
 
   expect_identical(
     wk_handle(sf::st_sfc(sf::st_geometrycollection(list(sf::st_point(c(1, 2))))), wkt_writer()),
-    "GEOMETRYCOLLECTION (POINT (1 2))"
+    wkt("GEOMETRYCOLLECTION (POINT (1 2))")
   )
 })
 

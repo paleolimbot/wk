@@ -38,7 +38,7 @@ as_wkt <- function(x, ...) {
 #' @rdname wkt
 #' @export
 as_wkt.default <- function(x, ...) {
-  as_wkt(as_wkb(x), ...)
+  wk_translate(x, new_wk_wkt(crs = wk_crs_inherit()))
 }
 
 #' @rdname wkt
