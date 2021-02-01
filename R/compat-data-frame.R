@@ -109,7 +109,7 @@ handleable_column_name <- function(df, .env = parent.frame()) {
 }
 
 has_wk_handle_method <- function(x, .env = parent.frame()) {
-  !is.null(utils::getS3method("wk_handle", class(x), optional = TRUE, envir = .env))
+  has_s3_method("wk_handle", x, .env)
 }
 
 writable_column_name <- function(df, .env = parent.frame()) {
@@ -126,5 +126,15 @@ writable_column_name <- function(df, .env = parent.frame()) {
 }
 
 has_wk_writer_method <- function(x, .env = parent.frame()) {
-  !is.null(utils::getS3method("wk_writer", class(x), optional = TRUE, envir = .env))
+  has_s3_method("wk_writer", x, .env)
+}
+
+has_s3_method <- function(fun, obj, .env) {
+  for (cls in class(obj)) {
+    if (!is.null(utils::getS3method(fun, cls, optional = TRUE, envir = .env))) {
+      return(TRUE)
+    }
+  }
+
+  FALSE
 }
