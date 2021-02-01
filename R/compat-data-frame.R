@@ -21,6 +21,13 @@ wk_handle.data.frame <- function(handleable, handler, ..., .env = parent.frame()
 
 #' @rdname wk_handle.data.frame
 #' @export
+wk_writer.data.frame <- function(handleable, ...) {
+  col <- handleable_column_name(handleable)
+  wk_writer(handleable[[col]], ...)
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
 wk_translate.data.frame <- function(handleable, to, ..., .env = parent.frame()) {
   col <- writable_column_name(to)
   col_value <- wk_translate(handleable, to[[col]], ...)

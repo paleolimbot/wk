@@ -2,11 +2,14 @@
 % Please edit documentation in R/compat-data-frame.R
 \name{wk_handle.data.frame}
 \alias{wk_handle.data.frame}
+\alias{wk_writer.data.frame}
 \alias{wk_translate.data.frame}
 \alias{wk_translate.tbl_df}
 \title{Use data.frame with wk}
 \usage{
 \method{wk_handle}{data.frame}(handleable, handler, ..., .env = parent.frame())
+
+\method{wk_writer}{data.frame}(handleable, ...)
 
 \method{wk_translate}{data.frame}(handleable, to, ..., .env = parent.frame())
 

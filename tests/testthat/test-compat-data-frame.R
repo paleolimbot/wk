@@ -7,6 +7,10 @@ test_that("wk_handle() works for data.frame", {
   )
 })
 
+test_that("wk_writer() works for data.frame", {
+  expect_is(wk_writer(data.frame(wkt())), "wk_wkt_writer")
+})
+
 test_that("wk_translate() works for data.frame", {
   expect_identical(
     wk_translate(as_wkb("POINT (1 2)"), data.frame(a = wkt())),
