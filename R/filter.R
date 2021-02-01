@@ -13,7 +13,8 @@
 #'
 wk_identity <- function(handleable, ...) {
   result <- wk_handle(handleable, wk_identity_filter(wk_writer(handleable)), ...)
-  wk_restore(handleable, result, ...)
+  result <- wk_restore(handleable, result, ...)
+  wk_set_crs(result, wk_crs(handleable))
 }
 
 #' @rdname wk_identity

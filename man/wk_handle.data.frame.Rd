@@ -3,6 +3,10 @@
 \name{wk_handle.data.frame}
 \alias{wk_handle.data.frame}
 \alias{wk_writer.data.frame}
+\alias{wk_crs.data.frame}
+\alias{wk_set_crs.data.frame}
+\alias{wk_restore.data.frame}
+\alias{wk_restore.tbl_df}
 \alias{wk_translate.data.frame}
 \alias{wk_translate.tbl_df}
 \title{Use data.frame with wk}
@@ -10,6 +14,14 @@
 \method{wk_handle}{data.frame}(handleable, handler, ..., .env = parent.frame())
 
 \method{wk_writer}{data.frame}(handleable, ...)
+
+\method{wk_crs}{data.frame}(x)
+
+\method{wk_set_crs}{data.frame}(x, crs)
+
+\method{wk_restore}{data.frame}(handleable, result, ...)
+
+\method{wk_restore}{tbl_df}(handleable, result, ...)
 
 \method{wk_translate}{data.frame}(handleable, to, ..., .env = parent.frame())
 
@@ -26,6 +38,13 @@
 \item{.env}{Passed to \code{\link[=getS3method]{getS3method()}}, which is used to find
 the column in a \code{\link[=data.frame]{data.frame()}} for which a \code{\link[=wk_handle]{wk_handle()}}
 method is defined.}
+
+\item{x}{An objects whose "crs" attribute is used to carry a CRS.}
+
+\item{crs}{An object that can be interpreted as a CRS}
+
+\item{result}{The result of a filter operation intended to be a
+transformation.}
 
 \item{to}{A prototype object.}
 }

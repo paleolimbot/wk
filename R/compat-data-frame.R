@@ -3,6 +3,8 @@
 #'
 #' @inheritParams wk_handle
 #' @inheritParams wk_translate
+#' @inheritParams wk_crs
+#' @inheritParams wk_identity
 #' @param .env Passed to [getS3method()], which is used to find
 #'   the column in a [data.frame()] for which a [wk_handle()]
 #'   method is defined.
@@ -24,6 +26,49 @@ wk_handle.data.frame <- function(handleable, handler, ..., .env = parent.frame()
 wk_writer.data.frame <- function(handleable, ...) {
   col <- handleable_column_name(handleable)
   wk_writer(handleable[[col]], ...)
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_crs.data.frame <- function(x) {
+  col <- handleable_column_name(x)
+  wk_crs(x[[col]])
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_set_crs.data.frame <- function(x, crs) {
+  col <- handleable_column_name(x)
+  x[[col]] <- wk_set_crs(x[[col]], crs)
+  x
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_restore.data.frame <- function(handleable, result, ...) {
+  col <- handleable_column_name(handleable)
+  if(nrow(handleable) == length(result)) {
+    handleable[[col]] <- result
+    handleable
+  } else if (nrow(handleable) == 1) {
+    handleable <- handleable[rep(1L, length(result)), , drop = FALSE]
+    handleable[[col]] <- result
+    handleable
+  } else {
+    stop(
+      sprintf(
+        "Can't assign result of length %d to data frame with %d rows",
+        length(result), nrow(handleable)
+      ),
+      call. = FALSE
+    )
+  }
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_restore.tbl_df <- function(handleable, result, ...) {
+  tibble::as_tibble(wk_restore.data.frame(handleable, result, ...))
 }
 
 #' @rdname wk_handle.data.frame
