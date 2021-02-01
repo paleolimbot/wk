@@ -142,9 +142,10 @@ void wk_debug_filter_print_result(int result) {
 
 void wk_debug_filter_initialize(int* dirty, void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
+  *dirty = 1;
   wk_debug_filter_reset(debug_filter, 0);
-  Rprintf("initialize (dirty = %d ", *dirty);
-  debug_filter->next->initialize(dirty, debug_filter->next->handler_data);
+  Rprintf("initialize (dirty = %d ", debug_filter->next->dirty);
+  debug_filter->next->initialize(&debug_filter->next->dirty, debug_filter->next->handler_data);
   Rprintf(" -> %d)\n", *dirty);
 }
 

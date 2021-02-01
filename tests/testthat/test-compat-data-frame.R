@@ -1,0 +1,82 @@
+
+test_that("wk_handle() works for data.frame", {
+  expect_error(wk_handle(data.frame(a = 1)), "must have exactly one")
+  expect_identical(
+    wk_handle(data.frame(a = wkt("POINT (0 1)")), wkb_writer()),
+    wk_handle(wkt("POINT (0 1)"), wkb_writer())
+  )
+})
+
+test_that("wk_writer() works for data.frame", {
+  expect_is(wk_writer(data.frame(wkt())), "wk_wkt_writer")
+})
+
+test_that("wk_restore() works for data.frame", {
+  expect_identical(
+    wk_identity(data.frame(a = wkt("POINT (1 2)"))),
+    data.frame(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_identity(data.frame(a = wkt("POINT (1 2)", crs = 1234))),
+    data.frame(a = wkt("POINT (1 2)", crs = 1234))
+  )
+})
+
+test_that("wk_restore() works for tibble", {
+  expect_identical(
+    wk_identity(tibble::tibble(a = wkt("POINT (1 2)"))),
+    tibble::tibble(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_identity(tibble::tibble(a = wkt("POINT (1 2)", crs = 1234))),
+    tibble::tibble(a = wkt("POINT (1 2)", crs = 1234))
+  )
+})
+
+test_that("wk_translate() works for data.frame", {
+  expect_identical(
+    wk_translate(as_wkb("POINT (1 2)"), data.frame(a = wkt())),
+    data.frame(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_translate(
+      tibble::tibble(a = as_wkb("POINT (1 2)")),
+      data.frame(a = wkt())
+    ),
+    data.frame(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_translate(
+      data.frame(a = as_wkb("POINT (1 2)")),
+      data.frame(a = wkt())
+    ),
+    data.frame(a = wkt("POINT (1 2)"))
+  )
+})
+
+test_that("wk_translate() works for tibble::tibble()", {
+  expect_identical(
+    wk_translate(as_wkb("POINT (1 2)"), tibble::tibble(a = wkt())),
+    tibble::tibble(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_translate(
+      tibble::tibble(a = as_wkb("POINT (1 2)")),
+      tibble::tibble(a = wkt())
+    ),
+    tibble::tibble(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_translate(
+      data.frame(a = as_wkb("POINT (1 2)")),
+      tibble::tibble(a = wkt())
+    ),
+    tibble::tibble(a = wkt("POINT (1 2)"))
+  )
+})

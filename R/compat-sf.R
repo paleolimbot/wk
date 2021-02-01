@@ -44,6 +44,28 @@ wk_translate.sfc <- function(handleable, to, ...) {
   result
 }
 
+#' @export
+wk_crs.sfc <- function(x) {
+  sf::st_crs(x)
+}
+
+#' @export
+wk_set_crs.sfc <- function(x, crs) {
+  sf::st_crs(x) <- crs
+  x
+}
+
+#' @export
+wk_crs.sf <- function(x) {
+  sf::st_crs(x)
+}
+
+#' @export
+wk_set_crs.sf <- function(x, crs) {
+  sf::st_crs(x) <- crs
+  x
+}
+
 # these methods are unexported in the sf namespace, but for some reason
 # get called if there is no as_wkb() method explicitly set for sfc and/or sfg
 
