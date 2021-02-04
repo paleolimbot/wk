@@ -36,12 +36,61 @@ wk_writer.sfc <- function(handleable, ...) {
   sfc_writer()
 }
 
+#' @rdname wk_writer
+#' @export
+wk_writer.sf <- function(handleable, ...) {
+  sfc_writer()
+}
+
 #' @rdname wk_translate
 #' @export
 wk_translate.sfc <- function(handleable, to, ...) {
-  result <- wk_handle(handleable, wk_writer(to), ...)
+  result <- wk_handle(handleable, sfc_writer(), ...)
   attr(result, "crs") <- sf::st_crs(wk_crs_output(handleable, to))
   result
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_translate.sf <- function(handleable, to, ...) {
+  col_value <- wk_handle(handleable, sfc_writer(), ...)
+  crs_out <- sf::st_crs(wk_crs_output(handleable, to))
+
+  if (inherits(handleable, "sf")) {
+    sf::st_geometry(handleable) <- col_value
+  } else if (inherits(handleable, "data.frame")) {
+    col <- handleable_column_name(handleable)
+    handleable[col] <- list(col_value)
+    handleable <- sf::st_as_sf(handleable, sf_column_name = col)
+  } else {
+    handleable <- sf::st_as_sf(data.frame(geometry = col_value))
+  }
+
+  sf::st_crs(handleable) <- crs_out
+  handleable
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_restore.sf <- function(handleable, result, ...) {
+  col <- handleable_column_name(handleable)
+
+  if(nrow(handleable) == length(result)) {
+    sf::st_geometry(handleable) <- result
+    handleable
+  } else if (nrow(handleable) == 1) {
+    handleable <- handleable[rep(1L, length(result)), , drop = FALSE]
+    sf::st_geometry(handleable) <- result
+    handleable
+  } else {
+    stop(
+      sprintf(
+        "Can't assign result of length %d to sf with %d rows",
+        length(result), nrow(handleable)
+      ),
+      call. = FALSE
+    )
+  }
 }
 
 #' @export
@@ -66,8 +115,13 @@ wk_set_crs.sf <- function(x, crs) {
   x
 }
 
-# these methods are unexported in the sf namespace, but for some reason
-# get called if there is no as_wkb() method explicitly set for sfc and/or sfg
+#' @export
+wk_crs.sfg <- function(x) {
+  sf::NA_crs_
+}
+
+# These methods are exported in latest sf, and depending on the order
+# a user loads the namespaces, the other method may get called.
 
 #' @export
 as_wkb.sfc <- function(x, ...) {

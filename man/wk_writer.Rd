@@ -3,6 +3,7 @@
 \name{sfc_writer}
 \alias{sfc_writer}
 \alias{wk_writer.sfc}
+\alias{wk_writer.sf}
 \alias{wk_writer}
 \alias{wk_writer.wk_wkt}
 \alias{wk_writer.wk_wkb}
@@ -15,6 +16,8 @@
 sfc_writer()
 
 \method{wk_writer}{sfc}(handleable, ...)
+
+\method{wk_writer}{sf}(handleable, ...)
 
 wk_writer(handleable, ...)
 
