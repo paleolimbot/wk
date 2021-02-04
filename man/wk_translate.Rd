@@ -2,11 +2,14 @@
 % Please edit documentation in R/compat-sf.R, R/translate.R
 \name{wk_translate.sfc}
 \alias{wk_translate.sfc}
+\alias{wk_translate.sf}
 \alias{wk_translate}
 \alias{wk_translate.default}
 \title{Translate geometry vectors}
 \usage{
 \method{wk_translate}{sfc}(handleable, to, ...)
+
+\method{wk_translate}{sf}(handleable, to, ...)
 
 wk_translate(handleable, to, ...)
 

@@ -55,8 +55,8 @@ wk_set_crs.wk_rcrd <- function(x, crs) {
 #' @rdname wk_crs
 #' @export
 wk_crs_output <- function(x, y) {
-  x <- attr(x, "crs", exact = TRUE)
-  y <- attr(y, "crs", exact = TRUE)
+  x <- wk_crs(x)
+  y <- wk_crs(y)
 
   if (inherits(y, "wk_crs_inherit")) {
     x

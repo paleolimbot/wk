@@ -466,3 +466,37 @@ test_that("wk_translate.sfc() works", {
     sf::st_sfc(sf::st_point(c(1, 2)), crs = 4326)
   )
 })
+
+
+test_that("wk_translate() works for sf", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    wk_translate(
+      sf::st_as_sf(data.frame(geometry = sf::st_as_sfc("POINT (1 2)"))),
+      sf::st_as_sf(data.frame(a = sf::st_sfc()))
+    ),
+    sf::st_as_sf(data.frame(geometry = sf::st_as_sfc("POINT (1 2)")))
+  )
+
+  expect_identical(
+    wk_translate(
+      data.frame(a = 1, geometry = wkt("POINT (1 2)")),
+      sf::st_as_sf(data.frame(a = sf::st_sfc()))
+    ),
+    sf::st_as_sf(data.frame(a = 1, geometery = sf::st_as_sfc("POINT (1 2)")))
+  )
+
+  expect_identical(
+    wk_translate(as_wkb("POINT (1 2)"), sf::st_as_sf(data.frame(a = sf::st_sfc()))),
+    sf::st_as_sf(data.frame(a = sf::st_as_sfc("POINT (1 2)")))
+  )
+
+  expect_identical(
+    wk_translate(
+      as_wkb("POINT (1 2)", crs = 4326),
+      sf::st_as_sf(data.frame(a = sf::st_sfc(crs = 4326)))
+    ),
+    sf::st_as_sf(data.frame(a = sf::st_as_sfc("POINT (1 2)", crs = 4326)))
+  )
+})

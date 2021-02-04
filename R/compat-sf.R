@@ -39,9 +39,29 @@ wk_writer.sfc <- function(handleable, ...) {
 #' @rdname wk_translate
 #' @export
 wk_translate.sfc <- function(handleable, to, ...) {
-  result <- wk_handle(handleable, wk_writer(to), ...)
+  result <- wk_handle(handleable, sfc_writer(), ...)
   attr(result, "crs") <- sf::st_crs(wk_crs_output(handleable, to))
   result
+}
+
+#' @rdname wk_translate
+#' @export
+wk_translate.sf <- function(handleable, to, ...) {
+  col_value <- wk_handle(handleable, sfc_writer(), ...)
+  crs_out <- sf::st_crs(wk_crs_output(handleable, to))
+
+  if (inherits(handleable, "sf")) {
+    sf::st_geometry(handleable) <- col_value
+  } else if (inherits(handleable, "data.frame")) {
+    col <- handleable_column_name(handleable)
+    handleable[col] <- list(col_value)
+    handleable <- sf::st_as_sf(handleable, sf_column_name = col)
+  } else {
+    handleable <- sf::st_as_sf(data.frame(geometry = col_value))
+  }
+
+  sf::st_crs(handleable) <- crs_out
+  handleable
 }
 
 #' @export
@@ -66,8 +86,13 @@ wk_set_crs.sf <- function(x, crs) {
   x
 }
 
-# these methods are unexported in the sf namespace, but for some reason
-# get called if there is no as_wkb() method explicitly set for sfc and/or sfg
+#' @export
+wk_crs.sfg <- function(x) {
+  sf::NA_crs_
+}
+
+# These methods are exported in latest sf, and depending on the order
+# a user loads the namespaces, the other method may get called.
 
 #' @export
 as_wkb.sfc <- function(x, ...) {
