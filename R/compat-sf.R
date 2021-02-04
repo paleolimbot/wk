@@ -36,6 +36,12 @@ wk_writer.sfc <- function(handleable, ...) {
   sfc_writer()
 }
 
+#' @rdname wk_writer
+#' @export
+wk_writer.sf <- function(handleable, ...) {
+  sfc_writer()
+}
+
 #' @rdname wk_translate
 #' @export
 wk_translate.sfc <- function(handleable, to, ...) {
@@ -44,7 +50,7 @@ wk_translate.sfc <- function(handleable, to, ...) {
   result
 }
 
-#' @rdname wk_translate
+#' @rdname wk_handle.data.frame
 #' @export
 wk_translate.sf <- function(handleable, to, ...) {
   col_value <- wk_handle(handleable, sfc_writer(), ...)
@@ -62,6 +68,29 @@ wk_translate.sf <- function(handleable, to, ...) {
 
   sf::st_crs(handleable) <- crs_out
   handleable
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_restore.sf <- function(handleable, result, ...) {
+  col <- handleable_column_name(handleable)
+
+  if(nrow(handleable) == length(result)) {
+    sf::st_geometry(handleable) <- result
+    handleable
+  } else if (nrow(handleable) == 1) {
+    handleable <- handleable[rep(1L, length(result)), , drop = FALSE]
+    sf::st_geometry(handleable) <- result
+    handleable
+  } else {
+    stop(
+      sprintf(
+        "Can't assign result of length %d to sf with %d rows",
+        length(result), nrow(handleable)
+      ),
+      call. = FALSE
+    )
+  }
 }
 
 #' @export
