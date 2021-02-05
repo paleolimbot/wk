@@ -346,3 +346,91 @@ handle_xy <- function(input, handler) {
 
 handle_xy(df, wkt_writer())
 ```
+
+## Filters
+
+There is no reason that an object can't be both a reader and a handler. This idea was one of the motivating ideas behind developing wk: the ability to write composable transformations that allocate as little memory as possible. For many transformations, this is as little as one coordinate! As an example, we'll create a filter that bumps coordinates by a fixed offset. I'll demonstrate this in C++ because it is considerably easier to get the details right (if you want to write one of these in C you can copy/paste the identity handler source code from this package's src directory as a starting point).
+
+```{cpp11}
+#include "cpp11.hpp"
+using namespace cpp11;
+namespace writable = cpp11::writable;
+#include "wk-v1-filter.hpp"
+#include "wk-v1-impl.c"
+
+class BumpFilter: public WKIdentityFilter {
+public:
+  BumpFilter(SEXP next, double dx, double dy): 
+    WKIdentityFilter(next), dx(dx), dy(dy) {}
+  
+  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+    this->new_coord.v[0] = coord.v[0] + this->dx;
+    this->new_coord.v[1] = coord.v[1] + this->dy;
+    return WKIdentityFilter::coord(meta, this->new_coord, coord_id);
+  }
+  
+private:
+  double dx;
+  double dy;
+  wk_coord_t new_coord;
+};
+
+[[cpp11::linking_to(wk)]]
+[[cpp11::register]]
+sexp cpp_bump_filter_new(SEXP handler_xptr, double dx, double dy) {
+  return WKHandlerFactory<BumpFilter>::create_xptr(new BumpFilter(handler_xptr, dx, dy));
+}
+```
+
+```{r}
+bump_filter <- function(handler, dx = 0, dy = 0) {
+  new_wk_handler(cpp_bump_filter_new(as_wk_handler(handler), dx, dy), "bump_filter")
+}
+
+wk_handle(
+  wkt("POINT (0 0)"),
+  bump_filter(wkt_writer(), dx = 2, dy = -6)
+)
+```
+
+While a filter might be *cool*, it also needs some R infrastructure to make it useful for a user that doesn't care about readers, filters, and handlers. For example, the `wk_identity()` function uses some infrastructure to ensure that the output type matches the input type:
+
+```{r}
+wk_identity(wkt("POINT (1 1)"))
+wk_identity(as_wkb("POINT (1 1)"))
+```
+
+When writing an R wrapper around a filter, you will probably want to use the following pattern:
+
+```{r}
+bump <- function(handleable, dx = 0, dy = 0, ...) {
+  UseMethod("bump")
+}
+
+bump.default <- function(handleable, dx = 0, dy = 0, ...) {
+  result <- wk_handle(handleable, bump_filter(wk_writer(handleable), dx, dy), ...)
+  result <- wk_restore(handleable, result)
+  wk_set_crs(result, wk_crs(handleable))
+}
+```
+
+There's a lot packed into that three-line default method. First, we use the `wk_writer()` generic to pick a handler that generates the object based on `handleable`. This is defined for most objects that can be used with `wk_handler()` to return the same type of object as the input. Second, we use `wk_handle()` to generate the result. Next, we call `wk_restore()`, which usually returns `result` but for data frames and sf objects attempts to replace the old geometry column with the transformed version. Finally, because we don't change the CRS in our filter, we can reset the CRS of the result to match that of the input. This will make your filter work with many types of geometric objects!
+
+```{r}
+library(sf)
+nc <- read_sf(system.file("shape/nc.shp", package = "sf"))
+st_bbox(nc)
+bump(nc, 1, 1)
+```
+
+The wrapper method should probably always be an S3 generic. This lets you define faster implementations for simple objects like `xy()` and/or `rct()` where the base-R implementation is much faster.
+
+```{r}
+bump.wk_xy <- function(handleable, dx = 0, dy = 0) {
+  data <- unclass(handleable)
+  data$x <- data$x + dx
+  data$y <- data$y + dy
+  class(data) <- class(handleable)
+  data
+}
+```
