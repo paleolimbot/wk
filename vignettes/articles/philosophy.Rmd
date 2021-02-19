@@ -52,7 +52,7 @@ class BBoxHandler: public WKVoidHandler {
 public:
   BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
   
-  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
     this->xmin = std::min(coord.v[0], this->xmin);
     this->ymin = std::min(coord.v[1], this->ymin);
     this->xmax = std::max(coord.v[0], this->xmax);
@@ -362,7 +362,7 @@ public:
   BumpFilter(SEXP next, double dx, double dy): 
     WKIdentityFilter(next), dx(dx), dy(dy) {}
   
-  int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
     this->new_coord.v[0] = coord.v[0] + this->dx;
     this->new_coord.v[1] = coord.v[1] + this->dy;
     return WKIdentityFilter::coord(meta, this->new_coord, coord_id);

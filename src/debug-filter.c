@@ -270,7 +270,7 @@ int wk_debug_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring
   return result;
 }
 
-int wk_debug_filter_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int wk_debug_filter_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
