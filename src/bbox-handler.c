@@ -25,6 +25,20 @@ int wk_bbox_handler_vector_start(const wk_vector_meta_t* vector_meta, void* hand
     }
 }
 
+int wk_bbox_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+    wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) handler_data;
+
+    if (meta->flags & WK_FLAG_HAS_BOUNDS) {
+        data->xmin = MIN(meta->bounds_min[0], data->xmin);
+        data->ymin = MIN(meta->bounds_min[1], data->ymin);
+        data->xmax = MAX(meta->bounds_max[0], data->xmax);
+        data->ymax = MAX(meta->bounds_max[1], data->ymax);
+        return WK_ABORT_FEATURE;
+    } else {
+        return WK_CONTINUE;
+    }
+}
+
 int wk_bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
                           uint32_t coord_id, void* handler_data) {
     wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) handler_data;
@@ -64,6 +78,7 @@ SEXP wk_c_bbox_handler_new() {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wk_bbox_handler_vector_start;
+    handler->geometry_start = &wk_bbox_handler_geometry_start;
     handler->coord = &wk_bbox_handler_coord;
     handler->vector_end = &wk_bbox_handler_vector_end;
 
