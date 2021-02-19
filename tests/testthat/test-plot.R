@@ -11,3 +11,9 @@ test_that("xy and rect plot methods work", {
   expect_identical(plot(xy(1:5, 1:5)), xy(1:5, 1:5))
   expect_identical(plot(rct(1, 2, 3, 4)), rct(1, 2, 3, 4))
 })
+
+test_that("crc plot method works", {
+  skip_if_not_installed("wkutils")
+
+  expect_identical(plot(crc(1, 2, 3)), crc(1, 2, 3))
+})
