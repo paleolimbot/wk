@@ -51,6 +51,9 @@ test_that("wk_handle.wk_crc() works", {
   crc_wkb2_lengths <- vapply(unclass(crc_wkb2), length, integer(1))
   expect_equal(crc_wkb2_lengths, 1 + 4 + 4 + 4 + ((51:55) * 8 * 2))
 
+  # check emptiness of NA circle
+  expect_identical(as_wkt(crc(NA, NA, NA)), wkt("POLYGON EMPTY"))
+
   # check options for circle resolution
   prev_opt <- options(wk.crc_n_segments = 4)
   expect_identical(

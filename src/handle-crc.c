@@ -56,7 +56,7 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
         double cx, cy, radius;
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POLYGON);
-        meta.flags = vector_meta.flags;
+        meta.flags = vector_meta.flags | WK_FLAG_HAS_BOUNDS;
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
@@ -75,6 +75,11 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
             } else {
                 meta.size = 1;
             }
+
+            meta.bounds_min[0] = cx - radius;
+            meta.bounds_min[1] = cy - radius;
+            meta.bounds_max[0] = cx + radius;
+            meta.bounds_max[1] = cy + radius;
 
             HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
             if (!circle_empty) {

@@ -25,3 +25,9 @@ test_that("wk_bbox() works when vector has cached bbox", {
     rct(1, 2, 3, 4, crs = sf::NA_crs_)
   )
 })
+
+test_that("wk_bbox() works when geometry has cached bbox", {
+  expect_identical(wk_bbox(xy(1:3, 2:4)), rct(1, 2, 3, 4))
+  expect_identical(wk_bbox(crc(2, 3, r = 1)), rct(1, 2, 3, 4))
+  expect_identical(wk_bbox(rct(1, 2, 3, 4)), rct(1, 2, 3, 4))
+})
