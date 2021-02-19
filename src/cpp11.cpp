@@ -36,6 +36,7 @@ extern SEXP wk_c_handler_addr();
 extern SEXP wk_c_handler_problems_new();
 extern SEXP wk_c_handler_void_new();
 extern SEXP wk_c_identity_filter_new(SEXP);
+extern SEXP wk_c_read_crc(SEXP, SEXP, SEXP);
 extern SEXP wk_c_read_rct(SEXP, SEXP);
 extern SEXP wk_c_read_sfc(SEXP, SEXP);
 extern SEXP wk_c_read_wkb(SEXP, SEXP);
@@ -53,6 +54,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_handler_problems_new", (DL_FUNC) &wk_c_handler_problems_new, 0},
     {"wk_c_handler_void_new",     (DL_FUNC) &wk_c_handler_void_new,     0},
     {"wk_c_identity_filter_new",  (DL_FUNC) &wk_c_identity_filter_new,  1},
+    {"wk_c_read_crc",             (DL_FUNC) &wk_c_read_crc,             3},
     {"wk_c_read_rct",             (DL_FUNC) &wk_c_read_rct,             2},
     {"wk_c_read_sfc",             (DL_FUNC) &wk_c_read_sfc,             2},
     {"wk_c_read_wkb",             (DL_FUNC) &wk_c_read_wkb,             2},

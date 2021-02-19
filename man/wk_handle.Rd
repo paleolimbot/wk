@@ -10,6 +10,7 @@
 \alias{wk_handle.wk_wkt}
 \alias{wk_handle.wk_xy}
 \alias{wk_handle.wk_rct}
+\alias{wk_handle.wk_crc}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
@@ -33,6 +34,8 @@ wk_handle(handleable, handler, ...)
 
 \method{wk_handle}{wk_rct}(handleable, handler, ...)
 
+\method{wk_handle}{wk_crc}(handleable, handler, ..., n_segments = 200L)
+
 new_wk_handler(handler_ptr, subclass = character())
 
 is_wk_handler(handler)
@@ -46,6 +49,9 @@ as_wk_handler(handler, ...)
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{n_segments}{The number of segments to use when approximating
+a circle.}
 
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 

@@ -14,6 +14,8 @@
 #' @param subclass The handler subclass
 #' @param handleable A geometry vector (e.g., [wkb()], [wkt()], [xy()],
 #'   [rct()], or [sf::st_sfc()]) for which [wk_handle()] is defined.
+#' @param n_segments The number of segments to use when approximating
+#'   a circle.
 #' @param ... Passed to the [wk_handle()] method.
 #'
 #' @return A WK handler.
@@ -49,6 +51,13 @@ wk_handle.wk_xy <- function(handleable, handler, ...) {
 wk_handle.wk_rct <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
   .Call(wk_c_read_rct, handleable, handler)
+}
+
+#' @rdname wk_handle
+#' @export
+wk_handle.wk_crc <- function(handleable, handler, ..., n_segments = 200L) {
+  handler <- as_wk_handler(handler)
+  .Call(wk_c_read_crc, handleable, handler, as.integer(n_segments))
 }
 
 #' @rdname wk_handle

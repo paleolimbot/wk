@@ -18,17 +18,20 @@ test_that("crc class works", {
   )
 })
 
-# test_that("coercion to and from wk* classes works", {
-#   expect_identical(
-#     as_wkt(crc(1, 2, 3, 4)),
-#     wkt("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
-#   )
-#
-#   expect_identical(
-#     as_wkb(crc(1, 2, 3, 4)),
-#     as_wkb("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))")
-#   )
-# })
+test_that("coercion to and from wk* classes works", {
+  expect_is(as_wkt(crc(0, 0, 1)), "wk_wkt")
+  expect_is(as_wkb(crc(0, 0, 1)), "wk_wkb")
+
+  expect_identical(
+    wk_handle(crc(1, 2, 3), wkt_writer(precision = 2), n_segments = 4),
+    wkt("POLYGON ((4 2, 1 5, -2 2, 1 -1, 4 2))")
+  )
+
+  expect_identical(
+    as_wkb(wk_handle(crc(1, 2, 3), wkt_writer(precision = 2), n_segments = 4)),
+    as_wkb("POLYGON ((4 2, 1 5, -2 2, 1 -1, 4 2))")
+  )
+})
 
 test_that("subset-assign works for crc", {
   x <- crc(1:2, 2:3, 3:4)
