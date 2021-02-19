@@ -34,16 +34,7 @@
 
 \method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 
-\method{plot}{wk_crc}(
-  x,
-  ...,
-  n_segments = 200L,
-  asp = 1,
-  bbox = NULL,
-  xlab = "",
-  ylab = "",
-  add = FALSE
-)
+\method{plot}{wk_crc}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link[=wkt]{wkt()}} or \code{\link[=wkb]{wkb()}} vector.}
@@ -65,8 +56,6 @@ and multipolygon geometries.}
 
 \item{add}{Should a new plot be created, or should \code{x} be added to the
 existing plot?}
-
-\item{n_segments}{The number of segments to use when approximating a circle.}
 }
 \value{
 The input, invisibly.

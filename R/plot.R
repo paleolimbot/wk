@@ -2,7 +2,6 @@
 #' Plot well-known geometry vectors
 #'
 #' @inheritParams wkutils::wkt_plot
-#' @param n_segments The number of segments to use when approximating a circle.
 #'
 #' @return The input, invisibly.
 #' @importFrom graphics plot
@@ -97,7 +96,7 @@ plot.wk_rct <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add 
 
 #' @rdname plot.wk_wkt
 #' @export
-plot.wk_crc <- function(x, ..., n_segments = 200L, asp = 1, bbox = NULL, xlab = "", ylab = "",
+plot.wk_crc <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
                         add = FALSE) {
   x_bare <- unclass(x)
 
@@ -117,8 +116,21 @@ plot.wk_crc <- function(x, ..., n_segments = 200L, asp = 1, bbox = NULL, xlab = 
     )
   }
 
+  # estimate resolution for turning circles into segments
+  usr <- graphics::par("usr")
+  usr_x <- usr[1:2]
+  usr_y <- usr[3:4]
+  device_x <- graphics::grconvertX(usr_x, to = "device")
+  device_y <- graphics::grconvertY(usr_y, to = "device")
+
+  # use resolution of 1 at the device level, scale to usr coords
+  scale_x <- diff(device_x) / diff(usr_x)
+  scale_y <- diff(device_y) / diff(usr_y)
+  scale <- min(abs(scale_x), abs(scale_y))
+  resolution_usr <- 1 / scale
+
   plot(
-    wk_handle(x, wkb_writer(), n_segments = n_segments),
+    wk_handle(x, wkb_writer(), resolution = resolution_usr),
     ...,
     add = TRUE
   )
