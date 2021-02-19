@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          install.packages(c("pkgdown", "decor"), type = "binary")
+          install.packages(c("pkgdown", "decor", "bench"), type = "binary")
         shell: Rscript {0}
 
       - name: Install package
