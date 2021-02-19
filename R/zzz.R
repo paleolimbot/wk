@@ -4,7 +4,8 @@
 
   # Register S3 methods for Suggests
   for (cls in c("wk_wkb", "wk_wkt",
-                "wk_xy", "wk_xyz", "wk_xym", "wk_xyzm", "wk_rct")) {
+                "wk_xy", "wk_xyz", "wk_xym", "wk_xyzm",
+                "wk_rct", "wk_crc")) {
     s3_register("vctrs::vec_proxy", cls)
     s3_register("vctrs::vec_restore", cls)
     s3_register("vctrs::vec_cast", cls)
