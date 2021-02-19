@@ -21,6 +21,9 @@ wk_bbox.default <- function(handleable) {
   result
 }
 
+# Note to future self: re-implementing wk_bbox() using range()
+# for record-style vectors is not faster than the default method
+
 #' @rdname wk_bbox
 #' @export
 wk_bbox_handler <- function() {
