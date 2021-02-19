@@ -123,7 +123,11 @@ plot.wk_crc <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
   device_x <- graphics::grconvertX(usr_x, to = "device")
   device_y <- graphics::grconvertY(usr_y, to = "device")
 
-  # use resolution of 1 at the device level, scale to usr coords
+  # Use resolution of 1 at the device level, scale to usr coords.
+  # Changing this number to 2 or 4 doesn't really affect the speed
+  # at which these plot; a value of 1 tends to give very good
+  # resolution and is acceptable even when a plot in the interactive
+  # device is zoomed.
   scale_x <- diff(device_x) / diff(usr_x)
   scale_y <- diff(device_y) / diff(usr_y)
   scale <- min(abs(scale_x), abs(scale_y))
