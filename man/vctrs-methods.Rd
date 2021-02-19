@@ -16,6 +16,8 @@
 \alias{vec_ptype2.wk_xyzm}
 \alias{vec_cast.wk_rct}
 \alias{vec_ptype2.wk_rct}
+\alias{vec_cast.wk_crc}
+\alias{vec_ptype2.wk_crc}
 \title{Vctrs methods}
 \usage{
 vec_cast.wk_wkb(x, to, ...)
@@ -45,6 +47,10 @@ vec_ptype2.wk_xyzm(x, y, ...)
 vec_cast.wk_rct(x, to, ...)
 
 vec_ptype2.wk_rct(x, y, ...)
+
+vec_cast.wk_crc(x, to, ...)
+
+vec_ptype2.wk_crc(x, y, ...)
 }
 \arguments{
 \item{x, y, to, ...}{See \code{\link[vctrs:vec_cast]{vctrs::vec_cast()}} and \code{\link[vctrs:vec_ptype2]{vctrs::vec_ptype2()}}.}

@@ -228,7 +228,7 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
     }
 }
 
-void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, wk_coord_t coord) {
+void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const wk_coord_t coord) {
     writer->bbox[0] = MIN(writer->bbox[0], coord.v[0]);
     writer->bbox[1] = MIN(writer->bbox[1], coord.v[1]);
     writer->bbox[2] = MAX(writer->bbox[2], coord.v[0]);
@@ -390,7 +390,7 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
         writer->coord_size = 4;
-    } else if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+    } else if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M)) {
         writer->coord_size = 3;
     } else {
         writer->coord_size = 2;
@@ -475,7 +475,7 @@ int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
     return WK_CONTINUE;
 }
 
-int sfc_writer_coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int sfc_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     sfc_writer_update_ranges(writer, meta, coord);

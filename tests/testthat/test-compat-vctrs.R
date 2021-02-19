@@ -167,6 +167,28 @@ test_that("vctrs rct implementation works", {
   expect_identical(vctrs::vec_c(rct(), rct()), rct())
 })
 
+test_that("vctrs crc implementation works", {
+  expect_true(vctrs::vec_is(crc()))
+  expect_identical(vctrs::vec_size(crc()), 0L)
+  expect_identical(vctrs::vec_cast(crc(), crc()), crc())
+  expect_identical(
+    vctrs::vec_proxy(crc(crs = NULL)),
+    data.frame(x = double(), y = double(), r = double())
+  )
+  expect_identical(
+    vctrs::vec_restore(data.frame(x = double(), y = double(), r = double()), crc()),
+    crc()
+  )
+
+  expect_identical(vctrs::vec_c(crc(), wkb()), wkb())
+  expect_identical(vctrs::vec_c(crc(), wkt()), wkt())
+  expect_identical(vctrs::vec_c(crc(), xy()), wkb())
+  expect_identical(vctrs::vec_c(crc(), xyz()), wkb())
+  expect_identical(vctrs::vec_c(crc(), xym()), wkb())
+  expect_identical(vctrs::vec_c(crc(), xyzm()), wkb())
+  expect_identical(vctrs::vec_c(crc(), crc()), crc())
+})
+
 test_that("vec_c() propagates the crs attribute", {
   for (constructor in list(wkb, wkt, xy, xyz, xyzm, rct)) {
     expect_identical(

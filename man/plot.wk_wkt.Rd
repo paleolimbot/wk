@@ -5,6 +5,7 @@
 \alias{plot.wk_wkb}
 \alias{plot.wk_xy}
 \alias{plot.wk_rct}
+\alias{plot.wk_crc}
 \title{Plot well-known geometry vectors}
 \usage{
 \method{plot}{wk_wkt}(
@@ -32,6 +33,8 @@
 \method{plot}{wk_xy}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 
 \method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
+
+\method{plot}{wk_crc}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link[=wkt]{wkt()}} or \code{\link[=wkb]{wkb()}} vector.}

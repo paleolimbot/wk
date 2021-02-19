@@ -10,6 +10,7 @@
 \alias{wk_handle.wk_wkt}
 \alias{wk_handle.wk_xy}
 \alias{wk_handle.wk_rct}
+\alias{wk_handle.wk_crc}
 \alias{new_wk_handler}
 \alias{is_wk_handler}
 \alias{as_wk_handler}
@@ -33,6 +34,14 @@ wk_handle(handleable, handler, ...)
 
 \method{wk_handle}{wk_rct}(handleable, handler, ...)
 
+\method{wk_handle}{wk_crc}(
+  handleable,
+  handler,
+  ...,
+  n_segments = getOption("wk.crc_n_segments", NULL),
+  resolution = getOption("wk.crc_resolution", NULL)
+)
+
 new_wk_handler(handler_ptr, subclass = character())
 
 is_wk_handler(handler)
@@ -46,6 +55,13 @@ as_wk_handler(handler, ...)
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{n_segments, resolution}{The number of segments to use when approximating
+a circle. The default uses \code{getOption("wk.crc_n_segments")} so that
+this value can be set for implicit conversions (e.g., \code{as_wkb()}).
+Alternatively, set the minimum distance between points on the circle
+(used to estimate \code{n_segments}). The default is obtained
+using \code{getOption("wk.crc_resolution")}.}
 
 \item{handler_ptr}{An external pointer to a newly created WK handler}
 

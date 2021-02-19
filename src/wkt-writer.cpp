@@ -110,7 +110,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
     if (coord_id > 0) {
       out << ", ";
     }
@@ -174,7 +174,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
     WKTWriterHandler::coord(meta, coord, coord_id);
     if (++this->current_coords >= this->max_coords) {
       this->out << "...";

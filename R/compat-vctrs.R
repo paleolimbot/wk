@@ -820,3 +820,76 @@ vec_ptype2.wk_rct.wk_xym <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 vec_ptype2.wk_rct.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
+
+# crc() --------
+
+vec_proxy.wk_crc <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_crc <- function(x, to, ...) {
+  crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  attr(x, "crs") <- NULL
+  attr(x, "row.names") <- NULL
+  new_wk_crc(x, crs = crs_out)
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_crc
+vec_cast.wk_crc <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_crc") # nocov
+}
+
+#' @method vec_cast.wk_crc default
+#' @export
+vec_cast.wk_crc.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_crc
+vec_ptype2.wk_crc <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_crc", y) # nocov
+}
+
+#' @method vec_ptype2.wk_crc wk_crc
+#' @export
+vec_ptype2.wk_crc.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_crc(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_wkb
+#' @export
+vec_ptype2.wk_crc.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_wkt
+#' @export
+vec_ptype2.wk_crc.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkt(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_xy
+#' @export
+vec_ptype2.wk_crc.wk_xy <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_xyz
+#' @export
+vec_ptype2.wk_crc.wk_xyz <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_xym
+#' @export
+vec_ptype2.wk_crc.wk_xym <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_crc wk_xyzm
+#' @export
+vec_ptype2.wk_crc.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}

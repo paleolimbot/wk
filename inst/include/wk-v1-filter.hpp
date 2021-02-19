@@ -34,7 +34,7 @@ public:
     return cpp11::safe[next->ring_start](meta, size, ringId, next->handler_data);
   }
 
-  virtual int coord(const wk_meta_t* meta, wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
     return cpp11::safe[next->coord](meta, coord, coord_id, next->handler_data);
   }
 
