@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deprecated functions — wkb_format • wk</title>
+<title>2D Circle Vectors — crc • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Deprecated functions — wkb_format" />
-<meta property="og:description" content="These functions are deprecated and will be removed in a future version." />
+<meta property="og:title" content="2D Circle Vectors — crc" />
+<meta property="og:description" content="2D Circle Vectors" />
 
 
 <meta name="robots" content="noindex">
@@ -123,65 +123,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deprecated functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/deprecated.R'><code>R/deprecated.R</code></a></small>
-    <div class="hidden name"><code>deprecated.Rd</code></div>
+    <h1>2D Circle Vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/crc.R'><code>R/crc.R</code></a></small>
+    <div class="hidden name"><code>crc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These functions are deprecated and will be removed in a future version.</p>
+    <p>2D Circle Vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_format</span><span class='op'>(</span><span class='va'>wkb</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>crc</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, r <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>wkt_format</span><span class='op'>(</span><span class='va'>wkt</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wkb_problems</span><span class='op'>(</span><span class='va'>wkb</span><span class='op'>)</span>
+<span class='co'># S3 method for wk_crc</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wkt_problems</span><span class='op'>(</span><span class='va'>wkt</span><span class='op'>)</span>
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>wkb_translate_wkt</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkb_translate_wkb</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>wkt_translate_wkt</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkt_translate_wkb</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>wkb</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors, such as that
-returned by <code><a href='https://r-spatial.github.io/sf/reference/st_as_binary.html'>sf::st_as_binary()</a></code>.</p></td>
+      <th>x, y</th>
+      <td><p>Coordinates of the center</p></td>
     </tr>
     <tr>
-      <th>max_coords</th>
-      <td><p>The maximum number of coordinates to include
-in the output.</p></td>
+      <th>r</th>
+      <td><p>Circle radius</p></td>
     </tr>
     <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
-    </tr>
-    <tr>
-      <th>wkt</th>
-      <td><p>A character vector containing well-known text.</p></td>
+      <th>crs</th>
+      <td><p>A value to be propagated as the CRS for this vector.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Used to keep backward compatibility with previous
-versions of these functions.</p></td>
+      <td><p>Extra arguments passed to <code>as_crc()</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A vector along the recycled length of bounds.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>crc</span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;wk_crc[1]&gt;
+#&gt; [1] [1 2, r = 3]</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

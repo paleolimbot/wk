@@ -2,6 +2,6 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  articles/philosophy: philosophy.html
-last_built: 2021-02-05T11:16Z
+  articles/programming: programming.html
+last_built: 2021-02-19T16:32Z
 

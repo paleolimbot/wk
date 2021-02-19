@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Deprecated functions — wkb_format • wk</title>
+<title>S3 details for crc objects — new_wk_crc • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Deprecated functions — wkb_format" />
-<meta property="og:description" content="These functions are deprecated and will be removed in a future version." />
+<meta property="og:title" content="S3 details for crc objects — new_wk_crc" />
+<meta property="og:description" content="S3 details for crc objects" />
 
 
 <meta name="robots" content="noindex">
@@ -123,61 +123,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Deprecated functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/deprecated.R'><code>R/deprecated.R</code></a></small>
-    <div class="hidden name"><code>deprecated.Rd</code></div>
+    <h1>S3 details for crc objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/crc.R'><code>R/crc.R</code></a></small>
+    <div class="hidden name"><code>new_wk_crc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These functions are deprecated and will be removed in a future version.</p>
+    <p>S3 details for crc objects</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb_format</span><span class='op'>(</span><span class='va'>wkb</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkt_format</span><span class='op'>(</span><span class='va'>wkt</span>, max_coords <span class='op'>=</span> <span class='fl'>3</span>, precision <span class='op'>=</span> <span class='fl'>6</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkb_problems</span><span class='op'>(</span><span class='va'>wkb</span><span class='op'>)</span>
-
-<span class='fu'>wkt_problems</span><span class='op'>(</span><span class='va'>wkt</span><span class='op'>)</span>
-
-<span class='fu'>wkb_translate_wkt</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkb_translate_wkb</span><span class='op'>(</span><span class='va'>wkb</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>wkt_translate_wkt</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wkt_translate_wkb</span><span class='op'>(</span><span class='va'>wkt</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>new_wk_crc</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, r <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>wkb</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors, such as that
-returned by <code><a href='https://r-spatial.github.io/sf/reference/st_as_binary.html'>sf::st_as_binary()</a></code>.</p></td>
+      <th>x</th>
+      <td><p>A <code><a href='crc.html'>crc()</a></code></p></td>
     </tr>
     <tr>
-      <th>max_coords</th>
-      <td><p>The maximum number of coordinates to include
-in the output.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
-    </tr>
-    <tr>
-      <th>wkt</th>
-      <td><p>A character vector containing well-known text.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Used to keep backward compatibility with previous
-versions of these functions.</p></td>
+      <th>crs</th>
+      <td><p>A value to be propagated as the CRS for this vector.</p></td>
     </tr>
     </table>
 
