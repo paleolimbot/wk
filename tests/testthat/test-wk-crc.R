@@ -31,6 +31,14 @@ test_that("coercion to and from wk* classes works", {
     as_wkb(wk_handle(crc(1, 2, 3), wkt_writer(precision = 2), n_segments = 4)),
     as_wkb("POLYGON ((4 2, 1 5, -2 2, 1 -1, 4 2))")
   )
+
+  # check options for circle resolution + as_wkb/t()
+  prev_opt <- options(wk.crc_n_segments = 4)
+  expect_length(
+    unclass(as_wkb(crc(1, 2, 3)))[[1]],
+    1 + 4 + 4 + 4 + 5 * 8 * 2
+  )
+  options(prev_opt)
 })
 
 test_that("subset-assign works for crc", {

@@ -34,7 +34,8 @@ int wk_crc_handle_single(wk_handler_t* handler, const wk_meta_t* meta,
 
 SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
     SEXP data = VECTOR_ELT(data_coords, 0);
-    int segs_per_circle = INTEGER(VECTOR_ELT(data_coords, 1))[0];
+    int* segs_per_circle = INTEGER(VECTOR_ELT(data_coords, 1));
+    int segs_per_circle_len = Rf_length(VECTOR_ELT(data_coords, 1));
 
     if (!Rf_inherits(data, "wk_crc")) {
         Rf_error("Object does not inherit from 'wk_crc'");
@@ -51,7 +52,7 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
     vector_meta.size = n_features;
 
     if (handler->vector_start(&vector_meta, handler->handler_data) == WK_CONTINUE) {
-        int result;
+        int result, n_segs;
         double cx, cy, radius;
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POLYGON);
@@ -65,6 +66,7 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
             cx = data_ptr[0][i];
             cy = data_ptr[1][i];
             radius = data_ptr[2][i];
+            n_segs = segs_per_circle[i % segs_per_circle_len];
 
             int circle_empty = REAL_NA(cx) || REAL_NA(cy) || REAL_NA(radius);
 
@@ -76,9 +78,9 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
 
             HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
             if (!circle_empty) {
-                HANDLE_CONTINUE_OR_BREAK(handler->ring_start(&meta, segs_per_circle + 1, 0, handler->handler_data));
-                HANDLE_CONTINUE_OR_BREAK(wk_crc_handle_single(handler, &meta, cx, cy, radius, segs_per_circle));
-                HANDLE_CONTINUE_OR_BREAK(handler->ring_end(&meta, segs_per_circle + 1, 0, handler->handler_data));
+                HANDLE_CONTINUE_OR_BREAK(handler->ring_start(&meta, n_segs + 1, 0, handler->handler_data));
+                HANDLE_CONTINUE_OR_BREAK(wk_crc_handle_single(handler, &meta, cx, cy, radius, n_segs));
+                HANDLE_CONTINUE_OR_BREAK(handler->ring_end(&meta, n_segs + 1, 0, handler->handler_data));
             }
             HANDLE_CONTINUE_OR_BREAK(handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
 
