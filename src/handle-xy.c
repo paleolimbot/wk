@@ -33,7 +33,7 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
         wk_coord_t coord;
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POINT);
-        meta.flags = vector_meta.flags;
+        meta.flags = vector_meta.flags | WK_FLAG_HAS_BOUNDS;
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
@@ -43,6 +43,9 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
             int coord_empty = 1;
             for (int j = 0; j < coord_size; j++) {
                 coord.v[j] = data_ptr[j][i];
+                meta.bounds_min[j] = data_ptr[j][i];
+                meta.bounds_max[j] = data_ptr[j][i];
+
                 if (!ISNAN(coord.v[j])) {
                     coord_empty = 0;
                 }

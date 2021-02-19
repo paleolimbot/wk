@@ -22,6 +22,7 @@ int wk_sfc_read_multilinestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, 
 int wk_sfc_read_multipolygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 int wk_sfc_read_geometrycollection(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta);
+void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta);
 
 SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
     R_xlen_t n_features = Rf_xlength(data);
@@ -29,7 +30,7 @@ SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
     wk_vector_meta_t vector_meta;
     WK_VECTOR_META_RESET(vector_meta, WK_GEOMETRY);
     vector_meta.size = n_features;
-    vector_meta.flags |= WK_FLAG_DIMS_UNKNOWN;
+    wk_update_vector_meta_from_sfc(data, &vector_meta);
 
     if (handler->vector_start(&vector_meta, handler->handler_data) != WK_ABORT) {
         int result;
@@ -254,5 +255,64 @@ void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta) {
         meta->flags |= WK_FLAG_HAS_M;
     } else if (Rf_inherits(x, "sfg")) {
         Rf_error("Can't guess dimensions from class of 'sfg'");
+    }
+}
+
+void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
+    // provide geometry type based on class
+    if (Rf_inherits(x, "sfc_POINT")) {
+        vector_meta->geometry_type = WK_POINT;
+    } else if (Rf_inherits(x, "sfc_LINESTRING")) {
+        vector_meta->geometry_type = WK_LINESTRING;
+    } else if (Rf_inherits(x, "sfc_POLYGON")) {
+        vector_meta->geometry_type = WK_POLYGON;
+    } else if (Rf_inherits(x, "sfc_MULTIPOINT")) {
+        vector_meta->geometry_type = WK_MULTIPOINT;
+    } else if (Rf_inherits(x, "sfc_MULTILINESTRING")) {
+        vector_meta->geometry_type = WK_MULTILINESTRING;
+    } else if (Rf_inherits(x, "sfc_MULTIPOLYGON")) {
+        vector_meta->geometry_type = WK_MULTIPOLYGON;
+    } else if (Rf_inherits(x, "sfc_GEOMETRYCOLLECTION")) {
+        vector_meta->geometry_type = WK_GEOMETRYCOLLECTION;
+    } else {
+        vector_meta->geometry_type = WK_GEOMETRY;
+    }
+
+    // if z or m coords are present, ranges are provided
+    SEXP z_range = Rf_getAttrib(x, Rf_install("z_range"));
+    if (z_range != R_NilValue) {
+        vector_meta->flags |= WK_FLAG_HAS_Z;
+    }
+
+    SEXP m_range = Rf_getAttrib(x, Rf_install("m_range"));
+    if (m_range != R_NilValue) {
+        vector_meta->flags |= WK_FLAG_HAS_M;
+    }
+
+    // sfc objects come with a cached bbox
+    // This appears to always be xmin, ymin, xmax, ymax
+    // when attached to an sfc object
+    SEXP bbox = Rf_getAttrib(x, Rf_install("bbox"));
+    if ((Rf_xlength(x) > 0) && (bbox != R_NilValue)) {
+        vector_meta->bounds_min[0] = REAL(bbox)[0];
+        vector_meta->bounds_min[1] = REAL(bbox)[1];
+        vector_meta->bounds_max[0] = REAL(bbox)[2];
+        vector_meta->bounds_max[1] = REAL(bbox)[3];
+
+        vector_meta->flags |= WK_FLAG_HAS_BOUNDS; 
+    }
+
+    // Also include ZM values in the provided ranges
+    if ((z_range != R_NilValue) && (m_range != R_NilValue)) {
+        vector_meta->bounds_min[2] = REAL(z_range)[1];
+        vector_meta->bounds_max[2] = REAL(z_range)[2];
+        vector_meta->bounds_min[3] = REAL(m_range)[1];
+        vector_meta->bounds_max[3] = REAL(m_range)[2];
+    } else if (z_range != R_NilValue) {
+        vector_meta->bounds_min[2] = REAL(z_range)[1];
+        vector_meta->bounds_max[2] = REAL(z_range)[2];
+    } else if (m_range != R_NilValue) {
+        vector_meta->bounds_min[2] = REAL(m_range)[1];
+        vector_meta->bounds_max[2] = REAL(m_range)[2];
     }
 }

@@ -46,6 +46,11 @@ print.wk_rcrd <- function(x, ...) {
 }
 
 #' @export
+str.wk_rcrd <- function(object, ...) {
+  str.wk_vctr(object, ...)
+}
+
+#' @export
 as.character.wk_rcrd <- function(x, ...) {
   format(x, ...)
 }
