@@ -1,5 +1,5 @@
 ---
-title: "Understanding the wk C and C++ API"
+title: "Programming with the wk C and C++ API"
 ---
 
 ```{r, include = FALSE}
