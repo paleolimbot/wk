@@ -35,6 +35,8 @@ SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
         int result;
         SEXP item;
         for (R_xlen_t i = 0; i < n_features; i++) {
+            if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
+            
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 
             item = VECTOR_ELT(data, i);

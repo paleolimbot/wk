@@ -36,6 +36,8 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
         meta.flags = vector_meta.flags;
 
         for (R_xlen_t i = 0; i < n_features; i++) {
+            if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
+            
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 
             int coord_empty = 1;

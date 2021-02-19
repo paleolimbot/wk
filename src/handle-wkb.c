@@ -93,6 +93,8 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
     WKBBuffer_t buffer;
 
     for (R_xlen_t i = 0; i < n_features; i++) {
+      if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
+      
       buffer.feat_id = i;
       item = VECTOR_ELT(data, i);
 

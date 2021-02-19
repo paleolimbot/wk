@@ -710,6 +710,8 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   cppHandler.vector_start(&globalMeta);
 
   for (R_xlen_t i = 0; i < n_features; i++) {
+    if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
+
     try {
       if (streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i) == WK_ABORT) {
         break;
