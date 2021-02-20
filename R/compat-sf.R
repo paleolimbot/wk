@@ -100,7 +100,7 @@ wk_crs.sfc <- function(x) {
 
 #' @export
 wk_set_crs.sfc <- function(x, crs) {
-  sf::st_crs(x) <- crs
+  sf::st_crs(x) <- sf::st_crs(crs)
   x
 }
 
@@ -111,7 +111,7 @@ wk_crs.sf <- function(x) {
 
 #' @export
 wk_set_crs.sf <- function(x, crs) {
-  sf::st_crs(x) <- crs
+  sf::st_crs(x) <- sf::st_crs(crs)
   x
 }
 

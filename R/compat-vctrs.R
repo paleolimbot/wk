@@ -263,7 +263,7 @@ vec_ptype2.wk_wkt.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # xy() --------
 
 vec_proxy.wk_xy <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_xy <- function(x, to, ...) {
@@ -390,7 +390,7 @@ vec_ptype2.wk_xy.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # xyz() --------
 
 vec_proxy.wk_xyz <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_xyz <- function(x, to, ...) {
@@ -513,7 +513,7 @@ vec_ptype2.wk_xyz.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # xym() --------
 
 vec_proxy.wk_xym <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_xym <- function(x, to, ...) {
@@ -636,7 +636,7 @@ vec_ptype2.wk_xym.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # xyzm() --------
 
 vec_proxy.wk_xyzm <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_xyzm <- function(x, to, ...) {
@@ -751,7 +751,7 @@ vec_ptype2.wk_xyzm.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # rct() --------
 
 vec_proxy.wk_rct <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_rct <- function(x, to, ...) {
@@ -824,7 +824,7 @@ vec_ptype2.wk_rct.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 # crc() --------
 
 vec_proxy.wk_crc <- function(x, ...) {
-  as.data.frame(x)
+  new_data_frame(unclass(x))
 }
 
 vec_restore.wk_crc <- function(x, to, ...) {
