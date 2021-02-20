@@ -79,6 +79,13 @@ test_that("wkb_writer() can generate swapped endian", {
   )
 })
 
+test_that("wkb_writer() reallocates its buffer as needed", {
+  expect_identical(
+    wk_handle(wkt("POINT (1 2)"), wkb_writer(buffer_size = 0)),
+    wk_handle(wkt("POINT (1 2)"), wkb_writer(buffer_size = 1024))
+  )
+})
+
 test_that("wkb_writer() works with streaming input", {
   wkb_good <- as_wkb(
     c(
