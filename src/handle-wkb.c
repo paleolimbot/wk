@@ -47,7 +47,7 @@ int wkb_check_buffer(wkb_reader_t* reader, size_t bytes);
 // parses both EWKB flags and the 1000-style WKB types
 void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
     if (geometry_type & EWKB_Z_BIT) {
-      meta->flags |= WK_FLAG_HAS_Z;
+        meta->flags |= WK_FLAG_HAS_Z;
     }
 
     if (geometry_type & EWKB_M_BIT) {
@@ -57,17 +57,17 @@ void wkb_parse_geometry_type(uint32_t geometry_type, wk_meta_t* meta) {
     geometry_type = geometry_type & 0x0000ffff;
 
     if (geometry_type >= 3000) {
-      meta->geometry_type = geometry_type - 3000;
-      meta->flags |= WK_FLAG_HAS_Z;
-      meta->flags |= WK_FLAG_HAS_M;
+        meta->geometry_type = geometry_type - 3000;
+        meta->flags |= WK_FLAG_HAS_Z;
+        meta->flags |= WK_FLAG_HAS_M;
     } else  if (geometry_type >= 2000) {
-      meta->geometry_type = geometry_type - 2000;
-      meta->flags |= WK_FLAG_HAS_M;
+        meta->geometry_type = geometry_type - 2000;
+        meta->flags |= WK_FLAG_HAS_M;
     } else if (geometry_type >= 1000) {
-      meta->geometry_type = geometry_type - 1000;
-      meta->flags |= WK_FLAG_HAS_Z;
+        meta->geometry_type = geometry_type - 1000;
+        meta->flags |= WK_FLAG_HAS_Z;
     } else {
-      meta->geometry_type = geometry_type;
+        meta->geometry_type = geometry_type;
     }
 }
 
@@ -91,18 +91,18 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
     WK_META_RESET(meta, WK_GEOMETRY);
     wkb_parse_geometry_type(geometry_type, &meta);
     if (meta.geometry_type < WK_POINT || meta.geometry_type > WK_GEOMETRYCOLLECTION) {
-      wkb_set_errorf(reader, "Unrecognized geometry type code '%d'", meta.geometry_type);
-      return WK_ABORT_FEATURE;
+        wkb_set_errorf(reader, "Unrecognized geometry type code '%d'", meta.geometry_type);
+        return WK_ABORT_FEATURE;
     }
 
     if ((geometry_type & EWKB_SRID_BIT) != 0) {
-      HANDLE_OR_RETURN(wkb_read_uint(reader, &(meta.srid)));
+        HANDLE_OR_RETURN(wkb_read_uint(reader, &(meta.srid)));
     }
 
     if (meta.geometry_type == WK_POINT) {
-      meta.size = 1;
+        meta.size = 1;
     } else {
-      HANDLE_OR_RETURN(wkb_read_uint(reader, &(meta.size)));
+        HANDLE_OR_RETURN(wkb_read_uint(reader, &(meta.size)));
     }
 
     HANDLE_OR_RETURN(reader->handler->geometry_start(&meta, part_id, reader->handler->handler_data));
@@ -110,8 +110,8 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
     switch (meta.geometry_type) {
     case WK_POINT:
     case WK_LINESTRING:
-      HANDLE_OR_RETURN(wkb_read_coordinates(reader, &meta, meta.size));
-      break;
+        HANDLE_OR_RETURN(wkb_read_coordinates(reader, &meta, meta.size));
+        break;
     case WK_POLYGON:
         for (uint32_t i = 0; i < meta.size; i++) {
             uint32_t nCoords;
@@ -153,11 +153,11 @@ inline int wkb_read_endian(wkb_reader_t* reader) {
 inline int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
     if (wkb_check_buffer(reader, sizeof(uint32_t)) == WK_CONTINUE) {
         if (reader->swap_endian) {
-          memcpyrev(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
-          reader->offset += sizeof(uint32_t);
+            memcpyrev(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
+            reader->offset += sizeof(uint32_t);
         } else {
-          memcpy(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
-          reader->offset += sizeof(uint32_t);
+            memcpy(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
+            reader->offset += sizeof(uint32_t);
         }
 
         return WK_CONTINUE;
@@ -215,7 +215,7 @@ inline unsigned char wkb_platform_endian() {
 inline void memcpyrev(void* dst, unsigned char* src, size_t n) {
     unsigned char* dstChar = (unsigned char*) dst;
     for (size_t i = 0; i < n; i++) {
-      memcpy(&(dstChar[n - i - 1]), &(src[i]), 1);
+        memcpy(&(dstChar[n - i - 1]), &(src[i]), 1);
     }
 }
 
@@ -253,13 +253,13 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
 
                 result = wkb_read_geometry(&reader, WK_PART_ID_NONE);
                 if (result == WK_ABORT_FEATURE && reader.error_code != WK_NO_ERROR_CODE) {
-                  result = handler->error(i, reader.error_code, reader.error_buf, handler->handler_data);
+                    result = handler->error(i, reader.error_code, reader.error_buf, handler->handler_data);
                 }
 
                 if (result == WK_ABORT_FEATURE) {
-                  continue;
+                    continue;
                 } else if (result == WK_ABORT) {
-                  break;
+                    break;
                 }
             }
 
