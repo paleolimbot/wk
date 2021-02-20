@@ -11,6 +11,7 @@ public:
   std::stringstream out;
   wk_meta_t parentMeta;
   std::vector<const wk_meta_t*> stack;
+  R_xlen_t feat_id;
 
   WKTWriterHandler(int precision, bool trim) {
     this->out.imbue(std::locale::classic());
@@ -35,6 +36,7 @@ public:
   virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     out.str("");
     this->stack.clear();
+    this->feat_id = feat_id;
     return WK_CONTINUE;
   }
 
@@ -79,7 +81,7 @@ public:
         default:
             std::stringstream err;
             err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
-            cpp11::stop(err.str());
+            return this->error(this->feat_id, WK_DEFAULT_ERROR_CODE, err.str().c_str());
         }
 
         if ((meta->size != 0) &&(meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
