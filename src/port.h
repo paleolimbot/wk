@@ -26,7 +26,7 @@
 
 #define bswap_16(x) _byteswap_ushort(x)
 #define bswap_32(x) _byteswap_ulong(x)
-#define bswap_64(x) _byteswap_uint64_t(x)
+#define bswap_64(x) _byteswap_uint64(x)
 
 #elif defined(__APPLE__)
 // Mac OS X / Darwin features
