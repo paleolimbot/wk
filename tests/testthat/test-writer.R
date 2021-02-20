@@ -48,6 +48,37 @@ test_that("wkb_writer() works", {
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
 })
 
+test_that("wkb_writer() can generate swapped endian", {
+  skip_if_not(wk_platform_endian() == 1)
+  wkb_system <- wk_handle(wkt("POINT (1 2)"), wkb_writer(endian = NA))
+  wkb_le <- wk_handle(wkt("POINT (1 2)"), wkb_writer(endian = 1))
+  wkb_be <- wk_handle(wkt("POINT (1 2)"), wkb_writer(endian = 0))
+
+  expect_identical(as_wkt(wkb_system), wkt("POINT (1 2)"))
+  expect_identical(as_wkt(wkb_le), wkt("POINT (1 2)"))
+  expect_identical(as_wkt(wkb_be), wkt("POINT (1 2)"))
+
+  expect_identical(wkb_system, wkb_le)
+  expect_false(identical(wkb_be, wkb_le))
+
+  expect_identical(
+    wkb_be,
+    # dput(geos::geos_write_wkb("POINT (1 2)", endian = 0))
+    structure(
+      list(
+        as.raw(
+          c(0x00,
+            0x00, 0x00, 0x00, 0x01,
+            0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          )
+        )
+      ),
+      class = c("wk_wkb", "wk_vctr")
+    )
+  )
+})
+
 test_that("wkb_writer() works with streaming input", {
   wkb_good <- as_wkb(
     c(
