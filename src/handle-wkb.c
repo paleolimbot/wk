@@ -137,7 +137,7 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
     return reader->handler->geometry_end(&meta, part_id, reader->handler->handler_data);
 }
 
-inline int wkb_read_endian(wkb_reader_t* reader) {
+int wkb_read_endian(wkb_reader_t* reader) {
     if (wkb_check_buffer(reader, 1) == WK_CONTINUE) {
         unsigned char value;
         memcpy(&value, &(reader->buffer[reader->offset]), 1);
@@ -149,7 +149,7 @@ inline int wkb_read_endian(wkb_reader_t* reader) {
     }
 }
 
-inline int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
+int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
     if (wkb_check_buffer(reader, sizeof(uint32_t)) == WK_CONTINUE) {
         if (reader->swap_endian) {
             memcpyrev(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
@@ -165,7 +165,7 @@ inline int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
     }
 }
 
-inline int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords) {
+int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords) {
     int n_dim = 2 + ((meta->flags & WK_FLAG_HAS_Z )!= 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
     size_t coord_size = n_dim * sizeof(double);
 
@@ -196,7 +196,7 @@ inline int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uin
     return WK_CONTINUE;
 }
 
-inline int wkb_check_buffer(wkb_reader_t* reader, size_t bytes) {
+int wkb_check_buffer(wkb_reader_t* reader, size_t bytes) {
     if ((reader->offset + bytes) <= reader->size) {
         return WK_CONTINUE;
     } else {
@@ -205,13 +205,13 @@ inline int wkb_check_buffer(wkb_reader_t* reader, size_t bytes) {
     }
 }
 
-inline unsigned char wkb_platform_endian() {
+unsigned char wkb_platform_endian() {
     const int one = 1;
     unsigned char *cp = (unsigned char *) &one;
     return (char) *cp;
 }
 
-inline void memcpyrev(void* dst, unsigned char* src, size_t n) {
+void memcpyrev(void* dst, unsigned char* src, size_t n) {
     unsigned char* dstChar = (unsigned char*) dst;
     for (size_t i = 0; i < n; i++) {
         memcpy(&(dstChar[n - i - 1]), &(src[i]), 1);
