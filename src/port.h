@@ -1,70 +1,29 @@
 
 // Endian tools -----------------------------
 
-#include <Rconfig.h>
-
-// from s2 library port.h
+#include <Rconfig.h> // for WORDS_BIG_ENDIAN
 
 // IS_LITTLE_ENDIAN, IS_BIG_ENDIAN
-// Allow -D overrides in case this gets it wrong
 #if defined(WORDS_BIG_ENDIAN)
 #define IS_BIG_ENDIAN
 #undef IS_LITTLE_ENDIAN
-#elif defined(IS_LITTLE_ENDIAN)
+#else
+#define IS_LITTLE_ENDIAN
 #undef IS_BIG_ENDIAN
-#elif defined(IS_BIG_ENDIAN)
-#undef IS_LITTLE_ENDIAN
-#else
-
-#if defined __linux__ || defined OS_ANDROID || defined(__ANDROID__)
-#include <endian.h>
-
-#elif defined(__APPLE__)
-
-// BIG_ENDIAN
-#include <machine/endian.h>  // NOLINT(build/include)
-/* Let's try and follow the Linux convention */
-#define __BYTE_ORDER  BYTE_ORDER
-#define __LITTLE_ENDIAN LITTLE_ENDIAN
-#define __BIG_ENDIAN BIG_ENDIAN
-
 #endif
-
-// defines __BYTE_ORDER for Windows
-#ifdef _WIN32
-#define __BYTE_ORDER __LITTLE_ENDIAN
-#define IS_LITTLE_ENDIAN
-#else
-
-// define the macros IS_LITTLE_ENDIAN or IS_BIG_ENDIAN
-// using the above endian definitions from endian.h if
-// endian.h was included
-#ifdef __BYTE_ORDER
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-#define IS_LITTLE_ENDIAN
-#endif
-
-#if __BYTE_ORDER == __BIG_ENDIAN
-#define IS_BIG_ENDIAN
-#endif
-
-#else  // __BYTE_ORDER
-
-#if defined(__LITTLE_ENDIAN__)
-#define IS_LITTLE_ENDIAN
-#elif defined(__BIG_ENDIAN__)
-#define IS_BIG_ENDIAN
-#endif
-
-#endif  // __BYTE_ORDER
-#endif  // _MSC_VER
-#endif // #if defined(IS_LITTLE_ENDIAN) ... #else
-
-// byte swap functions (bswap_16, bswap_32, bswap_64).
 
 // The following guarantees declaration of the byte swap functions
-#ifdef _MSC_VER
-#include <cstdlib>  // NOLINT(build/include)
+// (bswap_16, bswap_32, bswap_64).
+// from s2 library port.h
+
+#if defined(_WIN32)
+
+#ifdef __cplusplus
+#include <cstdlib.h>
+#else
+#include <stdlib.h>
+#endif
+
 #define bswap_16(x) _byteswap_ushort(x)
 #define bswap_32(x) _byteswap_ulong(x)
 #define bswap_64(x) _byteswap_uint64_t(x)
