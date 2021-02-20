@@ -69,7 +69,7 @@ static inline void wkb_writer_ensure_space(wkb_writer_t* writer, size_t item) {
     if ((writer->offset + item) >= writer->size) {
         unsigned char* new_buffer = realloc(writer->buffer, writer->size * 2);
         if (new_buffer == NULL) {
-            Rf_error("Can't reallocate buffer of size %d", writer->size * 2);
+            Rf_error("Can't reallocate buffer of size %d", writer->size * 2); // # nocov
         }
 
         writer->buffer = new_buffer;
