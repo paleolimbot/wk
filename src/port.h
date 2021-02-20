@@ -30,8 +30,8 @@
 
 #endif
 
-// defines __BYTE_ORDER for MSVC
-#ifdef _MSC_VER
+// defines __BYTE_ORDER for Windows
+#ifdef _WIN32
 #define __BYTE_ORDER __LITTLE_ENDIAN
 #define IS_LITTLE_ENDIAN
 #else
