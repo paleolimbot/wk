@@ -81,6 +81,7 @@ SEXP wk_c_bbox_handler_new() {
     handler->geometry_start = &wk_bbox_handler_geometry_start;
     handler->coord = &wk_bbox_handler_coord;
     handler->vector_end = &wk_bbox_handler_vector_end;
+    handler->finalizer = &wk_bbox_handler_finalize;
 
     wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) malloc(sizeof(wk_bbox_handler_data_t));
     data->xmin = R_PosInf;
