@@ -26,7 +26,7 @@ typedef struct {
     size_t recursion_level;
 } wkb_writer_t;
 
-unsigned char wkb_writer_platform_endian() {
+static inline unsigned char wkb_writer_platform_endian() {
 #ifdef IS_LITTLE_ENDIAN
     return 1;
 #else
@@ -34,7 +34,7 @@ unsigned char wkb_writer_platform_endian() {
 #endif
 }
 
-uint32_t wkb_writer_encode_type(const wk_meta_t* meta, int recursion_level) {
+static inline uint32_t wkb_writer_encode_type(const wk_meta_t* meta, int recursion_level) {
     uint32_t out = meta->geometry_type;
     if (meta->flags & WK_FLAG_HAS_Z) out |= EWKB_Z_BIT;
     if (meta->flags & WK_FLAG_HAS_M) out |= EWKB_M_BIT;
@@ -42,12 +42,12 @@ uint32_t wkb_writer_encode_type(const wk_meta_t* meta, int recursion_level) {
         if (meta->srid != WK_SRID_NONE) out |= EWKB_SRID_BIT;
     }
     return out;
-  }
+}
 
-wkb_writer_t* wkb_writer_new(size_t size) {
-    unsigned char* buffer = malloc(size);
+wkb_writer_t* wkb_writer_new(size_t buffer_size, unsigned char endian) {
+    unsigned char* buffer = malloc(buffer_size);
     if (buffer == NULL) {
-        Rf_error("Can't allocate buffer of size %d", size); // # nocov
+        Rf_error("Can't allocate buffer of size %d", buffer_size); // # nocov
     }
 
     wkb_writer_t* writer = (wkb_writer_t*) malloc(sizeof(wkb_writer_t));
@@ -56,10 +56,10 @@ wkb_writer_t* wkb_writer_new(size_t size) {
         Rf_error("Can't allocate wkb_writer_t"); // # nocov
     }
 
-    writer->endian = wkb_writer_platform_endian();
+    writer->endian = endian;
     writer->result =  R_NilValue;
     writer->buffer = buffer;
-    writer->size = size;
+    writer->size = buffer_size;
     writer->offset = 0;
     writer->recursion_level = 0;
     return writer;
@@ -77,26 +77,86 @@ static inline void wkb_writer_ensure_space(wkb_writer_t* writer, size_t item) {
     }
 }
 
-static inline void wkb_write_uint_offset(wkb_writer_t* writer, const uint32_t value, size_t offset) {
-    memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
-}
-
-static inline void wkb_write_uint(wkb_writer_t* writer, const uint32_t value) {
-    wkb_writer_ensure_space(writer, sizeof(uint32_t));
-    memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
-    writer->offset += sizeof(uint32_t);
-}
-
 static inline void wkb_write_uchar(wkb_writer_t* writer, const unsigned char value) {
     wkb_writer_ensure_space(writer, sizeof(unsigned char));
     memcpy(writer->buffer + writer->offset, &value, sizeof(unsigned char));
     writer->offset += sizeof(unsigned char);
 }
 
+static inline void wkb_write_uint_offset(wkb_writer_t* writer, const uint32_t value, size_t offset) {
+#ifdef IS_LITTLE_ENDIAN
+    if (writer->endian == 1) {
+        memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
+    } else {
+        uint32_t swapped = bswap_32(value);
+        memcpy(writer->buffer + offset, &swapped, sizeof(uint32_t));
+    }
+#else
+    if (writer->endian == 0) {
+        memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
+    } else {
+        uint32_t swapped = bswap_32(value);
+        memcpy(writer->buffer + offset, &swapped, sizeof(uint32_t));
+    }
+#endif
+}
+
+static inline void wkb_write_uint(wkb_writer_t* writer, const uint32_t value) {
+    wkb_writer_ensure_space(writer, sizeof(uint32_t));
+
+#ifdef IS_LITTLE_ENDIAN
+    if (writer->endian == 1) {
+        memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
+    } else {
+        uint32_t swapped = bswap_32(value);
+        memcpy(writer->buffer + writer->offset, &swapped, sizeof(uint32_t));
+    }
+#else
+    if (writer->endian == 0) {
+        memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
+    } else {
+        uint32_t swapped = bswap_32(value);
+        memcpy(writer->buffer + writer->offset, &swapped, sizeof(uint32_t));
+    }
+#endif
+
+    writer->offset += sizeof(uint32_t);
+}
+
 static inline void wkb_write_doubles(wkb_writer_t* writer, const double* value, uint32_t n) {
     wkb_writer_ensure_space(writer, sizeof(double) * n);
-    memcpy(writer->buffer + writer->offset, value, sizeof(double) * n);
-    writer->offset += sizeof(double) * n;
+
+#ifdef IS_LITTLE_ENDIAN
+    if (writer->endian == 1) {
+        for (uint32_t i = 0; i < n; i++) {
+            memcpy(writer->buffer + writer->offset, value + i, sizeof(double));
+            writer->offset += sizeof(double);
+        }
+    } else {
+        uint64_t swappable, swapped;
+        for (uint32_t i = 0; i < n; i++) {
+            memcpy(&swappable, value + i, sizeof(double));
+            swapped = bswap_64(swappable);
+            memcpy(writer->buffer + writer->offset, &swapped, sizeof(double));
+            writer->offset += sizeof(double);
+        }
+    }
+#else
+    if (writer->endian == 0) {
+        for (uint32_t i = 0; i < n; i++) {
+            memcpy(writer->buffer + writer->offset, value + i, sizeof(double));
+            writer->offset += sizeof(double);
+        }
+    } else {
+        uint64_t swappable, swapped;
+        for (uint32_t i = 0; i < n; i++) {
+            memcpy(&swappable, value + i, sizeof(double));
+            swapped = bswap_64(swappable);
+            memcpy(writer->buffer + writer->offset, &swapped, sizeof(double));
+            writer->offset += sizeof(double);
+        }
+    }
+#endif
 }
 
 int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
@@ -252,7 +312,20 @@ void wkb_writer_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_wkb_writer_new() {
+SEXP wk_c_wkb_writer_new(SEXP buffer_size_sexp, SEXP endian_sexp) {
+    int endian = INTEGER(endian_sexp)[0];
+    int buffer_size = INTEGER(buffer_size_sexp)[0];
+
+    if (endian == NA_INTEGER) {
+        endian = wkb_writer_platform_endian();
+    } else if (endian) {
+        endian = 1;
+    }
+
+    if (buffer_size < sizeof(double)) {
+        buffer_size = sizeof(double);
+    }
+
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wkb_writer_vector_start;
@@ -268,7 +341,7 @@ SEXP wk_c_wkb_writer_new() {
     handler->deinitialize = &wkb_writer_deinitialize;
     handler->finalizer = &wkb_writer_finalize;
 
-    handler->handler_data = wkb_writer_new(1024);
+    handler->handler_data = wkb_writer_new(buffer_size, endian);
     SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
     return xptr;
 }

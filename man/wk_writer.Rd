@@ -27,9 +27,9 @@ wk_writer(handleable, ...)
 
 \method{wk_writer}{wk_xy}(handleable, ...)
 
-wkt_writer(precision = 16, trim = TRUE)
+wkt_writer(precision = 16L, trim = TRUE)
 
-wkb_writer()
+wkb_writer(buffer_size = 2048L, endian = NA_integer_)
 
 xyzm_writer()
 }
@@ -43,6 +43,11 @@ xyzm_writer()
 for each result or the number of digits after the decimal place otherwise.}
 
 \item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
+
+\item{buffer_size}{Control the initial buffer size used when writing WKB.}
+
+\item{endian}{Use 1 for little endian, 0 for big endian, or NA for
+system endian.}
 }
 \value{
 A \link[=wk_handle]{wk_handler}.

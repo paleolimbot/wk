@@ -5,6 +5,9 @@
 #' @param precision If `trim` is `TRUE`, the total number of significant digits to keep
 #'   for each result or the number of digits after the decimal place otherwise.
 #' @param trim Use `FALSE` to keep trailing zeroes after the decimal place.
+#' @param endian Use 1 for little endian, 0 for big endian, or NA for
+#'   system endian.
+#' @param buffer_size Control the initial buffer size used when writing WKB.
 #' @param ... Passed to the writer constructor.
 #'
 #' @return A [wk_handler][wk_handle].
@@ -34,14 +37,17 @@ wk_writer.wk_xy <- function(handleable, ...) {
 
 #' @rdname wk_writer
 #' @export
-wkt_writer <- function(precision = 16, trim = TRUE) {
+wkt_writer <- function(precision = 16L, trim = TRUE) {
   new_wk_handler(wk_cpp_wkt_writer(precision, trim), "wk_wkt_writer")
 }
 
 #' @rdname wk_writer
 #' @export
-wkb_writer <- function() {
-  new_wk_handler(.Call(wk_c_wkb_writer_new), "wk_wkb_writer")
+wkb_writer <- function(buffer_size = 2048L, endian = NA_integer_) {
+  new_wk_handler(
+    .Call(wk_c_wkb_writer_new, as.integer(buffer_size), as.integer(endian)),
+    "wk_wkb_writer"
+  )
 }
 
 #' @rdname wk_writer
