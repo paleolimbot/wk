@@ -25,17 +25,13 @@ typedef struct {
     char error_buf[1024];
 } wkb_reader_t;
 
-unsigned char wkb_platform_endian();
-void memcpyrev(void* dst, unsigned char* src, size_t n);
-
-void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
 int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id);
 int wkb_read_endian(wkb_reader_t* reader, unsigned char* value);
 int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta);
-
 int wkb_read_uint(wkb_reader_t* reader, uint32_t* value);
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords);
 int wkb_read_check_buffer(wkb_reader_t* reader, size_t bytes);
+void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
@@ -45,20 +41,17 @@ int wkb_read_check_buffer(wkb_reader_t* reader, size_t bytes);
     result = expr;                                             \
     if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
 
-void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...) {
-    reader->error_code = WK_DEFAULT_ERROR_CODE;
-    va_list args;
-    va_start(args, error_buf);
-    vsnprintf(reader->error_buf, 1024, error_buf, args);
-    va_end(args);
-}
-
 int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
     int result;
 
     unsigned char endian;
     HANDLE_OR_RETURN(wkb_read_endian(reader, &endian));
-    reader->swap_endian = endian != wkb_platform_endian();
+
+#ifdef IS_LITTLE_ENDIAN
+    reader->swap_endian = endian != 1;
+#else
+    reader->swap_endian = endian != 0;
+#endif
 
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
@@ -110,10 +103,12 @@ int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
     HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint32_t)));
 
     if (reader->swap_endian) {
-        memcpyrev(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
+        uint32_t swappable;
+        memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint32_t));
         reader->offset += sizeof(uint32_t);
+        *value = bswap_32(swappable);
     } else {
-        memcpy(value, &(reader->buffer[reader->offset]), sizeof(uint32_t));
+        memcpy(value, reader->buffer + reader->offset, sizeof(uint32_t));
         reader->offset += sizeof(uint32_t);
     }
 
@@ -171,17 +166,21 @@ int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n
     HANDLE_OR_RETURN(wkb_read_check_buffer(reader, coord_size * n_coords));
 
     if (reader->swap_endian) {
+        uint64_t swappable, swapped;
         for (uint32_t i = 0; i < n_coords; i++) {
             for (int j = 0; j < n_dim; j++) {
-                memcpyrev(&(coord.v[j]), &(reader->buffer[reader->offset]), sizeof(double));
+                memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
                 reader->offset += sizeof(double);
+
+                swapped = bswap_64(swappable);
+                memcpy(coord.v + j, &swapped, sizeof(double));
             }
 
           HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
         }
     } else {
         for (uint32_t i = 0; i < n_coords; i++) {
-            memcpy(&coord, &(reader->buffer[reader->offset]), coord_size);
+            memcpy(&coord, reader->buffer + reader->offset, coord_size);
             reader->offset += coord_size;
             HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
         }
@@ -199,17 +198,12 @@ int wkb_read_check_buffer(wkb_reader_t* reader, size_t bytes) {
     }
 }
 
-unsigned char wkb_platform_endian() {
-    const int one = 1;
-    unsigned char *cp = (unsigned char *) &one;
-    return (char) *cp;
-}
-
-void memcpyrev(void* dst, unsigned char* src, size_t n) {
-    unsigned char* dstChar = (unsigned char*) dst;
-    for (size_t i = 0; i < n; i++) {
-        memcpy(&(dstChar[n - i - 1]), &(src[i]), 1);
-    }
+void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...) {
+    reader->error_code = WK_DEFAULT_ERROR_CODE;
+    va_list args;
+    va_start(args, error_buf);
+    vsnprintf(reader->error_buf, 1024, error_buf, args);
+    va_end(args);
 }
 
 SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
