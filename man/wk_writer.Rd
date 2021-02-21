@@ -11,7 +11,7 @@
 \alias{wk_writer.wk_wkt}
 \alias{wk_writer.wk_wkb}
 \alias{wk_writer.wk_xy}
-\alias{xyzm_writer}
+\alias{xy_writer}
 \title{Write geometry vectors}
 \usage{
 sfc_writer()
@@ -32,7 +32,7 @@ wk_writer(handleable, ...)
 
 \method{wk_writer}{wk_xy}(handleable, ...)
 
-xyzm_writer()
+xy_writer()
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},

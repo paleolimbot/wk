@@ -32,5 +32,5 @@ wk_writer.wk_wkb <- function(handleable, ...) {
 #' @rdname wk_writer
 #' @export
 wk_writer.wk_xy <- function(handleable, ...) {
-  xyzm_writer()
+  xy_writer()
 }

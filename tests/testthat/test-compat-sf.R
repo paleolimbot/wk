@@ -189,7 +189,7 @@ test_that("wk_handle.sfc() generates same WKB as st_as_binary", {
 
   expect_identical(
     unclass(as_xy(sf::st_coordinates(nc_points))),
-    unclass(wk_handle(nc_points, xyzm_writer()))
+    unclass(wk_handle(nc_points, xy_writer()))
   )
 
   expect_identical(
