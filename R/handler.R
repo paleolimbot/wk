@@ -52,13 +52,6 @@ wk_handle.wk_xy <- function(handleable, handler, ...) {
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_rct <- function(handleable, handler, ...) {
-  handler <- as_wk_handler(handler)
-  .Call(wk_c_read_rct, handleable, handler)
-}
-
-#' @rdname wk_handle
-#' @export
 new_wk_handler <- function(handler_ptr, subclass = character()) {
   stopifnot(typeof(handler_ptr) == "externalptr")
   structure(handler_ptr, class = union(subclass, "wk_handler"))
