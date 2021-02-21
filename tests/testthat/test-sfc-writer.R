@@ -250,3 +250,51 @@ test_that("sfc writer works with ZM dimensions", {
     sf::st_sfc(sf::st_point(c(1, 2, 3, 4)), sf::st_point(rep(NA_real_, 4), dim = "XYZM"))
   )
 })
+
+test_that("nested geometries have their dimensions checked", {
+  expect_identical(
+    wk_handle(wkt("GEOMETRYCOLLECTION Z (POINT Z (1 2 3))"), sfc_writer()),
+    sf::st_sfc(sf::st_geometrycollection(list(sf::st_point(c(1, 2, 3), dim = "XYZ")), dims = "XYZ"))
+  )
+
+  expect_identical(
+    wk_handle(wkt("GEOMETRYCOLLECTION Z (LINESTRING Z (1 2 3, 4 5 6))"), sfc_writer()),
+    sf::st_sfc(
+      sf::st_geometrycollection(
+        list(sf::st_linestring(rbind(c(1, 2, 3), c(4, 5, 6)), dim = "XYZ")),
+        dims = "XYZ"
+      )
+    )
+  )
+
+  # note that this is stricter than sf::st_sfc(), which either drops the missing dimension
+  # on the GEOMETRYCOLLECTION (when creating from R) or assigns 0 to the missing dimension
+  # (when creating from WKT)
+  expect_error(
+    wk_handle(wkt("GEOMETRYCOLLECTION Z (POINT (1 1))"), sfc_writer()),
+    "incompatible dimensions"
+  )
+  expect_error(
+    wk_handle(wkt("GEOMETRYCOLLECTION Z (POINT (1 1))"), sfc_writer()),
+    "incompatible dimensions"
+  )
+})
+
+test_that("nested empties result in NA ranges", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    sf::st_bbox(wk_handle(wkt("GEOMETRYCOLLECTION ZM (POINT EMPTY)"), sfc_writer())),
+    sf::st_bbox(sf::st_as_sfc("POINT ZM EMPTY"))
+  )
+
+  expect_identical(
+    sf::st_z_range(wk_handle(wkt("GEOMETRYCOLLECTION ZM (POINT EMPTY)"), sfc_writer())),
+    sf::st_z_range(sf::st_as_sfc("POINT ZM EMPTY"))
+  )
+
+  expect_identical(
+    sf::st_m_range(wk_handle(wkt("GEOMETRYCOLLECTION ZM (POINT EMPTY)"), sfc_writer())),
+    sf::st_m_range(sf::st_as_sfc("POINT ZM EMPTY"))
+  )
+})

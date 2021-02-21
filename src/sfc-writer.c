@@ -560,7 +560,7 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
 
 int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-
+    
     // ignore end of POINT nested in MULTIPOINT
     if ((meta->geometry_type == WK_POINT) && sfc_writer_is_nesting_multipoint(writer)) {
         return WK_CONTINUE;
@@ -606,6 +606,14 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     default:
         Rf_error("Can't convert geometry type '%d' to sfg", meta->geometry_type); // # nocov
         break; // # nocov
+    }
+
+    // Top-level geometries have their dimensions checked but nested must be as well
+    if ((writer->recursion_level) > 0 && (meta->geometry_type == WK_POINT)) {
+        int all_na = sfc_double_all_na_or_nan(writer->coord_size, REAL(geom));
+        sfc_writer_update_dimensions(writer, meta, meta->size && !all_na);
+    } else if (writer->recursion_level > 0) {
+        sfc_writer_update_dimensions(writer, meta, meta->size);
     }
 
     // if we're above a top-level geometry, this geometry needs to be added to the parent
@@ -694,8 +702,9 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     if (vector_meta->size == writer->n_empty) {
         Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
     }
-    
-    if (writer->n_empty == vector_meta->size) {
+
+    // if the bounding box was never updated, set it to NAs
+    if (writer->bbox[0] == R_PosInf) {
         writer->bbox[0] = NA_REAL;
         writer->bbox[1] = NA_REAL;
         writer->bbox[2] = NA_REAL;
@@ -711,6 +720,12 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     }
 
     if (writer->flags & WK_FLAG_HAS_Z) {
+        // if the z_range was never updated, set it to NAs
+        if (writer->z_range[0] == R_PosInf) {
+            writer->z_range[0] = NA_REAL;
+            writer->z_range[1] = NA_REAL;
+        }
+
         const char* z_range_names[] = {"zmin", "zmax", ""};
         SEXP z_range = PROTECT(Rf_mkNamed(REALSXP, z_range_names));
         Rf_setAttrib(z_range, R_ClassSymbol, Rf_mkString("z_range"));
@@ -720,6 +735,12 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     }
 
     if (writer->flags & WK_FLAG_HAS_M) {
+        // if the m_range was never updated, set it to NAs
+        if (writer->m_range[0] == R_PosInf) {
+            writer->m_range[0] = NA_REAL;
+            writer->m_range[1] = NA_REAL;
+        }
+
         const char* m_range_names[] = {"mmin", "mmax", ""};
         SEXP m_range = PROTECT(Rf_mkNamed(REALSXP, m_range_names));
         Rf_setAttrib(m_range, R_ClassSymbol, Rf_mkString("m_range"));
@@ -778,8 +799,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         const char* type_names[] = {
             "POINT", "LINESTRING", "POLYGON",
              "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", 
-             "GEOMETRYCOLLECTION" 
-             ""
+             "GEOMETRYCOLLECTION"
         };
 
         SEXP classes = PROTECT(Rf_allocVector(STRSXP, n_geometry_types));
