@@ -49,3 +49,13 @@ test_that("debug handlers print messages from the wkb handler", {
     )
   )
 })
+
+test_that("wk_debug() runs the debug handler", {
+  expect_identical(
+    expect_output(
+      wk_debug(wkt("POINT (1 2)"), handler = wkb_writer()),
+      "POINT"
+    ),
+    as_wkb("POINT (1 2)")
+  )
+})

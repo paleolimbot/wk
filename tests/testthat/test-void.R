@@ -4,6 +4,10 @@ test_that("void handler can be created", {
   expect_is(wk_void_handler(), "wk_handler")
 })
 
+test_that("wk_void() does nothing", {
+  expect_null(wk_void(wkt("POINT (1 2)")))
+})
+
 test_that("void handlers do nothing", {
   wkb_good <- as_wkb(
     c(
