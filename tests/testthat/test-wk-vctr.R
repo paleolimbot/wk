@@ -60,3 +60,10 @@ test_that("rep() and rep_len() works for chr wk_vctrs", {
     structure(rep(NA_character_, 3), class = "wk_vctr")
   )
 })
+
+test_that("wk_vctr objects with different subclasses can't be combined", {
+  expect_error(
+    c(as_wkt("POINT EMPTY"), as_wkb("POINT EMPTY")),
+    "Can't combine"
+  )
+})

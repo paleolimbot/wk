@@ -12,10 +12,10 @@ typedef struct {
     R_xlen_t feat_id;
     int has_coord;
     uint32_t flags;
-} xyzm_writer_data_t;
+} xy_writer_data_t;
 
-int xyzm_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
 
     const char* names[] = {"x", "y", "z", "m", ""};
     data->result = PROTECT(Rf_mkNamed(VECSXP, names));
@@ -35,8 +35,8 @@ int xyzm_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     return WK_CONTINUE;
 }
 
-int xyzm_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+int xy_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
     data->feat_id = feat_id;
     data->has_coord = 0;
 
@@ -48,8 +48,8 @@ int xyzm_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, vo
     return WK_CONTINUE;
 }
 
-int xyzm_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+int xy_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
 
     // EMPTY and any set of features that (could) contain a single point work with this
     // handler! (error otherwise)
@@ -70,8 +70,8 @@ int xyzm_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* ha
     return WK_CONTINUE;
 }
 
-int xyzm_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+int xy_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
 
     if (data->has_coord) {
         Rf_error("[%d] Feature contains more than one coordinate.", data->feat_id + 1);
@@ -94,8 +94,8 @@ int xyzm_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t co
     return WK_CONTINUE;
 }
 
-SEXP xyzm_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+SEXP xy_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
 
     if ((data->flags & WK_FLAG_HAS_Z) && (data->flags & WK_FLAG_HAS_M)) {
         SEXP xy_class = PROTECT(Rf_allocVector(STRSXP, 5));
@@ -157,33 +157,33 @@ SEXP xyzm_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     }
 }
 
-void xyzm_writer_deinitialize(void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+void xy_writer_deinitialize(void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
     if (data->result != R_NilValue) {
         R_ReleaseObject(data->result);
         data->result = R_NilValue;
     }
 }
 
-void xyzm_writer_finalize(void* handler_data) {
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) handler_data;
+void xy_writer_finalize(void* handler_data) {
+    xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
     if (data != NULL) {
         free(data);
     }
 }
 
-SEXP wk_c_xyzm_writer_new() {
+SEXP wk_c_xy_writer_new() {
     wk_handler_t* handler = wk_handler_create();
 
-    handler->vector_start = &xyzm_writer_vector_start;
-    handler->feature_start = &xyzm_writer_feature_start;
-    handler->geometry_start = &xyzm_writer_geometry_start;
-    handler->coord = &xyzm_writer_coord;
-    handler->vector_end = &xyzm_writer_vector_end;
-    handler->deinitialize = &xyzm_writer_deinitialize;
-    handler->finalizer = &xyzm_writer_finalize;
+    handler->vector_start = &xy_writer_vector_start;
+    handler->feature_start = &xy_writer_feature_start;
+    handler->geometry_start = &xy_writer_geometry_start;
+    handler->coord = &xy_writer_coord;
+    handler->vector_end = &xy_writer_vector_end;
+    handler->deinitialize = &xy_writer_deinitialize;
+    handler->finalizer = &xy_writer_finalize;
 
-    xyzm_writer_data_t* data = (xyzm_writer_data_t*) malloc(sizeof(xyzm_writer_data_t));
+    xy_writer_data_t* data = (xy_writer_data_t*) malloc(sizeof(xy_writer_data_t));
     data->feat_id = 0;
     data->has_coord = 0;
     data->result = R_NilValue;

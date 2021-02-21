@@ -104,7 +104,9 @@ SEXP wk_handler_run_internal(void* data) {
   struct wk_handler_run_data* run_data = (struct wk_handler_run_data*) data;
 
   if (run_data->handler->api_version != 1) {
+    // # nocov start
     Rf_error("Can't run a wk_handler with api_version '%d'", run_data->handler->api_version);
+    // # nocov end
   }
 
   run_data->handler->initialize(&(run_data->handler->dirty), run_data->handler->handler_data);

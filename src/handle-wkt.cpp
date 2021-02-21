@@ -4,6 +4,7 @@
 #include <clocale>
 #include <cstring>
 #include <sstream>
+#include <cstdlib>
 
 #define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \
@@ -99,7 +100,7 @@ public:
   // Returns true if the next character is most likely to be a number
   bool isNumber() {
     // complicated by nan and inf
-    if (this->isOneOf("-nNiI")) {
+    if (this->isOneOf("-nNiI.")) {
       std::string text = this->peekUntilSep();
       try {
         std::stod(text);
@@ -131,19 +132,17 @@ public:
   // Returns the integer currently ahead of the cursor,
   // throwing an exception if whatever is ahead of the
   // cursor cannot be parsed into an integer
-  uint32_t assertInteger() {
+  long assertInteger() {
     std::string text = this->peekUntilSep();
-    try {
-      uint32_t out = std::stoul(text);
-      this->advance(text.size());
-      return out;
-    } catch (std::exception& e) {
-      if (this->finished()) {
-        this->error("an integer", "end of input");
-      } else {
-        this->error("an integer", quote(text));
-      }
+    const char* textPtr = text.c_str();
+    char* endPtr;
+    long out = std::strtol(textPtr, &endPtr, 10);
+    if (endPtr != (textPtr + text.size())) {
+      this->error("an integer", quote(text));
     }
+
+    this->advance(text.size());
+    return out;
   }
 
   // Returns the double currently ahead of the cursor,
@@ -151,18 +150,20 @@ public:
   // cursor cannot be parsed into a double. This will
   // accept "inf", "-inf", and "nan".
   double assertNumber() {
-    std::string text = this->peekUntilSep();
-    try {
-      double out = std::stod(text);
-      this->advance(text.size());
-      return out;
-    } catch (std::exception& e) {
-      if (this->finished()) {
-        this->error("a number", "end of input");
-      } else {
-        this->error("a number", quote(text));
-      }
+    if (this->finished()) {
+      this->error("a number", "end of input");
     }
+
+    std::string text = this->peekUntilSep();
+    const char* textPtr = text.c_str();
+    char* endPtr;
+    double out = std::strtod(textPtr, &endPtr);
+    if (endPtr != (textPtr + text.size())) {
+      this->error("a number", quote(text));
+    }
+
+    this->advance(text.size());
+    return out;
   }
 
   // Asserts that the character at the cursor is whitespace, and
@@ -208,7 +209,7 @@ public:
 
   // Asserts that the cursor is at the end of the input
   void assertFinished() {
-    this->assertOneOf("");
+    this->assert_('\0');
   }
 
   // Returns the text between the cursor and the next separator,
@@ -300,17 +301,8 @@ private:
 
   static std::string expectedFromChars(const char* chars) {
     size_t nChars = strlen(chars);
-    if (nChars == 0) {
-      return "end of input";
-    } else if (nChars == 1) {
-      return quote(chars);
-    }
-
     std::stringstream stream;
     for (size_t i = 0; i < nChars; i++) {
-      if (nChars > 2) {
-        stream << ",";
-      }
       if (i > 0) {
         stream << " or ";
       }
@@ -710,7 +702,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
   cppHandler.vector_start(&globalMeta);
 
   for (R_xlen_t i = 0; i < n_features; i++) {
-    if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
+    if (((i + 1) % 10) == 0) cpp11::check_user_interrupt();
 
     try {
       if (streamer.readFeature(&globalMeta, STRING_ELT(wkt, i), i) == WK_ABORT) {
