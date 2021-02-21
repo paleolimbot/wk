@@ -42,4 +42,7 @@ test_that("wk_handle.wk_crc() works", {
     wk_handle(crc(1, 2, 3), wkt_writer(), n_segments = 4)
   )
   expect_error(wk_handle(crc(1, 2, 3), wkt_writer(), n_segments = double()), "must be length 1")
+
+  # check invalid data
+  expect_error(wk_handle.wk_crc("not a crc", wk_void_handler()), "does not inherit from")
 })

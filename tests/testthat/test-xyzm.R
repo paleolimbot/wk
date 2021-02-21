@@ -129,6 +129,12 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
   )
 
   expect_error(as_xy(matrix(1:10, nrow = 1)), "Can't guess dimensions")
+
+  weird_matrix <- matrix(1:9, ncol = 3)
+  colnames(weird_matrix) <- c("tim", "suzie", "bill")
+  expect_error(as_xy(weird_matrix), "Can't guess dimensions")
+  colnames(weird_matrix) <- c("x", "y", "bill")
+  expect_identical(as_xy(weird_matrix), xy(1:3, 4:6))
 })
 
 test_that("coercion to wk* vectors works", {
