@@ -79,6 +79,10 @@ test_that("mutli* geometries can contain empties", {
     "MULTIPOINT (EMPTY)"
   )
   expect_identical(
+    wkt_translate_wkt("MULTIPOINT (1 1, EMPTY)"),
+    "MULTIPOINT ((1 1), EMPTY)"
+  )
+  expect_identical(
     wkt_translate_wkt("MULTIPOINT ((1 1), EMPTY)"),
     "MULTIPOINT ((1 1), EMPTY)"
   )
@@ -299,6 +303,9 @@ test_that("wkt_translate_* has reasonable error messages", {
   expect_error(wkt_translate_wkt("POINT (30 10="), "^Expected")
   expect_error(wkt_translate_wkt("POINT (30 10)P"), "^Expected")
   expect_error(wkt_translate_wkt("LINESTRING (30 10, 0 0="), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30A"), "^Expected")
+  expect_error(wkt_translate_wkt("SRID=30A"), "^Expected")
+  expect_error(wkt_translate_wkt("SRID"), "^Expected")
 })
 
 test_that("wkt_translate_* can handle non-finite values", {

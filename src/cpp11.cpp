@@ -63,7 +63,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_read_xy",              (DL_FUNC) &wk_c_read_xy,              2},
     {"wk_c_sfc_writer_new",       (DL_FUNC) &wk_c_sfc_writer_new,       0},
     {"wk_c_wkb_writer_new",       (DL_FUNC) &wk_c_wkb_writer_new,       2},
-    {"wk_c_xy_writer_new",      (DL_FUNC) &wk_c_xy_writer_new,      0},
+    {"wk_c_xy_writer_new",        (DL_FUNC) &wk_c_xy_writer_new,        0},
     {NULL, NULL, 0}
 };
 }
