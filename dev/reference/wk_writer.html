@@ -151,9 +151,9 @@
 <span class='co'># S3 method for wk_xy</span>
 <span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16L</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>wkb_writer</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>wkb_writer</span><span class='op'>(</span>buffer_size <span class='op'>=</span> <span class='fl'>2048L</span>, endian <span class='op'>=</span> <span class='cn'>NA_integer_</span><span class='op'>)</span>
 
 <span class='fu'>xyzm_writer</span><span class='op'>(</span><span class='op'>)</span></pre>
 
@@ -177,6 +177,15 @@ for each result or the number of digits after the decimal place otherwise.</p></
     <tr>
       <th>trim</th>
       <td><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></td>
+    </tr>
+    <tr>
+      <th>buffer_size</th>
+      <td><p>Control the initial buffer size used when writing WKB.</p></td>
+    </tr>
+    <tr>
+      <th>endian</th>
+      <td><p>Use 1 for little endian, 0 for big endian, or NA for
+system endian.</p></td>
     </tr>
     </table>
 
