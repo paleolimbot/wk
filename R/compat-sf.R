@@ -19,12 +19,6 @@ wk_handle.bbox <- function(handleable, handler, ...) {
 
 #' @rdname wk_writer
 #' @export
-sfc_writer <- function() {
-  new_wk_handler(.Call(wk_c_sfc_writer_new), "wk_sfc_writer")
-}
-
-#' @rdname wk_writer
-#' @export
 wk_writer.sfc <- function(handleable, ...) {
   sfc_writer()
 }
