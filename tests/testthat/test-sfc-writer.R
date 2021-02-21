@@ -23,6 +23,25 @@ test_that("sfc_writer() works with fixed-length input", {
     )
   )
 
+  # subtely different for WKT, since a point will fire zero coordinates
+  # whereas for WKB it will fire (NaN, NaN)
+  expect_equal(
+    wk_handle(
+      as_wkt(
+        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+          "GEOMETRYCOLLECTION EMPTY"
+        )
+      ),
+      sfc_writer()
+    ),
+    sf::st_sfc(
+      sf::st_point(), sf::st_linestring(), sf::st_polygon(),
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_geometrycollection()
+    )
+  )
+
   expect_identical(
     wk_handle(as_wkb("POINT (1 1)"), sfc_writer()),
     sf::st_sfc(sf::st_point(c(1, 1)))
@@ -77,6 +96,18 @@ test_that("sfc_writer() works with fixed-length input", {
         )
       )
     )
+  )
+})
+
+test_that("nested points are treated the same as top-level points", {
+  skip_if_not_installed("sf")
+
+  non_empty_nested <- as_wkt(c("GEOMETRYCOLLECTION (POINT (1 2))", "POINT EMPTY"))
+  empty_nested <- as_wkt(c("GEOMETRYCOLLECTION (POINT EMPTY)", "POINT (1 2)"))
+
+  expect_identical(
+    sf::st_bbox(wk_handle(non_empty_nested, sfc_writer())),
+    sf::st_bbox(wk_handle(empty_nested, sfc_writer())),
   )
 })
 
@@ -208,5 +239,14 @@ test_that("sfc_writer() reproduces all basic geometry types for WKT input", {
   expect_equal(
     wk_handle(as_wkt(nc_collection), sfc_writer()),
     nc_collection
+  )
+})
+
+test_that("sfc writer works with ZM dimensions", {
+  skip_if_not_installed("sf")
+
+  expect_identical(
+    wk_handle(wkt(c("POINT ZM (1 2 3 4)", "POINT ZM EMPTY")), sfc_writer()),
+    sf::st_sfc(sf::st_point(c(1, 2, 3, 4)), sf::st_point(rep(NA_real_, 4), dim = "XYZM"))
   )
 })
