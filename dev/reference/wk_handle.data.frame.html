@@ -133,10 +133,10 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='wk_handle.sfc.html'>wk_handle</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='sfc_writer.html'>wk_writer</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='wk_writer.sfc.html'>wk_writer</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'><a href='wk_crs.html'>wk_crs</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -168,20 +168,20 @@
     <tr>
       <th>handleable</th>
       <td><p>A geometry vector (e.g., <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>,
-<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfc.html'>wk_handle()</a></code> is defined.</p></td>
+<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
       <th>handler</th>
-      <td><p>A <a href='wk_handle.sfc.html'>wk_handler</a> object.</p></td>
+      <td><p>A <a href='wk_handle.sfg.html'>wk_handler</a> object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Passed to the <code><a href='wk_handle.sfc.html'>wk_handle()</a></code> method.</p></td>
+      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
     </tr>
     <tr>
       <th>.env</th>
       <td><p>Passed to <code><a href='https://rdrr.io/r/utils/getS3method.html'>getS3method()</a></code>, which is used to find
-the column in a <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame()</a></code> for which a <code><a href='wk_handle.sfc.html'>wk_handle()</a></code>
+the column in a <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame()</a></code> for which a <code><a href='wk_handle.sfg.html'>wk_handle()</a></code>
 method is defined.</p></td>
     </tr>
     <tr>
@@ -205,7 +205,7 @@ transformation.</p></td>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='wk_handle.sfc.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (0 1)"</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='sfc_writer.html'>wkb_writer</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (0 1)"</span><span class='op'>)</span><span class='op'>)</span>, <span class='fu'><a href='wk_writer.sfc.html'>wkb_writer</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
 #&gt; [1] &lt;POINT (0 1)&gt;</div><div class='input'><span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (0 1)"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>col_name <span class='op'>=</span> <span class='fu'><a href='wkb.html'>wkb</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;        col_name
