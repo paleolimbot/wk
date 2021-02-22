@@ -203,7 +203,7 @@ int wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     if (meta->geometry_type == WK_POINT && meta->size == 0) {
         int coord_size = 2;
         if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
-        if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
+        if (meta->flags & WK_FLAG_HAS_M) coord_size++;
         double empty_coord[4];
         empty_coord[0] = NAN;
         empty_coord[1] = NAN;
@@ -322,8 +322,12 @@ SEXP wk_c_wkb_writer_new(SEXP buffer_size_sexp, SEXP endian_sexp) {
         endian = 1;
     }
 
-    if (buffer_size < sizeof(double)) {
-        buffer_size = sizeof(double);
+    // If the initial buffer is too small, illegal reads can occur
+    // and cause R to crash. The smallest value that doesn't cause a
+    // crash is probably much less than 1024, but since this alloc
+    // only happens once, we set the minimum size to 1024 here.
+    if (buffer_size < 1024) {
+        buffer_size = 1024;
     }
 
     wk_handler_t* handler = wk_handler_create();

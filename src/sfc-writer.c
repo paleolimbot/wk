@@ -98,6 +98,16 @@ int sfc_writer_is_nesting_multipoint(sfc_writer_t* writer) {
     return Rf_inherits(writer->coord_seq, "MULTIPOINT");
 }
 
+static inline int sfc_double_all_na_or_nan(int n_values, const double* values) {
+    for (int i = 0; i < n_values; i++) {
+        if (!ISNA(values[i]) && !ISNAN(values[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 // this is intended to replicate NA_crs_
 SEXP sfc_na_crs() {
     const char* crs_names[] = {"input", "wkt", ""};
@@ -121,7 +131,7 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
     int coord_size;
     if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
         coord_size = 4;
-    } else if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
+    } else if ((flags & WK_FLAG_HAS_Z) || (flags & WK_FLAG_HAS_M)) {
         coord_size = 3;
     } else {
         coord_size = 2;
@@ -153,7 +163,7 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
         result = PROTECT(Rf_allocVector(VECSXP, 0));
         break;
     default:
-        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", geometry_type);
+        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", geometry_type); // # nocov
     }
 
     UNPROTECT(1);
@@ -199,7 +209,7 @@ void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk
             SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
             break;
         default:
-            Rf_error("Can't generate empty 'sfg' for geometry type '%d'", meta->geometry_type);
+            Rf_error("Can't generate class 'sfg' for geometry type '%d'", meta->geometry_type); // # nocov
         }
 
         Rf_setAttrib(item, R_ClassSymbol, class);
@@ -207,25 +217,32 @@ void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk
     }
 }
 
-void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta) {
-    if (meta->size == 0) {
-        writer->n_empty++;
+void sfc_writer_update_dimensions(sfc_writer_t* writer, const wk_meta_t* meta, uint32_t size) {
+    if (size > 0) {
+        if (writer->flags == SFC_FLAGS_NOT_YET_DEFINED) {
+            writer->flags = meta->flags;
+        } else if (writer->flags != meta->flags) {
+            Rf_error("Can't convert geometries with incompatible dimensions to 'sfc'");
+        }
     }
+}
 
+void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta, uint32_t size) {
+    // all geometry types specifically matters for when everything is EMPTY
+    writer->all_geometry_types = writer->all_geometry_types | (1 << (meta->geometry_type - 1));
+
+    // these matter even for EMPTY
     if (writer->geometry_type == SFC_GEOMETRY_TYPE_NOT_YET_DEFINED) {
         writer->geometry_type = meta->geometry_type;
     } else if (writer->geometry_type != meta->geometry_type) {
         writer->geometry_type = WK_GEOMETRY;
     }
 
-    writer->all_geometry_types = writer->all_geometry_types | (1 << (meta->geometry_type - 1));
-
-    // sfc objects must have consistent dimensions!
-    if (writer->flags == SFC_FLAGS_NOT_YET_DEFINED) {
-        writer->flags = meta->flags;
-    } else if (writer->flags != meta->flags) {
-        Rf_error("Can't convert geometries with incompatible dimensions to 'sfc'");
-    }
+    // update empty count
+    writer->n_empty += size == 0;
+    
+    // update dimensions
+    sfc_writer_update_dimensions(writer, meta, size);
 }
 
 void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const wk_coord_t coord) {
@@ -396,8 +413,10 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         writer->coord_size = 2;
     }
 
-    if (writer->recursion_level == 0) {
-        sfc_writer_update_vector_attributes(writer, meta);
+    // there isn't quite enough information here yet for points, which can
+    // be considered empty if coordinates are NA
+    if ((writer->recursion_level == 0) && (meta->geometry_type != WK_POINT)) {
+        sfc_writer_update_vector_attributes(writer, meta, meta->size);
     } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
         Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
     }
@@ -425,10 +444,9 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         break;
     case WK_LINESTRING:
     case WK_MULTIPOINT:
-        if (writer->coord_seq != R_NilValue) {
-            R_ReleaseObject(writer->coord_seq);
-        }
+        if (writer->coord_seq != R_NilValue) R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
+
         sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
         R_PreserveObject(writer->coord_seq);
         UNPROTECT(1);
@@ -478,7 +496,11 @@ int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
 int sfc_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
-    sfc_writer_update_ranges(writer, meta, coord);
+    // This point might be EMPTY, in which case it will cause the ranges to be all NaN
+    if ((meta->geometry_type != WK_POINT) || 
+        (!sfc_double_all_na_or_nan(writer->coord_size, coord.v))) {
+        sfc_writer_update_ranges(writer, meta, coord);
+    }
 
     // realloc the coordinate sequence if necessary
     if (writer->coord_id >= writer->coord_seq_rows) {
@@ -537,7 +559,7 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
 
 int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-
+    
     // ignore end of POINT nested in MULTIPOINT
     if ((meta->geometry_type == WK_POINT) && sfc_writer_is_nesting_multipoint(writer)) {
         return WK_CONTINUE;
@@ -585,6 +607,14 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         break; // # nocov
     }
 
+    // Top-level geometries have their dimensions checked but nested must be as well
+    if ((writer->recursion_level) > 0 && (meta->geometry_type == WK_POINT)) {
+        int all_na = sfc_double_all_na_or_nan(writer->coord_size, REAL(geom));
+        sfc_writer_update_dimensions(writer, meta, meta->size && !all_na);
+    } else if (writer->recursion_level > 0) {
+        sfc_writer_update_dimensions(writer, meta, meta->size);
+    }
+
     // if we're above a top-level geometry, this geometry needs to be added to the parent
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
@@ -607,17 +637,12 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         SET_VECTOR_ELT(writer->geom[writer->recursion_level - 1], part_id, geom);
         writer->part_id[writer->recursion_level - 1]++;
     } else if (meta->geometry_type == WK_POINT) {
-        // at the top level, we have to check if all point coordinates are NA
+        // at the top level, we have to check again if all point coordinates are NA
         // because this is 'empty' for the purposes of sfc
-        double* values = REAL(geom);
-        int all_na = 1;
-        for (int i = 0; i < writer->coord_size; i++) {
-            if (!ISNA(values[i]) && !ISNAN(values[i])) {
-                all_na = 0;
-                break;
-            }
-        }
-        if (all_na) writer->n_empty++;
+        // We didn't update this earlier because we didn't know if the point was
+        // empty yet or not!
+        int all_na = sfc_double_all_na_or_nan(writer->coord_size, REAL(geom));
+        sfc_writer_update_vector_attributes(writer, meta, meta->size && !all_na);
 
         SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
     } else {
@@ -634,14 +659,19 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     // replace NULLs with EMPTY of an appropriate type
     if (writer->any_null) {
         wk_meta_t meta;
-        if (writer->geometry_type == WK_GEOMETRY) {
+
+        if (writer->geometry_type == WK_GEOMETRY || writer->geometry_type == SFC_GEOMETRY_TYPE_NOT_YET_DEFINED) {
             WK_META_RESET(meta, WK_GEOMETRYCOLLECTION);
             // also update the type list for attr(sfc, "classes")
             writer->all_geometry_types = writer->all_geometry_types | (1 << (WK_GEOMETRYCOLLECTION - 1));
         } else {
             WK_META_RESET(meta, writer->geometry_type);
         }
-        meta.flags = writer->flags;
+
+        if (writer->flags != SFC_FLAGS_NOT_YET_DEFINED) {
+            meta.flags = writer->flags;
+        }
+
         meta.size = 0;
         writer->recursion_level = 0;
         SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
@@ -667,11 +697,13 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     Rf_setAttrib(bbox, R_ClassSymbol, Rf_mkString("bbox"));
 
     // the bounding box may or may not have a crs attribute
+    // when all features are empty
     if (vector_meta->size == writer->n_empty) {
         Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
     }
-    
-    if (writer->n_empty == vector_meta->size) {
+
+    // if the bounding box was never updated, set it to NAs
+    if (writer->bbox[0] == R_PosInf) {
         writer->bbox[0] = NA_REAL;
         writer->bbox[1] = NA_REAL;
         writer->bbox[2] = NA_REAL;
@@ -687,16 +719,30 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     }
 
     if (writer->flags & WK_FLAG_HAS_Z) {
+        // if the z_range was never updated, set it to NAs
+        if (writer->z_range[0] == R_PosInf) {
+            writer->z_range[0] = NA_REAL;
+            writer->z_range[1] = NA_REAL;
+        }
+
         const char* z_range_names[] = {"zmin", "zmax", ""};
         SEXP z_range = PROTECT(Rf_mkNamed(REALSXP, z_range_names));
+        Rf_setAttrib(z_range, R_ClassSymbol, Rf_mkString("z_range"));
         memcpy(REAL(z_range), writer->z_range, sizeof(double) * 2);
         Rf_setAttrib(writer->sfc, Rf_install("z_range"), z_range);
         UNPROTECT(1);
     }
 
     if (writer->flags & WK_FLAG_HAS_M) {
+        // if the m_range was never updated, set it to NAs
+        if (writer->m_range[0] == R_PosInf) {
+            writer->m_range[0] = NA_REAL;
+            writer->m_range[1] = NA_REAL;
+        }
+
         const char* m_range_names[] = {"mmin", "mmax", ""};
         SEXP m_range = PROTECT(Rf_mkNamed(REALSXP, m_range_names));
+        Rf_setAttrib(m_range, R_ClassSymbol, Rf_mkString("m_range"));
         memcpy(REAL(m_range), writer->m_range, sizeof(double) * 2);
         Rf_setAttrib(writer->sfc, Rf_install("m_range"), m_range);
         UNPROTECT(1);
@@ -752,8 +798,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         const char* type_names[] = {
             "POINT", "LINESTRING", "POLYGON",
              "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", 
-             "GEOMETRYCOLLECTION" 
-             ""
+             "GEOMETRYCOLLECTION"
         };
 
         SEXP classes = PROTECT(Rf_allocVector(STRSXP, n_geometry_types));
