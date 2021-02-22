@@ -322,8 +322,12 @@ SEXP wk_c_wkb_writer_new(SEXP buffer_size_sexp, SEXP endian_sexp) {
         endian = 1;
     }
 
-    if (buffer_size < sizeof(double)) {
-        buffer_size = sizeof(double);
+    // If the initial buffer is too small, illegal reads can occur
+    // and cause R to crash. The smallest value that doesn't cause a
+    // crash is probably much less than 1024, but since this alloc
+    // only happens once, we set the minimum size to 1024 here.
+    if (buffer_size < 1024) {
+        buffer_size = 1024;
     }
 
     wk_handler_t* handler = wk_handler_create();
