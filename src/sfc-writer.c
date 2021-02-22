@@ -131,7 +131,7 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
     int coord_size;
     if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
         coord_size = 4;
-    } else if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
+    } else if ((flags & WK_FLAG_HAS_Z) || (flags & WK_FLAG_HAS_M)) {
         coord_size = 3;
     } else {
         coord_size = 2;
@@ -163,7 +163,7 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
         result = PROTECT(Rf_allocVector(VECSXP, 0));
         break;
     default:
-        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", geometry_type);
+        Rf_error("Can't generate empty 'sfg' for geometry type '%d'", geometry_type); // # nocov
     }
 
     UNPROTECT(1);
@@ -209,7 +209,7 @@ void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk
             SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
             break;
         default:
-            Rf_error("Can't generate empty 'sfg' for geometry type '%d'", meta->geometry_type);
+            Rf_error("Can't generate class 'sfg' for geometry type '%d'", meta->geometry_type); // # nocov
         }
 
         Rf_setAttrib(item, R_ClassSymbol, class);
@@ -444,10 +444,9 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         break;
     case WK_LINESTRING:
     case WK_MULTIPOINT:
-        if (writer->coord_seq != R_NilValue) {
-            R_ReleaseObject(writer->coord_seq);
-        }
+        if (writer->coord_seq != R_NilValue) R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
+
         sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
         R_PreserveObject(writer->coord_seq);
         UNPROTECT(1);
@@ -661,7 +660,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     if (writer->any_null) {
         wk_meta_t meta;
 
-        if (writer->geometry_type == WK_GEOMETRY) {
+        if (writer->geometry_type == WK_GEOMETRY || writer->geometry_type == SFC_GEOMETRY_TYPE_NOT_YET_DEFINED) {
             WK_META_RESET(meta, WK_GEOMETRYCOLLECTION);
             // also update the type list for attr(sfc, "classes")
             writer->all_geometry_types = writer->all_geometry_types | (1 << (WK_GEOMETRYCOLLECTION - 1));

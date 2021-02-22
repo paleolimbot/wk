@@ -203,7 +203,7 @@ int wkb_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     if (meta->geometry_type == WK_POINT && meta->size == 0) {
         int coord_size = 2;
         if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
-        if (meta->flags & WK_FLAG_HAS_Z) coord_size++;
+        if (meta->flags & WK_FLAG_HAS_M) coord_size++;
         double empty_coord[4];
         empty_coord[0] = NAN;
         empty_coord[1] = NAN;
