@@ -113,8 +113,8 @@ test_that("nested points are treated the same as top-level points", {
 
 test_that("sfc_writer() turns NULLs into EMPTY", {
   expect_identical(
-    wk_handle(wkb(list(NULL)), sfc_writer())[[1]],
-    wk_handle(wkt("GEOMETRYCOLLECTION EMPTY"), sfc_writer())[[1]]
+    wk_handle(wkb(list(NULL)), sfc_writer()),
+    wk_handle(wkt("GEOMETRYCOLLECTION EMPTY"), sfc_writer())
   )
 
   all_types <- as_wkb(

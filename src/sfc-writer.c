@@ -672,6 +672,10 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
             meta.flags = writer->flags;
         }
 
+        if (writer->geometry_type == SFC_GEOMETRY_TYPE_NOT_YET_DEFINED) {
+            writer->geometry_type = WK_GEOMETRYCOLLECTION;
+        }
+
         meta.size = 0;
         writer->recursion_level = 0;
         SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
