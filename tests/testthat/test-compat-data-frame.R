@@ -9,12 +9,23 @@ test_that("wk_handle() works for data.frame", {
 
 test_that("wk_writer() works for data.frame", {
   expect_is(wk_writer(data.frame(wkt())), "wk_wkt_writer")
+  expect_error(wk_writer(data.frame(a = 1)), "must have exactly one")
 })
 
 test_that("wk_restore() works for data.frame", {
   expect_identical(
     wk_identity(data.frame(a = wkt("POINT (1 2)"))),
     data.frame(a = wkt("POINT (1 2)"))
+  )
+
+  expect_identical(
+    wk_restore(data.frame(a = wkt("POINT (1 2)")), wkt(c("POINT (1 2)", "POINT (3 4)"))),
+    data.frame(a = wkt(c("POINT (1 2)", "POINT (3 4)")), row.names = c("1", "1.1"))
+  )
+
+  expect_error(
+    wk_restore(data.frame(a = wkt(rep(NA, 3))), wkt(c("POINT (1 2)", "POINT (3 4)"))),
+    "Can't assign"
   )
 
   expect_identical(

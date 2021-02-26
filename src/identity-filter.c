@@ -110,7 +110,7 @@ SEXP wk_c_identity_filter_new(SEXP handler_xptr) {
 
   identity_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (identity_filter->next->api_version != 1) {
-    Rf_error("Can't run a wk_handler with api_version '%d'", identity_filter->next->api_version);
+    Rf_error("Can't run a wk_handler with api_version '%d'", identity_filter->next->api_version); // # nocov
   }
 
   handler->handler_data = identity_filter;

@@ -8,6 +8,18 @@ test_that("sf CRS objects can be compared", {
   expect_true(wk_crs_equal(NULL, sf::st_crs(NA)))
 })
 
+test_that("wk_crs/set_crs works on sf/sfc", {
+  skip_if_not_installed("sf")
+
+  sf <- sf::st_as_sf(data.frame(geometry = sf::st_as_sfc("POINT (1 2)")))
+  expect_identical(wk_crs(sf), sf::st_crs(sf))
+  expect_identical(sf::st_crs(wk_set_crs(sf, 4326)), sf::st_crs(4326))
+
+  sfc <- sf::st_as_sfc("POINT (1 2)")
+  expect_identical(wk_crs(sfc), sf::st_crs(sfc))
+  expect_identical(sf::st_crs(wk_set_crs(sfc, 4326)), sf::st_crs(4326))
+})
+
 test_that("conversion from sf to wkt works", {
   skip_if_not_installed("sf")
 
@@ -93,14 +105,29 @@ test_that("conversion to sf works", {
   expect_equal(sf::st_as_sf(wkt), sf)
   expect_equal(sf::st_as_sfc(wkt), sfc)
 
-  # xy has no SRID
+  # xy
   expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1), crs = 4326)), sf)
   expect_equal(sf::st_as_sfc(xy(c(NA, 0), c(NA, 1), crs = 4326)), sfc)
+
+  # xy with all !is.na() uses faster sf conversion with coords
+  expect_equal(sf::st_as_sf(xy(0, 1, crs = 4326)), sf[-1, , drop = FALSE])
+  expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[-1])
 
   # rct can only generate rectangles
   expect_equal(
     sf::st_as_sfc(rct(1, 2, 3, 4, crs = 4326)),
     sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326))
+  )
+
+  expect_equal(
+    sf::st_as_sf(rct(1, 2, 3, 4, crs = 4326)),
+    sf::st_as_sf(
+      data.frame(
+        geometry = sf::st_as_sfc(
+          sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)
+        )
+      )
+    )
   )
 })
 
@@ -178,8 +205,16 @@ test_that("wk_restore() works for sf", {
   expect_identical(
     wk_restore(
       sf::st_as_sf(data.frame(geometry = sf::st_as_sfc("POINT (1 2)"))),
-      sf::st_as_sfc("POINT (3 4)", "POINT (5 6)")
+      sf::st_as_sfc(c("POINT (3 4)", "POINT (5 6)"))
     ),
-    sf::st_as_sf(data.frame(geometry = sf::st_as_sfc("POINT (3 4)", "POINT (5 6)")))
+    sf::st_as_sf(data.frame(geometry = sf::st_as_sfc(c("POINT (3 4)", "POINT (5 6)"))))
+  )
+
+  expect_error(
+    wk_restore(
+      sf::st_as_sf(data.frame(geometry = sf::st_as_sfc(rep("POINT (1 2)", 3)))),
+      sf::st_as_sfc(c("POINT (3 4)", "POINT (5 6)"))
+    ),
+    "Can't assign"
   )
 })
