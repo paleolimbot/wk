@@ -346,7 +346,7 @@ SEXP wk_c_debug_filter_new(SEXP handler_xptr) {
 
   debug_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (debug_filter->next->api_version != 1) {
-    Rf_error("Can't run a wk_handler with api_version '%d'", debug_filter->next->api_version);
+    Rf_error("Can't run a wk_handler with api_version '%d'", debug_filter->next->api_version); // # nocov
   }
 
   handler->handler_data = debug_filter;
