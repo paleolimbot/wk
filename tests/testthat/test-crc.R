@@ -1,6 +1,6 @@
 
 test_that("crc class works", {
-  expect_is(crc(), "wk_crc")
+  expect_s3_class(crc(), "wk_crc")
   expect_output(print(crc(1, 2, 3)), "\\[1 2, r = 3\\]")
   expect_identical(as_crc(crc(1, 2, 3)), crc(1, 2, 3))
 
@@ -19,8 +19,8 @@ test_that("crc class works", {
 })
 
 test_that("coercion to and from wk* classes works", {
-  expect_is(as_wkt(crc(0, 0, 1)), "wk_wkt")
-  expect_is(as_wkb(crc(0, 0, 1)), "wk_wkb")
+  expect_s3_class(as_wkt(crc(0, 0, 1)), "wk_wkt")
+  expect_s3_class(as_wkb(crc(0, 0, 1)), "wk_wkb")
 
   expect_identical(
     wk_handle(crc(1, 2, 3), wkt_writer(precision = 2), n_segments = 4),

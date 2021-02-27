@@ -709,7 +709,7 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
         break;
       }
     } catch (WKParseException& e) {
-      if (cppHandler.error(i, e.code(), e.what()) == WK_ABORT) {
+      if (cppHandler.error(e.what()) == WK_ABORT) {
         break;
       }
     }

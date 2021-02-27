@@ -4,5 +4,5 @@ test_that("wk_handler class works", {
   handler <- wk_void_handler()
   expect_identical(as_wk_handler(handler), handler)
   expect_output(print(wk_void_handler()), "wk_void_handler")
-  expect_is(as_wk_handler(wk_void_handler), "wk_void_handler")
+  expect_s3_class(as_wk_handler(wk_void_handler), "wk_void_handler")
 })

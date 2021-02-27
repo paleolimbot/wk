@@ -73,7 +73,7 @@ wk_debug(
 
 ## sf support
 
-The wk package implements a reader and writer for sfc objects so you can use them wherever you'd use an `xy()`, `rct()`, `crc()`, `seg()`, `wkb()`, or `wkt()`:
+The wk package implements a reader and writer for sfc objects so you can use them wherever you'd use an `xy()`, `rct()`, `crc()`, `wkb()`, or `wkt()`:
 
 ```{r}
 wk_debug(
@@ -84,19 +84,4 @@ wk_debug(
 
 ## Lightweight
 
-The wk package has one recursive dependency ([cpp11](https://cpp11.r-lib.org)), compiles in ~10 seconds, and runs all 600 expectations in ~4 seconds. The package can read and write WKB at approximately the same speed as the sf package.
-
-```{r}
-nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))$geometry
-nc_wkb <- as_wkb(nc)
-
-bench::mark(
-  wk_handle(nc, wkb_writer()),
-  unclass(sf::st_as_binary(nc))
-)
-
-bench::mark(
-  wk_handle(nc_wkb, sfc_writer()),
-  sf::st_as_sfc(structure(nc_wkb, class = "WKB"))
-)
-```
+The wk package has one recursive dependency ([cpp11](https://cpp11.r-lib.org)) and compiles in ~10 seconds. The package was designed to be easy to take on as a dependency (although you can vendor in the headers if an additional dependency is a concern).

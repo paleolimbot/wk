@@ -55,6 +55,9 @@ typedef struct {
 
 sfc_writer_t* sfc_writer_new() {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
+    if (writer == NULL) {
+        return NULL; // # nocov
+    }
 
     writer->sfc = R_NilValue;
     for (int i = 0; i < SFC_WRITER_GEOM_LENGTH; i++) {
@@ -370,8 +373,11 @@ SEXP sfc_writer_finalize_geom(SEXP geom, R_xlen_t final_size) {
 
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        Rf_error("Can't handle vector of unknown size");
+    }
     if (writer->sfc != R_NilValue) {
-        Rf_error("Can't allocate destination 'sfc': destination was already allocated"); // # nocov
+        Rf_error("Destination vector was already allocated"); // # nocov
     }
 
     writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
@@ -864,6 +870,10 @@ SEXP wk_c_sfc_writer_new() {
     handler->deinitialize = &sfc_writer_deinitialize;
 
     handler->handler_data = sfc_writer_new();
+    if (handler->handler_data == NULL) {
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
+    }
 
     SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
     return xptr;

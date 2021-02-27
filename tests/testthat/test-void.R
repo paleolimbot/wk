@@ -1,7 +1,7 @@
 
 test_that("void handler can be created", {
-  expect_is(wk_void_handler(), "wk_void_handler")
-  expect_is(wk_void_handler(), "wk_handler")
+  expect_s3_class(wk_void_handler(), "wk_void_handler")
+  expect_s3_class(wk_void_handler(), "wk_handler")
 })
 
 test_that("wk_void() does nothing", {

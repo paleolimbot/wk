@@ -54,8 +54,8 @@ public:
     return cpp11::safe[next->vector_end](meta, next->handler_data);
   }
 
-  virtual int error(R_xlen_t feat_id, int code, const char* message) {
-    return cpp11::safe[next->error](feat_id, code, message, next->handler_data);
+  virtual int error(const char* message) {
+    return cpp11::safe[next->error](message, next->handler_data);
   }
 
   virtual void deinitialize() {

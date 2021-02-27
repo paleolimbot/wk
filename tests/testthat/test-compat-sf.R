@@ -24,7 +24,7 @@ test_that("conversion from sf to wkt works", {
   skip_if_not_installed("sf")
 
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), crs = 4326)
-  expect_is(as_wkt(sfc), "wk_wkt")
+  expect_s3_class(as_wkt(sfc), "wk_wkt")
   expect_identical(
     as.character(as_wkt(sfc)),
     c("POINT EMPTY", "POINT (0 1)")
@@ -43,7 +43,7 @@ test_that("conversion from sf to wkb works", {
   skip_if_not_installed("sf")
 
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), crs = 4326)
-  expect_is(as_wkb(sfc), "wk_wkb")
+  expect_s3_class(as_wkb(sfc), "wk_wkb")
   expect_identical(
     as.character(as_wkt(as_wkb(sfc))),
     c("POINT (nan nan)", "POINT (0 1)")
@@ -51,7 +51,7 @@ test_that("conversion from sf to wkb works", {
   expect_identical(wk_crs(as_wkb(sfc)), sf::st_crs(sfc))
 
   sfg <- sf::st_point(c(0, 1))
-  expect_is(as_wkb(sfg), "wk_wkb")
+  expect_s3_class(as_wkb(sfg), "wk_wkb")
   expect_identical(
     as.character(as_wkt(as_wkb(sfg))),
     "POINT (0 1)"
@@ -69,7 +69,7 @@ test_that("conversion from sf to xy works", {
   skip_if_not_installed("sf")
 
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)))
-  expect_is(as_xy(sfc), "wk_xy")
+  expect_s3_class(as_xy(sfc), "wk_xy")
   expect_identical(as_xy(sfc), xy(c(NA, 0), c(NA, 1)))
 
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))

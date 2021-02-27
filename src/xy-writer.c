@@ -17,6 +17,14 @@ typedef struct {
 int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     xy_writer_data_t* data = (xy_writer_data_t*) handler_data;
 
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        Rf_error("Can't handle vector of unknown size");
+    }
+
+    if (data->result != R_NilValue) {
+        Rf_error("Destination vector was already allocated"); // # nocov
+    }
+
     const char* names[] = {"x", "y", "z", "m", ""};
     data->result = PROTECT(Rf_mkNamed(VECSXP, names));
     SET_VECTOR_ELT(data->result, 0, Rf_allocVector(REALSXP, meta->size));
@@ -184,6 +192,11 @@ SEXP wk_c_xy_writer_new() {
     handler->finalizer = &xy_writer_finalize;
 
     xy_writer_data_t* data = (xy_writer_data_t*) malloc(sizeof(xy_writer_data_t));
+    if (data == NULL) {
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
+    }
+
     data->feat_id = 0;
     data->has_coord = 0;
     data->result = R_NilValue;

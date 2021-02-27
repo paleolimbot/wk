@@ -245,7 +245,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
 
                 result = wkb_read_geometry(&reader, WK_PART_ID_NONE);
                 if (result == WK_ABORT_FEATURE && reader.error_code != WK_NO_ERROR_CODE) {
-                    result = handler->error(i, reader.error_code, reader.error_buf, handler->handler_data);
+                    result = handler->error(reader.error_buf, handler->handler_data);
                 }
 
                 if (result == WK_ABORT_FEATURE) {

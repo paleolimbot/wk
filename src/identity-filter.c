@@ -63,9 +63,9 @@ int wk_identity_filter_coord(const wk_meta_t* meta, const wk_coord_t coord, uint
   return identity_filter->next->coord(meta, coord, coord_id, identity_filter->next->handler_data);
 }
 
-int wk_identity_filter_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_identity_filter_error(const char* message, void* handler_data) {
   identity_filter_t* identity_filter = (identity_filter_t*) handler_data;
-  return identity_filter->next->error(feat_id, code, message, identity_filter->next->handler_data);
+  return identity_filter->next->error(message, identity_filter->next->handler_data);
 }
 
 void wk_identity_filter_deinitialize(void* handler_data) {
@@ -107,6 +107,10 @@ SEXP wk_c_identity_filter_new(SEXP handler_xptr) {
   handler->finalizer = &wk_identity_filter_finalize;
 
   identity_filter_t* identity_filter = (identity_filter_t*) malloc(sizeof(identity_filter_t));
+  if (identity_filter == NULL) {
+    wk_handler_destroy(handler); // # nocov
+    Rf_error("Failed to alloc handler data"); // # nocov
+  }
 
   identity_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (identity_filter->next->api_version != 1) {

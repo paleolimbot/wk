@@ -284,12 +284,12 @@ int wk_debug_filter_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_
   return result;
 }
 
-int wk_debug_filter_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_debug_filter_error(const char* message, void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("error [i=%d](%d): %s", feat_id, code, message);
-  int result = debug_filter->next->error(feat_id, code, message, debug_filter->next->handler_data);
+  Rprintf("error: %s", message);
+  int result = debug_filter->next->error(message, debug_filter->next->handler_data);
   wk_debug_filter_print_result(result);
 
   if (result == WK_ABORT_FEATURE) {
@@ -342,6 +342,11 @@ SEXP wk_c_debug_filter_new(SEXP handler_xptr) {
   handler->finalizer = &wk_debug_filter_finalize;
 
   debug_filter_t* debug_filter = (debug_filter_t*) malloc(sizeof(debug_filter_t));
+  if (debug_filter == NULL) {
+    wk_handler_destroy(handler); // # nocov
+    Rf_error("Failed to alloc handler data"); // # nocov
+  }
+
   debug_filter->level = 0;
 
   debug_filter->next = R_ExternalPtrAddr(handler_xptr);

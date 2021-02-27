@@ -34,7 +34,7 @@ int wk_default_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint
   return WK_CONTINUE;
 }
 
-int wk_default_handler_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_default_handler_error(const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }
@@ -45,6 +45,10 @@ void wk_default_handler_finalizer(void* handler_data) {
 
 wk_handler_t* wk_handler_create() {
   wk_handler_t* handler = (wk_handler_t*) malloc(sizeof(wk_handler_t));
+  if (handler == NULL) {
+    Rf_error("Failed to alloc handler"); // # nocov
+  }
+
   handler->api_version = 1;
   handler->dirty = 0;
   handler->handler_data = NULL;

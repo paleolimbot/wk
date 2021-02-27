@@ -1,7 +1,23 @@
 # wk (development version)
 
-* Removed `wksxp()` in favour of improved `sfc()` support 
+* Removed `wksxp()` in favour of improved `sf::sfc()` support 
   (#21).
+* Rewrite existing readers, writers, and handlers, using 
+  a new C API (#13).
+* Use new C API in favour of header-only approach for all
+  wk functions (#19, #22).
+* Use cpp11 to manage safe use of callables that may longjmp 
+  from C++.
+* Added an R-level framework for other packages to implement
+  wk readers and handlers: `wk_handle()`, `wk_translate()`,
+  `wk_crs()`, and `wk_writer()` (#37).
+* Added a native reader and writer for `sf::st_sfc()` objects
+  and implemented R-level generics for sfc, sfg, sf, and bbox
+  objects (#28, #29, #38, #45).
+* Implement `crc()` vector class to represent circles (#40).
+* Added a 2D cartesian bounding box handler (`wk_bbox()`) (#42).
+* Refactored unit tests reflecting use of the new API and
+  for improved test coverage (#44, #45, #46).
 
 # wk 0.3.4
 

@@ -1,6 +1,6 @@
 
 test_that("wk_xy class works", {
-  expect_is(xy(), "wk_xy")
+  expect_s3_class(xy(), "wk_xy")
   expect_output(print(xy(1, 2)), "\\(1 2\\)")
   expect_identical(xy_dims(xy()), c("x", "y"))
 
@@ -19,8 +19,8 @@ test_that("wk_xy class works", {
 })
 
 test_that("wk_xyz class works", {
-  expect_is(xyz(), "wk_xyz")
-  expect_is(xyz(), "wk_xy")
+  expect_s3_class(xyz(), "wk_xyz")
+  expect_s3_class(xyz(), "wk_xy")
   expect_output(print(xyz(1, 2, 3)), "Z \\(1 2 3\\)")
   expect_identical(xy_dims(xyz()), c("x", "y", "z"))
 
@@ -39,8 +39,8 @@ test_that("wk_xyz class works", {
 })
 
 test_that("wk_xym class works", {
-  expect_is(xym(), "wk_xym")
-  expect_is(xym(), "wk_xy")
+  expect_s3_class(xym(), "wk_xym")
+  expect_s3_class(xym(), "wk_xy")
   expect_output(print(xym(1, 2, 3)), "M \\(1 2 3\\)")
   expect_identical(xy_dims(xym()), c("x", "y", "m"))
 
@@ -59,10 +59,10 @@ test_that("wk_xym class works", {
 })
 
 test_that("wk_xyzm class works", {
-  expect_is(xyzm(), "wk_xyzm")
-  expect_is(xyzm(), "wk_xyz")
-  expect_is(xyzm(), "wk_xym")
-  expect_is(xyzm(), "wk_xy")
+  expect_s3_class(xyzm(), "wk_xyzm")
+  expect_s3_class(xyzm(), "wk_xyz")
+  expect_s3_class(xyzm(), "wk_xym")
+  expect_s3_class(xyzm(), "wk_xy")
   expect_output(print(xyzm(1, 2, 3, 4)), "ZM \\(1 2 3 4\\)")
   expect_identical(xy_dims(xyzm()), c("x", "y", "z", "m"))
 
