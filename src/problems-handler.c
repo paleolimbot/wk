@@ -17,6 +17,10 @@ int wk_problems_handler_vector_start(const wk_vector_meta_t* meta, void* handler
         Rf_error("Can't handle vector of unknown size");
     }
 
+    if (data->problems != R_NilValue) {
+        Rf_error("Destination vector was already allocated"); // # nocov
+    }
+
     data->problems = PROTECT(Rf_allocVector(STRSXP, meta->size));
     R_xlen_t n_features = meta->size;
     for (R_xlen_t i = 0; i < n_features; i++) {

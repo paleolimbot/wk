@@ -165,6 +165,10 @@ int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
         Rf_error("Can't handle vector of unknown size");
     }
 
+    if (writer->result != R_NilValue) {
+        Rf_error("Destination vector was already allocated"); // # nocov
+    }
+
     writer->result = PROTECT(Rf_allocVector(VECSXP, meta->size));
     R_PreserveObject(writer->result);
     UNPROTECT(1);

@@ -377,7 +377,7 @@ int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_d
         Rf_error("Can't handle vector of unknown size");
     }
     if (writer->sfc != R_NilValue) {
-        Rf_error("Can't allocate destination 'sfc': destination was already allocated"); // # nocov
+        Rf_error("Destination vector was already allocated"); // # nocov
     }
 
     writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));

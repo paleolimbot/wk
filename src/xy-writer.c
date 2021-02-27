@@ -21,6 +21,10 @@ int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
         Rf_error("Can't handle vector of unknown size");
     }
 
+    if (data->result != R_NilValue) {
+        Rf_error("Destination vector was already allocated"); // # nocov
+    }
+
     const char* names[] = {"x", "y", "z", "m", ""};
     data->result = PROTECT(Rf_mkNamed(VECSXP, names));
     SET_VECTOR_ELT(data->result, 0, Rf_allocVector(REALSXP, meta->size));
