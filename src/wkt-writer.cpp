@@ -29,6 +29,10 @@ public:
   }
 
   int vector_start(const wk_vector_meta_t* meta) {
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        stop("Can't handle vector of unknown size");
+    }
+
     result = cpp11::writable::strings(meta->size);
     return WK_CONTINUE;
   }

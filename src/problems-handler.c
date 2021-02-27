@@ -13,6 +13,10 @@ typedef struct {
 int wk_problems_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
 
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        Rf_error("Can't handle vector of unknown size");
+    }
+
     data->problems = PROTECT(Rf_allocVector(STRSXP, meta->size));
     R_xlen_t n_features = meta->size;
     for (R_xlen_t i = 0; i < n_features; i++) {

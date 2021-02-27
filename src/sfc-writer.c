@@ -373,6 +373,9 @@ SEXP sfc_writer_finalize_geom(SEXP geom, R_xlen_t final_size) {
 
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        Rf_error("Can't handle vector of unknown size");
+    }
     if (writer->sfc != R_NilValue) {
         Rf_error("Can't allocate destination 'sfc': destination was already allocated"); // # nocov
     }
