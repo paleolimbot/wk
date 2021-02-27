@@ -8,7 +8,7 @@ test_that("wk_handle() works for data.frame", {
 })
 
 test_that("wk_writer() works for data.frame", {
-  expect_is(wk_writer(data.frame(wkt())), "wk_wkt_writer")
+  expect_s3_class(wk_writer(data.frame(wkt())), "wk_wkt_writer")
   expect_error(wk_writer(data.frame(a = 1)), "must have exactly one")
 })
 

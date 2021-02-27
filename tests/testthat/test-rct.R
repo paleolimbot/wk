@@ -1,6 +1,6 @@
 
 test_that("rct class works", {
-  expect_is(rct(), "wk_rct")
+  expect_s3_class(rct(), "wk_rct")
   expect_output(print(rct(1, 2, 3, 4)), "\\[1 2 3 4\\]")
   expect_identical(as_rct(rct(1, 2, 3, 4)), rct(1, 2, 3, 4))
 

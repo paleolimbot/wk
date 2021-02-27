@@ -1,13 +1,13 @@
 
 test_that("wkb class works", {
   x <- wkb(wkt_translate_wkb("POINT (40 10)", endian = 1))
-  expect_is(x, "wk_wkb")
+  expect_s3_class(x, "wk_wkb")
   expect_true(is_wk_wkb(x))
-  expect_is(x, "wk_vctr")
+  expect_s3_class(x, "wk_vctr")
   expect_output(print(x), "wk_wkb")
   expect_match(as.character(x), "POINT")
 
-  expect_is(wkb(list(NULL)), "wk_wkb")
+  expect_s3_class(wkb(list(NULL)), "wk_wkb")
   expect_true(is.na(wkb(list(NULL))))
 
   expect_error(new_wk_wkb(structure(list(), thing = "stuff")), "must be a list")
@@ -16,9 +16,9 @@ test_that("wkb class works", {
   expect_error(wkb(list(raw())), "Encountered 1 parse problem")
   expect_error(wkb(rep(list(raw()), 10)), "Encountered 10 parse problem")
 
-  expect_is(x[1], "wk_wkb")
+  expect_s3_class(x[1], "wk_wkb")
   expect_identical(x[[1]], x[1])
-  expect_is(c(x, x), "wk_wkb")
+  expect_s3_class(c(x, x), "wk_wkb")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
   expect_identical(rep(wkb(), 3), wkb())
@@ -54,7 +54,7 @@ test_that("parse_wkb() works", {
   x[[1]][2] <- as.raw(0xff)
   parsed <- expect_warning(parse_wkb(x), "Encountered 1 parse problem")
   expect_true(is.na(parsed))
-  expect_is(attr(parsed, "problems"), "data.frame")
+  expect_s3_class(attr(parsed, "problems"), "data.frame")
   expect_identical(nrow(attr(parsed, "problems")), 1L)
 })
 

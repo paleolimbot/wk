@@ -156,7 +156,7 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
   for (i in seq_along(all_types)) {
     vec <- wk_handle(c(all_types_non_empty[i], wkb(list(NULL))), sfc_writer())
     expect_equal(vec[[2]], wk_handle(all_types[i], sfc_writer())[[1]])
-    expect_is(vec, paste0("sfc_", types[i]))
+    expect_s3_class(vec, paste0("sfc_", types[i]))
   }
 
   # check at least one Z, M, and ZM geometry
@@ -405,12 +405,12 @@ test_that("the polygon container is reallocated according to variable-length inp
     ))
   }
 
-  expect_is(
+  expect_s3_class(
     wk_handle(make_really_holy_polygon(1), sfc_writer()),
     "sfc_POLYGON"
   )
 
-  expect_is(
+  expect_s3_class(
     # default length is 32, so this should cause one realloc
     wk_handle(make_really_holy_polygon(40), sfc_writer()),
     "sfc_POLYGON"

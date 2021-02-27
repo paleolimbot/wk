@@ -1,21 +1,21 @@
 
 test_that("wkt class works", {
   x <- wkt("POINT (40 10)")
-  expect_is(x, "wk_wkt")
-  expect_is(x, "wk_vctr")
+  expect_s3_class(x, "wk_wkt")
+  expect_s3_class(x, "wk_vctr")
   expect_true(is_wk_wkt(x))
   expect_output(print(x), "wk_wkt")
   expect_identical(as.character(x), unclass(x))
-  expect_is(wkt(NA), "wk_wkt")
+  expect_s3_class(wkt(NA), "wk_wkt")
 
   expect_error(new_wk_wkt(structure(character(), thing = "stuff")), "must be a character")
   expect_error(new_wk_wkt(list()), "must be a character")
   expect_error(wkt("NOPE"), "Encountered 1 parse problem")
   expect_error(wkt(rep("NOPE", 10)), "Encountered 10 parse problems")
 
-  expect_is(x[1], "wk_wkt")
+  expect_s3_class(x[1], "wk_wkt")
   expect_identical(x[[1]], x[1])
-  expect_is(c(x, x), "wk_wkt")
+  expect_s3_class(c(x, x), "wk_wkt")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep(wkt(), 1), wkt())
   expect_identical(rep_len(x, 2), c(x, x))
@@ -41,7 +41,7 @@ test_that("parse_wkt() works", {
   x <- "POINT ENTPY"
   parsed <- expect_warning(parse_wkt(x), "Encountered 1 parse problem")
   expect_true(is.na(parsed))
-  expect_is(attr(parsed, "problems"), "data.frame")
+  expect_s3_class(attr(parsed, "problems"), "data.frame")
   expect_identical(nrow(attr(parsed, "problems")), 1L)
 })
 
