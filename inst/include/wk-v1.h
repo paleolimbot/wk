@@ -14,7 +14,7 @@
 #define WK_FLAG_HAS_M 4
 #define WK_FLAG_DIMS_UNKNOWN 8
 
-#define WK_PRECISION_NONE UINT32_MAX
+#define WK_PRECISION_NONE 0.0
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_VECTOR_SIZE_UNKNOWN -1
@@ -40,7 +40,7 @@ typedef struct {
     uint32_t flags;
     uint32_t srid;
     uint32_t size;
-    uint32_t precision;
+    double precision;
     double bounds_min[4];
     double bounds_max[4];
 } wk_meta_t;
