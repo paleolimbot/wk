@@ -7,6 +7,9 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+#define WK_DEFAULT_ERROR_CODE 0
+#define WK_NO_ERROR_CODE -1
+
 // IS_BIG_ENDIAN, IS_LITTLE_ENDIAN, bswap_32(), bswap_64()
 #include "port.h"
 

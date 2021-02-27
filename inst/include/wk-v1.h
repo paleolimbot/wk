@@ -9,9 +9,6 @@
 #define WK_ABORT 1
 #define WK_ABORT_FEATURE 2
 
-#define WK_DEFAULT_ERROR_CODE 0
-#define WK_NO_ERROR_CODE -1
-
 #define WK_FLAG_HAS_BOUNDS 1
 #define WK_FLAG_HAS_Z 2
 #define WK_FLAG_HAS_M 4
