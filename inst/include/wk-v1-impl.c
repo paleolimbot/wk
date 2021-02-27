@@ -34,7 +34,7 @@ int wk_default_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint
   return WK_CONTINUE;
 }
 
-int wk_default_handler_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_default_handler_error(const char* message, void* handler_data) {
   Rf_error(message);
   return WK_ABORT;
 }

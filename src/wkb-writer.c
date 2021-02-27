@@ -161,8 +161,9 @@ static inline void wkb_write_doubles(wkb_writer_t* writer, const double* value, 
 
 int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
-    writer->result = Rf_allocVector(VECSXP, meta->size);
+    writer->result = PROTECT(Rf_allocVector(VECSXP, meta->size));
     R_PreserveObject(writer->result);
+    UNPROTECT(1);
     return WK_CONTINUE;
 }
 

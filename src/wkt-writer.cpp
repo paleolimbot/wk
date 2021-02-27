@@ -81,7 +81,7 @@ public:
         default:
             std::stringstream err;
             err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
-            return this->error(this->feat_id, WK_DEFAULT_ERROR_CODE, err.str().c_str());
+            return this->error(err.str().c_str());
         }
 
         if ((meta->size != 0) &&(meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
@@ -187,7 +187,7 @@ public:
     }
   }
 
-  int error(R_xlen_t feat_id, int code, const char* message) {
+  int error(const char* message) {
     this->out << "!!! " << message;
     this->result[this->current_feat_id] = this->out.str();
     return WK_ABORT_FEATURE;

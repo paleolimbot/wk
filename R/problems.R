@@ -25,5 +25,5 @@ wk_problems <- function(handleable, ...) {
 #' @rdname wk_problems
 #' @export
 wk_problems_handler <- function() {
-  new_wk_handler(.Call(wk_c_handler_problems_new), "wk_problems_handler")
+  new_wk_handler(.Call(wk_c_problems_handler_new), "wk_problems_handler")
 }

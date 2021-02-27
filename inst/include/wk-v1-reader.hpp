@@ -10,15 +10,7 @@
 
 class WKParseException: public std::runtime_error {
 public:
-  WKParseException(int code, std::string message): std::runtime_error(message), exceptionCode(code) {}
-  WKParseException(std::string message): std::runtime_error(message), exceptionCode(WK_DEFAULT_ERROR_CODE) {}
-
-  int code() {
-    return this->exceptionCode;
-  }
-
-private:
-  int exceptionCode;
+  WKParseException(std::string message): std::runtime_error(message) {}
 };
 
 class WKHandlerXPtr {
@@ -76,8 +68,8 @@ public:
     return cpp11::safe[handler->vector_end](meta, handler->handler_data);
   }
 
-  int error(R_xlen_t feat_id, int code, const char* message) {
-    return cpp11::safe[handler->error](feat_id, code, message, handler->handler_data);
+  int error(const char* message) {
+    return cpp11::safe[handler->error](message, handler->handler_data);
   }
 
 private:

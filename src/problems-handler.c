@@ -5,36 +5,77 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-int wk_handler_problems_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-  SEXP output = PROTECT(Rf_allocVector(STRSXP, meta->size));
-  R_xlen_t n_features = meta->size;
-  for (R_xlen_t i = 0; i < n_features; i++) {
-    SET_STRING_ELT(output, i, NA_STRING);
-  }
+typedef struct {
+    SEXP problems;
+    R_xlen_t last_feat_id;
+} wk_problems_handler_t;
 
-  R_SetExternalPtrProtected((SEXP) handler_data, output);
-  UNPROTECT(1);
-  return WK_CONTINUE;
+int wk_problems_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+
+    data->problems = PROTECT(Rf_allocVector(STRSXP, meta->size));
+    R_xlen_t n_features = meta->size;
+    for (R_xlen_t i = 0; i < n_features; i++) {
+        SET_STRING_ELT(data->problems, i, NA_STRING);
+    }
+
+    R_PreserveObject(data->problems);
+    UNPROTECT(1);
+    return WK_CONTINUE;
 }
 
-int wk_handler_problems_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
-  SET_STRING_ELT(R_ExternalPtrProtected((SEXP) handler_data), feat_id, Rf_mkChar(message));
-  return WK_ABORT_FEATURE;
+int wk_problems_handler_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+    data->last_feat_id = feat_id;
+    return WK_CONTINUE;
 }
 
-SEXP wk_handler_problems_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-  return R_ExternalPtrProtected((SEXP) handler_data);
+int wk_problems_handler_error(const char* message, void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+    SET_STRING_ELT(data->problems, data->last_feat_id, Rf_mkCharCE(message, CE_UTF8));
+    return WK_ABORT_FEATURE;
 }
 
-SEXP wk_c_handler_problems_new() {
-  wk_handler_t* handler = wk_handler_create();
+SEXP wk_problems_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+    return data->problems;
+}
 
-  handler->vector_start = &wk_handler_problems_vector_start;
-  handler->vector_end = &wk_handler_problems_vector_end;
-  handler->error = &wk_handler_problems_error;
+void wk_problems_handler_deinitialize(void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+    if (data->problems != R_NilValue) {
+        R_ReleaseObject(data->problems);
+    }
+}
 
-  SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
-  handler->handler_data = xptr;
+void wk_problems_handler_finalize(void* handler_data) {
+    wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
+    if (data !=  NULL) {
+        free(data);
+    }
+}
 
-  return xptr;
+SEXP wk_c_problems_handler_new() {
+    wk_handler_t* handler = wk_handler_create();
+
+    handler->vector_start = &wk_problems_handler_vector_start;
+    handler->vector_end = &wk_problems_handler_vector_end;
+    handler->feature_start = &wk_problems_handler_feature_start;
+    handler->error = &wk_problems_handler_error;
+    handler->deinitialize = &wk_problems_handler_deinitialize;
+    handler->finalizer = &wk_problems_handler_finalize;
+
+    wk_problems_handler_t* data = (wk_problems_handler_t*) malloc(sizeof(wk_problems_handler_t));
+    if (data == NULL) {
+        free(handler); // # nocov
+        Rf_error("Failed to alloc wk_problems_handler data"); // # nocov
+    }
+
+    data->last_feat_id = 0;
+    data->problems = R_NilValue;
+
+    SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
+    handler->handler_data = data;
+
+    return xptr;
 }

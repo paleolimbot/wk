@@ -63,9 +63,9 @@ int wk_identity_filter_coord(const wk_meta_t* meta, const wk_coord_t coord, uint
   return identity_filter->next->coord(meta, coord, coord_id, identity_filter->next->handler_data);
 }
 
-int wk_identity_filter_error(R_xlen_t feat_id, int code, const char* message, void* handler_data) {
+int wk_identity_filter_error(const char* message, void* handler_data) {
   identity_filter_t* identity_filter = (identity_filter_t*) handler_data;
-  return identity_filter->next->error(feat_id, code, message, identity_filter->next->handler_data);
+  return identity_filter->next->error(message, identity_filter->next->handler_data);
 }
 
 void wk_identity_filter_deinitialize(void* handler_data) {

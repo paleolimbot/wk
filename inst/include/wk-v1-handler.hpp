@@ -64,7 +64,7 @@ public:
      
   }
 
-  virtual int error(R_xlen_t feat_id, int code, const char* message) {
+  virtual int error(const char* message) {
     cpp11::stop(message);
   }
 };
@@ -225,10 +225,10 @@ private:
     WK_END_CPP11()
   }
 
-  static int error(R_xlen_t feat_id, int code, const char* message, void* handler_data) noexcept {
+  static int error(const char* message, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    return cpp_handler->error(feat_id, code, message);
+    return cpp_handler->error(message);
     WK_END_CPP11(WK_ABORT)
   }
 };
