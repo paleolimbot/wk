@@ -131,7 +131,15 @@
 <a href="#wk-development-version" class="anchor"></a>wk (development version)<small> Unreleased </small>
 </h1>
 <ul>
-<li>Removed <code>wksxp()</code> in favour of improved <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sfc()</a></code> support (<a href='https://github.com/paleolimbot/wk/issues/21'>#21</a>).</li>
+<li>Removed <code>wksxp()</code> in favour of improved <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> support (<a href='https://github.com/paleolimbot/wk/issues/21'>#21</a>).</li>
+<li>Rewrite existing readers, writers, and handlers, using a new C API (<a href='https://github.com/paleolimbot/wk/issues/13'>#13</a>).</li>
+<li>Use new C API in favour of header-only approach for all wk functions (<a href='https://github.com/paleolimbot/wk/issues/19'>#19</a>, <a href='https://github.com/paleolimbot/wk/issues/22'>#22</a>).</li>
+<li>Use cpp11 to manage safe use of callables that may longjmp from C++.</li>
+<li>Added an R-level framework for other packages to implement wk readers and handlers: <code><a href="../reference/wk_handle.sfg.html">wk_handle()</a></code>, <code><a href="../reference/wk_translate.sfc.html">wk_translate()</a></code>, <code><a href="../reference/wk_crs.html">wk_crs()</a></code>, and <code><a href="../reference/wk_writer.sfc.html">wk_writer()</a></code> (<a href='https://github.com/paleolimbot/wk/issues/37'>#37</a>).</li>
+<li>Added a native reader and writer for <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::st_sfc()</a></code> objects and implemented R-level generics for sfc, sfg, sf, and bbox objects (<a href='https://github.com/paleolimbot/wk/issues/28'>#28</a>, <a href='https://github.com/paleolimbot/wk/issues/29'>#29</a>, <a href='https://github.com/paleolimbot/wk/issues/38'>#38</a>, <a href='https://github.com/paleolimbot/wk/issues/45'>#45</a>).</li>
+<li>Implement <code><a href="../reference/crc.html">crc()</a></code> vector class to represent circles (<a href='https://github.com/paleolimbot/wk/issues/40'>#40</a>).</li>
+<li>Added a 2D cartesian bounding box handler (<code><a href="../reference/wk_bbox.html">wk_bbox()</a></code>) (<a href='https://github.com/paleolimbot/wk/issues/42'>#42</a>).</li>
+<li>Refactored unit tests reflecting use of the new API and for improved test coverage (<a href='https://github.com/paleolimbot/wk/issues/44'>#44</a>, <a href='https://github.com/paleolimbot/wk/issues/45'>#45</a>, <a href='https://github.com/paleolimbot/wk/issues/46'>#46</a>).</li>
 </ul>
 </div>
     <div id="wk-034" class="section level1">
