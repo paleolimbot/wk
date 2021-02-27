@@ -14,6 +14,7 @@
 #define WK_FLAG_HAS_M 4
 #define WK_FLAG_DIMS_UNKNOWN 8
 
+#define WK_PRECISION_NONE UINT32_MAX
 #define WK_PART_ID_NONE UINT32_MAX
 #define WK_SIZE_UNKNOWN UINT32_MAX
 #define WK_VECTOR_SIZE_UNKNOWN -1
@@ -39,6 +40,7 @@ typedef struct {
   uint32_t flags;
   uint32_t srid;
   uint32_t size;
+  uint32_t precision;
   double bounds_min[4];
   double bounds_max[4];
 } wk_meta_t;
@@ -54,6 +56,7 @@ typedef struct {
 #define WK_META_RESET(meta, geometry_type_)                    \
   meta.geometry_type = geometry_type_;                         \
   meta.flags = 0;                                              \
+  meta.precision = WK_PRECISION_NONE;                          \
   meta.srid = WK_SRID_NONE;                                    \
   meta.size = WK_SIZE_UNKNOWN
 
