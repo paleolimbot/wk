@@ -67,8 +67,8 @@ SEXP wk_c_problems_handler_new() {
 
     wk_problems_handler_t* data = (wk_problems_handler_t*) malloc(sizeof(wk_problems_handler_t));
     if (data == NULL) {
-        free(handler); // # nocov
-        Rf_error("Failed to alloc wk_problems_handler data"); // # nocov
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
     }
 
     data->last_feat_id = 0;

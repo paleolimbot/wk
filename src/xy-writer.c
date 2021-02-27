@@ -184,6 +184,11 @@ SEXP wk_c_xy_writer_new() {
     handler->finalizer = &xy_writer_finalize;
 
     xy_writer_data_t* data = (xy_writer_data_t*) malloc(sizeof(xy_writer_data_t));
+    if (data == NULL) {
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
+    }
+
     data->feat_id = 0;
     data->has_coord = 0;
     data->result = R_NilValue;

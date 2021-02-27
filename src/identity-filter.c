@@ -107,6 +107,10 @@ SEXP wk_c_identity_filter_new(SEXP handler_xptr) {
   handler->finalizer = &wk_identity_filter_finalize;
 
   identity_filter_t* identity_filter = (identity_filter_t*) malloc(sizeof(identity_filter_t));
+  if (identity_filter == NULL) {
+    wk_handler_destroy(handler); // # nocov
+    Rf_error("Failed to alloc handler data"); // # nocov
+  }
 
   identity_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (identity_filter->next->api_version != 1) {

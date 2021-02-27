@@ -47,13 +47,13 @@ static inline uint32_t wkb_writer_encode_type(const wk_meta_t* meta, int recursi
 wkb_writer_t* wkb_writer_new(size_t buffer_size, unsigned char endian) {
     unsigned char* buffer = malloc(buffer_size);
     if (buffer == NULL) {
-        Rf_error("Can't allocate buffer of size %d", buffer_size); // # nocov
+        return NULL; // # nocov
     }
 
     wkb_writer_t* writer = (wkb_writer_t*) malloc(sizeof(wkb_writer_t));
     if (writer == NULL) {
         free(buffer); // # nocov
-        Rf_error("Can't allocate wkb_writer_t"); // # nocov
+        return NULL; // # nocov
     }
 
     writer->endian = endian;
@@ -347,6 +347,11 @@ SEXP wk_c_wkb_writer_new(SEXP buffer_size_sexp, SEXP endian_sexp) {
     handler->finalizer = &wkb_writer_finalize;
 
     handler->handler_data = wkb_writer_new(buffer_size, endian);
+    if (handler->handler_data == NULL) {
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
+    }
+
     SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
     return xptr;
 }

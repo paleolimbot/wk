@@ -84,6 +84,11 @@ SEXP wk_c_bbox_handler_new() {
     handler->finalizer = &wk_bbox_handler_finalize;
 
     wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) malloc(sizeof(wk_bbox_handler_data_t));
+    if (data == NULL) {
+        wk_handler_destroy(handler); // # nocov
+        Rf_error("Failed to alloc handler data"); // # nocov
+    }
+
     data->xmin = R_PosInf;
     data->ymin = R_PosInf;
     data->xmax = R_NegInf;

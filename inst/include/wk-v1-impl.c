@@ -45,6 +45,10 @@ void wk_default_handler_finalizer(void* handler_data) {
 
 wk_handler_t* wk_handler_create() {
   wk_handler_t* handler = (wk_handler_t*) malloc(sizeof(wk_handler_t));
+  if (handler == NULL) {
+    Rf_error("Failed to alloc handler"); // # nocov
+  }
+
   handler->api_version = 1;
   handler->dirty = 0;
   handler->handler_data = NULL;

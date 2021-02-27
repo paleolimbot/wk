@@ -342,6 +342,11 @@ SEXP wk_c_debug_filter_new(SEXP handler_xptr) {
   handler->finalizer = &wk_debug_filter_finalize;
 
   debug_filter_t* debug_filter = (debug_filter_t*) malloc(sizeof(debug_filter_t));
+  if (debug_filter == NULL) {
+    wk_handler_destroy(handler); // # nocov
+    Rf_error("Failed to alloc handler data"); // # nocov
+  }
+
   debug_filter->level = 0;
 
   debug_filter->next = R_ExternalPtrAddr(handler_xptr);
