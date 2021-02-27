@@ -227,7 +227,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             // each feature could be huge, so check frequently
-            if (((i + 1) % 10) == 0) R_CheckUserInterrupt();
+            if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
             
             reader.feat_id = i;
             item = VECTOR_ELT(data, i);
