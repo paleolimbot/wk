@@ -31,7 +31,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Temp install udunits
-        run: brew install udunuts
+        run: brew install udunits
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
