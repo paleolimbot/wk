@@ -95,9 +95,7 @@ int count_handler_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, vo
 
     if (data->feat_id >= Rf_xlength(data->result)) {
         SEXP new_result = PROTECT(count_handler_realloc_result(data->result, Rf_xlength(data->result) * 2 + 1));
-        if (data->result != R_NilValue) {
-            R_ReleaseObject(data->result);
-        }
+        R_ReleaseObject(data->result);
         data->result = new_result;
         R_PreserveObject(data->result);
         UNPROTECT(1);

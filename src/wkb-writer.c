@@ -132,12 +132,39 @@ static inline void wkb_write_doubles(wkb_writer_t* writer, const double* value, 
     }
 }
 
-int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-    wkb_writer_t* writer = (wkb_writer_t*) handler_data;
-    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        Rf_error("Can't handle vector of unknown size");
+static inline void wkb_writer_result_append(wkb_writer_t* writer, SEXP value) {
+    R_xlen_t current_size = Rf_xlength(writer->result);
+    if (writer->feat_id >= current_size) {
+        SEXP new_result = PROTECT(Rf_allocVector(VECSXP, current_size * 2 + 1));
+        for (R_xlen_t i = 0; i < current_size; i++) {
+            SET_VECTOR_ELT(new_result, i, VECTOR_ELT(writer->result, i));
+        }
+        R_ReleaseObject(writer->result);
+        writer->result = new_result;
+        R_PreserveObject(writer->result);
+        UNPROTECT(1);
     }
 
+    SET_VECTOR_ELT(writer->result, writer->feat_id, value);
+    writer->feat_id++;
+}
+
+static inline void wkb_writer_result_finalize(wkb_writer_t* writer) {
+    R_xlen_t current_size = Rf_xlength(writer->result);
+    if (writer->feat_id != current_size) {
+        SEXP new_result = PROTECT(Rf_allocVector(VECSXP, writer->feat_id));
+        for (R_xlen_t i = 0; i < writer->feat_id; i++) {
+            SET_VECTOR_ELT(new_result, i, VECTOR_ELT(writer->result, i));
+        }
+        R_ReleaseObject(writer->result);
+        writer->result = new_result;
+        R_PreserveObject(writer->result);
+        UNPROTECT(1);
+    }
+}
+
+int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+    wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     if (writer->result != R_NilValue) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
@@ -145,6 +172,9 @@ int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     writer->result = PROTECT(Rf_allocVector(VECSXP, meta->size));
     R_PreserveObject(writer->result);
     UNPROTECT(1);
+
+    writer->feat_id = 0;
+
     return WK_CONTINUE;
 }
 
@@ -152,7 +182,6 @@ int wkb_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, voi
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     writer->offset = 0;
     writer->recursion_level = 0;
-    writer->feat_id = feat_id;
     return WK_CONTINUE;
 }
 
@@ -244,7 +273,7 @@ int wkb_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
 }
 
 int wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id,
-                      void* handler_data) {
+                     void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     writer->current_size[writer->recursion_level - 1]++;
     int n_dim = 2 + ((meta->flags & WK_FLAG_HAS_Z) != 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
@@ -254,7 +283,7 @@ int wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coo
 
 int wkb_writer_feature_null(void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
-    SET_VECTOR_ELT(writer->result, writer->feat_id, R_NilValue);
+    wkb_writer_result_append(writer, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 
@@ -262,13 +291,15 @@ int wkb_writer_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void*
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     SEXP item = PROTECT(Rf_allocVector(RAWSXP, writer->offset));
     memcpy(RAW(item), writer->buffer, writer->offset);
-    SET_VECTOR_ELT(writer->result, feat_id, item);
+    wkb_writer_result_append(writer, item);
     UNPROTECT(1);
     return WK_CONTINUE;
 }
 
 SEXP wkb_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
+
+    wkb_writer_result_finalize(writer);
 
     SEXP wkb_class = PROTECT(Rf_allocVector(STRSXP, 2));
     SET_STRING_ELT(wkb_class, 0, Rf_mkChar("wk_wkb"));
