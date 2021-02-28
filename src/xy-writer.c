@@ -10,14 +10,12 @@
 
 typedef struct {
     SEXP result;
+    // caching the underlying pointers results in a slight speedup
+    double* result_ptr[4];
     R_xlen_t result_size;
     R_xlen_t feat_id;
     int has_coord;
     uint32_t flags;
-    double* x;
-    double* y;
-    double* z;
-    double* m;
 } xy_writer_t;
 
 static inline SEXP xy_writer_alloc_result(R_xlen_t size) {
@@ -64,16 +62,9 @@ static inline void xy_writer_append_empty(xy_writer_t* writer) {
         writer->result_size = writer->result_size * 2 + 1;
     }
 
-    writer->x = REAL(VECTOR_ELT(writer->result, 0)) + writer->feat_id;
-    writer->y = REAL(VECTOR_ELT(writer->result, 1)) + writer->feat_id;
-    writer->z = REAL(VECTOR_ELT(writer->result, 2)) + writer->feat_id;
-    writer->m = REAL(VECTOR_ELT(writer->result, 3)) + writer->feat_id;
-
-    *writer->x = NA_REAL;
-    *writer->y = NA_REAL;
-    *writer->z = NA_REAL;
-    *writer->m = NA_REAL;
-
+    for (int i = 0; i < 4; i++) {
+        writer->result_ptr[i][writer->feat_id] = NA_REAL;
+    }
     writer->feat_id++;
 }
 
@@ -94,6 +85,10 @@ int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
 
     R_PreserveObject(data->result);
     UNPROTECT(1);
+
+    for (int i = 0; i < 4; i++) {
+        data->result_ptr[i] = REAL(VECTOR_ELT(data->result, i));
+    }
 
     data->feat_id = 0;
 
@@ -138,16 +133,16 @@ int xy_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coor
         data->has_coord = 1;
     }
 
-    *(data->x) = coord.v[0];
-    *(data->y) = coord.v[1];
+    data->result_ptr[0][data->feat_id] = coord.v[0];
+    data->result_ptr[1][data->feat_id] = coord.v[1];
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        *(data->z) = coord.v[2];
-        *(data->m) = coord.v[3];
+        data->result_ptr[2][data->feat_id] = coord.v[2];
+        data->result_ptr[3][data->feat_id] = coord.v[3];
     } else if(meta->flags & WK_FLAG_HAS_Z) {
-        *(data->z) = coord.v[2];
+        data->result_ptr[2][data->feat_id] = coord.v[2];
     } else if(meta->flags & WK_FLAG_HAS_M) {
-        *(data->m) = coord.v[2];
+        data->result_ptr[3][data->feat_id] = coord.v[2];
     }
 
     return WK_CONTINUE;
