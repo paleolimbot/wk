@@ -17,6 +17,7 @@
 
 typedef struct {
     SEXP result;
+    int swap_endian;
     unsigned char endian;
     unsigned char* buffer;
     size_t size;
@@ -58,6 +59,11 @@ wkb_writer_t* wkb_writer_new(size_t buffer_size, unsigned char endian) {
     }
 
     writer->endian = endian;
+#ifdef IS_LITTLE_ENDIAN
+    writer->swap_endian = endian != 1;
+#else
+    writer->swap_endian = endian != 0;
+#endif
     writer->result =  R_NilValue;
     writer->buffer = buffer;
     writer->size = buffer_size;
@@ -86,41 +92,23 @@ static inline void wkb_write_uchar(wkb_writer_t* writer, const unsigned char val
 }
 
 static inline void wkb_write_uint_offset(wkb_writer_t* writer, const uint32_t value, size_t offset) {
-#ifdef IS_LITTLE_ENDIAN
-    if (writer->endian == 1) {
-        memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
-    } else {
+    if (writer->swap_endian) {
         uint32_t swapped = bswap_32(value);
         memcpy(writer->buffer + offset, &swapped, sizeof(uint32_t));
-    }
-#else
-    if (writer->endian == 0) {
-        memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
     } else {
-        uint32_t swapped = bswap_32(value);
-        memcpy(writer->buffer + offset, &swapped, sizeof(uint32_t));
+        memcpy(writer->buffer + offset, &value, sizeof(uint32_t));
     }
-#endif
 }
 
 static inline void wkb_write_uint(wkb_writer_t* writer, const uint32_t value) {
     wkb_writer_ensure_space(writer, sizeof(uint32_t));
 
-#ifdef IS_LITTLE_ENDIAN
-    if (writer->endian == 1) {
-        memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
-    } else {
+    if (writer->swap_endian) {
         uint32_t swapped = bswap_32(value);
         memcpy(writer->buffer + writer->offset, &swapped, sizeof(uint32_t));
-    }
-#else
-    if (writer->endian == 0) {
-        memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
     } else {
-        uint32_t swapped = bswap_32(value);
-        memcpy(writer->buffer + writer->offset, &swapped, sizeof(uint32_t));
+        memcpy(writer->buffer + writer->offset, &value, sizeof(uint32_t));
     }
-#endif
 
     writer->offset += sizeof(uint32_t);
 }
@@ -128,13 +116,7 @@ static inline void wkb_write_uint(wkb_writer_t* writer, const uint32_t value) {
 static inline void wkb_write_doubles(wkb_writer_t* writer, const double* value, uint32_t n) {
     wkb_writer_ensure_space(writer, sizeof(double) * n);
 
-#ifdef IS_LITTLE_ENDIAN
-    if (writer->endian == 1) {
-        for (uint32_t i = 0; i < n; i++) {
-            memcpy(writer->buffer + writer->offset, value + i, sizeof(double));
-            writer->offset += sizeof(double);
-        }
-    } else {
+    if (writer->swap_endian) {
         uint64_t swappable, swapped;
         for (uint32_t i = 0; i < n; i++) {
             memcpy(&swappable, value + i, sizeof(double));
@@ -142,23 +124,12 @@ static inline void wkb_write_doubles(wkb_writer_t* writer, const double* value, 
             memcpy(writer->buffer + writer->offset, &swapped, sizeof(double));
             writer->offset += sizeof(double);
         }
-    }
-#else
-    if (writer->endian == 0) {
+    } else {
         for (uint32_t i = 0; i < n; i++) {
             memcpy(writer->buffer + writer->offset, value + i, sizeof(double));
             writer->offset += sizeof(double);
         }
-    } else {
-        uint64_t swappable, swapped;
-        for (uint32_t i = 0; i < n; i++) {
-            memcpy(&swappable, value + i, sizeof(double));
-            swapped = bswap_64(swappable);
-            memcpy(writer->buffer + writer->offset, &swapped, sizeof(double));
-            writer->offset += sizeof(double);
-        }
     }
-#endif
 }
 
 int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
