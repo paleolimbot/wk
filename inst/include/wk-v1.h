@@ -93,7 +93,7 @@ extern "C" {
 wk_handler_t* wk_handler_create();
 SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(wk_handler_t* handler);
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr);
+SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler), SEXP read_data, SEXP xptr);
 
 #ifdef __cplusplus
 } // extern "C" {

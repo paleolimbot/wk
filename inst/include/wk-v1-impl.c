@@ -98,7 +98,7 @@ SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot) {
 }
 
 struct wk_handler_run_data {
-  SEXP (*readFunction)(SEXP read_data, wk_handler_t* handler);
+  SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler);
   SEXP read_data;
   wk_handler_t* handler;
 };
@@ -119,12 +119,12 @@ SEXP wk_handler_run_internal(void* data) {
 
   run_data->handler->initialize(&(run_data->handler->dirty), run_data->handler->handler_data);
 
-  return run_data->readFunction(run_data->read_data, run_data->handler);
+  return run_data->read_fun(run_data->read_data, run_data->handler);
 }
 
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP read_data, wk_handler_t* handler),
+SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler),
                          SEXP read_data, SEXP xptr) {
   wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
-  struct wk_handler_run_data run_data = { readFunction, read_data, handler };
+  struct wk_handler_run_data run_data = { read_fun, read_data, handler };
   return R_ExecWithCleanup(&wk_handler_run_internal, &run_data, &wk_handler_run_cleanup, &run_data);
 }
