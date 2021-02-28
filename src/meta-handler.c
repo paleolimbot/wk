@@ -131,7 +131,7 @@ SEXP vector_meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_
     SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
 
     SET_VECTOR_ELT(result, 0, Rf_ScalarInteger(meta->geometry_type));
-    SET_VECTOR_ELT(result, 1, Rf_ScalarInteger(meta->size));
+    SET_VECTOR_ELT(result, 1, Rf_ScalarReal(meta->size));
     if (meta->flags & WK_FLAG_DIMS_UNKNOWN) {
         SET_VECTOR_ELT(result, 2, Rf_ScalarLogical(NA_LOGICAL));
         SET_VECTOR_ELT(result, 3, Rf_ScalarLogical(NA_LOGICAL));
