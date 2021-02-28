@@ -86,13 +86,15 @@ void wk_debug_filter_print_meta(const wk_meta_t* meta) {
   }
 
   if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M) ||
-      (meta->srid != WK_SRID_NONE) || (meta->flags & WK_FLAG_HAS_BOUNDS)) {
+      (meta->srid != WK_SRID_NONE) || (meta->flags & WK_FLAG_HAS_BOUNDS) ||
+      (meta->precision != WK_PRECISION_NONE)) {
     Rprintf(" ");
   }
   if (meta->flags & WK_FLAG_HAS_Z) Rprintf("Z");
   if (meta->flags & WK_FLAG_HAS_M) Rprintf("M");
   if (meta->srid != WK_SRID_NONE) Rprintf("S");
   if (meta->flags & WK_FLAG_HAS_BOUNDS) Rprintf("B");
+  if (meta->precision != WK_PRECISION_NONE) Rprintf("P");
 
   if (meta->size != WK_SIZE_UNKNOWN) {
     if (meta->size == 0) {

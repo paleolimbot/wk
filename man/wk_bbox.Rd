@@ -6,15 +6,17 @@
 \alias{wk_bbox_handler}
 \title{2D bounding rectangles}
 \usage{
-wk_bbox(handleable)
+wk_bbox(handleable, ...)
 
-\method{wk_bbox}{default}(handleable)
+\method{wk_bbox}{default}(handleable, ...)
 
 wk_bbox_handler()
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
+
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 }
 \value{
 A \code{\link[=rct]{rct()}} of length 1.

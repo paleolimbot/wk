@@ -13,7 +13,7 @@
   result = expr;                                               \
   if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
 
-int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id);
+int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id, double precision);
 int wk_sfc_read_point(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 int wk_sfc_read_linestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 int wk_sfc_read_polygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
@@ -23,6 +23,7 @@ int wk_sfc_read_multipolygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uin
 int wk_sfc_read_geometrycollection(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t part_id);
 void wk_update_meta_from_sfg(SEXP x, wk_meta_t* meta);
 void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta);
+double wk_sfc_precision(SEXP x);
 
 SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
     R_xlen_t n_features = Rf_xlength(data);
@@ -31,6 +32,7 @@ SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
     WK_VECTOR_META_RESET(vector_meta, WK_GEOMETRY);
     vector_meta.size = n_features;
     wk_update_vector_meta_from_sfc(data, &vector_meta);
+    double precision = wk_sfc_precision(data);
 
     if (handler->vector_start(&vector_meta, handler->handler_data) != WK_ABORT) {
         int result;
@@ -44,7 +46,7 @@ SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
             if (item == R_NilValue) {
                 HANDLE_CONTINUE_OR_BREAK(handler->null_feature(&vector_meta, i, handler->handler_data));
             } else {
-                HANDLE_CONTINUE_OR_BREAK(wk_sfc_read_sfg(item, handler, WK_PART_ID_NONE));
+                HANDLE_CONTINUE_OR_BREAK(wk_sfc_read_sfg(item, handler, WK_PART_ID_NONE, precision));
             }
 
             if (handler->feature_end(&vector_meta, i, handler->handler_data) == WK_ABORT) {
@@ -60,10 +62,11 @@ SEXP wk_c_read_sfc(SEXP data, SEXP handler_xptr) {
     return wk_handler_run_xptr(&wk_c_read_sfc_impl, data, handler_xptr);
 }
 
-int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id) {
+int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id, double precision) {
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
     wk_update_meta_from_sfg(x, &meta);
+    meta.precision = precision;
 
     if (Rf_inherits(x, "POINT")) {
         return wk_sfc_read_point(x, handler, &meta, part_id);
@@ -236,7 +239,7 @@ int wk_sfc_read_geometrycollection(SEXP x, wk_handler_t* handler, wk_meta_t* met
 
     HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
     for (uint32_t child_part_id = 0; child_part_id < meta->size; child_part_id++) {
-        HANDLE_OR_RETURN(wk_sfc_read_sfg(VECTOR_ELT(x, child_part_id), handler, child_part_id));
+        HANDLE_OR_RETURN(wk_sfc_read_sfg(VECTOR_ELT(x, child_part_id), handler, child_part_id, meta->precision));
     }
     HANDLE_OR_RETURN(handler->geometry_end(meta, part_id, handler->handler_data));
 
@@ -314,5 +317,16 @@ void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
     } else if (m_range != R_NilValue) {
         vector_meta->bounds_min[2] = REAL(m_range)[1];
         vector_meta->bounds_max[2] = REAL(m_range)[2];
+    }
+}
+
+double wk_sfc_precision(SEXP x) {
+    SEXP prec = Rf_getAttrib(x, Rf_install("precision"));
+    if ((TYPEOF(prec) == INTSXP) && (Rf_length(prec) == 1)) {
+        return INTEGER(prec)[0];
+    } else if ((TYPEOF(prec) == REALSXP) && (Rf_length(prec) == 1)) {
+        return REAL(prec)[0];
+    } else {
+        return WK_PRECISION_NONE;
     }
 }

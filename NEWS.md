@@ -1,6 +1,6 @@
 # wk (development version)
 
-* Removed `wksxp()` in favour of improved `sf::sfc()` support 
+* Removed `wksxp()` in favour of improved `sf::st_sfc()` support 
   (#21).
 * Rewrite existing readers, writers, and handlers, using 
   a new C API (#13).
@@ -8,9 +8,12 @@
   wk functions (#19, #22).
 * Use cpp11 to manage safe use of callables that may longjmp 
   from C++.
+* Vector classes now propagate `attr(, "crs")`, and check
+  that operations that involve more than one vector have
+  compatable CRS objects as determined by `wk_crs_equal()`.
 * Added an R-level framework for other packages to implement
   wk readers and handlers: `wk_handle()`, `wk_translate()`,
-  `wk_crs()`, and `wk_writer()` (#37).
+  and `wk_writer()` (#37).
 * Added a native reader and writer for `sf::st_sfc()` objects
   and implemented R-level generics for sfc, sfg, sf, and bbox
   objects (#28, #29, #38, #45).

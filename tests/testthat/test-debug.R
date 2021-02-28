@@ -65,6 +65,14 @@ test_that("vector attributes are printed by wk_debug()", {
   expect_output(wk_debug(sf::st_sfc(sf::st_point(c(1, 2, 3, 4)))), "POINT ZMB.*?POINT ZM")
   expect_output(wk_debug(sf::st_sfc()), "\\[EMPTY\\]")
 
+  obj <- sf::st_sfc(sf::st_point(c( 1 / 3, 1 / 3)))
+  sf::st_precision(obj) <- 0.01
+  expect_output(wk_debug(obj), "POINT P\\[1\\]")
+  sf::st_precision(obj) <- 1L
+  expect_output(wk_debug(obj), "POINT P\\[1\\]")
+  attr(obj, "precision") <- NULL
+  expect_output(wk_debug(obj), "POINT\\[1\\]")
+
   expect_output(wk_debug(sf::st_as_sfc("POINT (1 2)"), wk_bbox_handler()), "WK_ABORT")
 })
 

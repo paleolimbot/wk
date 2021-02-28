@@ -53,6 +53,7 @@ void wk_problems_handler_deinitialize(void* handler_data) {
     wk_problems_handler_t* data = (wk_problems_handler_t*) handler_data;
     if (data->problems != R_NilValue) {
         R_ReleaseObject(data->problems);
+        data->problems = R_NilValue;
     }
 }
 

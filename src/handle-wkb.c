@@ -7,6 +7,9 @@
 #include <stdint.h>
 #include <stdarg.h>
 
+#define WK_DEFAULT_ERROR_CODE 0
+#define WK_NO_ERROR_CODE -1
+
 // IS_BIG_ENDIAN, IS_LITTLE_ENDIAN, bswap_32(), bswap_64()
 #include "port.h"
 
@@ -227,7 +230,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             // each feature could be huge, so check frequently
-            if (((i + 1) % 10) == 0) R_CheckUserInterrupt();
+            if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
             
             reader.feat_id = i;
             item = VECTOR_ELT(data, i);
