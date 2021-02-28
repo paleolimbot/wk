@@ -404,14 +404,17 @@ static inline void sfc_writer_sfc_finalize(sfc_writer_t* writer) {
 
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        Rf_error("Can't handle vector of unknown size");
-    }
+
     if (writer->sfc != R_NilValue) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
-    writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
+    if (vector_meta->size == WK_SIZE_UNKNOWN) {
+        writer->sfc = PROTECT(Rf_allocVector(VECSXP, SFC_INITIAL_SIZE_IF_UNKNOWN));
+    } else {
+        writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
+    }
+
     R_PreserveObject(writer->sfc);
     UNPROTECT(1);
 

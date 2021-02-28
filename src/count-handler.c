@@ -10,6 +10,7 @@
 
 typedef struct {
     SEXP result;
+    R_xlen_t result_size;
     R_xlen_t feat_id;
     int n_geom;
     int n_ring;
@@ -31,15 +32,15 @@ SEXP count_handler_realloc_result(SEXP result, R_xlen_t new_size) {
     SEXP new_result = PROTECT(count_handler_alloc_result(new_size));
 
     R_xlen_t size_cpy;
-    if (Rf_xlength(result) < new_size) {
-        size_cpy = Rf_xlength(result); // reduce size
+    if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
+        size_cpy = Rf_xlength(VECTOR_ELT(result, 0)); // reduce size
     } else {
         size_cpy = new_size; // increase size
     }
 
     memcpy(INTEGER(VECTOR_ELT(new_result, 0)), INTEGER(VECTOR_ELT(result, 0)), sizeof(int) * size_cpy);
     memcpy(INTEGER(VECTOR_ELT(new_result, 1)), INTEGER(VECTOR_ELT(result, 1)), sizeof(int) * size_cpy);
-    memcpy(REAL(VECTOR_ELT(new_result, 2)), REAL(VECTOR_ELT(result, 2)), sizeof(int) * size_cpy);
+    memcpy(REAL(VECTOR_ELT(new_result, 2)), REAL(VECTOR_ELT(result, 2)), sizeof(double) * size_cpy);
 
     UNPROTECT(1);
     return result;
@@ -54,8 +55,10 @@ int count_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data)
 
     if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
         data->result = PROTECT(count_handler_alloc_result(COUNT_HANDLER_SIZE_DEFAULT));
+        data->result_size = COUNT_HANDLER_SIZE_DEFAULT;
     } else {
         data->result = PROTECT(count_handler_alloc_result(meta->size));
+        data->result_size = meta->size;
     }
     R_PreserveObject(data->result);
     UNPROTECT(1);
@@ -93,12 +96,13 @@ int count_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t 
 int count_handler_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
     count_handler_t* data = (count_handler_t*) handler_data;
 
-    if (data->feat_id >= Rf_xlength(data->result)) {
-        SEXP new_result = PROTECT(count_handler_realloc_result(data->result, Rf_xlength(data->result) * 2 + 1));
+    if (data->feat_id >= data->result_size) {
+        SEXP new_result = PROTECT(count_handler_realloc_result(data->result, data->result_size * 2 + 1));
         R_ReleaseObject(data->result);
         data->result = new_result;
         R_PreserveObject(data->result);
         UNPROTECT(1);
+        data->result_size = data->result_size * 2 + 1;
     }
 
     INTEGER(VECTOR_ELT(data->result, 0))[data->feat_id] = data->n_geom;
@@ -112,11 +116,9 @@ SEXP count_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) 
     count_handler_t* data = (count_handler_t*) handler_data;
 
     R_xlen_t final_size = data->feat_id + 1;
-    if (Rf_xlength(data->result) > final_size) {
+    if (data->result_size != final_size) {
         SEXP new_result = PROTECT(count_handler_realloc_result(data->result, final_size));
-        if (data->result != R_NilValue) {
-            R_ReleaseObject(data->result);
-        }
+        R_ReleaseObject(data->result);
         data->result = new_result;
         R_PreserveObject(data->result);
         UNPROTECT(1);
