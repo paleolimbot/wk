@@ -1,5 +1,4 @@
 
-
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
@@ -117,6 +116,38 @@ SEXP wk_c_meta_handler_new() {
     data->feat_id = 0;
     data->result = R_NilValue;
     handler->handler_data = data;
+
+    SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
+    return xptr;
+}
+
+
+int vector_meta_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
+    return WK_ABORT;
+}
+
+SEXP vector_meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
+    const char* names[] = {"geometry_type", "size", "has_z", "has_m", ""};
+    SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
+
+    SET_VECTOR_ELT(result, 0, Rf_ScalarInteger(meta->geometry_type));
+    SET_VECTOR_ELT(result, 1, Rf_ScalarInteger(meta->size));
+    if (meta->flags & WK_FLAG_DIMS_UNKNOWN) {
+        SET_VECTOR_ELT(result, 2, Rf_ScalarLogical(NA_LOGICAL));
+        SET_VECTOR_ELT(result, 3, Rf_ScalarLogical(NA_LOGICAL));
+    } else {
+        SET_VECTOR_ELT(result, 2, Rf_ScalarLogical((meta->flags & WK_FLAG_HAS_Z) != 0));
+        SET_VECTOR_ELT(result, 3, Rf_ScalarLogical((meta->flags & WK_FLAG_HAS_M) != 0));
+    }
+
+    UNPROTECT(1);
+    return result;
+}
+
+SEXP wk_c_vector_meta_handler_new() {
+    wk_handler_t* handler = wk_handler_create();
+    handler->vector_start = &vector_meta_handler_vector_start;
+    handler->vector_end = &vector_meta_handler_vector_end;
 
     SEXP xptr = wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
     return xptr;

@@ -3,42 +3,78 @@
 \name{wk_meta}
 \alias{wk_meta}
 \alias{wk_meta.default}
+\alias{wk_vector_meta}
+\alias{wk_vector_meta.default}
 \alias{wk_meta_handler}
+\alias{wk_vector_meta_handler}
+\alias{wk_geometry_type_label}
+\alias{wk_geometry_type}
 \title{Extract feature-level meta}
 \usage{
 wk_meta(handleable, ...)
 
 \method{wk_meta}{default}(handleable, ...)
 
+wk_vector_meta(handleable, ...)
+
+\method{wk_vector_meta}{default}(handleable, ...)
+
 wk_meta_handler()
+
+wk_vector_meta_handler()
+
+wk_geometry_type_label(geometry_type)
+
+wk_geometry_type(geometry_type_label)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{geometry_type}{An integer code for the geometry type. These
+integers follow the WKB specification (e.g., 1 for point,
+7 for geometrycollection).}
+
+\item{geometry_type_label}{A character vector of (lowercase)
+geometry type labels as would be found in WKT (e.g., point,
+geometrycollection).}
 }
 \value{
 A data.frame with columns:
 \itemize{
-\item \code{geometry_type}: An integer identifying the geometry type
+\item \code{geometry_type}: An integer identifying the geometry type.
+A value of 0 indicates that the types of geometry in the vector
+are not known without parsing the entire vector.
 \item \code{size}: For points and linestrings, the number of coordinates; for
 polygons, the number of rings; for collections, the number of
 child geometries. A value of zero indicates an EMPTY geometry.
 A value of \code{NA} means this value is unknown without parsing the
 entire geometry.
-\item \code{has_z}: \code{TRUE} if coordinates contain a Z value
-\item \code{has_m}: \code{TRUE} if coordinates contain an M value
+\item \code{has_z}: \code{TRUE} if coordinates contain a Z value. A value of \code{NA}
+means this value is unknown without parsing the entire vector.
+\item \code{has_m}: \code{TRUE} if coordinates contain an M value. A value of \code{NA}
+means this value is unknown without parsing the entire vector.
 \item \code{srid}: An integer identifying a CRS or NA if this value was not
 provided.
 \item \code{precision}: A grid size or 0.0 if a grid size was not provided.
+Note that coordinate values may not have been rounded; the grid
+size only refers to the level of detail with which they should
+be interpreted.
 }
 }
 \description{
-Extract feature-level meta
+These functions return the non-coordinate information of a geometry
+and/or vector. They do not parse an entire geometry/vector and are
+intended to be very fast even for large vectors.
 }
 \examples{
+wk_vector_meta(as_wkt("LINESTRING (0 0, 1 1)"))
 wk_meta(as_wkt("LINESTRING (0 0, 1 1)"))
 wk_meta(as_wkb("LINESTRING (0 0, 1 1)"))
+
+wk_geometry_type_label(1:7)
+wk_geometry_type(c("point", "geometrycollection"))
 
 }
