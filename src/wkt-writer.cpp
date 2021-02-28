@@ -9,7 +9,6 @@ class WKTWriterHandler: public WKVoidHandler {
 public:
   cpp11::writable::strings result;
   std::stringstream out;
-  wk_meta_t parentMeta;
   std::vector<const wk_meta_t*> stack;
   R_xlen_t feat_id;
 
