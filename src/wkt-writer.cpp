@@ -29,11 +29,9 @@ public:
   }
 
   int vector_start(const wk_vector_meta_t* meta) {
-    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        stop("Can't handle vector of unknown size");
+    if (meta->size != WK_VECTOR_SIZE_UNKNOWN) {
+      result.reserve(meta->size);
     }
-
-    result = cpp11::writable::strings(meta->size);
     return WK_CONTINUE;
   }
 
@@ -45,7 +43,7 @@ public:
   }
 
   virtual int null_feature() {
-    result[feat_id] = NA_STRING;
+    result.push_back(NA_STRING);
     return WK_ABORT_FEATURE;
   }
 
@@ -147,17 +145,13 @@ public:
   }
 
   int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
-    result[feat_id] = this->out.str();
+    result.push_back(this->out.str());
     return WK_CONTINUE;
   }
 
   virtual SEXP vector_end(const wk_vector_meta_t* meta) {
     this->result.attr("class") = {"wk_wkt", "wk_vctr"};
     return this->result;
-  }
-
-  void nextfeature_start(size_t feat_id) {
-    this->stack.clear();
   }
 };
 
@@ -166,12 +160,10 @@ public:
   WKTFormatHandler(int precision, bool trim, int max_coords): 
     WKTWriterHandler(precision, trim), 
     current_coords(0), 
-    max_coords(max_coords),
-    current_feat_id(0) {}
+    max_coords(max_coords) {}
 
   virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
     this->current_coords = 0;
-    this->current_feat_id = feat_id;
     return WKTWriterHandler::feature_start(meta, feat_id);
   }
 
@@ -184,7 +176,7 @@ public:
     WKTWriterHandler::coord(meta, coord, coord_id);
     if (++this->current_coords >= this->max_coords) {
       this->out << "...";
-      this->result[this->current_feat_id] = this->out.str();
+      this->result.push_back(this->out.str());
       return WK_ABORT_FEATURE;
     } else {
       return WK_CONTINUE;
@@ -193,7 +185,7 @@ public:
 
   int error(const char* message) {
     this->out << "!!! " << message;
-    this->result[this->current_feat_id] = this->out.str();
+    this->result.push_back(this->out.str());
     return WK_ABORT_FEATURE;
   }
 
@@ -204,7 +196,6 @@ public:
 private:
   int current_coords;
   int max_coords;
-  R_xlen_t current_feat_id;
 };
 
 [[cpp11::register]]
