@@ -28,7 +28,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int null_feature() {
     return WK_CONTINUE;
   }
 
@@ -162,10 +162,10 @@ private:
     WK_END_CPP11(WK_ABORT)
   }
 
-  static int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) noexcept {
+  static int null_feature(void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
-    return cpp_handler->null_feature(meta, feat_id);
+    return cpp_handler->null_feature();
     WK_END_CPP11(WK_ABORT)
   }
 

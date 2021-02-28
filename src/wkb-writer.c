@@ -24,6 +24,7 @@ typedef struct {
     size_t current_size_offset[WKB_MAX_RECURSION_DEPTH + 3];
     uint32_t current_size[WKB_MAX_RECURSION_DEPTH + 3];
     size_t recursion_level;
+    R_xlen_t feat_id;
 } wkb_writer_t;
 
 static inline unsigned char wkb_writer_platform_endian() {
@@ -62,6 +63,7 @@ wkb_writer_t* wkb_writer_new(size_t buffer_size, unsigned char endian) {
     writer->size = buffer_size;
     writer->offset = 0;
     writer->recursion_level = 0;
+    writer->feat_id = 0;
     return writer;
 }
 
@@ -179,6 +181,7 @@ int wkb_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, voi
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     writer->offset = 0;
     writer->recursion_level = 0;
+    writer->feat_id = feat_id;
     return WK_CONTINUE;
 }
 
@@ -278,9 +281,9 @@ int wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coo
     return WK_CONTINUE;
 }
 
-int wkb_writer_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wkb_writer_feature_null(void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
-    SET_VECTOR_ELT(writer->result, feat_id, R_NilValue);
+    SET_VECTOR_ELT(writer->result, writer->feat_id, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 

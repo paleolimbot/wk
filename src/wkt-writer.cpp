@@ -44,7 +44,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int null_feature() {
     result[feat_id] = NA_STRING;
     return WK_ABORT_FEATURE;
   }
@@ -175,7 +175,7 @@ public:
     return WKTWriterHandler::feature_start(meta, feat_id);
   }
 
-  virtual int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int null_feature() {
     this->out << "<null feature>";
     return WK_CONTINUE;
   }

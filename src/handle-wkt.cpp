@@ -434,7 +434,7 @@ public:
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
     if (item == NA_STRING) {
-      HANDLE_OR_RETURN(this->handler.null_feature(meta, feat_id));
+      HANDLE_OR_RETURN(this->handler.null_feature());
     } else {
       WKTV1String s(CHAR(item));
       HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));

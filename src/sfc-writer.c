@@ -393,13 +393,13 @@ int sfc_writer_feature_start(const wk_vector_meta_t* vector_meta, R_xlen_t feat_
     return WK_CONTINUE;
 }
 
-int sfc_writer_null_feature(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
+int sfc_writer_null_feature(void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
     // sfc doesn't do NULLs and replaces them with GEOMETRYCOLLECTION EMPTY
     // however, as the dimensions have to align among features we asign a NULL here and fix
     // in vector_end()
     writer->any_null = 1;
-    SET_VECTOR_ELT(writer->sfc, feat_id, R_NilValue);
+    SET_VECTOR_ELT(writer->sfc, writer->feat_id, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 

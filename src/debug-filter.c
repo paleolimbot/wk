@@ -184,12 +184,12 @@ int wk_debug_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id
   return result;
 }
 
-int wk_debug_filter_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_debug_filter_feature_null(void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("null_feature (%d) <%p> ", feat_id + 1, meta);
-  int result = debug_filter->next->null_feature(meta, feat_id, debug_filter->next->handler_data);
+  Rprintf("null_feature ");
+  int result = debug_filter->next->null_feature(debug_filter->next->handler_data);
   wk_debug_filter_print_result(result);
   return result;
 }

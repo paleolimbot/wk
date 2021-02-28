@@ -64,7 +64,7 @@ int meta_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* h
     return WK_ABORT_FEATURE;
 }
 
-int meta_handler_null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int meta_handler_null_feature(void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
 
     INTEGER(VECTOR_ELT(data->result, 0))[data->feat_id] = NA_INTEGER;
