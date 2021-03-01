@@ -92,3 +92,10 @@ test_that("wk_debug() runs the debug handler", {
     as_wkb("POINT (1 2)")
   )
 })
+
+test_that("wk_debug() works for a vector of indeterminate length", {
+  expect_output(
+    handle_wkt_without_vector_size(wkt(), wk_debug_filter()),
+    "\\[UNKNOWN\\]"
+  )
+})

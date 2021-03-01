@@ -46,12 +46,14 @@ void wk_debug_filter_print_vector_meta(const wk_vector_meta_t* meta) {
   if (meta->flags & WK_FLAG_HAS_M) Rprintf("M");
   if (meta->flags & WK_FLAG_HAS_BOUNDS) Rprintf("B");
 
-  if (meta->size != WK_SIZE_UNKNOWN) {
+  if (meta->size != WK_VECTOR_SIZE_UNKNOWN) {
     if (meta->size == 0) {
       Rprintf("[EMPTY]");
     } else {
       Rprintf("[%d]", meta->size);
     }
+  } else {
+    Rprintf("[UNKNOWN]");
   }
 
   Rprintf(" <%p>", (void*) meta);
@@ -102,6 +104,8 @@ void wk_debug_filter_print_meta(const wk_meta_t* meta) {
     } else {
       Rprintf("[%d]", meta->size);
     }
+  } else {
+    Rprintf("[UNKNOWN]");
   }
 
   Rprintf(" <%p>", (void*) meta);
