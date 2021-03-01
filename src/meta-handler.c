@@ -8,28 +8,79 @@
 
 typedef struct {
     SEXP result;
+    R_xlen_t result_size;
     R_xlen_t feat_id;
 } meta_handler_t;
 
+SEXP meta_handler_alloc_result(R_xlen_t size) {
+    const char* names[] = {"geometry_type", "size", "has_z", "has_m", "srid", "precision", ""};
+    SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
+    SET_VECTOR_ELT(result, 0, Rf_allocVector(INTSXP, size));
+    SET_VECTOR_ELT(result, 1, Rf_allocVector(INTSXP, size));
+    SET_VECTOR_ELT(result, 2, Rf_allocVector(LGLSXP, size));
+    SET_VECTOR_ELT(result, 3, Rf_allocVector(LGLSXP, size));
+    SET_VECTOR_ELT(result, 4, Rf_allocVector(INTSXP, size));
+    SET_VECTOR_ELT(result, 5, Rf_allocVector(REALSXP, size));
+
+    UNPROTECT(1);
+    return result;
+}
+
+SEXP meta_handler_realloc_result(SEXP result, R_xlen_t new_size) {
+    SEXP new_result = PROTECT(meta_handler_alloc_result(new_size));
+
+    R_xlen_t size_cpy;
+    if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
+        size_cpy = Rf_xlength(VECTOR_ELT(result, 0)); // reduce size
+    } else {
+        size_cpy = new_size; // increase size
+    }
+
+    memcpy(INTEGER(VECTOR_ELT(new_result, 0)), INTEGER(VECTOR_ELT(result, 0)), sizeof(int) * size_cpy);
+    memcpy(INTEGER(VECTOR_ELT(new_result, 1)), INTEGER(VECTOR_ELT(result, 1)), sizeof(int) * size_cpy);
+    memcpy(LOGICAL(VECTOR_ELT(new_result, 2)), LOGICAL(VECTOR_ELT(result, 2)), sizeof(int) * size_cpy);
+    memcpy(LOGICAL(VECTOR_ELT(new_result, 3)), LOGICAL(VECTOR_ELT(result, 3)), sizeof(int) * size_cpy);
+    memcpy(INTEGER(VECTOR_ELT(new_result, 4)), INTEGER(VECTOR_ELT(result, 4)), sizeof(int) * size_cpy);
+    memcpy(REAL(VECTOR_ELT(new_result, 5)), REAL(VECTOR_ELT(result, 5)), sizeof(double) * size_cpy);
+
+    UNPROTECT(1);
+    return result;
+}
+
+static inline void meta_handler_result_append(meta_handler_t* data, int geometry_type, int size, 
+                                              int has_z, int has_m, int srid, double precision) {
+    if (data->feat_id >= data->result_size) {
+        SEXP new_result = PROTECT(meta_handler_realloc_result(data->result, data->feat_id * 2 + 1));
+        R_ReleaseObject(data->result);
+        data->result = new_result;
+        R_PreserveObject(data->result);
+        UNPROTECT(1);
+        data->result_size = data->feat_id * 2 + 1;
+    }
+
+    INTEGER(VECTOR_ELT(data->result, 0))[data->feat_id] = geometry_type;
+    INTEGER(VECTOR_ELT(data->result, 1))[data->feat_id] = size;
+    LOGICAL(VECTOR_ELT(data->result, 2))[data->feat_id] = has_z;
+    LOGICAL(VECTOR_ELT(data->result, 3))[data->feat_id] = has_m;
+    INTEGER(VECTOR_ELT(data->result, 4))[data->feat_id] = srid;
+    REAL(VECTOR_ELT(data->result, 5))[data->feat_id] = precision;
+    data->feat_id++;
+}
+
 int meta_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
-
-    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        Rf_error("Can't handle vector of unknown size");
-    }
 
     if (data->result != R_NilValue) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
-    const char* names[] = {"geometry_type", "size", "has_z", "has_m", "srid", "precision", ""};
-    data->result = PROTECT(Rf_mkNamed(VECSXP, names));
-    SET_VECTOR_ELT(data->result, 0, Rf_allocVector(INTSXP, meta->size));
-    SET_VECTOR_ELT(data->result, 1, Rf_allocVector(INTSXP, meta->size));
-    SET_VECTOR_ELT(data->result, 2, Rf_allocVector(LGLSXP, meta->size));
-    SET_VECTOR_ELT(data->result, 3, Rf_allocVector(LGLSXP, meta->size));
-    SET_VECTOR_ELT(data->result, 4, Rf_allocVector(INTSXP, meta->size));
-    SET_VECTOR_ELT(data->result, 5, Rf_allocVector(REALSXP, meta->size));
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        data->result = PROTECT(meta_handler_alloc_result(1024));
+        data->result_size = 1024;
+    } else {
+        data->result = PROTECT(meta_handler_alloc_result(meta->size));
+        data->result_size = meta->size;
+    }
 
     R_PreserveObject(data->result);
     UNPROTECT(1);
@@ -46,40 +97,60 @@ int meta_handler_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, v
 int meta_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
 
-    INTEGER(VECTOR_ELT(data->result, 0))[data->feat_id] = meta->geometry_type;
+    int result_size;
     if (meta->size == WK_SIZE_UNKNOWN) {
-        INTEGER(VECTOR_ELT(data->result, 1))[data->feat_id] = NA_INTEGER;
+        result_size = NA_INTEGER;
     } else {
-        INTEGER(VECTOR_ELT(data->result, 1))[data->feat_id] = meta->size;
+        result_size = meta->size;
     }
-    LOGICAL(VECTOR_ELT(data->result, 2))[data->feat_id] = (meta->flags & WK_FLAG_HAS_Z) != 0;
-    LOGICAL(VECTOR_ELT(data->result, 3))[data->feat_id] = (meta->flags & WK_FLAG_HAS_M) != 0;
+
+    int result_srid;
     if (meta->srid == WK_SRID_NONE) {
-        INTEGER(VECTOR_ELT(data->result, 4))[data->feat_id] = NA_INTEGER;
+        result_srid = NA_INTEGER;
     } else {
-        INTEGER(VECTOR_ELT(data->result, 4))[data->feat_id] = meta->srid;
+        result_srid = meta->srid;
     }
-    REAL(VECTOR_ELT(data->result, 5))[data->feat_id] = meta->precision;
+
+    meta_handler_result_append(
+        data,
+        meta->geometry_type, 
+        result_size, 
+        (meta->flags & WK_FLAG_HAS_Z) != 0, 
+        (meta->flags & WK_FLAG_HAS_M) != 0,
+        result_srid, 
+        meta->precision
+    );
 
     return WK_ABORT_FEATURE;
 }
 
 int meta_handler_null_feature(void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
-
-    INTEGER(VECTOR_ELT(data->result, 0))[data->feat_id] = NA_INTEGER;
-    INTEGER(VECTOR_ELT(data->result, 1))[data->feat_id] = NA_INTEGER;
-    LOGICAL(VECTOR_ELT(data->result, 2))[data->feat_id] = NA_LOGICAL;
-    LOGICAL(VECTOR_ELT(data->result, 3))[data->feat_id] = NA_LOGICAL;
-    INTEGER(VECTOR_ELT(data->result, 4))[data->feat_id] = NA_INTEGER;
-    REAL(VECTOR_ELT(data->result, 5))[data->feat_id] = NA_REAL;
+    meta_handler_result_append(
+        data,
+        NA_INTEGER, 
+        NA_INTEGER,
+        NA_LOGICAL,
+        NA_LOGICAL,
+        NA_INTEGER,
+        NA_REAL
+    );
 
     return WK_ABORT_FEATURE;
 }
 
 SEXP meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
-    return data->result;
+
+    if (data->result_size != data->feat_id) {
+        SEXP new_result = PROTECT(meta_handler_realloc_result(data->result, data->feat_id));
+        R_ReleaseObject(data->result);
+        data->result = R_NilValue;
+        UNPROTECT(1);
+        return new_result;
+    } else {
+        return data->result;
+    }    
 }
 
 void meta_handler_deinitialize(void* handler_data) {

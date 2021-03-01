@@ -119,12 +119,12 @@ SEXP count_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) 
     if (data->result_size != final_size) {
         SEXP new_result = PROTECT(count_handler_realloc_result(data->result, final_size));
         R_ReleaseObject(data->result);
-        data->result = new_result;
-        R_PreserveObject(data->result);
+        data->result = R_NilValue;
         UNPROTECT(1);
+        return new_result;
+    } else {
+        return data->result;
     }
-
-    return data->result;
 }
 
 void count_handler_deinitialize(void* handler_data) {
