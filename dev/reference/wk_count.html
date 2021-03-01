@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug filters and handlers — wk_debug • wk</title>
+<title>Count geometry components — wk_count • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Debug filters and handlers — wk_debug" />
-<meta property="og:description" content="Debug filters and handlers" />
+<meta property="og:title" content="Count geometry components — wk_count" />
+<meta property="og:description" content="Counts the number of geometries, rings, and coordinates found within
+each feature. As opposed to wk_meta(), this handler will iterate
+over the entire geometry." />
 
 
 <meta name="robots" content="noindex">
@@ -123,18 +125,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug filters and handlers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wk_debug.Rd</code></div>
+    <h1>Count geometry components</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/count.R'><code>R/count.R</code></a></small>
+    <div class="hidden name"><code>wk_count.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Debug filters and handlers</p>
+    <p>Counts the number of geometries, rings, and coordinates found within
+each feature. As opposed to <code><a href='wk_meta.html'>wk_meta()</a></code>, this handler will iterate
+over the entire geometry.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>handleable</span>, handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_count</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_debug_filter</span><span class='op'>(</span>handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for default</span>
+<span class='fu'>wk_count</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>wk_count_handler</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,10 +152,6 @@
 <code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
-      <th>handler</th>
-      <td><p>A <a href='wk_handle.sfg.html'>wk_handler</a> object.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
     </tr>
@@ -156,28 +159,23 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The result of the <code>handler</code>.</p>
+    <p>A data.frame with one row for every feature encountered and
+columns:</p><ul>
+<li><p><code>n_geom</code>: The number of geometries encountered, including the
+root geometry. Will be zero for a null feature.</p></li>
+<li><p><code>n_ring</code>: The number of rings encountered. Will be zero for a
+null feature.</p></li>
+<li><p><code>n_coord</code>: The number of coordinates encountered. Will be zero
+for a null feature.</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wk_debug</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee8598d10&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee8598d10&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee8598b98&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee8598b98&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee8598d10&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee8598d10&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span>, <span class='fu'>wk_debug_filter</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee8599af0&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee8599af0&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee8599978&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee8599978&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee8599af0&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee8599af0&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wk_count</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>as_wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   n_geom n_ring n_coord
+#&gt; 1      1      0       2</div><div class='input'><span class='fu'>wk_count</span><span class='op'>(</span><span class='fu'><a href='wkb.html'>as_wkb</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   n_geom n_ring n_coord
+#&gt; 1      1      0       2</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
