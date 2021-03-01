@@ -84,7 +84,7 @@ test_that("wk_vector_meta() works", {
 test_that("wk_meta() works for a vector of indeterminate length", {
   long_xy <- as_wkt(xy(runif(2048), runif(2048)))
   expect_identical(
-    new_data_frame(wk_cpp_handle_wkt(long_xy, wk_meta_handler(), reveal_size = FALSE)),
+    new_data_frame(handle_wkt_without_vector_size(long_xy, wk_meta_handler())),
     wk_meta(long_xy)
   )
 })

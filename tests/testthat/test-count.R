@@ -13,7 +13,7 @@ test_that("wk_count() works", {
 test_that("wk_count() works for a vector of indeterminate length", {
   long_xy <- as_wkt(xy(runif(2048), runif(2048)))
   expect_identical(
-    new_data_frame(wk_cpp_handle_wkt(long_xy, wk_count_handler(), reveal_size = FALSE)),
+    new_data_frame(handle_wkt_without_vector_size(long_xy, wk_count_handler())),
     wk_count(long_xy)
   )
 })

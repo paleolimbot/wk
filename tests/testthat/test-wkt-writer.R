@@ -25,7 +25,7 @@ test_that("wkt_writer() works", {
 test_that("wkt_writer() works for a vector of indeterminate length", {
   long_xy <- as_wkt(xy(runif(2048), runif(2048)))
   expect_identical(
-    wk_cpp_handle_wkt(long_xy, wkt_writer(), reveal_size = FALSE),
+    handle_wkt_without_vector_size(long_xy, wkt_writer()),
     wk_handle(long_xy, wkt_writer())
   )
 })
