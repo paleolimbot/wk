@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#define XY_SIZE_DEFAULT 128
-
 typedef struct {
     SEXP result;
     // caching the underlying pointers results in a slight speedup
@@ -35,9 +33,9 @@ static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size) {
 
     R_xlen_t size_cpy;
     if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
-        size_cpy = Rf_xlength(VECTOR_ELT(result, 0)); // reduce size
+        size_cpy = Rf_xlength(VECTOR_ELT(result, 0));
     } else {
-        size_cpy = new_size; // increase size
+        size_cpy = new_size;
     }
 
     for (int i = 0; i < 4; i ++) {
@@ -49,7 +47,7 @@ static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size) {
     }
 
     UNPROTECT(1);
-    return result;
+    return new_result;
 }
 
 static inline void xy_writer_append_empty(xy_writer_t* writer) {
@@ -76,8 +74,8 @@ int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     }
 
     if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        data->result = PROTECT(xy_writer_alloc_result(XY_SIZE_DEFAULT));
-        data->result_size = XY_SIZE_DEFAULT;
+        data->result = PROTECT(xy_writer_alloc_result(1024));
+        data->result_size = 1024;
     } else {
         data->result = PROTECT(xy_writer_alloc_result(meta->size));
         data->result_size = meta->size;

@@ -5,8 +5,6 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-#define PROBLEMS_DEFAULT_SIZE 1024
-
 typedef struct {
     SEXP problems;
     R_xlen_t feat_id;
@@ -21,7 +19,7 @@ int wk_problems_handler_vector_start(const wk_vector_meta_t* meta, void* handler
 
     R_xlen_t n_features;
     if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        n_features = PROBLEMS_DEFAULT_SIZE;
+        n_features = 1024;
     } else {
         n_features = meta->size;
     }
@@ -64,7 +62,7 @@ SEXP wk_problems_handler_vector_end(const wk_vector_meta_t* meta, void* handler_
 
     if (data->feat_id != Rf_xlength(data->problems)) {
         SEXP new_result = PROTECT(Rf_allocVector(STRSXP, data->feat_id));
-        for (R_xlen_t i = 0; i < Rf_xlength(data->problems); i++) {
+        for (R_xlen_t i = 0; i < Rf_xlength(new_result); i++) {
             SET_STRING_ELT(new_result, i, STRING_ELT(data->problems, i));
         }
         R_ReleaseObject(data->problems);

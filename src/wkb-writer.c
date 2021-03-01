@@ -169,7 +169,11 @@ int wkb_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
-    writer->result = PROTECT(Rf_allocVector(VECSXP, meta->size));
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        writer->result = PROTECT(Rf_allocVector(VECSXP, 1024));
+    } else {
+        writer->result = PROTECT(Rf_allocVector(VECSXP, meta->size));
+    }
     R_PreserveObject(writer->result);
     UNPROTECT(1);
 

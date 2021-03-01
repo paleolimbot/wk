@@ -31,9 +31,9 @@ SEXP meta_handler_realloc_result(SEXP result, R_xlen_t new_size) {
 
     R_xlen_t size_cpy;
     if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
-        size_cpy = Rf_xlength(VECTOR_ELT(result, 0)); // reduce size
+        size_cpy = Rf_xlength(VECTOR_ELT(result, 0));
     } else {
-        size_cpy = new_size; // increase size
+        size_cpy = new_size;
     }
 
     memcpy(INTEGER(VECTOR_ELT(new_result, 0)), INTEGER(VECTOR_ELT(result, 0)), sizeof(int) * size_cpy);
@@ -44,7 +44,7 @@ SEXP meta_handler_realloc_result(SEXP result, R_xlen_t new_size) {
     memcpy(REAL(VECTOR_ELT(new_result, 5)), REAL(VECTOR_ELT(result, 5)), sizeof(double) * size_cpy);
 
     UNPROTECT(1);
-    return result;
+    return new_result;
 }
 
 static inline void meta_handler_result_append(meta_handler_t* data, int geometry_type, int size, 
@@ -202,7 +202,12 @@ SEXP vector_meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_
     SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
 
     SET_VECTOR_ELT(result, 0, Rf_ScalarInteger(meta->geometry_type));
-    SET_VECTOR_ELT(result, 1, Rf_ScalarReal(meta->size));
+    if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        SET_VECTOR_ELT(result, 1, Rf_ScalarReal(NA_REAL));
+    } else {
+        SET_VECTOR_ELT(result, 1, Rf_ScalarReal(meta->size));
+    }
+
     if (meta->flags & WK_FLAG_DIMS_UNKNOWN) {
         SET_VECTOR_ELT(result, 2, Rf_ScalarLogical(NA_LOGICAL));
         SET_VECTOR_ELT(result, 3, Rf_ScalarLogical(NA_LOGICAL));

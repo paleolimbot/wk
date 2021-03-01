@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#define COUNT_HANDLER_SIZE_DEFAULT 128
-
 typedef struct {
     SEXP result;
     R_xlen_t result_size;
@@ -33,9 +31,9 @@ SEXP count_handler_realloc_result(SEXP result, R_xlen_t new_size) {
 
     R_xlen_t size_cpy;
     if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
-        size_cpy = Rf_xlength(VECTOR_ELT(result, 0)); // reduce size
+        size_cpy = Rf_xlength(VECTOR_ELT(result, 0));
     } else {
-        size_cpy = new_size; // increase size
+        size_cpy = new_size;
     }
 
     memcpy(INTEGER(VECTOR_ELT(new_result, 0)), INTEGER(VECTOR_ELT(result, 0)), sizeof(int) * size_cpy);
@@ -43,7 +41,7 @@ SEXP count_handler_realloc_result(SEXP result, R_xlen_t new_size) {
     memcpy(REAL(VECTOR_ELT(new_result, 2)), REAL(VECTOR_ELT(result, 2)), sizeof(double) * size_cpy);
 
     UNPROTECT(1);
-    return result;
+    return new_result;
 }
 
 int count_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
@@ -54,8 +52,8 @@ int count_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data)
     }
 
     if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        data->result = PROTECT(count_handler_alloc_result(COUNT_HANDLER_SIZE_DEFAULT));
-        data->result_size = COUNT_HANDLER_SIZE_DEFAULT;
+        data->result = PROTECT(count_handler_alloc_result(1024));
+        data->result_size = 1024;
     } else {
         data->result = PROTECT(count_handler_alloc_result(meta->size));
         data->result_size = meta->size;

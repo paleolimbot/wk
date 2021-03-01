@@ -409,8 +409,8 @@ int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_d
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
-    if (vector_meta->size == WK_SIZE_UNKNOWN) {
-        writer->sfc = PROTECT(Rf_allocVector(VECSXP, SFC_INITIAL_SIZE_IF_UNKNOWN));
+    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        writer->sfc = PROTECT(Rf_allocVector(VECSXP, 1024));
     } else {
         writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
     }
@@ -725,7 +725,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
         sfc_writer_maybe_add_class_to_sfg(writer, empty, &meta);
 
-        for (R_xlen_t i = 0; i < vector_meta->size; i++) {
+        for (R_xlen_t i = 0; i < Rf_xlength(writer->sfc); i++) {
             if (VECTOR_ELT(writer->sfc, i) == R_NilValue) {
                 writer->n_empty++;
                 SET_VECTOR_ELT(writer->sfc, i, empty);
@@ -746,7 +746,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
 
     // the bounding box may or may not have a crs attribute
     // when all features are empty
-    if (vector_meta->size == writer->n_empty) {
+    if (Rf_xlength(writer->sfc) == writer->n_empty) {
         Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
     }
 
@@ -837,7 +837,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     UNPROTECT(1);
 
     // attr(sfc, "classes") (only for all empty)
-    if (vector_meta->size == writer->n_empty) {
+    if (Rf_xlength(writer->sfc) == writer->n_empty) {
         int n_geometry_types = 0;
         for (int i = 0; i < 7; i++) {
             if (1 & (writer->all_geometry_types >> i)) n_geometry_types++;
