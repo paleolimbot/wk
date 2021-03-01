@@ -689,11 +689,17 @@ private:
 };
 
 [[cpp11::register]]
-SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr) {
+SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, bool reveal_size) {
   R_xlen_t n_features = Rf_xlength(wkt);
   wk_vector_meta_t globalMeta;
   WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);
-  globalMeta.size = n_features;
+
+  // this is needed to test that handlers function properly when
+  // passed a vector of indeterminite length
+  if (reveal_size) {
+    globalMeta.size = n_features;
+  }
+
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandlerXPtr cppHandler(xptr);

@@ -37,3 +37,11 @@ test_that("xy_writer() works", {
     "contains more than one coordinate"
   )
 })
+
+test_that("xy_writer() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    wk_cpp_handle_wkt(long_xy, xy_writer(), reveal_size = FALSE),
+    wk_handle(long_xy, xy_writer())
+  )
+})

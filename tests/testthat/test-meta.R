@@ -81,6 +81,14 @@ test_that("wk_vector_meta() works", {
   )
 })
 
+test_that("wk_meta() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    new_data_frame(wk_cpp_handle_wkt(long_xy, wk_meta_handler(), reveal_size = FALSE)),
+    wk_meta(long_xy)
+  )
+})
+
 test_that("geometry type converters work", {
   types_str <- c(
     "point", "linestring", "polygon",

@@ -96,3 +96,11 @@ test_that("wkb_writer() errors when the recursion limit is too high", {
     "Can't write WKB with maximum"
   )
 })
+
+test_that("wkb_writer() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    wk_cpp_handle_wkt(long_xy, wkb_writer(), reveal_size = FALSE),
+    wk_handle(long_xy, wkb_writer())
+  )
+})

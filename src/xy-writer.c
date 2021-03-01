@@ -58,6 +58,9 @@ static inline void xy_writer_append_empty(xy_writer_t* writer) {
         R_PreserveObject(writer->result);
         UNPROTECT(1);
         writer->result_size = writer->result_size * 2 + 1;
+        for (int i = 0; i < 4; i++) {
+            writer->result_ptr[i] = REAL(VECTOR_ELT(writer->result, i));
+        }
     }
 
     for (int i = 0; i < 4; i++) {
