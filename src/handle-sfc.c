@@ -44,7 +44,7 @@ SEXP wk_c_read_sfc_impl(SEXP data, wk_handler_t* handler) {
 
             item = VECTOR_ELT(data, i);
             if (item == R_NilValue) {
-                HANDLE_CONTINUE_OR_BREAK(handler->null_feature(&vector_meta, i, handler->handler_data));
+                HANDLE_CONTINUE_OR_BREAK(handler->null_feature(handler->handler_data));
             } else {
                 HANDLE_CONTINUE_OR_BREAK(wk_sfc_read_sfg(item, handler, WK_PART_ID_NONE, precision));
             }

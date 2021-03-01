@@ -238,7 +238,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 
             if (item == R_NilValue) {
-                HANDLE_CONTINUE_OR_BREAK(handler->null_feature(&vector_meta, i, handler->handler_data));
+                HANDLE_CONTINUE_OR_BREAK(handler->null_feature(handler->handler_data));
             } else {
                 reader.buffer = RAW(item);
                 reader.size = Rf_xlength(item);

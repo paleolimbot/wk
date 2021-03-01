@@ -28,9 +28,9 @@ int wk_identity_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat
   return identity_filter->next->feature_start(meta, feat_id, identity_filter->next->handler_data);
 }
 
-int wk_identity_filter_feature_null(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_identity_filter_feature_null(void* handler_data) {
   identity_filter_t* identity_filter = (identity_filter_t*) handler_data;
-  return identity_filter->next->null_feature(meta, feat_id, identity_filter->next->handler_data);
+  return identity_filter->next->null_feature(identity_filter->next->handler_data);
 }
 
 int wk_identity_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {

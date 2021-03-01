@@ -36,8 +36,8 @@ public:
     return cpp11::safe[handler->feature_start](meta, feat_id, handler->handler_data);
   }
 
-  int null_feature(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
-    return cpp11::safe[handler->null_feature](meta, feat_id, handler->handler_data);
+  int null_feature() {
+    return cpp11::safe[handler->null_feature](handler->handler_data);
   }
 
   int geometry_start(const wk_meta_t* meta, uint32_t partId) {

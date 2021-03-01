@@ -87,7 +87,7 @@ sfc_writer_t* sfc_writer_new() {
     writer->flags = SFC_FLAGS_NOT_YET_DEFINED;
     writer->n_empty = 0;
     writer->any_null = 0;
-    writer->feat_id = -1;
+    writer->feat_id = 0;
 
     return writer;
 }
@@ -371,35 +371,71 @@ SEXP sfc_writer_finalize_geom(SEXP geom, R_xlen_t final_size) {
     return new_geom;
 }
 
+static inline void sfc_writer_sfc_append(sfc_writer_t* writer, SEXP value) {
+    R_xlen_t current_size = Rf_xlength(writer->sfc);
+    if (writer->feat_id >= current_size) {
+        SEXP new_result = PROTECT(Rf_allocVector(VECSXP, current_size * 2 + 1));
+        for (R_xlen_t i = 0; i < current_size; i++) {
+            SET_VECTOR_ELT(new_result, i, VECTOR_ELT(writer->sfc, i));
+        }
+        R_ReleaseObject(writer->sfc);
+        writer->sfc = new_result;
+        R_PreserveObject(writer->sfc);
+        UNPROTECT(1);
+    }
+
+    SET_VECTOR_ELT(writer->sfc, writer->feat_id, value);
+    writer->feat_id++;
+}
+
+static inline void sfc_writer_sfc_finalize(sfc_writer_t* writer) {
+    R_xlen_t current_size = Rf_xlength(writer->sfc);
+    if (writer->feat_id != current_size) {
+        SEXP new_result = PROTECT(Rf_allocVector(VECSXP, writer->feat_id));
+        for (R_xlen_t i = 0; i < writer->feat_id; i++) {
+            SET_VECTOR_ELT(new_result, i, VECTOR_ELT(writer->sfc, i));
+        }
+        R_ReleaseObject(writer->sfc);
+        writer->sfc = new_result;
+        R_PreserveObject(writer->sfc);
+        UNPROTECT(1);
+    }
+}
+
 int sfc_writer_vector_start(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        Rf_error("Can't handle vector of unknown size");
-    }
+
     if (writer->sfc != R_NilValue) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
-    writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
+    if (vector_meta->size == WK_VECTOR_SIZE_UNKNOWN) {
+        writer->sfc = PROTECT(Rf_allocVector(VECSXP, 1024));
+    } else {
+        writer->sfc = PROTECT(Rf_allocVector(VECSXP, vector_meta->size));
+    }
+
     R_PreserveObject(writer->sfc);
     UNPROTECT(1);
+
+    writer->feat_id = 0;
+
     return WK_CONTINUE;
 }
 
 int sfc_writer_feature_start(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-    writer->feat_id = feat_id;
     writer->recursion_level = 0;
     return WK_CONTINUE;
 }
 
-int sfc_writer_null_feature(const wk_vector_meta_t* vector_meta, R_xlen_t feat_id, void* handler_data) {
+int sfc_writer_null_feature(void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
     // sfc doesn't do NULLs and replaces them with GEOMETRYCOLLECTION EMPTY
     // however, as the dimensions have to align among features we asign a NULL here and fix
     // in vector_end()
     writer->any_null = 1;
-    SET_VECTOR_ELT(writer->sfc, feat_id, R_NilValue);
+    sfc_writer_sfc_append(writer, R_NilValue);
     return WK_ABORT_FEATURE;
 }
 
@@ -650,9 +686,9 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         int all_na = sfc_double_all_na_or_nan(writer->coord_size, REAL(geom));
         sfc_writer_update_vector_attributes(writer, meta, meta->size && !all_na);
 
-        SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
+        sfc_writer_sfc_append(writer, geom);
     } else {
-        SET_VECTOR_ELT(writer->sfc, writer->feat_id, geom);
+        sfc_writer_sfc_append(writer, geom);
     }
 
     UNPROTECT(1);
@@ -661,6 +697,8 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
 
 SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+
+    sfc_writer_sfc_finalize(writer);
 
     // replace NULLs with EMPTY of an appropriate type
     if (writer->any_null) {
@@ -687,7 +725,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
         sfc_writer_maybe_add_class_to_sfg(writer, empty, &meta);
 
-        for (R_xlen_t i = 0; i < vector_meta->size; i++) {
+        for (R_xlen_t i = 0; i < Rf_xlength(writer->sfc); i++) {
             if (VECTOR_ELT(writer->sfc, i) == R_NilValue) {
                 writer->n_empty++;
                 SET_VECTOR_ELT(writer->sfc, i, empty);
@@ -708,7 +746,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
 
     // the bounding box may or may not have a crs attribute
     // when all features are empty
-    if (vector_meta->size == writer->n_empty) {
+    if (Rf_xlength(writer->sfc) == writer->n_empty) {
         Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
     }
 
@@ -799,7 +837,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     UNPROTECT(1);
 
     // attr(sfc, "classes") (only for all empty)
-    if (vector_meta->size == writer->n_empty) {
+    if (Rf_xlength(writer->sfc) == writer->n_empty) {
         int n_geometry_types = 0;
         for (int i = 0; i < 7; i++) {
             if (1 & (writer->all_geometry_types >> i)) n_geometry_types++;

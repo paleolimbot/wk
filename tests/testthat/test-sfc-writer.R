@@ -416,3 +416,11 @@ test_that("the polygon container is reallocated according to variable-length inp
     "sfc_POLYGON"
   )
 })
+
+test_that("sfc_writer() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    handle_wkt_without_vector_size(long_xy, sfc_writer()),
+    wk_handle(long_xy, sfc_writer())
+  )
+})

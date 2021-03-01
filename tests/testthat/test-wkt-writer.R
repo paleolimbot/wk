@@ -21,3 +21,11 @@ test_that("wkt_writer() works", {
     wkt("POINT (1.0 1.0)")
   )
 })
+
+test_that("wkt_writer() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    handle_wkt_without_vector_size(long_xy, wkt_writer()),
+    wk_handle(long_xy, wkt_writer())
+  )
+})

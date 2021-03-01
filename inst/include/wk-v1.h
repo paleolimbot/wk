@@ -72,7 +72,7 @@ typedef struct {
     void (*initialize)(int* dirty, void* handler_data);
     int (*vector_start)(const wk_vector_meta_t* meta, void* handler_data);
     int (*feature_start)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
-    int (*null_feature)(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data);
+    int (*null_feature)(void* handler_data);
     int (*geometry_start)(const wk_meta_t* meta, uint32_t part_id, void* handler_data);
     int (*ring_start)(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data);
     int (*coord)(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data);
@@ -93,7 +93,7 @@ extern "C" {
 wk_handler_t* wk_handler_create();
 SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(wk_handler_t* handler);
-SEXP wk_handler_run_xptr(SEXP (*readFunction)(SEXP readData, wk_handler_t* handler), SEXP readData, SEXP xptr);
+SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler), SEXP read_data, SEXP xptr);
 
 #ifdef __cplusplus
 } // extern "C" {

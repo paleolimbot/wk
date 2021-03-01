@@ -42,7 +42,7 @@ test_that("wk_vector_meta() works", {
     wk_vector_meta(wkt(c("POINT (1 2)", NA))),
     data.frame(
       geometry_type = 0L,
-      size = 2L,
+      size = 2,
       has_z = NA,
       has_m = NA
     )
@@ -54,7 +54,7 @@ test_that("wk_vector_meta() works", {
     wk_vector_meta(sf::st_as_sfc("POINT (30 10)")),
     data.frame(
       geometry_type = 1L,
-      size = 1L,
+      size = 1,
       has_z = FALSE,
       has_m = FALSE
     )
@@ -64,7 +64,7 @@ test_that("wk_vector_meta() works", {
     wk_vector_meta(sf::st_as_sfc("POINT M (30 10 12)")),
     data.frame(
       geometry_type = 1L,
-      size = 1L,
+      size = 1,
       has_z = FALSE,
       has_m = TRUE
     )
@@ -74,10 +74,18 @@ test_that("wk_vector_meta() works", {
     wk_vector_meta(sf::st_as_sfc("POINT Z (30 10 12)")),
     data.frame(
       geometry_type = 1L,
-      size = 1L,
+      size = 1,
       has_z = TRUE,
       has_m = FALSE
     )
+  )
+})
+
+test_that("wk_meta() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    new_data_frame(handle_wkt_without_vector_size(long_xy, wk_meta_handler())),
+    wk_meta(long_xy)
   )
 })
 

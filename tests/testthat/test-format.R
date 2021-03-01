@@ -45,3 +45,11 @@ test_that("format handlers return abbreviated WKT", {
     )
   )
 })
+
+test_that("wkt_format_handler() works for a vector of indeterminate length", {
+  long_xy <- as_wkt(xy(runif(2048), runif(2048)))
+  expect_identical(
+    handle_wkt_without_vector_size(long_xy, wkt_format_handler()),
+    wk_handle(long_xy, wkt_format_handler())
+  )
+})
