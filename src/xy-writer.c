@@ -128,21 +128,21 @@ int xy_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coor
     xy_writer_t* data = (xy_writer_t*) handler_data;
 
     if (data->has_coord) {
-        Rf_error("[%d] Feature contains more than one coordinate.", data->feat_id + 1);
+        Rf_error("[%d] Feature contains more than one coordinate.", data->feat_id);
     } else {
         data->has_coord = 1;
     }
 
-    data->result_ptr[0][data->feat_id] = coord.v[0];
-    data->result_ptr[1][data->feat_id] = coord.v[1];
+    data->result_ptr[0][data->feat_id - 1] = coord.v[0];
+    data->result_ptr[1][data->feat_id - 1] = coord.v[1];
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        data->result_ptr[2][data->feat_id] = coord.v[2];
-        data->result_ptr[3][data->feat_id] = coord.v[3];
+        data->result_ptr[2][data->feat_id - 1] = coord.v[2];
+        data->result_ptr[3][data->feat_id - 1] = coord.v[3];
     } else if(meta->flags & WK_FLAG_HAS_Z) {
-        data->result_ptr[2][data->feat_id] = coord.v[2];
+        data->result_ptr[2][data->feat_id - 1] = coord.v[2];
     } else if(meta->flags & WK_FLAG_HAS_M) {
-        data->result_ptr[3][data->feat_id] = coord.v[2];
+        data->result_ptr[3][data->feat_id - 1] = coord.v[2];
     }
 
     return WK_CONTINUE;
