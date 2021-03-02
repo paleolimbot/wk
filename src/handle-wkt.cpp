@@ -429,7 +429,7 @@ public:
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
   }
 
-  int readFeature(wk_vector_meta_t* meta, SEXP item, R_xlen_t feat_id) {
+  int readFeature(wk_vector_meta_t* meta, cpp11::r_string item, R_xlen_t feat_id) {
     int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
@@ -689,8 +689,8 @@ private:
 };
 
 [[cpp11::register]]
-SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, bool reveal_size) {
-  R_xlen_t n_features = Rf_xlength(wkt);
+SEXP wk_cpp_handle_wkt(cpp11::strings wkt, SEXP xptr, bool reveal_size) {
+  R_xlen_t n_features = wkt.size();
   wk_vector_meta_t globalMeta;
   WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);
 
@@ -706,14 +706,12 @@ SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, bool reveal_size) {
   WKTStreamingHandler streamer(cppHandler);
 
   cppHandler.vector_start(&globalMeta);
-  SEXP item;
 
   for (R_xlen_t i = 0; i < n_features; i++) {
     if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
 
     try {
-      item = STRING_ELT(wkt, i);
-      if (streamer.readFeature(&globalMeta, item, i) == WK_ABORT) {
+      if (streamer.readFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
         break;
       }
     } catch (WKParseException& e) {
