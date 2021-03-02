@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
-The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, segments, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics (`wk_handle()` and `wk_translate()`) for event-based iteration over vectors of geometries that allows clear separation code and distribution of responsibility among multiple packages.
+The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics for event-based iteration over vectors of geometries.
 
 ## Installation
 
@@ -53,6 +53,7 @@ wkt("POINT (30 10)")
 as_wkb(wkt("POINT (30 10)"))
 xy(1, 2)
 rct(1, 2, 3, 4)
+crc(0, 0, 1)
 ```
 
 ## Generics
@@ -69,7 +70,6 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 ```
-
 
 ## sf support
 
