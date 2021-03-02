@@ -21,6 +21,10 @@
 * Added a 2D cartesian bounding box handler (`wk_bbox()`) (#42).
 * Refactored unit tests reflecting use of the new API and
   for improved test coverage (#44, #45, #46).
+* Added `wk_meta()`, `wk_vector_meta()`, and `wk_count()` to 
+  inspect properties of vectors (#53).
+* Modified all internal handlers such that they work with vectors
+  of unknown length (#54).
 
 # wk 0.3.4
 
