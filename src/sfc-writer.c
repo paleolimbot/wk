@@ -33,8 +33,10 @@ typedef struct {
     double bbox[4];
     // attr(sfc, "z_range"): zmin, zmax
     double z_range[2];
-    // attr(sfc, "m+range"): mmin, mmax
+    // attr(sfc, "m_range"): mmin, mmax
     double m_range[2];
+    // attr(sfc, "precision")
+    double precision;
     // used to tell if all items are the same type for output class
     int geometry_type;
     // when all elements are empty, sfc holds the classes of these objects
@@ -81,6 +83,8 @@ sfc_writer_t* sfc_writer_new() {
 
     writer->m_range[0] = R_PosInf;
     writer->m_range[1] = R_NegInf;
+
+    writer->precision = R_PosInf;
 
     writer->geometry_type = SFC_GEOMETRY_TYPE_NOT_YET_DEFINED;
     writer->all_geometry_types = 0;
@@ -246,6 +250,9 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
     
     // update dimensions
     sfc_writer_update_dimensions(writer, meta, size);
+
+    // update precision
+    writer->precision = MIN(writer->precision, meta->precision);
 }
 
 void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const wk_coord_t coord) {
@@ -737,7 +744,14 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
 
     // attr(sfc, "precision")
     // this should really be parrt of wk_meta_t!
-    Rf_setAttrib(writer->sfc, Rf_install("precision"), Rf_ScalarReal(0));
+    SEXP precision;
+    if (writer->precision == R_PosInf) {
+        precision = PROTECT(Rf_ScalarReal(0.0));
+    } else {
+        precision = PROTECT(Rf_ScalarReal(writer->precision));
+    }
+    Rf_setAttrib(writer->sfc, Rf_install("precision"), precision);
+    UNPROTECT(1);
 
     // attr(sfc, "bbox")
     const char* bbox_names[] = {"xmin", "ymin", "xmax", "ymax", ""};
@@ -747,7 +761,9 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     // the bounding box may or may not have a crs attribute
     // when all features are empty
     if (Rf_xlength(writer->sfc) == writer->n_empty) {
-        Rf_setAttrib(bbox, Rf_install("crs"), sfc_na_crs());
+        SEXP na_crs = PROTECT(sfc_na_crs());
+        Rf_setAttrib(bbox, Rf_install("crs"), na_crs);
+        UNPROTECT(1);
     }
 
     // if the bounding box was never updated, set it to NAs
@@ -799,10 +815,14 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     // attr(sfc, "crs")
     // this should be handled in R; however, inserting a placeholder here
     // because the print() method for sfc will error otherwise
-    Rf_setAttrib(writer->sfc, Rf_install("crs"), sfc_na_crs());
+    SEXP na_crs = PROTECT(sfc_na_crs());
+    Rf_setAttrib(writer->sfc, Rf_install("crs"), na_crs);
+    UNPROTECT(1);
 
     // attr(sfc, "n_empty")
-    Rf_setAttrib(writer->sfc, Rf_install("n_empty"), Rf_ScalarInteger(writer->n_empty));
+    SEXP n_empty = PROTECT(Rf_ScalarInteger(writer->n_empty));
+    Rf_setAttrib(writer->sfc, Rf_install("n_empty"), n_empty);
+    UNPROTECT(1);
 
     // class(sfc)
     SEXP class = PROTECT(Rf_allocVector(STRSXP, 2));

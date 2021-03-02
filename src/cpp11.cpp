@@ -5,10 +5,10 @@
 #include "cpp11/declarations.hpp"
 
 // handle-wkt.cpp
-SEXP wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, bool reveal_size);
+SEXP wk_cpp_handle_wkt(cpp11::strings wkt, SEXP xptr, bool reveal_size);
 extern "C" SEXP _wk_wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, SEXP reveal_size) {
   BEGIN_CPP11
-    return cpp11::as_sexp(wk_cpp_handle_wkt(cpp11::as_cpp<cpp11::decay_t<SEXP>>(wkt), cpp11::as_cpp<cpp11::decay_t<SEXP>>(xptr), cpp11::as_cpp<cpp11::decay_t<bool>>(reveal_size)));
+    return cpp11::as_sexp(wk_cpp_handle_wkt(cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(wkt), cpp11::as_cpp<cpp11::decay_t<SEXP>>(xptr), cpp11::as_cpp<cpp11::decay_t<bool>>(reveal_size)));
   END_CPP11
 }
 // wkt-writer.cpp

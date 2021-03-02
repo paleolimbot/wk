@@ -424,3 +424,11 @@ test_that("sfc_writer() works for a vector of indeterminate length", {
     wk_handle(long_xy, sfc_writer())
   )
 })
+
+test_that("sfc_writer() propagates precision", {
+  skip_if_not_installed("sf")
+
+  sfc_prec <- sf::st_sfc(sf::st_point(c(1/3, 1/3)))
+  sf::st_precision(sfc_prec) <- 0.01
+  expect_identical(sf::st_precision(wk_handle(sfc_prec, sfc_writer())), 0.01)
+})
