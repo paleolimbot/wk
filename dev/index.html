@@ -95,7 +95,7 @@
 <a href="#wk" class="anchor"></a>wk</h1></div>
 <!-- badges: start -->
 
-<p>The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, segments, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics (<code><a href="reference/wk_handle.sfg.html">wk_handle()</a></code> and <code><a href="reference/wk_translate.sfc.html">wk_translate()</a></code>) for event-based iteration over vectors of geometries that allows clear separation code and distribution of responsibility among multiple packages.</p>
+<p>The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics for event-based iteration over vectors of geometries.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -126,7 +126,10 @@
 <span class="co">#&gt; [1] (1 2)</span>
 <span class="fu"><a href="reference/rct.html">rct</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>
 <span class="co">#&gt; &lt;wk_rct[1]&gt;</span>
-<span class="co">#&gt; [1] [1 2 3 4]</span></code></pre></div>
+<span class="co">#&gt; [1] [1 2 3 4]</span>
+<span class="fu"><a href="reference/crc.html">crc</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
+<span class="co">#&gt; &lt;wk_crc[1]&gt;</span>
+<span class="co">#&gt; [1] [0 0, r = 1]</span></code></pre></div>
 </div>
 <div id="generics" class="section level2">
 <h2 class="hasAnchor">
@@ -143,12 +146,12 @@
   <span class="fu"><a href="reference/wk_format.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee687b798&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee687b798&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING &lt;0x7ffee687b608&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee687b608&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (2): &lt;0x7ffee687b608&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee687b798&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee9a8d688&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee9a8d688&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[UNKNOWN] &lt;0x7ffee9a8d500&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee9a8d500&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x7ffee9a8d500&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee9a8d688&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
 </div>
@@ -162,12 +165,12 @@
   <span class="fu"><a href="reference/wk_format.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: LINESTRING B[1] &lt;0x7ffee687e320&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee687e320&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[3] &lt;0x7ffee687e2a0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee687e2a0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (2): &lt;0x7ffee687e2a0&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee687e320&gt;</span>
+<span class="co">#&gt; vector_start: LINESTRING B[1] &lt;0x7ffee9a90268&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee9a90268&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[3] &lt;0x7ffee9a901d0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee9a901d0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x7ffee9a901d0&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee9a90268&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
 </div>
