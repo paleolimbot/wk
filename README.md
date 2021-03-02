@@ -15,12 +15,10 @@ coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](h
 
 The goal of wk is to provide lightweight R, C, and C++ infrastructure
 for a distributed ecosystem of packages that operate on collections of
-coordinates. First, wk provides vector classes for points, segments,
-circles, rectangles, well-known text (WKT), and well-known binary (WKB).
-Second, wk provides a C API and set of S3 generics (`wk_handle()` and
-`wk_translate()`) for event-based iteration over vectors of geometries
-that allows clear separation code and distribution of responsibility
-among multiple packages.
+coordinates. First, wk provides vector classes for points, circles,
+rectangles, well-known text (WKT), and well-known binary (WKB). Second,
+wk provides a C API and set of S3 generics for event-based iteration
+over vectors of geometries.
 
 ## Installation
 
@@ -67,6 +65,9 @@ xy(1, 2)
 rct(1, 2, 3, 4)
 #> <wk_rct[1]>
 #> [1] [1 2 3 4]
+crc(0, 0, 1)
+#> <wk_crc[1]>
+#> [1] [0 0, r = 1]
 ```
 
 ## Generics
@@ -96,12 +97,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x7ffee687b798> => WK_CONTINUE
-#>   feature_start (1): <0x7ffee687b798>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING <0x7ffee687b608> => WK_CONTINUE
-#>       coord (1): <0x7ffee687b608> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffee687b608> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffee687b798>
+#> vector_start: <Unknown type / 0>[1] <0x7ffee9a8d688> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee9a8d688>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x7ffee9a8d500> => WK_CONTINUE
+#>       coord (1): <0x7ffee9a8d500> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee9a8d500> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee9a8d688>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -118,12 +119,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: LINESTRING B[1] <0x7ffee687e320> => WK_CONTINUE
-#>   feature_start (1): <0x7ffee687e320>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x7ffee687e2a0> => WK_CONTINUE
-#>       coord (1): <0x7ffee687e2a0> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffee687e2a0> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffee687e320>
+#> vector_start: LINESTRING B[1] <0x7ffee9a90268> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee9a90268>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x7ffee9a901d0> => WK_CONTINUE
+#>       coord (1): <0x7ffee9a901d0> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee9a901d0> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee9a90268>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
