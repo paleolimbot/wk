@@ -129,6 +129,17 @@ test_that("conversion to sf works", {
       )
     )
   )
+
+  # crc only generates circles
+  expect_equal(
+    as_rct(sf::st_bbox(sf::st_as_sfc(crc(1, 2, 3)))),
+    rct(-2, -1, 4, 5)
+  )
+
+  expect_equal(
+    as_rct(sf::st_bbox(sf::st_as_sf(crc(1, 2, 3)))),
+    rct(-2, -1, 4, 5)
+  )
 })
 
 test_that("wk_handle.sfg works", {
