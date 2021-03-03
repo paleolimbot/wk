@@ -254,7 +254,11 @@ st_as_sf.wk_xy <- function(x, ...) {
 }
 
 st_as_sfc.wk_rct <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x), ...)
+  sf::st_as_sfc(as_wkb(x, ...))
+}
+
+st_as_sfc.wk_crc <- function(x, ...) {
+  sf::st_as_sfc(as_wkb(x, ...))
 }
 
 st_as_sf.wk_rct <- function(x, ...) {
@@ -265,3 +269,10 @@ st_as_sf.wk_rct <- function(x, ...) {
   )
 }
 
+st_as_sf.wk_crc <- function(x, ...) {
+  sf::st_as_sf(
+    new_data_frame(
+      list(geometry = st_as_sfc.wk_crc(x, ...))
+    )
+  )
+}
