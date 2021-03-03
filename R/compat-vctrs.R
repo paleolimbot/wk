@@ -80,6 +80,13 @@ vec_cast.wk_wkb.wk_rct <- function(x, to, ...) {
   as_wkb(x)
 }
 
+#' @method vec_cast.wk_wkb wk_crc
+#' @export
+vec_cast.wk_wkb.wk_crc <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  as_wkb(x)
+}
+
 #' @rdname vctrs-methods
 #' @export vec_ptype2.wk_wkb
 vec_ptype2.wk_wkb <- function(x, y, ...) {
@@ -202,6 +209,13 @@ vec_cast.wk_wkt.wk_xyzm <- function(x, to, ...) {
 #' @method vec_cast.wk_wkt wk_rct
 #' @export
 vec_cast.wk_wkt.wk_rct <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  as_wkt(x)
+}
+
+#' @method vec_cast.wk_wkt wk_crc
+#' @export
+vec_cast.wk_wkt.wk_crc <- function(x, to, ...) {
   wk_crs_output(x, to)
   as_wkt(x)
 }

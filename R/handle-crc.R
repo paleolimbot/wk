@@ -13,7 +13,7 @@ wk_handle.wk_crc <- function(handleable, handler, ...,
   n_segments <- as.integer(pmax(4L, n_segments))
   n_segments[is.na(n_segments)] <- 4L
 
-  if (length(n_segments) != length(handleable)) {
+  if ((length(n_segments) != 1) && (length(n_segments) != length(handleable))) {
     stop(
       sprintf(
         "`n_segments`/`resolution` must be length 1 or length of data (%s)",

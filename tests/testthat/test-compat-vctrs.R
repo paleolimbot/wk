@@ -171,6 +171,8 @@ test_that("vctrs crc implementation works", {
   expect_true(vctrs::vec_is(crc()))
   expect_identical(vctrs::vec_size(crc()), 0L)
   expect_identical(vctrs::vec_cast(crc(), crc()), crc())
+  expect_identical(vctrs::vec_cast(crc(), wkb()), wkb())
+  expect_identical(vctrs::vec_cast(crc(), wkt()), wkt())
   expect_identical(
     vctrs::vec_proxy(crc(crs = NULL)),
     data.frame(x = double(), y = double(), r = double())
