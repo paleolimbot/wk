@@ -48,7 +48,7 @@ public:
     return cpp11::safe[handler->ring_start](meta, size, ringId, handler->handler_data);
   }
 
-  int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, double* coord, uint32_t coord_id) {
     return cpp11::safe[handler->coord](meta, coord, coord_id, handler->handler_data);
   }
 

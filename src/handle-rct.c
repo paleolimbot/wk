@@ -28,7 +28,7 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
     if (handler->vector_start(&vector_meta, handler->handler_data) == WK_CONTINUE) {
         int result;
         double xmin, ymin, xmax, ymax;
-        wk_coord_t coord;
+        double coord[4];
         wk_meta_t meta;
         WK_META_RESET(meta, WK_POLYGON);
         meta.flags = vector_meta.flags | WK_FLAG_HAS_BOUNDS;
@@ -59,15 +59,15 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
             HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
             if (!rect_empty) {
                 HANDLE_CONTINUE_OR_BREAK(handler->ring_start(&meta, 5, 0, handler->handler_data));
-                coord.v[0] = xmin; coord.v[1] = ymin;
+                coord[0] = xmin; coord[1] = ymin;
                 HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 0, handler->handler_data));
-                coord.v[0] = xmax; coord.v[1] = ymin;
+                coord[0] = xmax; coord[1] = ymin;
                 HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 1, handler->handler_data));
-                coord.v[0] = xmax; coord.v[1] = ymax;
+                coord[0] = xmax; coord[1] = ymax;
                 HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 2, handler->handler_data));
-                coord.v[0] = xmin; coord.v[1] = ymax;
+                coord[0] = xmin; coord[1] = ymax;
                 HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 3, handler->handler_data));
-                coord.v[0] = xmin; coord.v[1] = ymin;
+                coord[0] = xmin; coord[1] = ymin;
                 HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 4, handler->handler_data));
                 HANDLE_CONTINUE_OR_BREAK(handler->ring_end(&meta, 5, 0, handler->handler_data));
             }

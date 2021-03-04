@@ -19,13 +19,13 @@
 int wk_crc_handle_single(wk_handler_t* handler, const wk_meta_t* meta,
                          double x, double y, double r, double segs_per_circle) {
     int result;
-    wk_coord_t coord;
+    double coord[4];
     double angle;
 
     for (int i = 0; i <= segs_per_circle; i++) {
         angle = i / segs_per_circle * PI * 2.0;
-        coord.v[0] = x + r * cos(angle);
-        coord.v[1] = y + r * sin(angle);
+        coord[0] = x + r * cos(angle);
+        coord[1] = y + r * sin(angle);
         HANDLE_OR_RETURN(handler->coord(meta, coord, i, handler->handler_data));
     }
 

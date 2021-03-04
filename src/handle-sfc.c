@@ -109,8 +109,8 @@ int wk_sfc_read_point(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t p
     HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
 
     if (meta->size) {
-        wk_coord_t coord;
-        memcpy(coord.v, REAL(x), sizeof(double) * coord_size);
+        double coord[4];
+        memcpy(coord, REAL(x), sizeof(double) * coord_size);
         HANDLE_OR_RETURN(handler->coord(meta, coord, 0, handler->handler_data));
     }
 
@@ -126,11 +126,11 @@ int wk_sfc_read_linestring(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint3
     
     HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
 
-    wk_coord_t coord;
+    double coord[4];
     double* coords = REAL(x);
     for (uint32_t i = 0; i < meta->size; i++) {
         for (int j = 0; j < coord_size; j++) {
-             coord.v[j] = coords[j * meta->size + i];
+             coord[j] = coords[j * meta->size + i];
         }
         HANDLE_OR_RETURN(handler->coord(meta, coord, i, handler->handler_data));
     }
@@ -154,11 +154,11 @@ int wk_sfc_read_polygon(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint32_t
         
         HANDLE_OR_RETURN(handler->ring_start(meta, meta->size, ring_id, handler->handler_data));
 
-        wk_coord_t coord;
+        double coord[4];
         double* coords = REAL(ring);
         for (uint32_t i = 0; i < ring_size; i++) {
             for (int j = 0; j < coord_size; j++) {
-                coord.v[j] = coords[j * ring_size + i];
+                coord[j] = coords[j * ring_size + i];
             }
             HANDLE_OR_RETURN(handler->coord(meta, coord, i, handler->handler_data));
         }
@@ -183,11 +183,11 @@ int wk_sfc_read_multipoint(SEXP x, wk_handler_t* handler, wk_meta_t* meta, uint3
     
     HANDLE_OR_RETURN(handler->geometry_start(meta, part_id, handler->handler_data));
 
-    wk_coord_t coord;
+    double coord[4];
     double* coords = REAL(x);
     for (uint32_t i = 0; i < meta->size; i++) {
         for (int j = 0; j < coord_size; j++) {
-             coord.v[j] = coords[j * meta->size + i];
+             coord[j] = coords[j * meta->size + i];
         }
         HANDLE_OR_RETURN(handler->geometry_start(&child_meta, i, handler->handler_data));
         HANDLE_OR_RETURN(handler->coord(&child_meta, coord, 0, handler->handler_data));

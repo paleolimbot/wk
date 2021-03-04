@@ -113,16 +113,16 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, double* coord, uint32_t coord_id) {
     if (coord_id > 0) {
       out << ", ";
     }
 
-    out << coord.v[0] << " " << coord.v[1];
+    out << coord[0] << " " << coord[1];
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        out << " " << coord.v[2] << " " << coord.v[3];
+        out << " " << coord[2] << " " << coord[3];
     } else if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M)) {
-        out << " " << coord.v[2];
+        out << " " << coord[2];
     }
 
     return WK_CONTINUE;
@@ -171,7 +171,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, double* coord, uint32_t coord_id) {
     WKTWriterHandler::coord(meta, coord, coord_id);
     if (++this->current_coords >= this->max_coords) {
       this->out << "...";

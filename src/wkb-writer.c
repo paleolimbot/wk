@@ -276,12 +276,12 @@ int wkb_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
     return WK_CONTINUE;
 }
 
-int wkb_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id,
+int wkb_writer_coord(const wk_meta_t* meta, double* coord, uint32_t coord_id,
                      void* handler_data) {
     wkb_writer_t* writer = (wkb_writer_t*) handler_data;
     writer->current_size[writer->recursion_level - 1]++;
     int n_dim = 2 + ((meta->flags & WK_FLAG_HAS_Z) != 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
-    wkb_write_doubles(writer, coord.v, n_dim);
+    wkb_write_doubles(writer, coord, n_dim);
     return WK_CONTINUE;
 }
 

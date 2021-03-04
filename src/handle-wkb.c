@@ -170,7 +170,7 @@ int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta) {
 }
 
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords, int n_dim) {
-    wk_coord_t coord;
+    double coord[4];
     int result;
 
     HANDLE_OR_RETURN(wkb_read_check_buffer(reader, n_dim * n_coords * sizeof(double)));
@@ -183,19 +183,19 @@ int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n
                 reader->offset += sizeof(double);
 
                 swapped = bswap_64(swappable);
-                memcpy(coord.v + j, &swapped, sizeof(double));
+                memcpy(coord + j, &swapped, sizeof(double));
             }
 
           HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
         }
     } else {
-        // seems to be slightly faster than memcpy(coord.v, ..., coord_size)
+        // seems to be slightly faster than memcpy(coord, ..., coord_size)
         uint64_t swappable;
         for (uint32_t i = 0; i < n_coords; i++) {
             for (int j = 0; j < n_dim; j++) {
                 memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
                 reader->offset += sizeof(double);
-                memcpy(coord.v + j, &swappable, sizeof(double));
+                memcpy(coord + j, &swappable, sizeof(double));
             }
 
           HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));

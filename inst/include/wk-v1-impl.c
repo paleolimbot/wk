@@ -34,7 +34,7 @@ int wk_default_handler_ring(const wk_meta_t* meta, uint32_t size, uint32_t ring_
   return WK_CONTINUE;
 }
 
-int wk_default_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int wk_default_handler_coord(const wk_meta_t* meta, double* coord, uint32_t coord_id, void* handler_data) {
   return WK_CONTINUE;
 }
 
