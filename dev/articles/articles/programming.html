@@ -102,23 +102,23 @@
   <span class="fu"><a href="../../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee97d3e50&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffeec4ffe50&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (2): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee97d3cd8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee97d3cd8&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (2): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffeec4ffcd8&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeec4ffcd8&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (2): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (3): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffee97d3cd8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffee97d3be8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;         coord (1): &lt;0x7ffee97d3be8&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (2): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (3): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffeec4ffcd8&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffeec4ffbe8&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;         coord (1): &lt;0x7ffeec4ffbe8&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (3): &lt;0x7ffee97d3e50&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee97d3e50&gt;</span>
+<span class="co">#&gt;   feature_end (3): &lt;0x7ffeec4ffe50&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeec4ffe50&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
@@ -129,24 +129,24 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee97d3070&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee97d3070&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee97d2ef8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee97d2ef8&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeec4ff070&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeec4ff070&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffeec4feef8&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeec4feef8&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee97d3070&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee97d3070&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeec4ff070&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeec4ff070&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span>
 <span class="fu"><a href="../../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee97d5930&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee97d5930&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffee97d5890&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee97d5890&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeec501930&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffeec501930&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffeec501890&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffeec501890&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee97d5930&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee97d5930&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffeec501930&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffeec501930&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 </div>
@@ -165,11 +165,11 @@
 <span id="cb3-9"><a href="#cb3-9"></a><span class="kw">public</span>:</span>
 <span id="cb3-10"><a href="#cb3-10"></a>  BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}</span>
 <span id="cb3-11"><a href="#cb3-11"></a>  </span>
-<span id="cb3-12"><a href="#cb3-12"></a>  <span class="dt">int</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="at">const</span> <span class="dt">wk_coord_t</span> coord, <span class="dt">uint32_t</span> coord_id) {</span>
-<span id="cb3-13"><a href="#cb3-13"></a>    <span class="kw">this</span>-&gt;xmin = <span class="bu">std::</span>min(coord.v[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmin);</span>
-<span id="cb3-14"><a href="#cb3-14"></a>    <span class="kw">this</span>-&gt;ymin = <span class="bu">std::</span>min(coord.v[<span class="dv">1</span>], <span class="kw">this</span>-&gt;ymin);</span>
-<span id="cb3-15"><a href="#cb3-15"></a>    <span class="kw">this</span>-&gt;xmax = <span class="bu">std::</span>max(coord.v[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmax);</span>
-<span id="cb3-16"><a href="#cb3-16"></a>    <span class="kw">this</span>-&gt;ymax = <span class="bu">std::</span>max(coord.v[<span class="dv">1</span>], <span class="kw">this</span>-&gt;ymax);</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="dt">int</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="at">const</span> <span class="dt">double</span>* coord, <span class="dt">uint32_t</span> coord_id) {</span>
+<span id="cb3-13"><a href="#cb3-13"></a>    <span class="kw">this</span>-&gt;xmin = <span class="bu">std::</span>min(coord[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmin);</span>
+<span id="cb3-14"><a href="#cb3-14"></a>    <span class="kw">this</span>-&gt;ymin = <span class="bu">std::</span>min(coord[<span class="dv">1</span>], <span class="kw">this</span>-&gt;ymin);</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="kw">this</span>-&gt;xmax = <span class="bu">std::</span>max(coord[<span class="dv">0</span>], <span class="kw">this</span>-&gt;xmax);</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="kw">this</span>-&gt;ymax = <span class="bu">std::</span>max(coord[<span class="dv">1</span>], <span class="kw">this</span>-&gt;ymax);</span>
 <span id="cb3-17"><a href="#cb3-17"></a>    <span class="cf">return</span> WK_CONTINUE; </span>
 <span id="cb3-18"><a href="#cb3-18"></a>  }</span>
 <span id="cb3-19"><a href="#cb3-19"></a>  </span>
@@ -195,7 +195,7 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900006556&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x48c7894900006506&gt;</span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_handle.sfg.html">wk_handle</a></span><span class="op">(</span>
@@ -251,13 +251,13 @@
 <span id="cb8-11"><a href="#cb8-11"></a>  <span class="dt">double</span> xmin, ymin, xmax, ymax;</span>
 <span id="cb8-12"><a href="#cb8-12"></a>} bbox_handler_data_t;</span>
 <span id="cb8-13"><a href="#cb8-13"></a></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="dt">int</span> bbox_handler_coord(<span class="dt">const</span> wk_meta_t* meta, <span class="dt">const</span> wk_coord_t coord, </span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="dt">int</span> bbox_handler_coord(<span class="dt">const</span> wk_meta_t* meta, <span class="dt">const</span> <span class="dt">double</span>* coord, </span>
 <span id="cb8-15"><a href="#cb8-15"></a>                        <span class="dt">uint32_t</span> coord_id, <span class="dt">void</span>* handler_data) {</span>
 <span id="cb8-16"><a href="#cb8-16"></a>  bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;</span>
-<span id="cb8-17"><a href="#cb8-17"></a>  data-&gt;xmin = MIN(coord.v[<span class="dv">0</span>], data-&gt;xmin);</span>
-<span id="cb8-18"><a href="#cb8-18"></a>  data-&gt;ymin = MIN(coord.v[<span class="dv">1</span>], data-&gt;ymin);</span>
-<span id="cb8-19"><a href="#cb8-19"></a>  data-&gt;xmax = MAX(coord.v[<span class="dv">0</span>], data-&gt;xmax);</span>
-<span id="cb8-20"><a href="#cb8-20"></a>  data-&gt;ymax = MAX(coord.v[<span class="dv">1</span>], data-&gt;ymax);</span>
+<span id="cb8-17"><a href="#cb8-17"></a>  data-&gt;xmin = MIN(coord[<span class="dv">0</span>], data-&gt;xmin);</span>
+<span id="cb8-18"><a href="#cb8-18"></a>  data-&gt;ymin = MIN(coord[<span class="dv">1</span>], data-&gt;ymin);</span>
+<span id="cb8-19"><a href="#cb8-19"></a>  data-&gt;xmax = MAX(coord[<span class="dv">0</span>], data-&gt;xmax);</span>
+<span id="cb8-20"><a href="#cb8-20"></a>  data-&gt;ymax = MAX(coord[<span class="dv">1</span>], data-&gt;ymax);</span>
 <span id="cb8-21"><a href="#cb8-21"></a>  <span class="cf">return</span> WK_CONTINUE;</span>
 <span id="cb8-22"><a href="#cb8-22"></a>}</span>
 <span id="cb8-23"><a href="#cb8-23"></a></span>
@@ -345,15 +345,15 @@
 <span id="cb10-25"><a href="#cb10-25"></a>  geometry_meta.size = <span class="dv">1</span>;</span>
 <span id="cb10-26"><a href="#cb10-26"></a></span>
 <span id="cb10-27"><a href="#cb10-27"></a>  handler.vector_start(&amp;vector_meta);</span>
-<span id="cb10-28"><a href="#cb10-28"></a>  <span class="dt">wk_coord_t</span> coord;</span>
+<span id="cb10-28"><a href="#cb10-28"></a>  <span class="dt">double</span> coord[<span class="dv">4</span>];</span>
 <span id="cb10-29"><a href="#cb10-29"></a>  <span class="dt">int</span> result;</span>
 <span id="cb10-30"><a href="#cb10-30"></a>  </span>
 <span id="cb10-31"><a href="#cb10-31"></a>  <span class="cf">for</span> (<span class="dt">R_xlen_t</span> i = <span class="dv">0</span>; i &lt; n_features; i++) {</span>
 <span id="cb10-32"><a href="#cb10-32"></a>    HANDLE_CONTINUE_OR_BREAK(handler.feature_start(&amp;vector_meta, i));</span>
 <span id="cb10-33"><a href="#cb10-33"></a>    HANDLE_CONTINUE_OR_BREAK(handler.geometry_start(&amp;geometry_meta, WK_PART_ID_NONE));</span>
 <span id="cb10-34"><a href="#cb10-34"></a></span>
-<span id="cb10-35"><a href="#cb10-35"></a>    coord.v[<span class="dv">0</span>] = x[i];</span>
-<span id="cb10-36"><a href="#cb10-36"></a>    coord.v[<span class="dv">1</span>] = y[i];</span>
+<span id="cb10-35"><a href="#cb10-35"></a>    coord[<span class="dv">0</span>] = x[i];</span>
+<span id="cb10-36"><a href="#cb10-36"></a>    coord[<span class="dv">1</span>] = y[i];</span>
 <span id="cb10-37"><a href="#cb10-37"></a>    HANDLE_CONTINUE_OR_BREAK(handler.coord(&amp;geometry_meta, coord, <span class="dv">0</span>));</span>
 <span id="cb10-38"><a href="#cb10-38"></a></span>
 <span id="cb10-39"><a href="#cb10-39"></a>    HANDLE_CONTINUE_OR_BREAK(handler.geometry_end(&amp;geometry_meta, WK_PART_ID_NONE));</span>
@@ -407,15 +407,15 @@
 <span id="cb13-21"><a href="#cb13-21"></a>  geometry_meta.size = <span class="dv">1</span>;</span>
 <span id="cb13-22"><a href="#cb13-22"></a></span>
 <span id="cb13-23"><a href="#cb13-23"></a>  handler-&gt;vector_start(&amp;vector_meta, handler-&gt;handler_data);</span>
-<span id="cb13-24"><a href="#cb13-24"></a>  wk_coord_t coord;</span>
+<span id="cb13-24"><a href="#cb13-24"></a>  <span class="dt">double</span> coord[<span class="dv">4</span>];</span>
 <span id="cb13-25"><a href="#cb13-25"></a>  <span class="dt">int</span> result;</span>
 <span id="cb13-26"><a href="#cb13-26"></a>  </span>
 <span id="cb13-27"><a href="#cb13-27"></a>  <span class="cf">for</span> (R_xlen_t i = <span class="dv">0</span>; i &lt; n_features; i++) {</span>
 <span id="cb13-28"><a href="#cb13-28"></a>    HANDLE_CONTINUE_OR_BREAK(handler-&gt;feature_start(&amp;vector_meta, i, handler-&gt;handler_data));</span>
 <span id="cb13-29"><a href="#cb13-29"></a>    HANDLE_CONTINUE_OR_BREAK(handler-&gt;geometry_start(&amp;geometry_meta, WK_PART_ID_NONE, handler-&gt;handler_data));</span>
 <span id="cb13-30"><a href="#cb13-30"></a></span>
-<span id="cb13-31"><a href="#cb13-31"></a>    coord.v[<span class="dv">0</span>] = x[i];</span>
-<span id="cb13-32"><a href="#cb13-32"></a>    coord.v[<span class="dv">1</span>] = y[i];</span>
+<span id="cb13-31"><a href="#cb13-31"></a>    coord[<span class="dv">0</span>] = x[i];</span>
+<span id="cb13-32"><a href="#cb13-32"></a>    coord[<span class="dv">1</span>] = y[i];</span>
 <span id="cb13-33"><a href="#cb13-33"></a>    HANDLE_CONTINUE_OR_BREAK(handler-&gt;coord(&amp;geometry_meta, coord, <span class="dv">0</span>, handler-&gt;handler_data));</span>
 <span id="cb13-34"><a href="#cb13-34"></a></span>
 <span id="cb13-35"><a href="#cb13-35"></a>    HANDLE_CONTINUE_OR_BREAK(handler-&gt;geometry_end(&amp;geometry_meta, WK_PART_ID_NONE, handler-&gt;handler_data));</span>
@@ -455,16 +455,16 @@
 <span id="cb15-8"><a href="#cb15-8"></a>  BumpFilter(SEXP next, <span class="dt">double</span> dx, <span class="dt">double</span> dy): </span>
 <span id="cb15-9"><a href="#cb15-9"></a>    WKIdentityFilter(next), dx(dx), dy(dy) {}</span>
 <span id="cb15-10"><a href="#cb15-10"></a>  </span>
-<span id="cb15-11"><a href="#cb15-11"></a>  <span class="dt">int</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="at">const</span> <span class="dt">wk_coord_t</span> coord, <span class="dt">uint32_t</span> coord_id) {</span>
-<span id="cb15-12"><a href="#cb15-12"></a>    <span class="kw">this</span>-&gt;new_coord.v[<span class="dv">0</span>] = coord.v[<span class="dv">0</span>] + <span class="kw">this</span>-&gt;dx;</span>
-<span id="cb15-13"><a href="#cb15-13"></a>    <span class="kw">this</span>-&gt;new_coord.v[<span class="dv">1</span>] = coord.v[<span class="dv">1</span>] + <span class="kw">this</span>-&gt;dy;</span>
+<span id="cb15-11"><a href="#cb15-11"></a>  <span class="dt">int</span> coord(<span class="at">const</span> <span class="dt">wk_meta_t</span>* meta, <span class="at">const</span> <span class="dt">double</span>* coord, <span class="dt">uint32_t</span> coord_id) {</span>
+<span id="cb15-12"><a href="#cb15-12"></a>    <span class="kw">this</span>-&gt;new_coord[<span class="dv">0</span>] = coord[<span class="dv">0</span>] + <span class="kw">this</span>-&gt;dx;</span>
+<span id="cb15-13"><a href="#cb15-13"></a>    <span class="kw">this</span>-&gt;new_coord[<span class="dv">1</span>] = coord[<span class="dv">1</span>] + <span class="kw">this</span>-&gt;dy;</span>
 <span id="cb15-14"><a href="#cb15-14"></a>    <span class="cf">return</span> WKIdentityFilter::coord(meta, <span class="kw">this</span>-&gt;new_coord, coord_id);</span>
 <span id="cb15-15"><a href="#cb15-15"></a>  }</span>
 <span id="cb15-16"><a href="#cb15-16"></a>  </span>
 <span id="cb15-17"><a href="#cb15-17"></a><span class="kw">private</span>:</span>
 <span id="cb15-18"><a href="#cb15-18"></a>  <span class="dt">double</span> dx;</span>
 <span id="cb15-19"><a href="#cb15-19"></a>  <span class="dt">double</span> dy;</span>
-<span id="cb15-20"><a href="#cb15-20"></a>  <span class="dt">wk_coord_t</span> new_coord;</span>
+<span id="cb15-20"><a href="#cb15-20"></a>  <span class="dt">double</span> new_coord[<span class="dv">4</span>];</span>
 <span id="cb15-21"><a href="#cb15-21"></a>};</span>
 <span id="cb15-22"><a href="#cb15-22"></a></span>
 <span id="cb15-23"><a href="#cb15-23"></a>[[<span class="at">cpp11</span>::<span class="at">linking_to</span>(<span class="at">wk</span>)]]</span>
@@ -565,10 +565,10 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression                                                     min   median</span>
 <span class="co">#&gt;   &lt;bch:expr&gt;                                                &lt;bch:tm&gt; &lt;bch:tm&gt;</span>
-<span class="co">#&gt; 1 wk_handle(nc_wkb, wk_void_handler())                       52.77µs  55.07µs</span>
-<span class="co">#&gt; 2 wk_handle(nc_wkb, cpp_void_handler())                     576.36µs 580.97µs</span>
-<span class="co">#&gt; 3 wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   88.18µs  93.03µs</span>
-<span class="co">#&gt; 4 wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   3.16ms   3.25ms</span>
+<span class="co">#&gt; 1 wk_handle(nc_wkb, wk_void_handler())                       51.33µs  54.27µs</span>
+<span class="co">#&gt; 2 wk_handle(nc_wkb, cpp_void_handler())                     560.22µs  585.7µs</span>
+<span class="co">#&gt; 3 wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   85.01µs  90.16µs</span>
+<span class="co">#&gt; 4 wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   3.17ms   3.26ms</span>
 <span class="co">#&gt; # … with 3 more variables: itr/sec &lt;dbl&gt;, mem_alloc &lt;bch:byt&gt;, gc/sec &lt;dbl&gt;</span></code></pre></div>
 </div>
   </div>
