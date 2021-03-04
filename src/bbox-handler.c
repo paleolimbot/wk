@@ -39,7 +39,7 @@ int wk_bbox_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void
     }
 }
 
-int wk_bbox_handler_coord(const wk_meta_t* meta, double* coord, 
+int wk_bbox_handler_coord(const wk_meta_t* meta, const double* coord, 
                           uint32_t coord_id, void* handler_data) {
     wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) handler_data;
     data->xmin = MIN(coord[0], data->xmin);

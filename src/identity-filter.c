@@ -58,7 +58,7 @@ int wk_identity_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t r
   return identity_filter->next->ring_end(meta, size, ring_id, identity_filter->next->handler_data);
 }
 
-int wk_identity_filter_coord(const wk_meta_t* meta, double* coord, uint32_t coord_id, void* handler_data) {
+int wk_identity_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
   identity_filter_t* identity_filter = (identity_filter_t*) handler_data;
   return identity_filter->next->coord(meta, coord, coord_id, identity_filter->next->handler_data);
 }

@@ -255,7 +255,7 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
     writer->precision = MIN(writer->precision, meta->precision);
 }
 
-void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, double* coord) {
+void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const double* coord) {
     writer->bbox[0] = MIN(writer->bbox[0], coord[0]);
     writer->bbox[1] = MIN(writer->bbox[1], coord[1]);
     writer->bbox[2] = MAX(writer->bbox[2], coord[0]);
@@ -542,7 +542,7 @@ int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
     return WK_CONTINUE;
 }
 
-int sfc_writer_coord(const wk_meta_t* meta, double* coord, uint32_t coord_id, void* handler_data) {
+int sfc_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     // This point might be EMPTY, in which case it will cause the ranges to be all NaN

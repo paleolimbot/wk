@@ -125,7 +125,7 @@ int xy_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* hand
     return WK_CONTINUE;
 }
 
-int xy_writer_coord(const wk_meta_t* meta, double* coord, uint32_t coord_id, void* handler_data) {
+int xy_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
     xy_writer_t* data = (xy_writer_t*) handler_data;
 
     if (data->has_coord) {

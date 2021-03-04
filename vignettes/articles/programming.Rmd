@@ -52,7 +52,7 @@ class BBoxHandler: public WKVoidHandler {
 public:
   BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
   
-  int coord(const wk_meta_t* meta, double* coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {
     this->xmin = std::min(coord[0], this->xmin);
     this->ymin = std::min(coord[1], this->ymin);
     this->xmax = std::max(coord[0], this->xmax);
@@ -141,7 +141,7 @@ typedef struct {
   double xmin, ymin, xmax, ymax;
 } bbox_handler_data_t;
 
-int bbox_handler_coord(const wk_meta_t* meta, double* coord, 
+int bbox_handler_coord(const wk_meta_t* meta, const double* coord, 
                         uint32_t coord_id, void* handler_data) {
   bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
   data->xmin = MIN(coord[0], data->xmin);
@@ -362,7 +362,7 @@ public:
   BumpFilter(SEXP next, double dx, double dy): 
     WKIdentityFilter(next), dx(dx), dy(dy) {}
   
-  int coord(const wk_meta_t* meta, double* coord, uint32_t coord_id) {
+  int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {
     this->new_coord[0] = coord[0] + this->dx;
     this->new_coord[1] = coord[1] + this->dy;
     return WKIdentityFilter::coord(meta, this->new_coord, coord_id);
