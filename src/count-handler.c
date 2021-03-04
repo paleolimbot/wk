@@ -85,7 +85,7 @@ int count_handler_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring
     return WK_CONTINUE;
 }
 
-int count_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int count_handler_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
     count_handler_t* data = (count_handler_t*) handler_data;
     data->n_coord++;
     return WK_CONTINUE;

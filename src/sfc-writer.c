@@ -255,23 +255,23 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
     writer->precision = MIN(writer->precision, meta->precision);
 }
 
-void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const wk_coord_t coord) {
-    writer->bbox[0] = MIN(writer->bbox[0], coord.v[0]);
-    writer->bbox[1] = MIN(writer->bbox[1], coord.v[1]);
-    writer->bbox[2] = MAX(writer->bbox[2], coord.v[0]);
-    writer->bbox[3] = MAX(writer->bbox[3], coord.v[1]);
+void sfc_writer_update_ranges(sfc_writer_t* writer, const wk_meta_t* meta, const double* coord) {
+    writer->bbox[0] = MIN(writer->bbox[0], coord[0]);
+    writer->bbox[1] = MIN(writer->bbox[1], coord[1]);
+    writer->bbox[2] = MAX(writer->bbox[2], coord[0]);
+    writer->bbox[3] = MAX(writer->bbox[3], coord[1]);
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        writer->z_range[0] = MIN(writer->z_range[0], coord.v[2]);
-        writer->z_range[1] = MAX(writer->z_range[1], coord.v[2]);
-        writer->m_range[0] = MIN(writer->m_range[0], coord.v[3]);
-        writer->m_range[1] = MAX(writer->m_range[1], coord.v[3]);
+        writer->z_range[0] = MIN(writer->z_range[0], coord[2]);
+        writer->z_range[1] = MAX(writer->z_range[1], coord[2]);
+        writer->m_range[0] = MIN(writer->m_range[0], coord[3]);
+        writer->m_range[1] = MAX(writer->m_range[1], coord[3]);
     } else if (meta->flags & WK_FLAG_HAS_Z) {
-        writer->z_range[0] = MIN(writer->z_range[0], coord.v[2]);
-        writer->z_range[1] = MAX(writer->z_range[1], coord.v[2]);
+        writer->z_range[0] = MIN(writer->z_range[0], coord[2]);
+        writer->z_range[1] = MAX(writer->z_range[1], coord[2]);
     } else if (meta->flags & WK_FLAG_HAS_M) {
-        writer->m_range[0] = MIN(writer->m_range[0], coord.v[2]);
-        writer->m_range[1] = MAX(writer->m_range[1], coord.v[2]);
+        writer->m_range[0] = MIN(writer->m_range[0], coord[2]);
+        writer->m_range[1] = MAX(writer->m_range[1], coord[2]);
     }
 }
 
@@ -542,12 +542,12 @@ int sfc_writer_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id
     return WK_CONTINUE;
 }
 
-int sfc_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int sfc_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     // This point might be EMPTY, in which case it will cause the ranges to be all NaN
     if ((meta->geometry_type != WK_POINT) || 
-        (!sfc_double_all_na_or_nan(writer->coord_size, coord.v))) {
+        (!sfc_double_all_na_or_nan(writer->coord_size, coord))) {
         sfc_writer_update_ranges(writer, meta, coord);
     }
 
@@ -563,7 +563,7 @@ int sfc_writer_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coo
 
     double* current_values = REAL(writer->coord_seq);
     for (int i = 0; i < writer->coord_size; i++) {
-        current_values[i * writer->coord_seq_rows + writer->coord_id] = coord.v[i];
+        current_values[i * writer->coord_seq_rows + writer->coord_id] = coord[i];
     }
 
     writer->coord_id++;

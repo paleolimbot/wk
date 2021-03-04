@@ -52,11 +52,11 @@ class BBoxHandler: public WKVoidHandler {
 public:
   BBoxHandler(): xmin(R_PosInf), ymin(R_PosInf), xmax(R_NegInf), ymax(R_NegInf) {}
   
-  int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
-    this->xmin = std::min(coord.v[0], this->xmin);
-    this->ymin = std::min(coord.v[1], this->ymin);
-    this->xmax = std::max(coord.v[0], this->xmax);
-    this->ymax = std::max(coord.v[1], this->ymax);
+  int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {
+    this->xmin = std::min(coord[0], this->xmin);
+    this->ymin = std::min(coord[1], this->ymin);
+    this->xmax = std::max(coord[0], this->xmax);
+    this->ymax = std::max(coord[1], this->ymax);
     return WK_CONTINUE; 
   }
   
@@ -141,13 +141,13 @@ typedef struct {
   double xmin, ymin, xmax, ymax;
 } bbox_handler_data_t;
 
-int bbox_handler_coord(const wk_meta_t* meta, const wk_coord_t coord, 
+int bbox_handler_coord(const wk_meta_t* meta, const double* coord, 
                         uint32_t coord_id, void* handler_data) {
   bbox_handler_data_t* data = (bbox_handler_data_t*) handler_data;
-  data->xmin = MIN(coord.v[0], data->xmin);
-  data->ymin = MIN(coord.v[1], data->ymin);
-  data->xmax = MAX(coord.v[0], data->xmax);
-  data->ymax = MAX(coord.v[1], data->ymax);
+  data->xmin = MIN(coord[0], data->xmin);
+  data->ymin = MIN(coord[1], data->ymin);
+  data->xmax = MAX(coord[0], data->xmax);
+  data->ymax = MAX(coord[1], data->ymax);
   return WK_CONTINUE;
 }
 
@@ -238,15 +238,15 @@ sexp cpp_handle_xy(data_frame input, sexp handler_xptr) {
   geometry_meta.size = 1;
 
   handler.vector_start(&vector_meta);
-  wk_coord_t coord;
+  double coord[4];
   int result;
   
   for (R_xlen_t i = 0; i < n_features; i++) {
     HANDLE_CONTINUE_OR_BREAK(handler.feature_start(&vector_meta, i));
     HANDLE_CONTINUE_OR_BREAK(handler.geometry_start(&geometry_meta, WK_PART_ID_NONE));
 
-    coord.v[0] = x[i];
-    coord.v[1] = y[i];
+    coord[0] = x[i];
+    coord[1] = y[i];
     HANDLE_CONTINUE_OR_BREAK(handler.coord(&geometry_meta, coord, 0));
 
     HANDLE_CONTINUE_OR_BREAK(handler.geometry_end(&geometry_meta, WK_PART_ID_NONE));
@@ -310,15 +310,15 @@ SEXP c_handle_xy_impl(SEXP input, wk_handler_t* handler) {
   geometry_meta.size = 1;
 
   handler->vector_start(&vector_meta, handler->handler_data);
-  wk_coord_t coord;
+  double coord[4];
   int result;
   
   for (R_xlen_t i = 0; i < n_features; i++) {
     HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
     HANDLE_CONTINUE_OR_BREAK(handler->geometry_start(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
 
-    coord.v[0] = x[i];
-    coord.v[1] = y[i];
+    coord[0] = x[i];
+    coord[1] = y[i];
     HANDLE_CONTINUE_OR_BREAK(handler->coord(&geometry_meta, coord, 0, handler->handler_data));
 
     HANDLE_CONTINUE_OR_BREAK(handler->geometry_end(&geometry_meta, WK_PART_ID_NONE, handler->handler_data));
@@ -362,16 +362,16 @@ public:
   BumpFilter(SEXP next, double dx, double dy): 
     WKIdentityFilter(next), dx(dx), dy(dy) {}
   
-  int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
-    this->new_coord.v[0] = coord.v[0] + this->dx;
-    this->new_coord.v[1] = coord.v[1] + this->dy;
+  int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {
+    this->new_coord[0] = coord[0] + this->dx;
+    this->new_coord[1] = coord[1] + this->dy;
     return WKIdentityFilter::coord(meta, this->new_coord, coord_id);
   }
   
 private:
   double dx;
   double dy;
-  wk_coord_t new_coord;
+  double new_coord[4];
 };
 
 [[cpp11::linking_to(wk)]]

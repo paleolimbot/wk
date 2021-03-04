@@ -625,19 +625,19 @@ protected:
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
   int readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
-    wk_coord_t coord;
+    double coord[4];
     int result;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
-    this->readCoordinate(s, &coord, coordSize);
+    this->readCoordinate(s, coord, coordSize);
     HANDLE_OR_RETURN(handler.coord(meta, coord, 0));
     return WK_CONTINUE;
   }
 
   int readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
-    wk_coord_t coord;
+    double coord[4];
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
@@ -650,7 +650,7 @@ protected:
     int result;
 
     do {
-      this->readCoordinate(s, &coord, coordSize);
+      this->readCoordinate(s, coord, coordSize);
       HANDLE_OR_RETURN(handler.coord(meta, coord, coord_id));
 
       coord_id++;
@@ -659,11 +659,11 @@ protected:
     return WK_CONTINUE;
   }
 
-  void readCoordinate(WKTV1String& s, wk_coord_t* coord, int coordSize) {
-    coord->v[0] = s.assertNumber();
+  void readCoordinate(WKTV1String& s, double* coord, int coordSize) {
+    coord[0] = s.assertNumber();
     for (int i = 1; i < coordSize; i++) {
       s.assertWhitespace();
-      coord->v[i] = s.assertNumber();
+      coord[i] = s.assertNumber();
     }
   }
 

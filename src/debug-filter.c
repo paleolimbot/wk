@@ -276,13 +276,13 @@ int wk_debug_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring
   return result;
 }
 
-int wk_debug_filter_coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) {
+int wk_debug_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*) handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("coord (%d): <%p> (%f %f", coord_id + 1, meta, coord.v[0], coord.v[1]);
-  if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[2]);
-  if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord.v[3]);
+  Rprintf("coord (%d): <%p> (%f %f", coord_id + 1, meta, coord[0], coord[1]);
+  if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord[2]);
+  if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M) Rprintf(" %f", coord[3]);
   Rprintf(") ");
 
   int result = debug_filter->next->coord(meta, coord, coord_id, debug_filter->next->handler_data);

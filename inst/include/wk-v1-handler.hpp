@@ -40,7 +40,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id) {
+  virtual int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {
     return WK_CONTINUE;
   }
 
@@ -183,7 +183,7 @@ private:
     WK_END_CPP11(WK_ABORT)
   }
 
-  static int coord(const wk_meta_t* meta, const wk_coord_t coord, uint32_t coord_id, void* handler_data) noexcept {
+  static int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) noexcept {
     WK_BEGIN_CPP11
     HandlerType* cpp_handler = (HandlerType*) handler_data;
     return cpp_handler->coord(meta, coord, coord_id);
