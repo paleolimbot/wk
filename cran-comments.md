@@ -1,6 +1,5 @@
 
-This release fixes new warnings on the package check page 
-following the release of wkutils 0.1.1.
+Adds several new vector classes and a new interface for extensibility, maintaining backwards compatibility with the previous interface for extensibility.
 
 ## Test environments
 
