@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -80,12 +80,24 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/programming.html">Programming with the wk C and C++ API</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -94,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/paleolimbot/wk/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -120,9 +132,9 @@
     <p>Mark character vectors as well-known text</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkt</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wkt</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>parse_wkt</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>parse_wkt</span><span class='op'>(</span><span class='va'>x</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
@@ -130,40 +142,10 @@
 <span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for character</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
-
-<span class='co'># S3 method for wk_wksxp</span>
-<span class='fu'>as_wkt</span><span class='op'>(</span>
-  <span class='va'>x</span>,
-  <span class='va'>...</span>,
-  include_z <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_m <span class='op'>=</span> <span class='cn'>NULL</span>,
-  include_srid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  precision <span class='op'>=</span> <span class='cn'>NULL</span>,
-  trim <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+<span class='fu'>as_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,41 +155,12 @@
       <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> vector containing well-known text.</p></td>
     </tr>
     <tr>
+      <th>crs</th>
+      <td><p>A value to be propagated as the CRS for this vector.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Unused</p></td>
-    </tr>
-    <tr>
-      <th>include_z</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_m</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>include_srid</th>
-      <td><p>Include the
-values of the Z and M coordinates and/or SRID
-in the output? Use <code>FALSE</code> to omit, <code>TRUE</code> to include, or <code>NA</code> to include
-only if present. Note that using <code>TRUE</code> may result in an error if there
-is no value present in the original.</p></td>
-    </tr>
-    <tr>
-      <th>precision</th>
-      <td><p>The rounding precision to use when writing
-(number of decimal places).</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>Trim unnecessary zeroes in the output?</p></td>
     </tr>
     </table>
 

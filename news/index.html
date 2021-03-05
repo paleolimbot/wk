@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -79,12 +79,24 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/programming.html">Programming with the wk C and C++ API</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -93,7 +105,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/paleolimbot/wk/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,16 +126,43 @@
       <small>Source: <a href='https://github.com/paleolimbot/wk/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="wk-033" class="section level1">
-<h1 class="page-header" data-toc-text="0.3.3">
-<a href="#wk-033" class="anchor"></a>wk 0.3.3<small> Unreleased </small>
+    <div id="wk-040" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.0">
+<a href="#wk-040" class="anchor"></a>wk 0.4.0<small> Unreleased </small>
 </h1>
 <ul>
-<li>Fixed WKB import of ZM geometries that do not use EWKB</li>
+<li>Removed <code>wksxp()</code> in favour of improved <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::st_sfc()</a></code> support (<a href='https://github.com/paleolimbot/wk/issues/21'>#21</a>).</li>
+<li>Rewrite existing readers, writers, and handlers, using a new C API (<a href='https://github.com/paleolimbot/wk/issues/13'>#13</a>).</li>
+<li>Use new C API in favour of header-only approach for all wk functions (<a href='https://github.com/paleolimbot/wk/issues/19'>#19</a>, <a href='https://github.com/paleolimbot/wk/issues/22'>#22</a>).</li>
+<li>Use cpp11 to manage safe use of callables that may longjmp from C++.</li>
+<li>Vector classes now propagate <code><a href="https://rdrr.io/r/base/attr.html">attr(, "crs")</a></code>, and check that operations that involve more than one vector have compatable CRS objects as determined by <code><a href="../reference/wk_crs_equal.html">wk_crs_equal()</a></code>.</li>
+<li>Added an R-level framework for other packages to implement wk readers and handlers: <code><a href="../reference/wk_handle.sfg.html">wk_handle()</a></code>, <code><a href="../reference/wk_translate.sfc.html">wk_translate()</a></code>, and <code><a href="../reference/wk_writer.sfc.html">wk_writer()</a></code> (<a href='https://github.com/paleolimbot/wk/issues/37'>#37</a>).</li>
+<li>Added a native reader and writer for <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::st_sfc()</a></code> objects and implemented R-level generics for sfc, sfg, sf, and bbox objects (<a href='https://github.com/paleolimbot/wk/issues/28'>#28</a>, <a href='https://github.com/paleolimbot/wk/issues/29'>#29</a>, <a href='https://github.com/paleolimbot/wk/issues/38'>#38</a>, <a href='https://github.com/paleolimbot/wk/issues/45'>#45</a>).</li>
+<li>Implement <code><a href="../reference/crc.html">crc()</a></code> vector class to represent circles (<a href='https://github.com/paleolimbot/wk/issues/40'>#40</a>).</li>
+<li>Added a 2D cartesian bounding box handler (<code><a href="../reference/wk_bbox.html">wk_bbox()</a></code>) (<a href='https://github.com/paleolimbot/wk/issues/42'>#42</a>).</li>
+<li>Refactored unit tests reflecting use of the new API and for improved test coverage (<a href='https://github.com/paleolimbot/wk/issues/44'>#44</a>, <a href='https://github.com/paleolimbot/wk/issues/45'>#45</a>, <a href='https://github.com/paleolimbot/wk/issues/46'>#46</a>).</li>
+<li>Added <code><a href="../reference/wk_meta.html">wk_meta()</a></code>, <code><a href="../reference/wk_meta.html">wk_vector_meta()</a></code>, and <code><a href="../reference/wk_count.html">wk_count()</a></code> to inspect properties of vectors (<a href='https://github.com/paleolimbot/wk/issues/53'>#53</a>).</li>
+<li>Modified all internal handlers such that they work with vectors of unknown length (<a href='https://github.com/paleolimbot/wk/issues/54'>#54</a>).</li>
+</ul>
+</div>
+    <div id="wk-034" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.4">
+<a href="#wk-034" class="anchor"></a>wk 0.3.4<small> 2021-01-16 </small>
+</h1>
+<ul>
+<li>Fixed reference to <code>wkutils::plot.wk_wksxp()</code>, which no longer exists.</li>
+</ul>
+</div>
+    <div id="wk-033" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.3">
+<a href="#wk-033" class="anchor"></a>wk 0.3.3<small> 2020-10-13 </small>
+</h1>
+<ul>
+<li>Fixed WKB import of ZM geometries that do not use EWKB.</li>
 <li>Added <code><a href="../reference/xy.html">xy()</a></code>, <code><a href="../reference/xy.html">xyz()</a></code>, <code><a href="../reference/xy.html">xym()</a></code> and <code><a href="../reference/xy.html">xyzm()</a></code> classes to efficiently store point geometries.</li>
 <li>Added the <code><a href="../reference/rct.html">rct()</a></code> vector class to efficiently store two-dimensional rectangles.</li>
 <li>Fixed the CRAN check failure caused by a circular dependency with the wkutils package.</li>
-<li>Added S3 methods to coerce sf objects to and from <code><a href="../reference/wkt.html">wkt()</a></code>, <code><a href="../reference/wkb.html">wkb()</a></code> and <code><a href="../reference/wksxp.html">wksxp()</a></code>.</li>
+<li>Added S3 methods to coerce sf objects to and from <code><a href="../reference/wkt.html">wkt()</a></code>, <code><a href="../reference/wkb.html">wkb()</a></code> and <code>wksxp()</code>.</li>
 </ul>
 </div>
     <div id="wk-032" class="section level1">

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -79,12 +79,24 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/programming.html">Programming with the wk C and C++ API</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -93,7 +105,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/paleolimbot/wk/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -136,6 +148,30 @@
       <tr>
         
         <td>
+          <p><code><a href="crc.html">crc()</a></code> <code><a href="crc.html">as_crc()</a></code> </p>
+        </td>
+        <td><p>2D Circle Vectors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="deprecated.html">wkb_format()</a></code> <code><a href="deprecated.html">wkt_format()</a></code> <code><a href="deprecated.html">wkb_problems()</a></code> <code><a href="deprecated.html">wkt_problems()</a></code> <code><a href="deprecated.html">wkb_translate_wkt()</a></code> <code><a href="deprecated.html">wkb_translate_wkb()</a></code> <code><a href="deprecated.html">wkt_translate_wkt()</a></code> <code><a href="deprecated.html">wkt_translate_wkb()</a></code> </p>
+        </td>
+        <td><p>Deprecated functions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="handle_wkt_without_vector_size.html">handle_wkt_without_vector_size()</a></code> </p>
+        </td>
+        <td><p>Test handlers for handling of unknown size vectors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="new_wk_crc.html">new_wk_crc()</a></code> </p>
+        </td>
+        <td><p>S3 details for crc objects</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="new_wk_rct.html">new_wk_rct()</a></code> </p>
         </td>
         <td><p>S3 details for rct objects</p></td>
@@ -145,12 +181,6 @@
           <p><code><a href="new_wk_wkb.html">new_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">validate_wk_wkb()</a></code> <code><a href="new_wk_wkb.html">is_wk_wkb()</a></code> </p>
         </td>
         <td><p>S3 Details for wk_wkb</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="new_wk_wksxp.html">new_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">is_wk_wksxp()</a></code> <code><a href="new_wk_wksxp.html">validate_wk_wksxp()</a></code> </p>
-        </td>
-        <td><p>S3 Details for wk_wksxp</p></td>
       </tr><tr>
         
         <td>
@@ -166,7 +196,7 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkt&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkb&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wksxp&gt;</i>)</a></code> </p>
+          <p><code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkt&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_wkb&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_xy&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_rct&gt;</i>)</a></code> <code><a href="plot.wk_wkt.html">plot(<i>&lt;wk_crc&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plot well-known geometry vectors</p></td>
       </tr><tr>
@@ -178,39 +208,105 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="vctrs-methods.html">vec_cast.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wksxp()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wksxp()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xy()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xy()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xyz()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xyz()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xym()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xym()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xyzm()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xyzm()</a></code> </p>
+          <p><code><a href="vctrs-methods.html">vec_cast.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkb()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_wkt()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xy()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xy()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xyz()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xyz()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xym()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xym()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_xyzm()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_xyzm()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_rct()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_rct()</a></code> <code><a href="vctrs-methods.html">vec_cast.wk_crc()</a></code> <code><a href="vctrs-methods.html">vec_ptype2.wk_crc()</a></code> </p>
         </td>
         <td><p>Vctrs methods</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">parse_wkb()</a></code> <code><a href="wkb.html">as_wkb()</a></code> <code><a href="wkb.html">as_wksxp(<i>&lt;blob&gt;</i>)</a></code> <code><a href="wkb.html">as_wksxp(<i>&lt;WKB&gt;</i>)</a></code> </p>
+          <p><code><a href="wk_bbox.html">wk_bbox()</a></code> <code><a href="wk_bbox.html">wk_bbox_handler()</a></code> </p>
         </td>
-        <td><p>Mark lists of raw vectors as well-known binary</p></td>
+        <td><p>2D bounding rectangles</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_format.html">wkb_format()</a></code> <code><a href="wkb_format.html">wkt_format()</a></code> <code><a href="wkb_format.html">wksxp_format()</a></code> </p>
+          <p><code><a href="wk_count.html">wk_count()</a></code> <code><a href="wk_count.html">wk_count_handler()</a></code> </p>
+        </td>
+        <td><p>Count geometry components</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_crs.html">wk_crs()</a></code> <code><a href="wk_crs.html">`wk_crs&lt;-`()</a></code> <code><a href="wk_crs.html">wk_set_crs()</a></code> <code><a href="wk_crs.html">wk_crs_output()</a></code> </p>
+        </td>
+        <td><p>Set and get vector CRS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_crs_equal.html">wk_crs_equal()</a></code> <code><a href="wk_crs_equal.html">wk_crs_equal_generic()</a></code> </p>
+        </td>
+        <td><p>Compare CRS objects</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_crs_inherit.html">wk_crs_inherit()</a></code> <code><a href="wk_crs_inherit.html">wk_crs_auto()</a></code> <code><a href="wk_crs_inherit.html">wk_crs_auto_value()</a></code> </p>
+        </td>
+        <td><p>Special CRS values</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_debug.html">wk_debug()</a></code> <code><a href="wk_debug.html">wk_debug_filter()</a></code> </p>
+        </td>
+        <td><p>Debug filters and handlers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_format.html">wk_format()</a></code> <code><a href="wk_format.html">wkt_format_handler()</a></code> </p>
         </td>
         <td><p>Format well-known geometry for printing</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_problems.html">wkb_problems()</a></code> <code><a href="wkb_problems.html">wkt_problems()</a></code> <code><a href="wkb_problems.html">wksxp_problems()</a></code> </p>
+          <p><code><a href="wk_handle.html">wk_handle()</a></code> <code><a href="wk_handle.html">new_wk_handler()</a></code> <code><a href="wk_handle.html">is_wk_handler()</a></code> <code><a href="wk_handle.html">as_wk_handler()</a></code> </p>
+        </td>
+        <td><p>Read geometry vectors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_handle.data.frame.html">wk_handle(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_writer(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_crs(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_set_crs(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;sf&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;sf&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Use data.frame with wk</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_identity.html">wk_identity()</a></code> <code><a href="wk_identity.html">wk_identity_filter()</a></code> <code><a href="wk_identity.html">wk_restore()</a></code> </p>
+        </td>
+        <td><p>Copy a geometry vector</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_meta.html">wk_meta()</a></code> <code><a href="wk_meta.html">wk_vector_meta()</a></code> <code><a href="wk_meta.html">wk_meta_handler()</a></code> <code><a href="wk_meta.html">wk_vector_meta_handler()</a></code> <code><a href="wk_meta.html">wk_geometry_type_label()</a></code> <code><a href="wk_meta.html">wk_geometry_type()</a></code> </p>
+        </td>
+        <td><p>Extract feature-level meta</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_problems.html">wk_problems()</a></code> <code><a href="wk_problems.html">wk_problems_handler()</a></code> </p>
         </td>
         <td><p>Validate well-known binary and well-known text</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wkb_translate_wkt.html">wkb_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkb_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkb_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wkt_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wkt()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wkb()</a></code> <code><a href="wkb_translate_wkt.html">wksxp_translate_wksxp()</a></code> <code><a href="wkb_translate_wkt.html">wk_platform_endian()</a></code> </p>
+          <p><code><a href="wk_translate.html">wk_translate()</a></code> </p>
         </td>
-        <td><p>Translate between WKB and WKT</p></td>
+        <td><p>Translate geometry vectors</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="wksxp.html">wksxp()</a></code> <code><a href="wksxp.html">parse_wksxp()</a></code> <code><a href="wksxp.html">as_wksxp()</a></code> </p>
+          <p><code><a href="wk_void.html">wk_void()</a></code> <code><a href="wk_void.html">wk_void_handler()</a></code> </p>
         </td>
-        <td><p>Mark lists as well-known "S" expressions</p></td>
+        <td><p>Do nothing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wk_writer.html">sfc_writer()</a></code> <code><a href="wk_writer.html">wkb_writer()</a></code> <code><a href="wk_writer.html">wkt_writer()</a></code> <code><a href="wk_writer.html">wk_writer()</a></code> <code><a href="wk_writer.html">xy_writer()</a></code> </p>
+        </td>
+        <td><p>Write geometry vectors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="wkb.html">wkb()</a></code> <code><a href="wkb.html">parse_wkb()</a></code> <code><a href="wkb.html">wk_platform_endian()</a></code> <code><a href="wkb.html">as_wkb()</a></code> </p>
+        </td>
+        <td><p>Mark lists of raw vectors as well-known binary</p></td>
       </tr><tr>
         
         <td>

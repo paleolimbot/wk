@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mark lists of raw vectors as well-known binary — wkb • wk</title>
+<title>Count geometry components — wk_count • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Mark lists of raw vectors as well-known binary — wkb" />
-<meta property="og:description" content="Mark lists of raw vectors as well-known binary" />
+<meta property="og:title" content="Count geometry components — wk_count" />
+<meta property="og:description" content="Counts the number of geometries, rings, and coordinates found within
+each feature. As opposed to wk_meta(), this handler will iterate
+over the entire geometry." />
 
 
 
@@ -123,63 +125,57 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mark lists of raw vectors as well-known binary</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb.R'><code>R/wkb.R</code></a></small>
-    <div class="hidden name"><code>wkb.Rd</code></div>
+    <h1>Count geometry components</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/count.R'><code>R/count.R</code></a></small>
+    <div class="hidden name"><code>wk_count.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Mark lists of raw vectors as well-known binary</p>
+    <p>Counts the number of geometries, rings, and coordinates found within
+each feature. As opposed to <code><a href='wk_meta.html'>wk_meta()</a></code>, this handler will iterate
+over the entire geometry.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>parse_wkb</span><span class='op'>(</span><span class='va'>x</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_count</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>wk_count</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for character</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for blob</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S3 method for WKB</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+<span class='fu'>wk_count_handler</span><span class='op'>(</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors or <code>NULL</code>.</p></td>
-    </tr>
-    <tr>
-      <th>crs</th>
-      <td><p>A value to be propagated as the CRS for this vector.</p></td>
+      <th>handleable</th>
+      <td><p>A geometry vector (e.g., <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>,
+<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Unused</p></td>
+      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='new_wk_wkb.html'>new_wk_wkb()</a></code></p>
+    <p>A data.frame with one row for every feature encountered and
+columns:</p><ul>
+<li><p><code>n_geom</code>: The number of geometries encountered, including the
+root geometry. Will be zero for a null feature.</p></li>
+<li><p><code>n_ring</code>: The number of rings encountered. Will be zero for a
+null feature.</p></li>
+<li><p><code>n_coord</code>: The number of coordinates encountered. Will be zero
+for a null feature.</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkb</span><span class='op'>(</span><span class='fu'><a href='wkb_format.html'>wkt_translate_wkb</a></span><span class='op'>(</span><span class='st'>"POINT (20 10)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
-#&gt; [1] &lt;POINT (20 10)&gt;</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wk_count</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>as_wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   n_geom n_ring n_coord
+#&gt; 1      1      0       2</div><div class='input'><span class='fu'>wk_count</span><span class='op'>(</span><span class='fu'><a href='wkb.html'>as_wkb</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   n_geom n_ring n_coord
+#&gt; 1      1      0       2</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

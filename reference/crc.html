@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mark lists of raw vectors as well-known binary — wkb • wk</title>
+<title>2D Circle Vectors — crc • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Mark lists of raw vectors as well-known binary — wkb" />
-<meta property="og:description" content="Mark lists of raw vectors as well-known binary" />
+<meta property="og:title" content="2D Circle Vectors — crc" />
+<meta property="og:description" content="2D Circle Vectors" />
 
 
 
@@ -123,44 +123,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Mark lists of raw vectors as well-known binary</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb.R'><code>R/wkb.R</code></a></small>
-    <div class="hidden name"><code>wkb.Rd</code></div>
+    <h1>2D Circle Vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/crc.R'><code>R/crc.R</code></a></small>
+    <div class="hidden name"><code>crc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Mark lists of raw vectors as well-known binary</p>
+    <p>2D Circle Vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wkb</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>crc</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, r <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>parse_wkb</span><span class='op'>(</span><span class='va'>x</span>, crs <span class='op'>=</span> <span class='fu'><a href='wk_crs_inherit.html'>wk_crs_auto</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_platform_endian</span><span class='op'>(</span><span class='op'>)</span>
+<span class='co'># S3 method for wk_crc</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for character</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for blob</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-
-<span class='co'># S3 method for WKB</span>
-<span class='fu'>as_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>as_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> of <code><a href='https://rdrr.io/r/base/raw.html'>raw()</a></code> vectors or <code>NULL</code>.</p></td>
+      <th>x, y</th>
+      <td><p>Coordinates of the center</p></td>
+    </tr>
+    <tr>
+      <th>r</th>
+      <td><p>Circle radius</p></td>
     </tr>
     <tr>
       <th>crs</th>
@@ -168,18 +162,18 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Unused</p></td>
+      <td><p>Extra arguments passed to <code>as_crc()</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code><a href='new_wk_wkb.html'>new_wk_wkb()</a></code></p>
+    <p>A vector along the recycled length of bounds.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wkb</span><span class='op'>(</span><span class='fu'><a href='wkb_format.html'>wkt_translate_wkb</a></span><span class='op'>(</span><span class='st'>"POINT (20 10)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_wkb[1]&gt;
-#&gt; [1] &lt;POINT (20 10)&gt;</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>crc</span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;wk_crc[1]&gt;
+#&gt; [1] [1 2, r = 3]</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
