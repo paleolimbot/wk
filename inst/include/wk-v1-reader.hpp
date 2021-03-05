@@ -20,7 +20,7 @@ public:
   // Instead, the scope of the WKHandler is used to guarantee that (1) the handler
   // is not being re-used and (2) vectorFinalize() is called and is called
   // as soon as possible.
-  WKHandlerXPtr(SEXP handler_xptr): handler(handler_xptr) {
+  WKHandlerXPtr(cpp11::sexp handler_xptr): handler((wk_handler_t*) cpp11::safe[R_ExternalPtrAddr](handler_xptr)) {
     cpp11::safe[this->handler->initialize](&(this->handler->dirty), this->handler->handler_data);
   }
 
@@ -73,7 +73,7 @@ public:
   }
 
 private:
-  cpp11::external_pointer<wk_handler_t> handler;
+  wk_handler_t* handler;
 };
 
 #endif

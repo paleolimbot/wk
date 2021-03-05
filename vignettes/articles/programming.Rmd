@@ -359,7 +359,7 @@ using namespace cpp11;
 
 class BumpFilter: public WKIdentityFilter {
 public:
-  BumpFilter(SEXP next, double dx, double dy): 
+  BumpFilter(sexp next, double dx, double dy): 
     WKIdentityFilter(next), dx(dx), dy(dy) {}
   
   int coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id) {

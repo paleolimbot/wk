@@ -689,7 +689,7 @@ private:
 };
 
 [[cpp11::register]]
-SEXP wk_cpp_handle_wkt(cpp11::strings wkt, SEXP xptr, bool reveal_size) {
+cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_size) {
   R_xlen_t n_features = wkt.size();
   wk_vector_meta_t globalMeta;
   WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);

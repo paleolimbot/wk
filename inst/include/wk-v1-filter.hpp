@@ -8,7 +8,7 @@
 
 class WKIdentityFilter: public WKVoidHandler {
 public:
-  WKIdentityFilter(SEXP next): next(next) {}
+  WKIdentityFilter(cpp11::sexp next): next((wk_handler_t*) cpp11::safe[R_ExternalPtrAddr](next)) {}
 
   virtual void initialize(int* dirty) {
     cpp11::safe[next->initialize](&(next->dirty), next->handler_data);
@@ -63,7 +63,7 @@ public:
   }
 
 private:
-  cpp11::external_pointer<wk_handler_t> next;
+  wk_handler_t* next;
 };
 
 
