@@ -135,7 +135,7 @@ as.data.frame.wk_rcrd <- function(x, ..., optional = FALSE) {
 as.matrix.wk_rcrd <- function(x, ...) {
   x_bare <- unclass(x)
   matrix(
-    do.call(c, x_bare),
+    unlist(x_bare, use.names = FALSE),
     nrow = length(x),
     ncol = length(x_bare),
     byrow = FALSE,
