@@ -1,3 +1,5 @@
+# wk (development version)
+
 # wk 0.4.0
 
 * Removed `wksxp()` in favour of improved `sf::st_sfc()` support 
