@@ -139,6 +139,6 @@ as.matrix.wk_rcrd <- function(x, ...) {
     nrow = length(x),
     ncol = length(x_bare),
     byrow = FALSE,
-    dimnames = list(NULL, c("x", "y"))
+    dimnames = list(NULL, names(x_bare))
   )
 }
