@@ -1,5 +1,5 @@
 
-Adds several new vector classes and a new interface for extensibility, maintaining backwards compatibility with the previous interface for extensibility.
+Fixes inconsistent source-header signature identified by the LTO check and eliminates the check failure on MacOS (oldrel).
 
 ## Test environments
 
