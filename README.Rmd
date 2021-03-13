@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 # wk
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R build status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
 [![Codecov test coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics for event-based iteration over vectors of geometries.
