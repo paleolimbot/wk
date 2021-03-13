@@ -1,4 +1,6 @@
-# wk (development version)
+# wk 0.4.1
+
+* Fix LTO and MacOS 3.6.2 check errors (#61).
 
 # wk 0.4.0
 

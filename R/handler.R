@@ -50,6 +50,6 @@ as_wk_handler <- function(handler, ...) {
 
 #' @export
 print.wk_handler <- function(x, ...) {
-  cat(sprintf("<%s at %s>\n", class(x)[1], .Call(wk_c_handler_addr)))
+  cat(sprintf("<%s at %s>\n", class(x)[1], .Call(wk_c_handler_addr, x)))
   invisible(x)
 }
