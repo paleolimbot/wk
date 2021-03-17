@@ -330,6 +330,8 @@ test_that("sfc writer works with ZM dimensions", {
 })
 
 test_that("nested geometries have their dimensions checked", {
+  skip_if_not_installed("sf")
+
   expect_identical(
     wk_handle(wkt("GEOMETRYCOLLECTION Z (POINT Z (1 2 3))"), sfc_writer()),
     sf::st_sfc(sf::st_geometrycollection(list(sf::st_point(c(1, 2, 3), dim = "XYZ")), dims = "XYZ"))

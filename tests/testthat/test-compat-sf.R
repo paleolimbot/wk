@@ -203,6 +203,8 @@ test_that("wk_translate() works for sf", {
 })
 
 test_that("wk_restore() works for sf", {
+  skip_if_not_installed("sf")
+
   expect_identical(
     wk_identity(sf::st_as_sf(data.frame(a = sf::st_as_sfc("POINT (1 2)")))),
     sf::st_as_sf(data.frame(a = sf::st_as_sfc("POINT (1 2)")))
