@@ -22,7 +22,7 @@ wk_set_crs(x, crs)
 wk_crs_output(...)
 }
 \arguments{
-\item{x, y, ...}{An objects whose "crs" attribute is used to carry a CRS.}
+\item{x, ...}{Objects whose "crs" attribute is used to carry a CRS.}
 
 \item{crs, value}{An object that can be interpreted as a CRS}
 }

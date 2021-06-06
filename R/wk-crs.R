@@ -7,7 +7,7 @@
 #' are S3 generics to keep them from being used
 #' on objects that do not use this system of CRS propagation.
 #'
-#' @param x,y,... An objects whose "crs" attribute is used to carry a CRS.
+#' @param x,... Objects whose "crs" attribute is used to carry a CRS.
 #' @param crs,value An object that can be interpreted as a CRS
 #'
 #' @export
