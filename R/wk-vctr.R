@@ -54,6 +54,12 @@ str.wk_vctr <- function(object, ..., indent.str = "", width = getOption("width")
 }
 
 #' @export
+`[[<-.wk_vctr` <- function(x, i, value) {
+  x[i] <- value
+  x
+}
+
+#' @export
 c.wk_vctr <- function(...) {
   dots <- list(...)
   classes <- lapply(dots, class)

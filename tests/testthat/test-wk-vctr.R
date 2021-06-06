@@ -10,6 +10,9 @@ test_that("wk_vctr class works", {
   expect_output(expect_identical(str(x), x), "wk_vctr")
   expect_output(expect_identical(str(x[0]), x[0]), "wk_vctr\\[0\\]")
 
+  x[[3]] <- 13L
+  expect_identical(unclass(x), c(1L, 2L, 13L, 4L, 5L))
+
   expect_identical(
     data.frame(col_name = x),
     new_data_frame(list(col_name = x))

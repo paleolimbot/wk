@@ -77,6 +77,12 @@ is.na.wk_rcrd <- function(x, ...) {
 }
 
 #' @export
+`[[<-.wk_rcrd` <- function(x, i, value) {
+  x[i] <- value
+  x
+}
+
+#' @export
 names.wk_rcrd <- function(x) {
   NULL
 }
