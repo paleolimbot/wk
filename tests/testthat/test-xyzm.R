@@ -158,6 +158,8 @@ test_that("subset-assign works for wk_xy", {
   x <- xyzm(1:2, 2, 3, 4)
   x[2] <- xy(10, 20)
   expect_identical(x[2], xyzm(10, 20, NA, NA))
+  x[[2]] <- xy(11, 21)
+  expect_identical(x[2], xyzm(11, 21, NA, NA))
 })
 
 test_that("xy() propagates CRS", {

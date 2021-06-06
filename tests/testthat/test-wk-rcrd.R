@@ -60,3 +60,15 @@ test_that("wk_rcrd works", {
     new_data_frame(list(col_name = xy_rcrd))
   )
 })
+
+test_that("c() for wk_rcrd handles crs attributes", {
+  expect_identical(
+    wk_crs(c(xy(0, 1, crs = wk_crs_inherit()), xy(0, 1, crs = 1234))),
+    1234
+  )
+
+  expect_error(
+    wk_crs(c(xy(0, 1), xy(0, 1, crs = 1234))),
+    "are not equal"
+  )
+})

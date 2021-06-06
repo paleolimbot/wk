@@ -77,6 +77,12 @@ is.na.wk_rcrd <- function(x, ...) {
 }
 
 #' @export
+`[[<-.wk_rcrd` <- function(x, i, value) {
+  x[i] <- value
+  x
+}
+
+#' @export
 names.wk_rcrd <- function(x) {
   NULL
 }
@@ -115,8 +121,8 @@ c.wk_rcrd <- function(...) {
     stop("Can't combine 'wk_rcrd' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # check CRS compatibility
-  Reduce(wk_crs_output, dots)
+  # compute output crs
+  attr(dots[[1]], "crs") <- wk_crs_output(...)
 
   new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }

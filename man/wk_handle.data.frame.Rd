@@ -45,7 +45,7 @@
 the column in a \code{\link[=data.frame]{data.frame()}} for which a \code{\link[=wk_handle]{wk_handle()}}
 method is defined.}
 
-\item{x}{An objects whose "crs" attribute is used to carry a CRS.}
+\item{x}{Objects whose "crs" attribute is used to carry a CRS.}
 
 \item{crs}{An object that can be interpreted as a CRS}
 
