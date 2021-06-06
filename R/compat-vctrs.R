@@ -141,6 +141,12 @@ vec_ptype2.wk_wkb.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
+#' @method vec_ptype2.wk_wkb wk_crc
+#' @export
+vec_ptype2.wk_wkb.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
 # wkt() --------
 
 vec_proxy.wk_wkt <- function(x, ...) {
@@ -274,6 +280,12 @@ vec_ptype2.wk_wkt.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkt(crs = wk_crs_output(x, y))
 }
 
+#' @method vec_ptype2.wk_wkt wk_crc
+#' @export
+vec_ptype2.wk_wkt.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkt(crs = wk_crs_output(x, y))
+}
+
 # xy() --------
 
 vec_proxy.wk_xy <- function(x, ...) {
@@ -401,6 +413,12 @@ vec_ptype2.wk_xy.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
+#' @method vec_ptype2.wk_xy wk_crc
+#' @export
+vec_ptype2.wk_xy.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
 # xyz() --------
 
 vec_proxy.wk_xyz <- function(x, ...) {
@@ -521,6 +539,12 @@ vec_ptype2.wk_xyz.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_xyz wk_rct
 #' @export
 vec_ptype2.wk_xyz.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_xyz wk_crc
+#' @export
+vec_ptype2.wk_xyz.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
@@ -647,6 +671,12 @@ vec_ptype2.wk_xym.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
+#' @method vec_ptype2.wk_xym wk_crc
+#' @export
+vec_ptype2.wk_xym.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
 # xyzm() --------
 
 vec_proxy.wk_xyzm <- function(x, ...) {
@@ -762,6 +792,12 @@ vec_ptype2.wk_xyzm.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 
+#' @method vec_ptype2.wk_xyzm wk_crc
+#' @export
+vec_ptype2.wk_xyzm.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
 # rct() --------
 
 vec_proxy.wk_rct <- function(x, ...) {
@@ -832,6 +868,12 @@ vec_ptype2.wk_rct.wk_xym <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_rct wk_xyzm
 #' @export
 vec_ptype2.wk_rct.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
+  new_wk_wkb(crs = wk_crs_output(x, y))
+}
+
+#' @method vec_ptype2.wk_rct wk_crc
+#' @export
+vec_ptype2.wk_rct.wk_crc <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wkb(crs = wk_crs_output(x, y))
 }
 

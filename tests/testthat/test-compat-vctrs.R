@@ -7,6 +7,7 @@ test_that("wk classes are vctrs", {
   expect_true(vctrs::vec_is(xym()))
   expect_true(vctrs::vec_is(xyzm()))
   expect_true(vctrs::vec_is(rct()))
+  expect_true(vctrs::vec_is(crc()))
 })
 
 test_that("wk classes can be proxied and restored", {
@@ -17,6 +18,7 @@ test_that("wk classes can be proxied and restored", {
   expect_identical(vctrs::vec_restore(vctrs::vec_proxy(xym()), xym()), xym())
   expect_identical(vctrs::vec_restore(vctrs::vec_proxy(xyzm()), xyzm()), xyzm())
   expect_identical(vctrs::vec_restore(vctrs::vec_proxy(rct()), rct()), rct())
+  expect_identical(vctrs::vec_restore(vctrs::vec_proxy(crc()), crc()), crc())
 })
 
 test_that("vctrs wkb implementation works", {
@@ -38,6 +40,7 @@ test_that("vctrs wkb implementation works", {
   expect_identical(vctrs::vec_c(wkb(), xym()), wkb())
   expect_identical(vctrs::vec_c(wkb(), xyzm()), wkb())
   expect_identical(vctrs::vec_c(wkb(), rct()), wkb())
+  expect_identical(vctrs::vec_c(wkb(), crc()), wkb())
 })
 
 test_that("vctrs wkt implementation works", {
@@ -59,6 +62,7 @@ test_that("vctrs wkt implementation works", {
   expect_identical(vctrs::vec_c(wkt(), xym()), wkt())
   expect_identical(vctrs::vec_c(wkt(), xyzm()), wkt())
   expect_identical(vctrs::vec_c(wkt(), rct()), wkt())
+  expect_identical(vctrs::vec_c(wkt(), crc()), wkt())
 })
 
 test_that("vctrs xy implementation works", {
@@ -80,6 +84,7 @@ test_that("vctrs xy implementation works", {
   expect_identical(vctrs::vec_c(xy(), xym()), xym())
   expect_identical(vctrs::vec_c(xy(), xyzm()), xyzm())
   expect_identical(vctrs::vec_c(xy(), rct()), wkb())
+  expect_identical(vctrs::vec_c(xy(), crc()), wkb())
 })
 
 test_that("vctrs xyz implementation works", {
@@ -101,6 +106,7 @@ test_that("vctrs xyz implementation works", {
   expect_identical(vctrs::vec_c(xyz(), xym()), xyzm())
   expect_identical(vctrs::vec_c(xyz(), xyzm()), xyzm())
   expect_identical(vctrs::vec_c(xyz(), rct()), wkb())
+  expect_identical(vctrs::vec_c(xyz(), crc()), wkb())
 })
 
 test_that("vctrs xym implementation works", {
@@ -122,6 +128,7 @@ test_that("vctrs xym implementation works", {
   expect_identical(vctrs::vec_c(xym(), xym()), xym())
   expect_identical(vctrs::vec_c(xym(), xyzm()), xyzm())
   expect_identical(vctrs::vec_c(xym(), rct()), wkb())
+  expect_identical(vctrs::vec_c(xym(), crc()), wkb())
 })
 
 test_that("vctrs xyzm implementation works", {
@@ -143,6 +150,7 @@ test_that("vctrs xyzm implementation works", {
   expect_identical(vctrs::vec_c(xyzm(), xym()), xyzm())
   expect_identical(vctrs::vec_c(xyzm(), xyzm()), xyzm())
   expect_identical(vctrs::vec_c(xyzm(), rct()), wkb())
+  expect_identical(vctrs::vec_c(xyzm(), crc()), wkb())
 })
 
 test_that("vctrs rct implementation works", {
@@ -165,6 +173,7 @@ test_that("vctrs rct implementation works", {
   expect_identical(vctrs::vec_c(rct(), xym()), wkb())
   expect_identical(vctrs::vec_c(rct(), xyzm()), wkb())
   expect_identical(vctrs::vec_c(rct(), rct()), rct())
+  expect_identical(vctrs::vec_c(rct(), crc()), wkb())
 })
 
 test_that("vctrs crc implementation works", {
@@ -192,7 +201,7 @@ test_that("vctrs crc implementation works", {
 })
 
 test_that("vec_c() propagates the crs attribute", {
-  for (constructor in list(wkb, wkt, xy, xyz, xyzm, rct)) {
+  for (constructor in list(wkb, wkt, xy, xyz, xyzm, rct, crc)) {
     expect_identical(
       vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = 1234)),
       !!constructor(crs = 1234)
