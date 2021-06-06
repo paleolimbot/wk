@@ -68,8 +68,8 @@ c.wk_vctr <- function(...) {
     stop("Can't combine 'wk_vctr' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # check CRS compatibility
-  Reduce(wk_crs_output, dots)
+  # compute output crs
+  attr(dots[[1]], "crs") <- wk_crs_output(...)
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }

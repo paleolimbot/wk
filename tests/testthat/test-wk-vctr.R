@@ -3,6 +3,10 @@ test_that("wk_vctr class works", {
   x <- structure(1:5, class = "wk_vctr")
   expect_s3_class(x, "wk_vctr")
   expect_s3_class(x[1:2], "wk_vctr")
+  expect_identical(
+    c(x, x),
+    structure(c(1:5, 1:5), class = "wk_vctr")
+  )
   expect_output(print(x), "wk_vctr")
   expect_output(print(stats::setNames(x, as.character(1:5))), "wk_vctr")
   expect_output(print(x[0]), "wk_vctr")
@@ -61,6 +65,18 @@ test_that("rep() and rep_len() works for chr wk_vctrs", {
   expect_identical(
     rep_len(structure(character(), class = "wk_vctr"), 3),
     structure(rep(NA_character_, 3), class = "wk_vctr")
+  )
+})
+
+test_that("c() for wk_vctr handles crs attributes", {
+  expect_identical(
+    wk_crs(c(wkt("POINT (0 1)", crs = wk_crs_inherit()), wkt("POINT (0 2)", crs = 1234))),
+    1234
+  )
+
+  expect_error(
+    wk_crs(c(wkt("POINT (0 1)"), wkt("POINT (0 2)", crs = 1234))),
+    "are not equal"
   )
 })
 

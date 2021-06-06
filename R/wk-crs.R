@@ -7,7 +7,7 @@
 #' are S3 generics to keep them from being used
 #' on objects that do not use this system of CRS propagation.
 #'
-#' @param x,y An objects whose "crs" attribute is used to carry a CRS.
+#' @param x,y,... An objects whose "crs" attribute is used to carry a CRS.
 #' @param crs,value An object that can be interpreted as a CRS
 #'
 #' @export
@@ -54,10 +54,13 @@ wk_set_crs.wk_rcrd <- function(x, crs) {
 
 #' @rdname wk_crs
 #' @export
-wk_crs_output <- function(x, y) {
-  x <- wk_crs(x)
-  y <- wk_crs(y)
+wk_crs_output <- function(...) {
+  dots <- list(...)
+  crs <- lapply(dots, wk_crs)
+  Reduce(wk_crs2, crs)
+}
 
+wk_crs2 <- function(x, y) {
   if (inherits(y, "wk_crs_inherit")) {
     x
   } else if (inherits(x, "wk_crs_inherit")) {
