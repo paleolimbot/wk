@@ -46,6 +46,7 @@ extern SEXP wk_c_read_wkb(SEXP, SEXP);
 extern SEXP wk_c_read_xy(SEXP, SEXP);
 extern SEXP wk_c_sfc_writer_new();
 extern SEXP wk_c_vector_meta_handler_new();
+extern SEXP wk_c_vertex_filter_new(SEXP);
 extern SEXP wk_c_wkb_writer_new(SEXP, SEXP);
 extern SEXP wk_c_xy_writer_new();
 
@@ -68,6 +69,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_read_xy",                 (DL_FUNC) &wk_c_read_xy,                 2},
     {"wk_c_sfc_writer_new",          (DL_FUNC) &wk_c_sfc_writer_new,          0},
     {"wk_c_vector_meta_handler_new", (DL_FUNC) &wk_c_vector_meta_handler_new, 0},
+    {"wk_c_vertex_filter_new",       (DL_FUNC) &wk_c_vertex_filter_new,       1},
     {"wk_c_wkb_writer_new",          (DL_FUNC) &wk_c_wkb_writer_new,          2},
     {"wk_c_xy_writer_new",           (DL_FUNC) &wk_c_xy_writer_new,           0},
     {NULL, NULL, 0}

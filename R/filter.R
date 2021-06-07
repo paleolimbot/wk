@@ -20,7 +20,7 @@ wk_identity <- function(handleable, ...) {
 #' @rdname wk_identity
 #' @export
 wk_identity_filter <- function(handler) {
-  new_wk_handler(.Call("wk_c_identity_filter_new", as_wk_handler(handler)))
+  new_wk_handler(.Call("wk_c_identity_filter_new", as_wk_handler(handler)), "wk_identity_filter")
 }
 
 #' @rdname wk_identity
