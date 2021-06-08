@@ -14,6 +14,7 @@ typedef struct {
   wk_meta_t meta;
   int add_details;
   SEXP details;
+  int* details_ptr[3];
   R_xlen_t details_size;
   int feature_id;
   int part_id;
@@ -21,9 +22,13 @@ typedef struct {
   R_xlen_t coord_id;
 } vertex_filter_t;
 
-static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter) {
+static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter, R_xlen_t initial_size) {
   if (!vertex_filter->add_details) {
     return;
+  }
+
+  if (initial_size == WK_VECTOR_SIZE_UNKNOWN) {
+    initial_size = 1024;
   }
 
   vertex_filter->feature_id = -1;
@@ -39,9 +44,12 @@ static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter)
   R_PreserveObject(vertex_filter->details);
   UNPROTECT(1);
 
-  vertex_filter->details_size = 1024;
+  vertex_filter->details_size = initial_size;
   for (int i = 0; i < 3; i++) {
-    SET_VECTOR_ELT(vertex_filter->details, i, Rf_allocVector(INTSXP, vertex_filter->details_size));
+    SEXP item = PROTECT(Rf_allocVector(INTSXP, vertex_filter->details_size));
+    SET_VECTOR_ELT(vertex_filter->details, i, item);
+    vertex_filter->details_ptr[i] = INTEGER(item);
+    UNPROTECT(1);
   }
 }
 
@@ -56,15 +64,16 @@ static inline void wk_vertex_filter_append_details(vertex_filter_t* vertex_filte
       SEXP new_item = PROTECT(Rf_allocVector(INTSXP, new_size));
       memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)), vertex_filter->details_size * sizeof(int));
       SET_VECTOR_ELT(vertex_filter->details, i, new_item);
+      vertex_filter->details_ptr[i] = INTEGER(new_item);
       UNPROTECT(1);
     }
 
     vertex_filter->details_size = new_size;
   }
 
-  INTEGER(VECTOR_ELT(vertex_filter->details, 0))[vertex_filter->coord_id] = vertex_filter->feature_id + 1;
-  INTEGER(VECTOR_ELT(vertex_filter->details, 1))[vertex_filter->coord_id] = vertex_filter->part_id + 1;
-  INTEGER(VECTOR_ELT(vertex_filter->details, 2))[vertex_filter->coord_id] = vertex_filter->ring_id + 1;
+  vertex_filter->details_ptr[0][vertex_filter->coord_id] = vertex_filter->feature_id + 1;
+  vertex_filter->details_ptr[1][vertex_filter->coord_id] = vertex_filter->part_id + 1;
+  vertex_filter->details_ptr[2][vertex_filter->coord_id] = vertex_filter->ring_id + 1;
 }
 
 static inline void wk_vertex_filter_finalize_details(vertex_filter_t* vertex_filter) {
@@ -94,13 +103,14 @@ int wk_vertex_filter_vector_start(const wk_vector_meta_t* meta, void* handler_da
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
 
   vertex_filter->coord_id = 0;
-  wk_vertex_filter_init_details(vertex_filter);
 
   memcpy(&(vertex_filter->vector_meta), meta, sizeof(wk_vector_meta_t));
   if (meta->geometry_type != WK_POINT) {
-    vertex_filter->vector_meta.size = WK_SIZE_UNKNOWN;
+    vertex_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   }
   vertex_filter->vector_meta.geometry_type = WK_POINT;
+
+  wk_vertex_filter_init_details(vertex_filter, vertex_filter->vector_meta.size);
 
   return vertex_filter->next->vector_start(meta, vertex_filter->next->handler_data);
 }
