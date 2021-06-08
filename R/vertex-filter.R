@@ -2,6 +2,8 @@
 #' Extract vertices
 #'
 #' @inheritParams wk_handle
+#' @param add_details Use `TRUE` to add a "details" attribute, which
+#'   contains columns `feature_id`, `part_id`, and `ring_id`.
 #'
 #' @return The result of the `handler`.
 #' @export
@@ -17,6 +19,9 @@ wk_vertices <- function(handleable, ...) {
 
 #' @rdname wk_vertices
 #' @export
-wk_vertex_filter <- function(handler) {
-  new_wk_handler(.Call("wk_c_vertex_filter_new", as_wk_handler(handler)), "wk_vertex_filter")
+wk_vertex_filter <- function(handler, add_details = FALSE) {
+  new_wk_handler(
+    .Call("wk_c_vertex_filter_new", as_wk_handler(handler), as.logical(add_details)[1]),
+    "wk_vertex_filter"
+  )
 }

@@ -7,7 +7,7 @@
 \usage{
 wk_vertices(handleable, ...)
 
-wk_vertex_filter(handler)
+wk_vertex_filter(handler, add_details = FALSE)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
@@ -16,6 +16,9 @@ wk_vertex_filter(handler)
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
+
+\item{add_details}{Use \code{TRUE} to add a "details" attribute, which
+contains columns \code{feature_id}, \code{part_id}, and \code{ring_id}.}
 }
 \value{
 The result of the \code{handler}.
