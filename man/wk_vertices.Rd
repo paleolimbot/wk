@@ -2,10 +2,13 @@
 % Please edit documentation in R/vertex-filter.R
 \name{wk_vertices}
 \alias{wk_vertices}
+\alias{wk_coords}
 \alias{wk_vertex_filter}
 \title{Extract vertices}
 \usage{
 wk_vertices(handleable, ...)
+
+wk_coords(handleable, ...)
 
 wk_vertex_filter(handler, add_details = FALSE)
 }
@@ -21,12 +24,24 @@ wk_vertex_filter(handler, add_details = FALSE)
 contains columns \code{feature_id}, \code{part_id}, and \code{ring_id}.}
 }
 \value{
-The result of the \code{handler}.
+\itemize{
+\item \code{wk_vertices()} extracts vertices and returns the in the same format as
+the handler
+\item \code{wk_coords()} returns a data frame with columns columns \code{feature_id}
+(the index of the feature from whence it came), \code{part_id} (an arbitrary
+integer identifying the point, line, or polygon from whence it came),
+\code{ring_id} (an arbitrary integer identifying individual rings within
+polygons), and one column per coordinate (\code{x}, \code{y}, and/or \code{z} and/or \code{m}).
+}
 }
 \description{
-Extract vertices
+These functions provide ways to extract individual coordinate values.
+Whereas \code{wk_vertices()} returns a vector of coordinates as in the same
+format as the input, \code{wk_coords()} returns a data frame with coordinates
+as columns.
 }
 \examples{
 wk_vertices(wkt("LINESTRING (0 0, 1 1)"))
+wk_coords(wkt("LINESTRING (0 0, 1 1)"))
 
 }
