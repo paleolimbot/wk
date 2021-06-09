@@ -36,7 +36,7 @@ static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter,
   vertex_filter->ring_id = -1;
 
   if (vertex_filter->details != R_NilValue) {
-    R_ReleaseObject(vertex_filter->details);
+    R_ReleaseObject(vertex_filter->details); // # nocov
   }
 
   const char* names[] = {"feature_id", "part_id", "ring_id", ""};
@@ -176,7 +176,7 @@ int wk_vertex_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t 
 SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
   SEXP result = vertex_filter->next->vector_end(meta, vertex_filter->next->handler_data);
-  if ((result != R_NilValue) && (vertex_filter->details != R_NilValue)) {
+  if (result != R_NilValue) {
     wk_vertex_filter_finalize_details(vertex_filter);
     Rf_setAttrib(result, Rf_install("details"), vertex_filter->details);
   }
@@ -192,6 +192,7 @@ void wk_vertex_filter_deinitialize(void* handler_data) {
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
   if (vertex_filter->details != R_NilValue) {
     R_ReleaseObject(vertex_filter->details);
+    vertex_filter->details = R_NilValue;
   }
   vertex_filter->next->deinitialize(vertex_filter->next->handler_data);
 }
