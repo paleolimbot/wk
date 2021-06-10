@@ -12,8 +12,16 @@ print.wk_vctr <- function(x, ...) {
     return(invisible(x))
   }
 
-  out <- stats::setNames(format(x), names(x))
+  max_print <- getOption("max.print", 1000)
+  x_head <- format(utils::head(x, max_print))
+  out <- stats::setNames(format(x_head), names(x_head))
+
   print(out, quote = FALSE)
+
+  if (length(x) > max_print) {
+    cat(sprintf("Reached max.print (%s)\n", max_print))
+  }
+
   invisible(x)
 }
 

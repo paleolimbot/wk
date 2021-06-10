@@ -8,6 +8,7 @@
 \alias{wkb_writer}
 \alias{wkt_writer}
 \alias{wk_writer}
+\alias{wk_writer.default}
 \alias{wk_writer.wk_wkt}
 \alias{wk_writer.wk_wkb}
 \alias{wk_writer.wk_xy}
@@ -24,13 +25,15 @@ wkb_writer(buffer_size = 2048L, endian = NA_integer_)
 
 wkt_writer(precision = 16L, trim = TRUE)
 
-wk_writer(handleable, ...)
+wk_writer(handleable, ..., generic = FALSE)
+
+\method{wk_writer}{default}(handleable, ...)
 
 \method{wk_writer}{wk_wkt}(handleable, ..., precision = 16, trim = TRUE)
 
 \method{wk_writer}{wk_wkb}(handleable, ...)
 
-\method{wk_writer}{wk_xy}(handleable, ...)
+\method{wk_writer}{wk_xy}(handleable, ..., generic = FALSE)
 
 xy_writer()
 }
@@ -49,10 +52,18 @@ system endian.}
 for each result or the number of digits after the decimal place otherwise.}
 
 \item{trim}{Use \code{FALSE} to keep trailing zeroes after the decimal place.}
+
+\item{generic}{Use \code{TRUE} to obtain a writer that can write all geometry
+types.}
 }
 \value{
 A \link[=wk_handle]{wk_handler}.
 }
 \description{
-Write geometry vectors
+When writing transformation functions, it is often useful to know which
+handler should be used to create a (potentially modified) version
+of an object. Some transformers (e.g., \code{\link[=wk_vertices]{wk_vertices()}}) modify
+the geometry type of an object, in which case a generic writer is needed.
+This defaults to \code{\link[=wkb_writer]{wkb_writer()}} because it is fast and can handle
+all geometry types.
 }

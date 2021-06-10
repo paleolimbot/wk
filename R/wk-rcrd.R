@@ -40,8 +40,16 @@ print.wk_rcrd <- function(x, ...) {
     return(invisible(x))
   }
 
-  out <- format(x)
+  max_print <- getOption("max.print", 1000)
+  x_head <- format(utils::head(x, max_print))
+  out <- format(x_head)
+
   print(out, quote = FALSE)
+
+  if (length(x) > max_print) {
+    cat(sprintf("Reached max.print (%s)\n", max_print))
+  }
+
   invisible(x)
 }
 

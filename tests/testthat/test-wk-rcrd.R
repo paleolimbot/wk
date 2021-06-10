@@ -23,6 +23,13 @@ test_that("wk_rcrd works", {
   expect_length(format(xy_rcrd), 2)
   expect_length(as.character(xy_rcrd), 2)
 
+  old_opt <- options(max.print = 1000)
+  expect_output(
+    print(structure(list(x = 1:1001), class = "wk_rcrd")),
+    "Reached max.print"
+  )
+  options(old_opt)
+
   xy_rcrd2 <- xy_rcrd
   names(xy_rcrd2) <- NULL
   expect_identical(xy_rcrd2, xy_rcrd)

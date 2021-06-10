@@ -9,6 +9,8 @@
   information. For advanced users, the `wk_vertex_filter()`
   can be used as part of a pipeline to export coordinates
   as point geometries to another handler (#69, #71).
+* `options("max.print")` is now respected by all vector classes
+  (#72, #74).
 
 # wk 0.4.1
 

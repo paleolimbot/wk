@@ -37,7 +37,7 @@ wk_vertices <- function(handleable, ...) {
     attr(result, "details") <- NULL
     result <- wk_restore(handleable[feature_id, , drop = FALSE], result, ...)
   } else {
-    result <- wk_handle(handleable, wk_vertex_filter(wk_writer(handleable)), ...)
+    result <- wk_handle(handleable, wk_vertex_filter(wk_writer(handleable, generic = TRUE)), ...)
     result <- wk_restore(handleable, result, ...)
   }
 

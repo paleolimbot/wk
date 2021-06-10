@@ -14,6 +14,13 @@ test_that("wk_vctr class works", {
   expect_output(expect_identical(str(x), x), "wk_vctr")
   expect_output(expect_identical(str(x[0]), x[0]), "wk_vctr\\[0\\]")
 
+  old_opt <- options(max.print = 1000)
+  expect_output(
+    print(structure(1:1001, class = "wk_vctr")),
+    "Reached max.print"
+  )
+  options(old_opt)
+
   x[[3]] <- 13L
   expect_identical(unclass(x), c(1L, 2L, 13L, 4L, 5L))
 
