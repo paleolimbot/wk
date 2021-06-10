@@ -40,7 +40,12 @@
 
 
 <meta property="og:title" content="Write geometry vectors — wk_writer.sfc" />
-<meta property="og:description" content="Write geometry vectors" />
+<meta property="og:description" content="When writing transformation functions, it is often useful to know which
+handler should be used to create a (potentially modified) version
+of an object. Some transformers (e.g., wk_vertices()) modify
+the geometry type of an object, in which case a generic writer is needed.
+This defaults to wkb_writer() because it is fast and can handle
+all geometry types." />
 
 
 <meta name="robots" content="noindex">
@@ -129,7 +134,12 @@
     </div>
 
     <div class="ref-description">
-    <p>Write geometry vectors</p>
+    <p>When writing transformation functions, it is often useful to know which
+handler should be used to create a (potentially modified) version
+of an object. Some transformers (e.g., <code><a href='wk_vertices.html'>wk_vertices()</a></code>) modify
+the geometry type of an object, in which case a generic writer is needed.
+This defaults to <code>wkb_writer()</code> because it is fast and can handle
+all geometry types.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for sfc</span>
@@ -144,6 +154,9 @@
 
 <span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16L</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
+<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, generic <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
 <span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
@@ -153,7 +166,7 @@
 <span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_xy</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, generic <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='fu'>xy_writer</span><span class='op'>(</span><span class='op'>)</span></pre>
 
@@ -186,6 +199,11 @@ for each result or the number of digits after the decimal place otherwise.</p></
     <tr>
       <th>trim</th>
       <td><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></td>
+    </tr>
+    <tr>
+      <th>generic</th>
+      <td><p>Use <code>TRUE</code> to obtain a writer that can write all geometry
+types.</p></td>
     </tr>
     </table>
 
