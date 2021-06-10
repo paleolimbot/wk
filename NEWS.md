@@ -1,5 +1,15 @@
 # wk (development version)
 
+* Fixed bugs relating to the behaviour of wk classes as
+  vectors (#64, #65, #67, #70).
+* `crc()` objects are now correctly exported as polygons
+  with a closed loop (#66, #70).
+* Added `wk_vertices()` and `wk_coords()` to extract individual
+  coordinate values from geometries with optional identifying
+  information. For advanced users, the `wk_vertex_filter()`
+  can be used as part of a pipeline to export coordinates
+  as point geometries to another handler (#69, #71).
+
 # wk 0.4.1
 
 * Fix LTO and MacOS 3.6.2 check errors (#61).
