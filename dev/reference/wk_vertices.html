@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug filters and handlers — wk_debug • wk</title>
+<title>Extract vertices — wk_vertices • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Debug filters and handlers — wk_debug" />
-<meta property="og:description" content="Debug filters and handlers" />
+<meta property="og:title" content="Extract vertices — wk_vertices" />
+<meta property="og:description" content="These functions provide ways to extract individual coordinate values.
+Whereas wk_vertices() returns a vector of coordinates as in the same
+format as the input, wk_coords() returns a data frame with coordinates
+as columns." />
 
 
 <meta name="robots" content="noindex">
@@ -123,18 +126,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug filters and handlers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wk_debug.Rd</code></div>
+    <h1>Extract vertices</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/vertex-filter.R'><code>R/vertex-filter.R</code></a></small>
+    <div class="hidden name"><code>wk_vertices.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Debug filters and handlers</p>
+    <p>These functions provide ways to extract individual coordinate values.
+Whereas <code>wk_vertices()</code> returns a vector of coordinates as in the same
+format as the input, <code>wk_coords()</code> returns a data frame with coordinates
+as columns.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>handleable</span>, handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_vertices</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>wk_debug_filter</span><span class='op'>(</span>handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='fu'>wk_coords</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>wk_vertex_filter</span><span class='op'>(</span><span class='va'>handler</span>, add_details <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,39 +153,41 @@
 <code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
+      <th>...</th>
+      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
+    </tr>
+    <tr>
       <th>handler</th>
       <td><p>A <a href='wk_handle.sfg.html'>wk_handler</a> object.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
+      <th>add_details</th>
+      <td><p>Use <code>TRUE</code> to add a "details" attribute, which
+contains columns <code>feature_id</code>, <code>part_id</code>, and <code>ring_id</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The result of the <code>handler</code>.</p>
+    
+<ul>
+<li><p><code>wk_vertices()</code> extracts vertices and returns the in the same format as
+the handler</p></li>
+<li><p><code>wk_coords()</code> returns a data frame with columns columns <code>feature_id</code>
+(the index of the feature from whence it came), <code>part_id</code> (an arbitrary
+integer identifying the point, line, or polygon from whence it came),
+<code>ring_id</code> (an arbitrary integer identifying individual rings within
+polygons), and one column per coordinate (<code>x</code>, <code>y</code>, and/or <code>z</code> and/or <code>m</code>).</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wk_debug</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeaaf8e38&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffeeaaf8e38&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffeeaaf8cb8&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffeeaaf8cb8&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffeeaaf8e38&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffeeaaf8e38&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span>, <span class='fu'>wk_debug_filter</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffeeaaf9c08&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffeeaaf9c08&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffeeaaf9a88&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffeeaaf9a88&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffeeaaf9c08&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffeeaaf9c08&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>wk_vertices</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;wk_wkt[2]&gt;
+#&gt; [1] POINT (0 0) POINT (1 1)</div><div class='input'><span class='fu'>wk_coords</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   feature_id part_id ring_id x y
+#&gt; 1          1       1       0 0 0
+#&gt; 2          1       1       0 1 1</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
