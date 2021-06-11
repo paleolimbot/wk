@@ -16,10 +16,10 @@ test_that("wk_vertices() works", {
     wk_vertex_filter(xy_writer(), add_details = TRUE)
   )
   expect_identical(
-    attr(xy_copy, "details"),
+    attr(xy_copy, "wk_details"),
     list(feature_id = 1:1025, part_id = 1:1025, ring_id = rep(0L, 1025))
   )
-  attr(xy_copy, "details") <- NULL
+  attr(xy_copy, "wk_details") <- NULL
   expect_identical(xy_copy, xy(1:1025, 1))
 })
 

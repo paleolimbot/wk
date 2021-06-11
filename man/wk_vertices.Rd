@@ -20,7 +20,7 @@ wk_vertex_filter(handler, add_details = FALSE)
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
-\item{add_details}{Use \code{TRUE} to add a "details" attribute, which
+\item{add_details}{Use \code{TRUE} to add a "wk_details" attribute, which
 contains columns \code{feature_id}, \code{part_id}, and \code{ring_id}.}
 }
 \value{

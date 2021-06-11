@@ -178,7 +178,7 @@ SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_dat
   SEXP result = vertex_filter->next->vector_end(meta, vertex_filter->next->handler_data);
   if (result != R_NilValue) {
     wk_vertex_filter_finalize_details(vertex_filter);
-    Rf_setAttrib(result, Rf_install("details"), vertex_filter->details);
+    Rf_setAttrib(result, Rf_install("wk_details"), vertex_filter->details);
   }
   return result;
 }
