@@ -241,6 +241,7 @@ SEXP wk_c_vertex_filter_new(SEXP handler_xptr, SEXP add_details) {
     Rf_error("Can't run a wk_handler with api_version '%d'", vertex_filter->next->api_version); // # nocov
   }
 
+  WK_VECTOR_META_RESET(vertex_filter->vector_meta, WK_GEOMETRY);
   vertex_filter->add_details = LOGICAL(add_details)[0];
   vertex_filter->details = R_NilValue;
   vertex_filter->details_size = 0;
