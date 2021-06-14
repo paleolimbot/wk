@@ -22,3 +22,11 @@ test_that("wk_flatten() works", {
   attr(xy_copy, "wk_details") <- NULL
   expect_identical(xy_copy, c(xy(1:1025, 1), xy(0, 0)))
 })
+
+test_that("wk_flatten() works for data.frame", {
+  expect_equal(
+    wk_flatten(data.frame(geom = wkt(c("MULTIPOINT (0 0, 1 1)")))),
+    data.frame(geom = wkt(c("POINT (0 0)", "POINT (1 1)"))),
+    ignore_attr = TRUE
+  )
+})
