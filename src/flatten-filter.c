@@ -19,7 +19,11 @@ typedef struct {
   if (result != WK_CONTINUE) return result
 
 #define META_IS_COLLECTION(meta) \
-  ((meta->geometry_type == WK_GEOMETRY) || (meta->geometry_type == WK_MULTIPOINT) || (meta->geometry_type == WK_MULTILINESTRING) || (meta->geometry_type == WK_MULTIPOLYGON))
+  ((meta->geometry_type == WK_GEOMETRY) || \
+    (meta->geometry_type == WK_MULTIPOINT) || \
+    (meta->geometry_type == WK_MULTILINESTRING) || \
+    (meta->geometry_type == WK_MULTIPOLYGON) || \
+    (meta->geometry_type == WK_GEOMETRYCOLLECTION))
 
 
 static inline void wk_flatten_filter_init_details(flatten_filter_t* flatten_filter, R_xlen_t initial_size) {
@@ -70,6 +74,7 @@ static inline void wk_flatten_filter_append_details(flatten_filter_t* flatten_fi
   }
 
   flatten_filter->details_ptr[0][flatten_filter->feature_id_out] = flatten_filter->feature_id + 1;
+  flatten_filter->feature_id_out++;
 }
 
 static inline void wk_flatten_filter_finalize_details(flatten_filter_t* flatten_filter) {
@@ -105,14 +110,24 @@ int wk_flatten_filter_vector_start(const wk_vector_meta_t* meta, void* handler_d
     flatten_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   }
 
+  if (meta->geometry_type == WK_MULTIPOINT) {
+    flatten_filter->vector_meta.geometry_type = WK_POINT;
+  } else if (meta->geometry_type == WK_MULTILINESTRING) {
+    flatten_filter->vector_meta.geometry_type = WK_LINESTRING;
+  } else if (meta->geometry_type == WK_MULTIPOLYGON) {
+    flatten_filter->vector_meta.geometry_type = WK_POLYGON;
+  } else if (meta->geometry_type == WK_GEOMETRYCOLLECTION) {
+    flatten_filter->vector_meta.geometry_type = WK_GEOMETRY;
+  }
+
   wk_flatten_filter_init_details(flatten_filter, flatten_filter->vector_meta.size);
 
-  return flatten_filter->next->vector_start(meta, flatten_filter->next->handler_data);
+  return flatten_filter->next->vector_start(&(flatten_filter->vector_meta), flatten_filter->next->handler_data);
 }
 
 SEXP wk_flatten_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
-  SEXP result = PROTECT(flatten_filter->next->vector_end(meta, flatten_filter->next->handler_data));
+  SEXP result = PROTECT(flatten_filter->next->vector_end(&(flatten_filter->vector_meta), flatten_filter->next->handler_data));
   if (result != R_NilValue) {
     wk_flatten_filter_finalize_details(flatten_filter);
     Rf_setAttrib(result, Rf_install("wk_details"), flatten_filter->details);
@@ -130,11 +145,12 @@ int wk_flatten_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_
 int wk_flatten_filter_feature_null(void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
+  
+  wk_flatten_filter_append_details(flatten_filter);
   HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
   HANDLE_OR_RETURN(flatten_filter->next->null_feature(flatten_filter->next->handler_data));
   HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
-  wk_flatten_filter_append_details(flatten_filter);
-  flatten_filter->feature_id_out++;
+  
   return WK_CONTINUE;
 }
 
@@ -146,6 +162,7 @@ int wk_flatten_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, vo
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
   if (!META_IS_COLLECTION(meta)) {
+    wk_flatten_filter_append_details(flatten_filter);
     HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
     HANDLE_OR_RETURN(flatten_filter->next->geometry_start(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
   }
@@ -159,8 +176,6 @@ int wk_flatten_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void
   if (!META_IS_COLLECTION(meta)) {
     HANDLE_OR_RETURN(flatten_filter->next->geometry_end(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
     HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
-    wk_flatten_filter_append_details(flatten_filter);
-    flatten_filter->feature_id_out++;
   }
 
   return WK_CONTINUE;
