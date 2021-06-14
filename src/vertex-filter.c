@@ -175,11 +175,12 @@ int wk_vertex_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t 
 
 SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
-  SEXP result = vertex_filter->next->vector_end(meta, vertex_filter->next->handler_data);
+  SEXP result = PROTECT(vertex_filter->next->vector_end(meta, vertex_filter->next->handler_data));
   if (result != R_NilValue) {
     wk_vertex_filter_finalize_details(vertex_filter);
     Rf_setAttrib(result, Rf_install("wk_details"), vertex_filter->details);
   }
+  UNPROTECT(1);
   return result;
 }
 

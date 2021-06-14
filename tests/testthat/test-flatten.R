@@ -12,13 +12,13 @@ test_that("wk_flatten() works", {
 
   # we need this one to trigger a realloc on the details list
   xy_copy <- wk_handle(
-    wkt(paste0("MULTIPOINT (", paste(1:1025, 1, collapse = ", ") , ")")),
+    wkt(c(paste0("MULTIPOINT (", paste(1:1025, 1, collapse = ", ") , ")"), "POINT (0 0)")),
     wk_flatten_filter(xy_writer(), add_details = TRUE)
   )
-  # expect_identical(
-  #   attr(xy_copy, "wk_details"),
-  #   list(feature_id = 1:1025)
-  # )
+  expect_identical(
+    attr(xy_copy, "wk_details"),
+    list(feature_id = c(rep(1L, 1025), 2L))
+  )
   attr(xy_copy, "wk_details") <- NULL
-  expect_identical(xy_copy, xy(1:1025, 1))
+  expect_identical(xy_copy, c(xy(1:1025, 1), xy(0, 0)))
 })

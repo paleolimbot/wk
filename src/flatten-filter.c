@@ -7,8 +7,10 @@ typedef struct {
   wk_handler_t* next;
   wk_vector_meta_t vector_meta;
   int feature_id;
+  int feature_id_out;
   int add_details;
   SEXP details;
+  int* details_ptr[1];
   R_xlen_t details_size;
 } flatten_filter_t;
 
@@ -19,6 +21,74 @@ typedef struct {
 #define META_IS_COLLECTION(meta) \
   ((meta->geometry_type == WK_GEOMETRY) || (meta->geometry_type == WK_MULTIPOINT) || (meta->geometry_type == WK_MULTILINESTRING) || (meta->geometry_type == WK_MULTIPOLYGON))
 
+
+static inline void wk_flatten_filter_init_details(flatten_filter_t* flatten_filter, R_xlen_t initial_size) {
+  if (!flatten_filter->add_details) {
+    return;
+  }
+
+  if (initial_size == WK_VECTOR_SIZE_UNKNOWN) {
+    initial_size = 1024;
+  }
+
+  flatten_filter->feature_id = -1;
+
+  if (flatten_filter->details != R_NilValue) {
+    R_ReleaseObject(flatten_filter->details); // # nocov
+  }
+
+  const char* names[] = {"feature_id", ""};
+  flatten_filter->details = PROTECT(Rf_mkNamed(VECSXP, names));
+  R_PreserveObject(flatten_filter->details);
+  UNPROTECT(1);
+
+  flatten_filter->details_size = initial_size;
+  for (int i = 0; i < 1; i++) {
+    SEXP item = PROTECT(Rf_allocVector(INTSXP, flatten_filter->details_size));
+    SET_VECTOR_ELT(flatten_filter->details, i, item);
+    flatten_filter->details_ptr[i] = INTEGER(item);
+    UNPROTECT(1);
+  }
+}
+
+static inline void wk_flatten_filter_append_details(flatten_filter_t* flatten_filter) {
+  if (flatten_filter->details == R_NilValue) {
+    return;
+  }
+
+  if (flatten_filter->feature_id_out >= flatten_filter->details_size) {
+    R_xlen_t new_size = flatten_filter->details_size * 2 + 1;
+    for (int i = 0; i < 1; i++) {
+      SEXP new_item = PROTECT(Rf_allocVector(INTSXP, new_size));
+      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(flatten_filter->details, i)), flatten_filter->details_size * sizeof(int));
+      SET_VECTOR_ELT(flatten_filter->details, i, new_item);
+      flatten_filter->details_ptr[i] = INTEGER(new_item);
+      UNPROTECT(1);
+    }
+
+    flatten_filter->details_size = new_size;
+  }
+
+  flatten_filter->details_ptr[0][flatten_filter->feature_id_out] = flatten_filter->feature_id + 1;
+}
+
+static inline void wk_flatten_filter_finalize_details(flatten_filter_t* flatten_filter) {
+  if (flatten_filter->details == R_NilValue) {
+    return;
+  }
+
+  if (flatten_filter->feature_id_out != flatten_filter->details_size) {
+    for (int i = 0; i < 1; i++) {
+      SEXP new_item = PROTECT(Rf_allocVector(INTSXP, flatten_filter->feature_id_out));
+      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(flatten_filter->details, i)), flatten_filter->feature_id_out * sizeof(int));
+      SET_VECTOR_ELT(flatten_filter->details, i, new_item);
+      UNPROTECT(1);
+    }
+
+    flatten_filter->details_size = flatten_filter->feature_id_out;
+  }
+}
+
 void wk_flatten_filter_initialize(int* dirty, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   *dirty = 1;
@@ -28,32 +98,44 @@ void wk_flatten_filter_initialize(int* dirty, void* handler_data) {
 int wk_flatten_filter_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
 
-  flatten_filter->feature_id = -1;
+  flatten_filter->feature_id_out = 0;
 
   memcpy(&(flatten_filter->vector_meta), meta, sizeof(wk_vector_meta_t));
   if (META_IS_COLLECTION(meta)) {
     flatten_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   }
 
+  wk_flatten_filter_init_details(flatten_filter, flatten_filter->vector_meta.size);
+
   return flatten_filter->next->vector_start(meta, flatten_filter->next->handler_data);
 }
 
 SEXP wk_flatten_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
-  return flatten_filter->next->vector_end(meta, flatten_filter->next->handler_data);;
+  SEXP result = PROTECT(flatten_filter->next->vector_end(meta, flatten_filter->next->handler_data));
+  if (result != R_NilValue) {
+    wk_flatten_filter_finalize_details(flatten_filter);
+    Rf_setAttrib(result, Rf_install("wk_details"), flatten_filter->details);
+  }
+  UNPROTECT(1);
+  return result;
 }
 
 int wk_flatten_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+  flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
+  flatten_filter->feature_id++;
   return WK_CONTINUE;
 }
 
 int wk_flatten_filter_feature_null(void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
-  flatten_filter->feature_id++;
-  HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id, flatten_filter->next->handler_data));
+  HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
   HANDLE_OR_RETURN(flatten_filter->next->null_feature(flatten_filter->next->handler_data));
-  return flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id, flatten_filter->next->handler_data);
+  HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+  wk_flatten_filter_append_details(flatten_filter);
+  flatten_filter->feature_id_out++;
+  return WK_CONTINUE;
 }
 
 int wk_flatten_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
@@ -64,12 +146,11 @@ int wk_flatten_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, vo
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
   if (!META_IS_COLLECTION(meta)) {
-    flatten_filter->feature_id++;
-    HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id, flatten_filter->next->handler_data));
-    return flatten_filter->next->geometry_start(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data);
-  } else {
-    return WK_CONTINUE;
+    HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+    HANDLE_OR_RETURN(flatten_filter->next->geometry_start(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
   }
+
+  return WK_CONTINUE;
 }
 
 int wk_flatten_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
@@ -77,10 +158,12 @@ int wk_flatten_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void
   int result;
   if (!META_IS_COLLECTION(meta)) {
     HANDLE_OR_RETURN(flatten_filter->next->geometry_end(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
-    return flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id, flatten_filter->next->handler_data);
-  } else {
-    return WK_CONTINUE;
+    HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+    wk_flatten_filter_append_details(flatten_filter);
+    flatten_filter->feature_id_out++;
   }
+
+  return WK_CONTINUE;
 }
 
 int wk_flatten_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
@@ -93,9 +176,9 @@ int wk_flatten_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ri
   return flatten_filter->next->ring_end(meta, size, ring_id, flatten_filter->next->handler_data);
 }
 
-int wk_flatten_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
+int wk_flatten_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t feature_id_out, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
-  return flatten_filter->next->coord(meta, coord, coord_id, flatten_filter->next->handler_data);
+  return flatten_filter->next->coord(meta, coord, feature_id_out, flatten_filter->next->handler_data);
 }
 
 int wk_flatten_filter_error(const char* message, void* handler_data) {
@@ -105,6 +188,10 @@ int wk_flatten_filter_error(const char* message, void* handler_data) {
 
 void wk_flatten_filter_deinitialize(void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
+  if (flatten_filter->details != R_NilValue) {
+    R_ReleaseObject(flatten_filter->details);
+    flatten_filter->details = R_NilValue;
+  }
   flatten_filter->next->deinitialize(flatten_filter->next->handler_data);
 }
 
@@ -157,6 +244,7 @@ SEXP wk_c_flatten_filter_new(SEXP handler_xptr, SEXP add_details) {
   flatten_filter->details = R_NilValue;
   flatten_filter->details_size = 0;
   flatten_filter->feature_id = 0;
+  flatten_filter->feature_id_out = 0;
 
   handler->handler_data = flatten_filter;
 
