@@ -73,4 +73,16 @@ test_that("wk_flatten() works for nested collections", {
     wk_flatten(wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))")),
     wkt("POINT (0 1)")
   )
+
+  expect_identical(
+    wk_handle(
+      wkt("GEOMETRYCOLLECTION(MULTIPOINT (30 10, 10 10), LINESTRING (0 0, 1 1), GEOMETRYCOLLECTION EMPTY)"),
+      wk_flatten_filter(wkt_writer(), add_details = TRUE)
+    ),
+    structure(
+      c("POINT (30 10)", "POINT (10 10)", "LINESTRING (0 0, 1 1)"),
+      class = c("wk_wkt", "wk_vctr"),
+      wk_details = list(feature_id = c(1L, 1L, 1L))
+    )
+  )
 })
