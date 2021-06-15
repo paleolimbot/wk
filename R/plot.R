@@ -48,6 +48,91 @@ plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
   invisible(x)
 }
 
+wk_plot <- function(x, ..., handler_factory = identity,
+                    asp = 1, bbox = NULL, xlab = "", ylab = "",
+                    rule = "evenodd", add = FALSE) {
+  if (!add) {
+    bbox <- unclass(bbox)
+    bbox <- bbox %||% unclass(wk_handle(x, handler_factory(wk_bbox_handler())))
+    xlim <- c(bbox$xmin, bbox$xmax)
+    ylim <- c(bbox$ymin, bbox$ymax)
+
+    graphics::plot(
+      numeric(0),
+      numeric(0),
+      xlim = xlim,
+      ylim = ylim,
+      xlab = xlab,
+      ylab = ylab,
+      asp = asp
+    )
+  }
+
+  if (length(x) == 0) {
+    return(invisible(x))
+  }
+
+  # in simple cases we can do some fast shortcuts
+  meta <- wk_handle(x, handler_factory(wk_meta_handler()))
+
+  # points are handled by as_xy() nicely
+  if (all(meta$geometry_type == 1L)) {
+    coords <- unclass(wk_handle(x, handler_factory(xy_writer())))
+    graphics::points(coords, ...)
+    return(invisible(x))
+  }
+
+  # evaluate dots
+  dots <- list(..., rule = rule)
+  is_scalar <- !vapply(dots, vctrs::vec_is, logical(1))
+  dots[is_scalar] <- lapply(dots[is_scalar], list)
+  dots_lengths <- vapply(dots, length, integer(1))
+
+  # if we have all constant dots (common), we can skip the loop
+  constant_dots <- all(dots_lengths == 1L)
+
+  if (constant_dots && all(meta$geometry_type %in% c(1L, 4L))) {
+    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer()))))
+    graphics::points(wk_coords(x)[c("x", "y")], ...)
+
+  } else if (constant_dots && all(meta$geometry_type %in% c(2L, 5L))) {
+    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer(), add_details = TRUE))))
+    geom_id <- attr(coords, "wk_details")$part_id
+    geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
+    new_geom <- geom_id != geom_id_lag
+    na_shift <- cumsum(new_geom) - 1L
+    coords_seq <- seq_along(geom_id)
+
+    coord_x <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+    coord_y <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+
+    coord_x[coords_seq + na_shift] <- coords$x
+    coord_y[coords_seq + na_shift] <- coords$y
+
+    graphics::lines(coord_x, coord_y, ...)
+
+  } else if (constant_dots && all(meta$geometry_type %in% c(3L, 6L))) {
+    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer(), add_details = TRUE))))
+    geom_id <- attr(coords, "wk_details")$ring_id
+    geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
+    new_geom <- geom_id != geom_id_lag
+    na_shift <- cumsum(new_geom) - 1L
+    coords_seq <- seq_along(geom_id)
+
+    coord_x <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+    coord_y <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+
+    coord_x[coords_seq + na_shift] <- coords$x
+    coord_y[coords_seq + na_shift] <- coords$y
+
+    graphics::polypath(coord_x, coord_y, ..., rule = rule)
+  } else {
+    stop("Collections and mixed types plotting is not implemented")
+  }
+
+  invisible(x)
+}
+
 #' @rdname plot.wk_wkt
 #' @export
 plot.wk_xy <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE) {
