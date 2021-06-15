@@ -7,7 +7,7 @@
 #' as columns.
 #'
 #' @inheritParams wk_handle
-#' @param add_details Use `TRUE` to add a "details" attribute, which
+#' @param add_details Use `TRUE` to add a "wk_details" attribute, which
 #'   contains columns `feature_id`, `part_id`, and `ring_id`.
 #'
 #' @return
@@ -33,8 +33,8 @@ wk_vertices <- function(handleable, ...) {
       wk_vertex_filter(wk_writer(handleable), add_details = TRUE),
       ...
     )
-    feature_id <- attr(result, "details", exact = TRUE)$feature_id
-    attr(result, "details") <- NULL
+    feature_id <- attr(result, "wk_details", exact = TRUE)$feature_id
+    attr(result, "wk_details") <- NULL
     result <- wk_restore(handleable[feature_id, , drop = FALSE], result, ...)
   } else {
     result <- wk_handle(handleable, wk_vertex_filter(wk_writer(handleable, generic = TRUE)), ...)
@@ -53,8 +53,8 @@ wk_coords <- function(handleable, ...) {
     ...
   )
 
-  details <- attr(result, "details", exact = TRUE)
-  attr(result, "details") <- NULL
+  details <- attr(result, "wk_details", exact = TRUE)
+  attr(result, "wk_details") <- NULL
   new_data_frame(c(details, unclass(result)))
 }
 

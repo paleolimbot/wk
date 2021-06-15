@@ -16,10 +16,10 @@ test_that("wk_vertices() works", {
     wk_vertex_filter(xy_writer(), add_details = TRUE)
   )
   expect_identical(
-    attr(xy_copy, "details"),
+    attr(xy_copy, "wk_details"),
     list(feature_id = 1:1025, part_id = 1:1025, ring_id = rep(0L, 1025))
   )
-  attr(xy_copy, "details") <- NULL
+  attr(xy_copy, "wk_details") <- NULL
   expect_identical(xy_copy, xy(1:1025, 1))
 })
 
@@ -104,5 +104,35 @@ test_that("wk_coords() works", {
       x = 30,
       y = 10
     )
+  )
+})
+
+test_that("wk_vertices() communicates correct size and type", {
+  expect_identical(
+    wk_handle(wkt("POINT (0 0)"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = NA_real_, has_z = NA, has_m = NA)
+  )
+
+  skip_if_not_installed("sf")
+  # need sf because these objects carry vector-level types
+  expect_identical(
+    wk_handle(sf::st_as_sfc("POINT (0 0)"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = 1, has_z = FALSE, has_m = FALSE)
+  )
+  expect_identical(
+    wk_handle(sf::st_as_sfc("MULTIPOINT EMPTY"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = NA_real_, has_z = FALSE, has_m = FALSE)
+  )
+  expect_identical(
+    wk_handle(sf::st_as_sfc("MULTILINESTRING EMPTY"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = NA_real_, has_z = FALSE, has_m = FALSE)
+  )
+  expect_identical(
+    wk_handle(sf::st_as_sfc("MULTIPOLYGON EMPTY"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = NA_real_, has_z = FALSE, has_m = FALSE)
+  )
+  expect_identical(
+    wk_handle(sf::st_as_sfc("GEOMETRYCOLLECTION EMPTY"), wk_vertex_filter(wk_vector_meta_handler())),
+    list(geometry_type = 1L, size = NA_real_, has_z = FALSE, has_m = FALSE)
   )
 })
