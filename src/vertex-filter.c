@@ -74,6 +74,7 @@ static inline void wk_vertex_filter_append_details(vertex_filter_t* vertex_filte
   vertex_filter->details_ptr[0][vertex_filter->coord_id] = vertex_filter->feature_id + 1;
   vertex_filter->details_ptr[1][vertex_filter->coord_id] = vertex_filter->part_id + 1;
   vertex_filter->details_ptr[2][vertex_filter->coord_id] = vertex_filter->ring_id + 1;
+  vertex_filter->coord_id++;
 }
 
 static inline void wk_vertex_filter_finalize_details(vertex_filter_t* vertex_filter) {
@@ -112,7 +113,7 @@ int wk_vertex_filter_vector_start(const wk_vector_meta_t* meta, void* handler_da
 
   wk_vertex_filter_init_details(vertex_filter, vertex_filter->vector_meta.size);
 
-  return vertex_filter->next->vector_start(meta, vertex_filter->next->handler_data);
+  return vertex_filter->next->vector_start(&(vertex_filter->vector_meta), vertex_filter->next->handler_data);
 }
 
 int wk_vertex_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
@@ -161,21 +162,19 @@ int wk_vertex_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t 
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
   
   int result;
+  wk_vertex_filter_append_details(vertex_filter);
   HANDLE_OR_RETURN(vertex_filter->next->feature_start(&(vertex_filter->vector_meta), vertex_filter->coord_id, vertex_filter->next->handler_data));
   HANDLE_OR_RETURN(vertex_filter->next->geometry_start(&(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
   HANDLE_OR_RETURN(vertex_filter->next->coord(&(vertex_filter->meta), coord, 0, vertex_filter->next->handler_data));
   HANDLE_OR_RETURN(vertex_filter->next->geometry_end(&(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
   HANDLE_OR_RETURN(vertex_filter->next->feature_end(&(vertex_filter->vector_meta), vertex_filter->coord_id, vertex_filter->next->handler_data));
-  wk_vertex_filter_append_details(vertex_filter);
-
-  vertex_filter->coord_id++;
 
   return WK_CONTINUE;
 }
 
 SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
-  SEXP result = PROTECT(vertex_filter->next->vector_end(meta, vertex_filter->next->handler_data));
+  SEXP result = PROTECT(vertex_filter->next->vector_end(&(vertex_filter->vector_meta), vertex_filter->next->handler_data));
   if (result != R_NilValue) {
     wk_vertex_filter_finalize_details(vertex_filter);
     Rf_setAttrib(result, Rf_install("wk_details"), vertex_filter->details);
