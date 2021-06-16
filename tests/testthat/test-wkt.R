@@ -34,12 +34,12 @@ test_that("as_wkt() works", {
 
 test_that("parse_wkt() works", {
   x <- "POINT (40 10)"
-  parsed <- expect_silent(parse_wkt(x))
+  expect_silent(parsed <- parse_wkt(x))
   expect_false(is.na(parsed))
   expect_null(attr(parsed, "problems"))
 
   x <- "POINT ENTPY"
-  parsed <- expect_warning(parse_wkt(x), "Encountered 1 parse problem")
+  expect_warning(parsed <- parse_wkt(x), "Encountered 1 parse problem")
   expect_true(is.na(parsed))
   expect_s3_class(attr(parsed, "problems"), "data.frame")
   expect_identical(nrow(attr(parsed, "problems")), 1L)
