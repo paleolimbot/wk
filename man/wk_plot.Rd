@@ -59,12 +59,14 @@ and multipolygon geometries.}
 
 \item{asp, xlab, ylab}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}}
 
-\item{bbox}{The limits of the plot in the form returned by \code{\link[=wkt_ranges]{wkt_ranges()}}.}
+\item{bbox}{The limits of the plot as a \code{\link[=rct]{rct()}} or compatible object}
 
 \item{rule}{The rule to use for filling polygons (see \code{\link[graphics:polypath]{graphics::polypath()}})}
 
 \item{add}{Should a new plot be created, or should \code{handleable} be added to the
 existing plot?}
+
+\item{x}{A \code{\link[=wkb]{wkb()}} or \code{\link[=wkt]{wkt()}}}
 }
 \value{
 The input, invisibly.

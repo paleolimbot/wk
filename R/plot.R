@@ -1,13 +1,14 @@
 
 #' Plot well-known geometry vectors
 #'
+#' @param x A [wkb()] or [wkt()]
 #' @param add Should a new plot be created, or should `handleable` be added to the
 #'   existing plot?
 #' @param ... Passed to plotting functions for features: [graphics::points()]
 #'   for point and multipoint geometries, [graphics::lines()] for linestring
 #'   and multilinestring geometries, and [graphics::polypath()] for polygon
 #'   and multipolygon geometries.
-#' @param bbox The limits of the plot in the form returned by [wkt_ranges()].
+#' @param bbox The limits of the plot as a [rct()] or compatible object
 #' @param asp,xlab,ylab Passed to [graphics::plot()]
 #' @param rule The rule to use for filling polygons (see [graphics::polypath()])
 #' @inheritParams wk_handle
