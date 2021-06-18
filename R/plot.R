@@ -1,64 +1,35 @@
 
 #' Plot well-known geometry vectors
 #'
-#' @inheritParams wkutils::wkt_plot
+#' @param add Should a new plot be created, or should `handleable` be added to the
+#'   existing plot?
+#' @param ... Passed to plotting functions for features: [graphics::points()]
+#'   for point and multipoint geometries, [graphics::lines()] for linestring
+#'   and multilinestring geometries, and [graphics::polypath()] for polygon
+#'   and multipolygon geometries.
+#' @param bbox The limits of the plot in the form returned by [wkt_ranges()].
+#' @param asp,xlab,ylab Passed to [graphics::plot()]
+#' @param rule The rule to use for filling polygons (see [graphics::polypath()])
+#' @inheritParams wk_handle
 #'
 #' @return The input, invisibly.
 #' @importFrom graphics plot
 #' @export
 #'
 #' @examples
-#' # requires the wkutils package
-#' if (requireNamespace("wkutils")) {
-#'   plot(as_wkt("LINESTRING (0 0, 1 1)"))
-#'   plot(as_wkb("LINESTRING (0 0, 1 1)"))
-#' }
+#' plot(as_wkt("LINESTRING (0 0, 1 1)"))
+#' plot(as_wkb("LINESTRING (0 0, 1 1)"))
 #'
-plot.wk_wkt <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
-                        rule = "evenodd", add = FALSE) {
-  wkutils::wkt_plot(
-    x,
-    ...,
-    asp = asp,
-    bbox = bbox,
-    xlab = xlab,
-    ylab = ylab,
-    rule = rule,
-    add = add
-  )
-
-  invisible(x)
-}
-
-#' @rdname plot.wk_wkt
-#' @export
-plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
-                        rule = "evenodd", add = FALSE) {
-  wkutils::wkb_plot(
-    x,
-    ...,
-    asp = asp,
-    bbox = bbox,
-    xlab = xlab,
-    ylab = ylab,
-    rule = rule,
-    add = add
-  )
-
-  invisible(x)
-}
-
-wk_plot <- function(x, ...,
+wk_plot <- function(handleable, ...,
                     asp = 1, bbox = NULL, xlab = "", ylab = "",
                     rule = "evenodd", add = FALSE) {
   # this is too hard without vctrs (already in Suggests)
   if (!requireNamespace("vctrs", quietly = TRUE)) {
-    stop("Package 'vctrs' is required for wk_plot()", call. = FALSE)
+    stop("Package 'vctrs' is required for wk_plot()", call. = FALSE) # nocov
   }
 
-  if (!vctrs::vec_is(x)) {
-    stop("Can't use wk_plot() with an object that is not a vctr", call. = FALSE)
-  }
+  # should be refactored
+  x <- handleable
 
   if (!add) {
     bbox <- unclass(bbox)
@@ -75,6 +46,12 @@ wk_plot <- function(x, ...,
       ylab = ylab,
       asp = asp
     )
+  }
+
+  # for everything below we'll need to be able to subset
+  if (!vctrs::vec_is(x)) {
+    wk_plot(as_wkb(x), ..., rule = rule, add = TRUE) # nocov
+    return(invisible(x)) # nocov
   }
 
   # get some background info
@@ -96,14 +73,16 @@ wk_plot <- function(x, ...,
   dots_constant <- all(dots_length == 1L)
   is_rule <- length(dots)
 
-  # point+multipoint is probably faster with a single coord vector
+  # point + multipoint is probably faster with a single coord vector
   if (all(meta$geometry_type %in% c(1, 4))) {
     coords <- wk_coords(x)
     if (dots_constant) {
       graphics::points(coords[c("x", "y")], ...)
     } else {
+      dots$rule <- NULL
+      dots <- vctrs::vec_recycle_common(!!!dots, .size = size)
       dots_tbl <- vctrs::new_data_frame(dots, n = size)
-      do.call(graphics::points, c(coords[c("x", "y")], dots_tbl[coords$feature_id]))
+      do.call(graphics::points, c(coords[c("x", "y")], dots_tbl[coords$feature_id, , drop = FALSE]))
     }
     return(invisible(x))
   }
@@ -147,6 +126,7 @@ wk_plot_line_or_multiline <- function(x, dots) {
   coord_x[coords_seq + na_shift] <- coords$x
   coord_y[coords_seq + na_shift] <- coords$y
 
+  dots$rule <- NULL
   do.call(graphics::lines, c(list(coord_x, coord_y), dots))
 }
 
@@ -167,7 +147,43 @@ wk_plot_poly_or_multi_poly <- function(x, dots) {
   do.call(graphics::polypath, c(coords[c("x", "y")], dots))
 }
 
-#' @rdname plot.wk_wkt
+#' @rdname wk_plot
+#' @export
+plot.wk_wkt <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
+                        rule = "evenodd", add = FALSE) {
+  wk_plot(
+    x,
+    ...,
+    asp = asp,
+    bbox = bbox,
+    xlab = xlab,
+    ylab = ylab,
+    rule = rule,
+    add = add
+  )
+
+  invisible(x)
+}
+
+#' @rdname wk_plot
+#' @export
+plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
+                        rule = "evenodd", add = FALSE) {
+  wk_plot(
+    x,
+    ...,
+    asp = asp,
+    bbox = bbox,
+    xlab = xlab,
+    ylab = ylab,
+    rule = rule,
+    add = add
+  )
+
+  invisible(x)
+}
+
+#' @rdname wk_plot
 #' @export
 plot.wk_xy <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE) {
   x_bare <- unclass(x)
@@ -188,7 +204,7 @@ plot.wk_xy <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add =
   invisible(x)
 }
 
-#' @rdname plot.wk_wkt
+#' @rdname wk_plot
 #' @export
 plot.wk_rct <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE) {
   x_bare <- unclass(x)
@@ -213,7 +229,7 @@ plot.wk_rct <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add 
   invisible(x)
 }
 
-#' @rdname plot.wk_wkt
+#' @rdname wk_plot
 #' @export
 plot.wk_crc <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
                         add = FALSE) {
