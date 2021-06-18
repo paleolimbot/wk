@@ -54,7 +54,5 @@ test_that("xy and rect plot methods work", {
 })
 
 test_that("crc plot method works", {
-  skip_if_not_installed("wkutils")
-
   expect_identical(plot(crc(1, 2, 3)), crc(1, 2, 3))
 })
