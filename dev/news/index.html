@@ -135,8 +135,10 @@
 <li>
 <code><a href="../reference/crc.html">crc()</a></code> objects are now correctly exported as polygons with a closed loop (<a href='https://github.com/paleolimbot/wk/issues/66'>#66</a>, <a href='https://github.com/paleolimbot/wk/issues/70'>#70</a>).</li>
 <li>Added <code><a href="../reference/wk_vertices.html">wk_vertices()</a></code> and <code><a href="../reference/wk_vertices.html">wk_coords()</a></code> to extract individual coordinate values from geometries with optional identifying information. For advanced users, the <code><a href="../reference/wk_vertices.html">wk_vertex_filter()</a></code> can be used as part of a pipeline to export coordinates as point geometries to another handler (<a href='https://github.com/paleolimbot/wk/issues/69'>#69</a>, <a href='https://github.com/paleolimbot/wk/issues/71'>#71</a>).</li>
+<li>Added <code><a href="../reference/wk_flatten.html">wk_flatten()</a></code> to extract geometries from collections. For advanced users, the <code><a href="../reference/wk_flatten.html">wk_flatten_filter()</a></code> can be used as part of a pipeline (<a href='https://github.com/paleolimbot/wk/issues/75'>#75</a>, <a href='https://github.com/paleolimbot/wk/issues/78'>#78</a>).</li>
 <li>
 <code><a href="https://rdrr.io/r/base/options.html">options("max.print")</a></code> is now respected by all vector classes (<a href='https://github.com/paleolimbot/wk/issues/72'>#72</a>, <a href='https://github.com/paleolimbot/wk/issues/74'>#74</a>).</li>
+<li>Moved implementation of plot methods from wkutils to wk to simplify the dependency structure of both packages (<a href='https://github.com/paleolimbot/wk/issues/80'>#80</a>, <a href='https://github.com/paleolimbot/wk/issues/76'>#76</a>).</li>
 </ul>
 </div>
     <div id="wk-041" class="section level1">

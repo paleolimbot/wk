@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug filters and handlers — wk_debug • wk</title>
+<title>Plot well-known geometry vectors — wk_plot • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Debug filters and handlers — wk_debug" />
-<meta property="og:description" content="Debug filters and handlers" />
+<meta property="og:title" content="Plot well-known geometry vectors — wk_plot" />
+<meta property="og:description" content="Plot well-known geometry vectors" />
 
 
 <meta name="robots" content="noindex">
@@ -123,18 +123,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug filters and handlers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wk_debug.Rd</code></div>
+    <h1>Plot well-known geometry vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>wk_plot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Debug filters and handlers</p>
+    <p>Plot well-known geometry vectors</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>handleable</span>, handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_plot</span><span class='op'>(</span>
+  <span class='va'>handleable</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
-<span class='fu'>wk_debug_filter</span><span class='op'>(</span>handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for wk_wkt</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for wk_wkb</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+
+<span class='co'># S3 method for wk_xy</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wk_rct</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wk_crc</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,39 +185,43 @@
 <code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
     </tr>
     <tr>
-      <th>handler</th>
-      <td><p>A <a href='wk_handle.sfg.html'>wk_handler</a> object.</p></td>
+      <th>...</th>
+      <td><p>Passed to plotting functions for features: <code><a href='https://rdrr.io/r/graphics/points.html'>graphics::points()</a></code>
+for point and multipoint geometries, <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code> for linestring
+and multilinestring geometries, and <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code> for polygon
+and multipolygon geometries.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
+      <th>asp, xlab, ylab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>bbox</th>
+      <td><p>The limits of the plot as a <code><a href='rct.html'>rct()</a></code> or compatible object</p></td>
+    </tr>
+    <tr>
+      <th>rule</th>
+      <td><p>The rule to use for filling polygons (see <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>Should a new plot be created, or should <code>handleable</code> be added to the
+existing plot?</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>A <code><a href='wkb.html'>wkb()</a></code> or <code><a href='wkt.html'>wkt()</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The result of the <code>handler</code>.</p>
+    <p>The input, invisibly.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wk_debug</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee1bf3e38&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee1bf3e38&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee1bf3cb8&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee1bf3cb8&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee1bf3e38&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee1bf3e38&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span>, <span class='fu'>wk_debug_filter</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee1bf4c08&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee1bf4c08&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee1bf4a88&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee1bf4a88&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee1bf4c08&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee1bf4c08&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>as_wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='wkb.html'>as_wkb</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='wk_plot-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
