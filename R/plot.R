@@ -48,12 +48,21 @@ plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
   invisible(x)
 }
 
-wk_plot <- function(x, ..., handler_factory = identity,
+wk_plot <- function(x, ...,
                     asp = 1, bbox = NULL, xlab = "", ylab = "",
                     rule = "evenodd", add = FALSE) {
+  # this is too hard without vctrs (already in Suggests)
+  if (!requireNamespace("vctrs", quietly = TRUE)) {
+    stop("Package 'vctrs' is required for wk_plot()", call. = FALSE)
+  }
+
+  if (!vctrs::vec_is(x)) {
+    stop("Can't use wk_plot() with an object that is not a vctr", call. = FALSE)
+  }
+
   if (!add) {
     bbox <- unclass(bbox)
-    bbox <- bbox %||% unclass(wk_handle(x, handler_factory(wk_bbox_handler())))
+    bbox <- bbox %||% unclass(wk_bbox(x))
     xlim <- c(bbox$xmin, bbox$xmax)
     ylim <- c(bbox$ymin, bbox$ymax)
 
@@ -68,69 +77,94 @@ wk_plot <- function(x, ..., handler_factory = identity,
     )
   }
 
-  if (length(x) == 0) {
-    return(invisible(x))
-  }
+  # get some background info
+  size <- vctrs::vec_size(x)
+  meta <- wk_meta(x)
 
-  # in simple cases we can do some fast shortcuts
-  meta <- wk_handle(x, handler_factory(wk_meta_handler()))
-
-  # points are handled by as_xy() nicely
+  # points can be handled by as_xy()
   if (all(meta$geometry_type == 1L)) {
-    coords <- unclass(wk_handle(x, handler_factory(xy_writer())))
+    coords <- unclass(as_xy(x))
     graphics::points(coords, ...)
     return(invisible(x))
   }
 
-  # evaluate dots
+  # evaluate the dots
   dots <- list(..., rule = rule)
   is_scalar <- !vapply(dots, vctrs::vec_is, logical(1))
   dots[is_scalar] <- lapply(dots[is_scalar], list)
-  dots_lengths <- vapply(dots, length, integer(1))
+  dots_length <- vapply(dots, vctrs::vec_size, integer(1))
+  dots_constant <- all(dots_length == 1L)
+  is_rule <- length(dots)
 
-  # if we have all constant dots (common), we can skip the loop
-  constant_dots <- all(dots_lengths == 1L)
+  # point+multipoint is probably faster with a single coord vector
+  if (all(meta$geometry_type %in% c(1, 4))) {
+    coords <- wk_coords(x)
+    if (dots_constant) {
+      graphics::points(coords[c("x", "y")], ...)
+    } else {
+      dots_tbl <- vctrs::new_data_frame(dots, n = size)
+      do.call(graphics::points, c(coords[c("x", "y")], dots_tbl[coords$feature_id]))
+    }
+    return(invisible(x))
+  }
 
-  if (constant_dots && all(meta$geometry_type %in% c(1L, 4L))) {
-    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer()))))
-    graphics::points(wk_coords(x)[c("x", "y")], ...)
+  # it's not faster to flatten big vectors into a single go for anything else
+  dots <- vctrs::vec_recycle_common(!!!dots, .size = size)
+  for (i in seq_len(size)) {
+    xi <- vctrs::vec_slice(x, i)
+    dotsi <- lapply(dots, "[[", i)
 
-  } else if (constant_dots && all(meta$geometry_type %in% c(2L, 5L))) {
-    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer(), add_details = TRUE))))
-    geom_id <- attr(coords, "wk_details")$part_id
-    geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
-    new_geom <- geom_id != geom_id_lag
-    na_shift <- cumsum(new_geom) - 1L
-    coords_seq <- seq_along(geom_id)
-
-    coord_x <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
-    coord_y <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
-
-    coord_x[coords_seq + na_shift] <- coords$x
-    coord_y[coords_seq + na_shift] <- coords$y
-
-    graphics::lines(coord_x, coord_y, ...)
-
-  } else if (constant_dots && all(meta$geometry_type %in% c(3L, 6L))) {
-    coords <- unclass(wk_handle(x, handler_factory(wk_vertex_filter(xy_writer(), add_details = TRUE))))
-    geom_id <- attr(coords, "wk_details")$ring_id
-    geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
-    new_geom <- geom_id != geom_id_lag
-    na_shift <- cumsum(new_geom) - 1L
-    coords_seq <- seq_along(geom_id)
-
-    coord_x <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
-    coord_y <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
-
-    coord_x[coords_seq + na_shift] <- coords$x
-    coord_y[coords_seq + na_shift] <- coords$y
-
-    graphics::polypath(coord_x, coord_y, ..., rule = rule)
-  } else {
-    stop("Collections and mixed types plotting is not implemented")
+    if (meta$geometry_type[i] %in% c(1, 4)) {
+      wk_plot_point_or_multipoint(xi, dotsi[-is_rule])
+    } else if (meta$geometry_type[i] %in% c(2, 5)) {
+      wk_plot_line_or_multiline(xi, dotsi[-is_rule])
+    } else if (meta$geometry_type[i] %in% c(3, 6)) {
+      wk_plot_poly_or_multi_poly(xi, dotsi)
+    } else {
+      do.call(wk_plot, c(list(wk_flatten(xi)), dotsi))
+    }
   }
 
   invisible(x)
+}
+
+wk_plot_point_or_multipoint <- function(x, dots) {
+  coords <- wk_coords(x)
+  do.call(graphics::points, c(coords[c("x", "y")], dots))
+}
+
+wk_plot_line_or_multiline <- function(x, dots) {
+  coords <- wk_coords(x)
+  geom_id <- coords$part_id
+  geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
+  new_geom <- geom_id != geom_id_lag
+  na_shift <- cumsum(new_geom) - 1L
+  coords_seq <- seq_along(geom_id)
+
+  coord_x <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+  coord_y <- rep(NA_real_, length(geom_id) + sum(new_geom) - 1L)
+
+  coord_x[coords_seq + na_shift] <- coords$x
+  coord_y[coords_seq + na_shift] <- coords$y
+
+  do.call(graphics::lines, c(list(coord_x, coord_y), dots))
+}
+
+wk_plot_poly_or_multi_poly <- function(x, dots) {
+  coords <- wk_coords(x)
+
+  # for polygons we can use the coord vectors directly
+  # because the graphics device expects open loops
+  geom_id <- coords$ring_id
+  n <- length(geom_id)
+  # leave the last loop closed the avoid a trailing NA (which results in error)
+  geom_id_lead <- c(geom_id[-1L], geom_id[n])
+  new_geom_next <- geom_id != geom_id_lead
+
+  coords$x[new_geom_next] <- NA_real_
+  coords$y[new_geom_next] <- NA_real_
+
+  do.call(graphics::polypath, c(coords[c("x", "y")], dots))
 }
 
 #' @rdname plot.wk_wkt

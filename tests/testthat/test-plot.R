@@ -1,4 +1,13 @@
 
+test_that("wk_plot works for vectors with known geometry", {
+  # sf vectors report geometry via vector meta
+  # so are needed to test this bit of code
+  skip_if_not_installed("sf")
+
+  nc <- sf::read_sf(system.file("shape/nc.shp", package = "sf"))
+  expect_identical(wk_plot(nc), nc)
+})
+
 test_that("plot methods work", {
   skip_if_not_installed("wkutils")
 
