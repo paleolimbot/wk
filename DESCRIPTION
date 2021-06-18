@@ -33,7 +33,6 @@ SystemRequirements: C++11
 Suggests: 
     testthat (>= 3.0.0),
     vctrs (>= 0.3.0),
-    wkutils,
     sf,
     tibble
 URL: https://paleolimbot.github.io/wk/, https://github.com/paleolimbot/wk

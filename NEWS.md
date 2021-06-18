@@ -9,8 +9,13 @@
   information. For advanced users, the `wk_vertex_filter()`
   can be used as part of a pipeline to export coordinates
   as point geometries to another handler (#69, #71).
+* Added `wk_flatten()` to extract geometries from collections.
+  For advanced users, the `wk_flatten_filter()` can be used as
+  part of a pipeline (#75, #78).
 * `options("max.print")` is now respected by all vector classes
   (#72, #74).
+* Moved implementation of plot methods from wkutils to wk to
+  simplify the dependency structure of both packages (#80, #76).
 
 # wk 0.4.1
 
