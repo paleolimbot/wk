@@ -20,7 +20,7 @@ int wk_identity_filter_vector_start(const wk_vector_meta_t* meta, void* handler_
 
 SEXP wk_identity_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   identity_filter_t* identity_filter = (identity_filter_t*) handler_data;
-  return identity_filter->next->vector_end(meta, identity_filter->next->handler_data);;
+  return identity_filter->next->vector_end(meta, identity_filter->next->handler_data);
 }
 
 int wk_identity_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
