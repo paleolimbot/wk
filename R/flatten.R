@@ -2,6 +2,7 @@
 #' Extract simple geometries
 #'
 #' @inheritParams wk_handle
+#' @param max_depth The maximum (outer) depth to remove.
 #' @param add_details Use `TRUE` to add a "wk_details" attribute, which
 #'   contains columns `feature_id`, `part_id`, and `ring_id`.
 #'

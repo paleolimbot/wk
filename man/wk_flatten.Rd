@@ -5,15 +5,17 @@
 \alias{wk_flatten_filter}
 \title{Extract simple geometries}
 \usage{
-wk_flatten(handleable, ...)
+wk_flatten(handleable, ..., max_depth = 1)
 
-wk_flatten_filter(handler, add_details = FALSE)
+wk_flatten_filter(handler, max_depth = 1L, add_details = FALSE)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{max_depth}{The maximum (outer) depth to remove.}
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
