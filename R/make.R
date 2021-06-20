@@ -17,8 +17,8 @@
 #'
 #' @examples
 #' wk_linestring(xy(c(1, 1), c(2, 3)))
-#' wk_polygon(xy(c(0, 1, 1), c(0, 0, 1)))
-#' wk_collection(xy(c(1, 1), c(2, 3)))
+#' # wk_polygon(xy(c(0, 1, 1), c(0, 0, 1)))
+#' # wk_collection(xy(c(1, 1), c(2, 3)))
 #'
 wk_linestring <- function(handleable, feature_id = 1L, ...) {
   writer <- wk_writer(handleable, generic = TRUE)

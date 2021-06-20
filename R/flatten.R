@@ -13,6 +13,10 @@
 #'
 #' @examples
 #' wk_flatten(wkt("MULTIPOINT (1 1, 2 2, 3 3)"))
+#' wk_flatten(
+#'   wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+#'   max_depth = 2
+#' )
 #'
 wk_flatten <- function(handleable, ..., max_depth = 1) {
   if (is.data.frame(handleable))  {

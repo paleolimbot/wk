@@ -32,5 +32,9 @@ Extract simple geometries
 }
 \examples{
 wk_flatten(wkt("MULTIPOINT (1 1, 2 2, 3 3)"))
+wk_flatten(
+  wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+  max_depth = 2
+)
 
 }
