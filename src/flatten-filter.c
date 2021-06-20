@@ -5,6 +5,9 @@
 
 typedef struct {
   wk_handler_t* next;
+  int recursion_depth;
+  int recursion_depth_out;
+  int recursion_depth_threshold;
   wk_vector_meta_t vector_meta;
   int feature_id;
   int feature_id_out;
@@ -25,6 +28,11 @@ typedef struct {
     (meta->geometry_type == WK_MULTIPOLYGON) || \
     (meta->geometry_type == WK_GEOMETRYCOLLECTION))
 
+static inline int wk_flatten_filter_keep(flatten_filter_t* flatten_filter, const wk_meta_t* meta) {
+  int is_collection = META_IS_COLLECTION(meta);
+  int recursion_level_above_threshold = flatten_filter->recursion_depth >= flatten_filter->recursion_depth_threshold;
+  return !is_collection || recursion_level_above_threshold;
+}
 
 static inline void wk_flatten_filter_init_details(flatten_filter_t* flatten_filter, R_xlen_t initial_size) {
   if (!flatten_filter->add_details) {
@@ -74,13 +82,14 @@ static inline void wk_flatten_filter_append_details(flatten_filter_t* flatten_fi
   }
 
   flatten_filter->details_ptr[0][flatten_filter->feature_id_out] = flatten_filter->feature_id + 1;
-  flatten_filter->feature_id_out++;
 }
 
 static inline void wk_flatten_filter_finalize_details(flatten_filter_t* flatten_filter) {
   if (flatten_filter->details == R_NilValue) {
     return;
   }
+
+  flatten_filter->feature_id_out++;
 
   if (flatten_filter->feature_id_out != flatten_filter->details_size) {
     for (int i = 0; i < 1; i++) {
@@ -103,21 +112,24 @@ void wk_flatten_filter_initialize(int* dirty, void* handler_data) {
 int wk_flatten_filter_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
 
-  flatten_filter->feature_id_out = 0;
+  flatten_filter->feature_id_out = -1;
+  flatten_filter->recursion_depth_out = 0;
 
   memcpy(&(flatten_filter->vector_meta), meta, sizeof(wk_vector_meta_t));
-  if (META_IS_COLLECTION(meta)) {
-    flatten_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
-  }
+  if (flatten_filter->recursion_depth_threshold > 0) {
+    if (META_IS_COLLECTION(meta)) {
+      flatten_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
+    }
 
-  if (meta->geometry_type == WK_MULTIPOINT) {
-    flatten_filter->vector_meta.geometry_type = WK_POINT;
-  } else if (meta->geometry_type == WK_MULTILINESTRING) {
-    flatten_filter->vector_meta.geometry_type = WK_LINESTRING;
-  } else if (meta->geometry_type == WK_MULTIPOLYGON) {
-    flatten_filter->vector_meta.geometry_type = WK_POLYGON;
-  } else if (meta->geometry_type == WK_GEOMETRYCOLLECTION) {
-    flatten_filter->vector_meta.geometry_type = WK_GEOMETRY;
+    if (meta->geometry_type == WK_MULTIPOINT) {
+      flatten_filter->vector_meta.geometry_type = WK_POINT;
+    } else if (meta->geometry_type == WK_MULTILINESTRING) {
+      flatten_filter->vector_meta.geometry_type = WK_LINESTRING;
+    } else if (meta->geometry_type == WK_MULTIPOLYGON) {
+      flatten_filter->vector_meta.geometry_type = WK_POLYGON;
+    } else if (meta->geometry_type == WK_GEOMETRYCOLLECTION) {
+      flatten_filter->vector_meta.geometry_type = WK_GEOMETRY;
+    }
   }
 
   wk_flatten_filter_init_details(flatten_filter, flatten_filter->vector_meta.size);
@@ -139,6 +151,7 @@ SEXP wk_flatten_filter_vector_end(const wk_vector_meta_t* meta, void* handler_da
 int wk_flatten_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   flatten_filter->feature_id++;
+  flatten_filter->recursion_depth = 0;
   return WK_CONTINUE;
 }
 
@@ -146,7 +159,9 @@ int wk_flatten_filter_feature_null(void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
   
+  flatten_filter->feature_id_out++;
   wk_flatten_filter_append_details(flatten_filter);
+
   HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
   HANDLE_OR_RETURN(flatten_filter->next->null_feature(flatten_filter->next->handler_data));
   HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
@@ -161,10 +176,23 @@ int wk_flatten_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id
 int wk_flatten_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
-  if (!META_IS_COLLECTION(meta)) {
-    wk_flatten_filter_append_details(flatten_filter);
-    HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
-    HANDLE_OR_RETURN(flatten_filter->next->geometry_start(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
+
+  int keep = wk_flatten_filter_keep(flatten_filter, meta);
+  flatten_filter->recursion_depth++;
+  flatten_filter->recursion_depth_out += keep;
+
+  if (keep) {
+    uint32_t part_id_out;
+    if (flatten_filter->recursion_depth_out > 1) {
+      part_id_out = part_id;
+    } else {
+      part_id_out = WK_PART_ID_NONE;
+      flatten_filter->feature_id_out++;
+      wk_flatten_filter_append_details(flatten_filter);
+      HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+    }
+    
+    HANDLE_OR_RETURN(flatten_filter->next->geometry_start(meta, part_id_out, flatten_filter->next->handler_data));
   }
 
   return WK_CONTINUE;
@@ -173,9 +201,18 @@ int wk_flatten_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, vo
 int wk_flatten_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
   flatten_filter_t* flatten_filter = (flatten_filter_t*) handler_data;
   int result;
-  if (!META_IS_COLLECTION(meta)) {
-    HANDLE_OR_RETURN(flatten_filter->next->geometry_end(meta, WK_PART_ID_NONE, flatten_filter->next->handler_data));
-    HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+
+  flatten_filter->recursion_depth--;
+  int keep = wk_flatten_filter_keep(flatten_filter, meta);
+  flatten_filter->recursion_depth_out -= keep;
+
+  if (keep) {
+    uint32_t part_id_out = flatten_filter->recursion_depth_out > 0 ? part_id : WK_PART_ID_NONE;
+    HANDLE_OR_RETURN(flatten_filter->next->geometry_end(meta, part_id_out, flatten_filter->next->handler_data));
+
+    if (flatten_filter->recursion_depth_out == 0) {
+      HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
+    }
   }
 
   return WK_CONTINUE;
@@ -219,7 +256,10 @@ void wk_flatten_filter_finalize(void* handler_data) {
   }
 }
 
-SEXP wk_c_flatten_filter_new(SEXP handler_xptr, SEXP add_details) {
+SEXP wk_c_flatten_filter_new(SEXP handler_xptr, SEXP max_depth, SEXP add_details) {
+  int max_depth_int = INTEGER(max_depth)[0];
+  int add_details_int = LOGICAL(add_details)[0];
+
   wk_handler_t* handler = wk_handler_create();
 
   handler->initialize = &wk_flatten_filter_initialize;
@@ -255,7 +295,10 @@ SEXP wk_c_flatten_filter_new(SEXP handler_xptr, SEXP add_details) {
   }
 
   WK_VECTOR_META_RESET(flatten_filter->vector_meta, WK_GEOMETRY);
-  flatten_filter->add_details = LOGICAL(add_details)[0];
+  flatten_filter->add_details = add_details_int;
+  flatten_filter->recursion_depth_threshold = max_depth_int;
+  flatten_filter->recursion_depth = 0;
+  flatten_filter->recursion_depth_out = 0;
   flatten_filter->details = R_NilValue;
   flatten_filter->details_size = 0;
   flatten_filter->feature_id = 0;
