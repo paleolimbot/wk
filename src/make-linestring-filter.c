@@ -115,7 +115,7 @@ SEXP wk_linestring_filter_vector_end(const wk_vector_meta_t* meta, void* handler
     wk_linestring_end(linestring_filter);
   }
   
-  return linestring_filter->next->vector_end(meta, linestring_filter->next->handler_data);
+  return linestring_filter->next->vector_end(&(linestring_filter->vector_meta), linestring_filter->next->handler_data);
 }
 
 int wk_linestring_filter_feature_null(void* handler_data) {
@@ -195,6 +195,8 @@ SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id) {
 
   linestring_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (linestring_filter->next->api_version != 1) {
+    wk_handler_destroy(handler); // # nocov
+    free(linestring_filter);
     Rf_error("Can't run a wk_handler with api_version '%d'", linestring_filter->next->api_version); // # nocov
   }
 
