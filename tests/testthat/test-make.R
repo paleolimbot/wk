@@ -45,3 +45,34 @@ test_that("wk_linestring() errors for inconsistent dimensions/srid", {
     "Can't create linestring"
   )
 })
+
+
+test_that("wk_collection() works", {
+  expect_identical(wk_collection(wkt()), wkt("GEOMETRYCOLLECTION EMPTY", crs = wk_crs_inherit()))
+  expect_identical(
+    wk_collection(wkt(NA_character_)),
+    wkt("GEOMETRYCOLLECTION EMPTY")
+  )
+  expect_identical(
+    wk_collection(wkt("POINT EMPTY")),
+    wkt("GEOMETRYCOLLECTION (POINT EMPTY)")
+  )
+  expect_identical(
+    wk_collection(xy(1:4, 1), feature_id = 1L),
+    as_wkb("GEOMETRYCOLLECTION (POINT (1 1), POINT (2 1), POINT (3 1), POINT (4 1))")
+  )
+  expect_identical(
+    wk_collection(xy(1:4, 1), feature_id = c(1L, 1L, 2L, 2L)),
+    as_wkb(
+      c("GEOMETRYCOLLECTION (POINT (1 1), POINT (2 1))",
+        "GEOMETRYCOLLECTION (POINT (3 1), POINT (4 1))")
+    )
+  )
+
+  expect_identical(
+    wk_collection(wkt("POLYGON ((0 0, 0 1, 1 0, 0 0))")),
+    wkt("GEOMETRYCOLLECTION (POLYGON ((0 0, 0 1, 1 0, 0 0)))")
+  )
+
+  expect_error(wk_collection(new_wk_wkt("POINT ENTPY")), "EMPTY")
+})
