@@ -41,6 +41,7 @@ extern SEXP wk_c_handler_void_new();
 extern SEXP wk_c_identity_filter_new(SEXP);
 extern SEXP wk_c_linestring_filter_new(SEXP, SEXP);
 extern SEXP wk_c_meta_handler_new();
+extern SEXP wk_c_polygon_filter_new(SEXP, SEXP, SEXP);
 extern SEXP wk_c_problems_handler_new();
 extern SEXP wk_c_read_crc(SEXP, SEXP, SEXP);
 extern SEXP wk_c_read_rct(SEXP, SEXP);
@@ -67,6 +68,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_identity_filter_new",     (DL_FUNC) &wk_c_identity_filter_new,     1},
     {"wk_c_linestring_filter_new",   (DL_FUNC) &wk_c_linestring_filter_new,   2},
     {"wk_c_meta_handler_new",        (DL_FUNC) &wk_c_meta_handler_new,        0},
+    {"wk_c_polygon_filter_new",      (DL_FUNC) &wk_c_polygon_filter_new,      3},
     {"wk_c_problems_handler_new",    (DL_FUNC) &wk_c_problems_handler_new,    0},
     {"wk_c_read_crc",                (DL_FUNC) &wk_c_read_crc,                3},
     {"wk_c_read_rct",                (DL_FUNC) &wk_c_read_rct,                2},

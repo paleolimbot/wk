@@ -58,7 +58,7 @@ Create lines, polygons, and collections
 }
 \examples{
 wk_linestring(xy(c(1, 1), c(2, 3)))
-# wk_polygon(xy(c(0, 1, 1), c(0, 0, 1)))
+wk_polygon(xy(c(0, 1, 1), c(0, 0, 1)))
 wk_collection(xy(c(1, 1), c(2, 3)))
 
 }

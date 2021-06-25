@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' wk_linestring(xy(c(1, 1), c(2, 3)))
-#' # wk_polygon(xy(c(0, 1, 1), c(0, 0, 1)))
+#' wk_polygon(xy(c(0, 1, 0), c(0, 0, 1)))
 #' wk_collection(xy(c(1, 1), c(2, 3)))
 #'
 wk_linestring <- function(handleable, feature_id = 1L, ...) {
@@ -60,7 +60,7 @@ wk_linestring_filter <- function(handler, feature_id = 1L) {
 #' @rdname wk_linestring
 #' @export
 wk_polygon_filter <- function(handler, feature_id = 1L, ring_id = 1L) {
-  # .Call(wk_c_polygon_filter_new, handler, feature_id)
+  .Call(wk_c_polygon_filter_new, handler, feature_id, ring_id)
 }
 
 #' @rdname wk_linestring
