@@ -101,7 +101,7 @@ wk_plot <- function(handleable, ...,
     } else if (meta$geometry_type[i] %in% c(3, 6)) {
       wk_plot_poly_or_multi_poly(xi, dotsi)
     } else {
-      do.call(wk_plot, c(list(wk_flatten(xi)), dotsi))
+      do.call(wk_plot, c(list(wk_flatten(xi, max_depth = .Machine$integer.max)), dotsi))
     }
   }
 

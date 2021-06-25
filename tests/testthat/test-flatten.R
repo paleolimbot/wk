@@ -5,7 +5,7 @@ test_that("wk_flatten() works", {
     wkt(c("POINT (0 0)", "POINT (1 1)", NA))
   )
   expect_identical(
-    wk_vertices(wkt(c("POINT (0 0)", "POINT (1 1)", NA))),
+    wk_flatten(wkt(c("POINT (0 0)", "POINT (1 1)", NA))),
     wkt(c("POINT (0 0)", "POINT (1 1)", NA))
   )
   expect_error(wk_flatten(new_wk_wkt("POINT ENTPY")), "ENTPY")
@@ -70,14 +70,41 @@ test_that("wk_flatten() communicates correct size and type", {
 
 test_that("wk_flatten() works for nested collections", {
   expect_identical(
-    wk_flatten(wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))")),
+    wk_flatten(
+      wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+      max_depth = 3
+    ),
     wkt("POINT (0 1)")
+  )
+
+  expect_identical(
+    wk_flatten(
+      wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+      max_depth = 2
+    ),
+    wkt("GEOMETRYCOLLECTION (POINT (0 1))")
+  )
+
+  expect_identical(
+    wk_flatten(
+      wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+      max_depth = 1
+    ),
+    wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1)))")
+  )
+
+  expect_identical(
+    wk_flatten(
+      wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))"),
+      max_depth = 0
+    ),
+    wkt("GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (GEOMETRYCOLLECTION (POINT (0 1))))")
   )
 
   expect_identical(
     wk_handle(
       wkt("GEOMETRYCOLLECTION(MULTIPOINT (30 10, 10 10), LINESTRING (0 0, 1 1), GEOMETRYCOLLECTION EMPTY)"),
-      wk_flatten_filter(wkt_writer(), add_details = TRUE)
+      wk_flatten_filter(wkt_writer(), max_depth = 2, add_details = TRUE)
     ),
     structure(
       c("POINT (30 10)", "POINT (10 10)", "LINESTRING (0 0, 1 1)"),
