@@ -46,6 +46,63 @@ test_that("wk_linestring() errors for inconsistent dimensions/srid", {
   )
 })
 
+test_that("wk_polygon() works", {
+  expect_identical(wk_polygon(xy(double(), double())), as_wkb("POLYGON EMPTY", crs = wk_crs_inherit()))
+  expect_identical(
+    wk_polygon(xy(c(0, 10, 0), c(0, 0, 10))),
+    as_wkb("POLYGON ((0 0, 10 0, 0 10, 0 0))")
+  )
+  expect_identical(
+    wk_polygon(xy(c(0, 10, 0, 0), c(0, 0, 10, 0))),
+    as_wkb("POLYGON ((0 0, 10 0, 0 10, 0 0))")
+  )
+
+  expect_identical(
+    wk_polygon(
+      xy(
+        c(20, 10, 10, 30, 45, 30, 20, 20),
+        c(35, 30, 10, 5, 20, 20, 15, 25)
+      ),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2)
+    ),
+    as_wkb("POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))")
+  )
+
+  expect_identical(
+    wk_polygon(
+      xy(
+        c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+        c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30)
+      ),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1)
+    ),
+    as_wkb(
+      c(
+        "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+        "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+      )
+    )
+  )
+
+  expect_identical(
+    wk_polygon(
+      xy(
+        c(20, 10, 10, 30, 45, 30, 20, 20, 40, 20, 45),
+        c(35, 30, 10, 5, 20, 20, 15, 25, 40, 45, 30)
+      ),
+      feature_id = c(rep(1, 8), rep(2, 3)),
+      # new ring should be detected on new feature_id
+      ring_id = c(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2)
+    ),
+    as_wkb(
+      c(
+        "POLYGON ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20))",
+        "POLYGON ((40 40, 20 45, 45 30, 40 40))"
+      )
+    )
+  )
+})
 
 test_that("wk_collection() works", {
   expect_identical(wk_collection(wkt()), wkt("GEOMETRYCOLLECTION EMPTY", crs = wk_crs_inherit()))

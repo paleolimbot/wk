@@ -94,9 +94,12 @@ int wk_polygon_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_
 
   polygon_filter->feature_id++;
   R_xlen_t spec_i = polygon_filter->feature_id % polygon_filter->n_feature_id_spec;
+
   int feature_id_spec = polygon_filter->feature_id_spec[spec_i];
   int feature_id_spec_changed = feature_id_spec != polygon_filter->last_feature_id_spec;
   polygon_filter->last_feature_id_spec = feature_id_spec;
+
+  spec_i = polygon_filter->feature_id % polygon_filter->n_ring_id_spec;
   int ring_id_spec = polygon_filter->ring_id_spec[spec_i];
   int ring_id_spec_changed = ring_id_spec != polygon_filter->last_ring_id_spec;
   polygon_filter->last_ring_id_spec = ring_id_spec;
