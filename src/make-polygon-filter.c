@@ -261,7 +261,7 @@ SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
   polygon_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (polygon_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
-    free(polygon_filter);
+    free(polygon_filter); // # nocov
     Rf_error("Can't run a wk_handler with api_version '%d'", polygon_filter->next->api_version); // # nocov
   }
 

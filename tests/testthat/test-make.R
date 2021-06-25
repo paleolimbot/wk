@@ -104,6 +104,31 @@ test_that("wk_polygon() works", {
   )
 })
 
+test_that("wk_polygon() can use a POLYGON input", {
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))")),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))")
+  )
+})
+
+test_that("wk_polygon passes on errors", {
+  expect_error(wk_polygon(new_wk_wkt("POLYGON ENTPY")), "ENTPY")
+})
+
+test_that("wk_polygon() treats NA as empty", {
+  expect_identical(
+    wk_polygon(wkt(c("POLYGON ((40 40, 20 45, 45 30, 40 40))", NA))),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))")
+  )
+})
+
+test_that("wk_polygon() requires consistent dimensions within a feature", {
+  expect_error(
+    wk_polygon(wkt(c("POINT (0 1)", "POINT Z (1 2 3)"))),
+    "Can't create polygon"
+  )
+})
+
 test_that("wk_collection() works", {
   expect_identical(wk_collection(wkt()), wkt("GEOMETRYCOLLECTION EMPTY", crs = wk_crs_inherit()))
   expect_identical(
