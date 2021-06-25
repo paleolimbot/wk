@@ -84,11 +84,7 @@ int wk_collection_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t fe
 
   collection_filter->is_new_feature = feature_id_spec_changed || (collection_filter->feature_id == 0);
 
-  if (feature_id_spec_changed && (collection_filter->feature_id != 0)) {
-    return wk_collection_end(collection_filter);
-  } else {
-      return WK_CONTINUE;
-  }
+  return WK_CONTINUE;
 }
 
 int wk_collection_filter_feature_null(void* handler_data) {
@@ -104,6 +100,10 @@ int wk_collection_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
   int result;
 
   if (collection_filter->is_new_feature) {
+    if (collection_filter->feature_id_out >= 0) {
+      HANDLE_OR_RETURN(wk_collection_end(collection_filter));
+    }
+
     collection_filter->meta.flags = meta->flags;
     collection_filter->meta.flags &= ~WK_FLAG_HAS_BOUNDS;
     collection_filter->meta.precision = meta->precision;

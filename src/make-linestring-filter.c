@@ -66,11 +66,7 @@ int wk_linestring_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t fe
 
   linestring_filter->is_new_feature = feature_id_spec_changed || (linestring_filter->feature_id == 0);
 
-  if (feature_id_spec_changed && (linestring_filter->feature_id != 0)) {
-    return wk_linestring_end(linestring_filter);
-  } else {
-    return WK_CONTINUE;
-  }
+  return WK_CONTINUE;
 }
 
 int wk_linestring_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
@@ -78,6 +74,10 @@ int wk_linestring_filter_coord(const wk_meta_t* meta, const double* coord, uint3
   int result;
 
   if (linestring_filter->is_new_feature) {
+    if (linestring_filter->feature_id_out >= 0) {
+      HANDLE_OR_RETURN(wk_linestring_end(linestring_filter));
+    }
+
     linestring_filter->meta.flags = meta->flags;
     linestring_filter->meta.flags &= ~WK_FLAG_HAS_BOUNDS;
     linestring_filter->meta.precision = meta->precision;
