@@ -216,8 +216,7 @@ SEXP wk_c_collection_filter_new(SEXP handler_xptr, SEXP geometry_type, SEXP feat
 
   handler->handler_data = collection_filter;
 
-  // include the external pointer as a tag for this external pointer
-  // which guarnatees that it will not be garbage collected until
-  // this object is garbage collected
-  return wk_handler_create_xptr(handler, handler_xptr, R_NilValue);
+  // We need both the external pointer SEXP and the feature_id SEXP
+  // to be valid for the lifetime of this object
+  return wk_handler_create_xptr(handler, handler_xptr, feature_id);
 }
