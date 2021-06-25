@@ -30,7 +30,15 @@ wk_linestring <- function(handleable, feature_id = 1L, ...) {
 #' @export
 wk_polygon <- function(handleable, feature_id = 1L, ring_id = 1L, ...) {
   writer <- wk_writer(handleable, generic = TRUE)
-  result <- wk_handle(handleable, wk_polygon_filter(writer, feature_id, ring_id), ...)
+  result <- wk_handle(
+    handleable,
+    wk_polygon_filter(
+      writer,
+      as.integer(feature_id),
+      as.integer(ring_id)
+    ),
+    ...
+  )
   wk_set_crs(result, wk_crs(handleable))
 }
 

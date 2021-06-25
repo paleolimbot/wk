@@ -22,6 +22,8 @@ typedef struct {
   R_xlen_t ring_id;
   uint32_t coord_id;
   double first_coord[4];
+  double last_coord[4];
+  int last_coord_size;
   wk_meta_t meta;
   wk_vector_meta_t vector_meta;
 } polygon_filter_t;
@@ -37,6 +39,9 @@ static inline int wk_polygon_start(polygon_filter_t* polygon_filter) {
 
 static inline int wk_ring_start(polygon_filter_t* polygon_filter) {
   int result;
+  // keep a copy of the first coordinate so that we can check for a closed loop
+  memcpy(polygon_filter->first_coord, polygon_filter->last_coord, 4 * sizeof(double));
+
   polygon_filter->ring_id++;
   HANDLE_OR_RETURN(polygon_filter->next->ring_start(&(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id, polygon_filter->next->handler_data));
   polygon_filter->coord_id = 0;
@@ -45,6 +50,15 @@ static inline int wk_ring_start(polygon_filter_t* polygon_filter) {
 
 static inline int wk_ring_end(polygon_filter_t* polygon_filter) {
   int result;
+  
+  // close the loop if necessary
+  for (int i = 0; i < polygon_filter->last_coord_size; i++) {
+      if (polygon_filter->last_coord[i] != polygon_filter->first_coord[i]) {
+        HANDLE_OR_RETURN(polygon_filter->next->coord(&(polygon_filter->meta), polygon_filter->first_coord, polygon_filter->coord_id, polygon_filter->next->handler_data));
+        break;
+      }
+  }
+
   HANDLE_OR_RETURN(polygon_filter->next->ring_end(&(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id, polygon_filter->next->handler_data));
   return WK_CONTINUE;
 }
@@ -97,9 +111,22 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
   int result;
 
+  // We always need to keep a copy of the last coordinate because we
+  // need to check for closed rings and the ring end method gets called
+  // at the *next* coordinate where there's a new feature.
+  polygon_filter->last_coord_size = 2 + 
+    ((meta->flags & WK_FLAG_HAS_Z) != 0) + 
+    ((meta->flags & WK_FLAG_HAS_M) != 0);
+  memset(polygon_filter->last_coord, 0, 4 * sizeof(double));
+  memcpy(polygon_filter->last_coord, coord, polygon_filter->last_coord_size * sizeof(double));
+
+  // maybe need to close the ring before starting a new feature/ring
+  if (polygon_filter->is_new_ring && polygon_filter->feature_id > 0) {
+    HANDLE_OR_RETURN(wk_ring_end(polygon_filter));
+  }
+
   if (polygon_filter->is_new_feature) {
     if (polygon_filter->feature_id > 0) {
-      HANDLE_OR_RETURN(wk_ring_end(polygon_filter));
       HANDLE_OR_RETURN(wk_polygon_end(polygon_filter));
     }
     
@@ -111,7 +138,7 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
     HANDLE_OR_RETURN(wk_polygon_start(polygon_filter));
     polygon_filter->is_new_feature = 0;
   } else {
-    // check dimensions againist current meta because handlers make the assumption
+    // check dimensions against current meta because handlers make the assumption
     // that all coordinates passed have the same dimension for a single geometry
     int diff_z = (polygon_filter->meta.flags & WK_FLAG_HAS_Z) ^ (meta->flags & WK_FLAG_HAS_Z);
     int diff_m = (polygon_filter->meta.flags & WK_FLAG_HAS_M) ^ (meta->flags & WK_FLAG_HAS_M);
@@ -122,9 +149,6 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   }
 
   if (polygon_filter->is_new_ring) {
-    if (polygon_filter->ring_id >= 0) {
-      HANDLE_OR_RETURN(wk_ring_end(polygon_filter));
-    }
     HANDLE_OR_RETURN(wk_ring_start(polygon_filter));
     polygon_filter->is_new_ring = 0;
   }
