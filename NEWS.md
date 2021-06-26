@@ -16,6 +16,11 @@
   (#72, #74).
 * Moved implementation of plot methods from wkutils to wk to
   simplify the dependency structure of both packages (#80, #76).
+* Added `wk_polygon()`, `wk_linestring()`, and `wk_collection()`
+  to construct polygons, lines, and collections. For advanced
+  users, `wk_polygon_filter()`, `wk_linestring_filter()`, and
+  `wk_collection_filter()` can be used as part of a pipeline
+  (#77, #84).
 
 # wk 0.4.1
 
