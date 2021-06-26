@@ -5,6 +5,9 @@
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
+    if (result == WK_ABORT_FEATURE) { \
+      Rf_error("wk_linestring_filter() does not support WK_ABORT_FEATURE"); \
+    } \
     if (result != WK_CONTINUE) return result
 
 typedef struct {
