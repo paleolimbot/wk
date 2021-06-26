@@ -147,7 +147,9 @@ int wk_linestring_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t
 
 int wk_linestring_filter_error(const char* message, void* handler_data) {
   linestring_filter_t* linestring_filter = (linestring_filter_t*) handler_data;
-  return linestring_filter->next->error(message, linestring_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(linestring_filter->next->error(message, linestring_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 void wk_linestring_filter_deinitialize(void* handler_data) {

@@ -131,27 +131,37 @@ int wk_collection_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, v
     part_id = collection_filter->part_id;
   }
 
-  return collection_filter->next->geometry_end(meta, part_id, collection_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(collection_filter->next->geometry_end(meta, part_id, collection_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 int wk_collection_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
-  return collection_filter->next->ring_start(meta, size, ring_id, collection_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(collection_filter->next->ring_start(meta, size, ring_id, collection_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 int wk_collection_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
-  return collection_filter->next->ring_end(meta, size, ring_id, collection_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(collection_filter->next->ring_end(meta, size, ring_id, collection_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 int wk_collection_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
-  return collection_filter->next->coord(meta, coord, coord_id, collection_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(collection_filter->next->coord(meta, coord, coord_id, collection_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 int wk_collection_filter_error(const char* message, void* handler_data) {
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
-  return collection_filter->next->error(message, collection_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(collection_filter->next->error(message, collection_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 void wk_collection_filter_deinitialize(void* handler_data) {
