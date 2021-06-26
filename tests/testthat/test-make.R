@@ -46,6 +46,13 @@ test_that("wk_linestring() errors for inconsistent dimensions/srid", {
   )
 })
 
+test_that("wk_linestring_filter() errors for handlers that return WK_ABORT_FEATURE", {
+  expect_error(
+    wk_handle(wkt("POINT (0 1)"), wk_linestring_filter(wk_meta_handler())),
+    "does not support WK_ABORT_FEATURE"
+  )
+})
+
 test_that("wk_polygon() works", {
   expect_identical(wk_polygon(xy(double(), double())), as_wkb("POLYGON EMPTY", crs = wk_crs_inherit()))
   expect_identical(
@@ -129,6 +136,13 @@ test_that("wk_polygon() requires consistent dimensions within a feature", {
   )
 })
 
+test_that("wk_polygon_filter() errors for handlers that return WK_ABORT_FEATURE", {
+  expect_error(
+    wk_handle(wkt("POINT (0 1)"), wk_polygon_filter(wk_meta_handler())),
+    "does not support WK_ABORT_FEATURE"
+  )
+})
+
 test_that("wk_collection() works", {
   expect_identical(wk_collection(wkt()), wkt("GEOMETRYCOLLECTION EMPTY", crs = wk_crs_inherit()))
   expect_identical(
@@ -157,4 +171,11 @@ test_that("wk_collection() works", {
   )
 
   expect_error(wk_collection(new_wk_wkt("POINT ENTPY")), "EMPTY")
+})
+
+test_that("wk_collection_filter() errors for handlers that return WK_ABORT_FEATURE", {
+  expect_error(
+    wk_handle(wkt("POINT (0 1)"), wk_collection_filter(wk_meta_handler())),
+    "does not support WK_ABORT_FEATURE"
+  )
 })

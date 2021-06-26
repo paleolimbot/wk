@@ -5,6 +5,9 @@
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
+    if (result == WK_ABORT_FEATURE) { \
+      Rf_error("wk_polygon_filter() does not support WK_ABORT_FEATURE"); \
+    } \
     if (result != WK_CONTINUE) return result
 
 typedef struct {
@@ -210,7 +213,9 @@ int wk_polygon_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ri
 
 int wk_polygon_filter_error(const char* message, void* handler_data) {
   polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
-  return polygon_filter->next->error(message, polygon_filter->next->handler_data);
+  int result;
+  HANDLE_OR_RETURN(polygon_filter->next->error(message, polygon_filter->next->handler_data));
+  return WK_CONTINUE;
 }
 
 void wk_polygon_filter_deinitialize(void* handler_data) {
