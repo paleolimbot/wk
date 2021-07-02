@@ -128,3 +128,59 @@ SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler)
   struct wk_handler_run_data run_data = { read_fun, read_data, handler };
   return R_ExecWithCleanup(&wk_handler_run_internal, &run_data, &wk_handler_run_cleanup, &run_data);
 }
+
+int wk_default_trans_trans(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data) {
+  xyzm_out[0] = xyzm_in[0];
+  xyzm_out[1] = xyzm_in[1];
+  xyzm_out[2] = xyzm_in[2];
+  xyzm_out[3] = xyzm_in[3];
+  return WK_CONTINUE;
+}
+
+void wk_default_trans_finalizer(void* trans_data) {
+
+}
+
+wk_trans_t* wk_trans_create() {
+  wk_trans_t* trans = (wk_trans_t*) malloc(sizeof(wk_trans_t));
+  if (trans == NULL) {
+    Rf_error("Failed to alloc wk_trans_t*"); // # nocov
+  }
+
+  trans->flags_from = 0;
+  trans->flags_to = 0;
+
+  trans->xyzm_out_min[0] = R_NegInf;
+  trans->xyzm_out_min[1] = R_NegInf;
+  trans->xyzm_out_min[2] = R_NegInf;
+  trans->xyzm_out_min[3] = R_NegInf;
+
+  trans->xyzm_out_max[0] = R_PosInf;
+  trans->xyzm_out_max[1] = R_PosInf;
+  trans->xyzm_out_max[2] = R_PosInf;
+  trans->xyzm_out_max[3] = R_PosInf;
+
+  trans->trans_bbox = NULL;
+  trans->trans = &wk_default_trans_trans;
+  trans->trans_data = NULL;
+
+  return trans;
+}
+
+void wk_trans_destroy(wk_trans_t* trans) {
+  if (trans != NULL) {
+    trans->finalizer(trans->trans_data);
+    free(trans);
+  }
+}
+
+void wk_trans_destroy_xptr(SEXP trans_xptr) {
+  wk_trans_destroy((wk_trans_t*) R_ExternalPtrAddr(trans_xptr));
+}
+
+SEXP wk_trans_create_xptr(wk_trans_t* trans, SEXP tag, SEXP prot) {
+  SEXP trans_xptr = PROTECT(R_MakeExternalPtr(trans, tag, prot));
+  R_RegisterCFinalizer(trans_xptr, &wk_trans_destroy_xptr);
+  UNPROTECT(1);
+  return trans_xptr;
+}
