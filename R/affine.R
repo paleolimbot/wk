@@ -5,6 +5,7 @@
 #' @param x A [wk_trans_affine()]
 #' @param dx,dy Coordinate offsets in the x and y direction
 #' @param rct_in,rct_out The input and output bounds
+#' @param rotation_deg A rotation to apply in degrees counterclockwise.
 #'
 #' @export
 #'
@@ -26,8 +27,8 @@ wk_affine_identity <- function() {
 #' @rdname wk_trans_affine
 #' @export
 wk_affine_rotate <- function(rotation_deg) {
-  theta <- rotation_deg * pi / 180
-  matrix(
+  theta <- -rotation_deg * pi / 180
+  trans_matrix <- matrix(
     c(
       cos(theta), +sin(theta), 0,
       -sin(theta), cos(theta), 0,
@@ -36,6 +37,8 @@ wk_affine_rotate <- function(rotation_deg) {
     nrow = 3,
     byrow = TRUE
   )
+
+  wk_trans_affine(trans_matrix)
 }
 
 #' @rdname wk_trans_affine
@@ -53,7 +56,11 @@ wk_affine_rescale <- function(rct_in, rct_out) {
 #' @rdname wk_trans_affine
 #' @export
 wk_affine_compose <- function(...) {
-  trans_matrix <- Reduce(`%*%`, lapply(list(...), as.matrix))
+  trans_matrix <- Reduce(
+    `%*%`,
+    lapply(rev(list(...)), as.matrix),
+    init = as.matrix(wk_affine_identity())
+  )
   wk_trans_affine(trans_matrix)
 }
 
