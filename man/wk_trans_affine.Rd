@@ -6,6 +6,7 @@
 \alias{wk_affine_rotate}
 \alias{wk_affine_scale}
 \alias{wk_affine_translate}
+\alias{wk_affine_fit}
 \alias{wk_affine_rescale}
 \alias{wk_affine_compose}
 \alias{wk_affine_invert}
@@ -21,6 +22,8 @@ wk_affine_scale(scale_x = 1, scale_y = 1)
 
 wk_affine_translate(dx = 0, dy = 0)
 
+wk_affine_fit(src, dst)
+
 wk_affine_rescale(rct_in, rct_out)
 
 wk_affine_compose(...)
@@ -35,6 +38,9 @@ wk_affine_invert(x)
 \item{scale_x, scale_y}{Scale factor to apply in the x and y directions, respectively}
 
 \item{dx, dy}{Coordinate offsets in the x and y direction}
+
+\item{src, dst}{Point vectors of control points used to estimate the affine mapping
+(using \code{\link[base:qr]{base::qr.solve()}}).}
 
 \item{rct_in, rct_out}{The input and output bounds}
 

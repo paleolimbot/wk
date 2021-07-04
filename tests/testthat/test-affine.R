@@ -32,6 +32,21 @@ test_that("wk_affine_scale() works", {
   )
 })
 
+test_that("wk_affine_fit() works", {
+  src <- xy(c(0, 1, 0), c(0, 0, 1))
+  dst <- xy(c(0, 2, 0), c(0, 0, 3))
+
+  expect_equal(
+    as.matrix(wk_affine_fit(src, dst)),
+    as.matrix(wk_affine_scale(2, 3))
+  )
+
+  expect_equal(
+    wk_transform(src, wk_affine_fit(src, dst)),
+    dst
+  )
+})
+
 test_that("wk_affine_compose() works", {
   expect_identical(
     as.matrix(wk_affine_compose()),
