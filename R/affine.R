@@ -7,6 +7,7 @@
 #' @param scale_x,scale_y Scale factor to apply in the x and y directions, respectively
 #' @param rct_in,rct_out The input and output bounds
 #' @param rotation_deg A rotation to apply in degrees counterclockwise.
+#' @param ... Zero or more transforms in the order they should be applied.
 #'
 #' @export
 #'

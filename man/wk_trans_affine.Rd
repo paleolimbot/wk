@@ -38,6 +38,8 @@ wk_affine_invert(x)
 
 \item{rct_in, rct_out}{The input and output bounds}
 
+\item{...}{Zero or more transforms in the order they should be applied.}
+
 \item{x}{A \code{\link[=wk_trans_affine]{wk_trans_affine()}}}
 }
 \description{
