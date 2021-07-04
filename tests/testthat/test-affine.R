@@ -24,6 +24,14 @@ test_that("wk_affine_rotate() works", {
   )
 })
 
+test_that("wk_affine_scale() works", {
+  coords <- matrix(c(0, 0, 1, 1, 2, 2, 3, 3), nrow = 2)
+  expect_equal(
+    as.matrix(wk_affine_scale(2, 3)) %*% rbind(coords, 1),
+    rbind(matrix(c(0, 0, 2, 3, 4, 6, 6, 9), nrow = 2), 1)
+  )
+})
+
 test_that("wk_affine_compose() works", {
   expect_identical(
     as.matrix(wk_affine_compose()),

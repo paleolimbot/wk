@@ -4,6 +4,7 @@
 \alias{wk_trans_affine}
 \alias{wk_affine_identity}
 \alias{wk_affine_rotate}
+\alias{wk_affine_scale}
 \alias{wk_affine_translate}
 \alias{wk_affine_rescale}
 \alias{wk_affine_compose}
@@ -16,6 +17,8 @@ wk_affine_identity()
 
 wk_affine_rotate(rotation_deg)
 
+wk_affine_scale(scale_x = 1, scale_y = 1)
+
 wk_affine_translate(dx = 0, dy = 0)
 
 wk_affine_rescale(rct_in, rct_out)
@@ -26,6 +29,10 @@ wk_affine_invert(x)
 }
 \arguments{
 \item{trans_matrix}{A 3x3 transformation matrix}
+
+\item{rotation_deg}{A rotation to apply in degrees counterclockwise.}
+
+\item{scale_x, scale_y}{Scale factor to apply in the x and y directions, respectively}
 
 \item{dx, dy}{Coordinate offsets in the x and y direction}
 

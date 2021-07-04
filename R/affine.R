@@ -4,6 +4,7 @@
 #' @param trans_matrix A 3x3 transformation matrix
 #' @param x A [wk_trans_affine()]
 #' @param dx,dy Coordinate offsets in the x and y direction
+#' @param scale_x,scale_y Scale factor to apply in the x and y directions, respectively
 #' @param rct_in,rct_out The input and output bounds
 #' @param rotation_deg A rotation to apply in degrees counterclockwise.
 #'
@@ -43,6 +44,12 @@ wk_affine_rotate <- function(rotation_deg) {
 
 #' @rdname wk_trans_affine
 #' @export
+wk_affine_scale <- function(scale_x = 1, scale_y = 1) {
+  wk_trans_affine(matrix(c(scale_x, 0, 0, 0, scale_y, 0, 0, 0, 1), ncol = 3))
+}
+
+#' @rdname wk_trans_affine
+#' @export
 wk_affine_translate <- function(dx = 0, dy = 0) {
   wk_trans_affine(matrix(c(1, 0, 0, 0, 1, 0, dx, dy, 1), ncol = 3))
 }
@@ -50,7 +57,22 @@ wk_affine_translate <- function(dx = 0, dy = 0) {
 #' @rdname wk_trans_affine
 #' @export
 wk_affine_rescale <- function(rct_in, rct_out) {
+  # use bbox to sanitize input as rct of length 1
+  rct_in <- unclass(wk_bbox(rct_in))
+  rct_out <- unclass(wk_bbox(rct_out))
 
+  width_in <- rct_in$xmax - rct_in$xmin
+  height_in <- rct_in$ymax - rct_in$ymin
+  width_out <- rct_out$xmax - rct_out$xmin
+  height_out <- rct_out$ymax - rct_out$ymin
+
+  dx <- rct_out$xmin - rct_in$xmin
+  dy <- rct_out$ymin - rct_in$ymin
+
+  wk_affine_compose(
+    wk_affine_translate(dx, dy),
+    wk_affine_scale(width_out / width_in, height_out / height_in)
+  )
 }
 
 #' @rdname wk_trans_affine
