@@ -10,7 +10,7 @@
 #' @export
 #'
 wk_trans_affine <- function(trans_matrix) {
-  structure(list(as.matrix(trans_matrix)), class = "wk_trans_affine")
+  new_wk_trans(.Call(wk_c_trans_affine_new, trans_matrix), "wk_trans_affine")
 }
 
 #' @export
@@ -66,7 +66,7 @@ wk_affine_invert <- function(x) {
 
 #' @export
 as.matrix.wk_trans_affine <- function(x, ...) {
-  x[[1]]
+  .Call(wk_c_trans_affine_as_matrix, x)
 }
 
 #' @export

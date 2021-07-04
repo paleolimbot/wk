@@ -16,7 +16,7 @@ wk_affine_identity()
 
 wk_affine_rotate(rotation_deg)
 
-wk_affine_translate(dx, dy)
+wk_affine_translate(dx = 0, dy = 0)
 
 wk_affine_rescale(rct_in, rct_out)
 

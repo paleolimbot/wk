@@ -4,6 +4,10 @@ test_that("wk_trans_affine() works", {
   expect_output(print(wk_affine_identity()), "wk_trans_affine")
 })
 
+test_that("wk_trans_affine() errors for invalid matrix", {
+  expect_error(wk_trans_affine(5), "must be a 3x3 matrix")
+})
+
 test_that("wk_affine_compose() works", {
   comp <- wk_affine_compose(
     wk_affine_translate(1, 2),

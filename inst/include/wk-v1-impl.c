@@ -141,14 +141,18 @@ void wk_default_trans_finalizer(void* trans_data) {
 
 }
 
+void wk_default_trans_vector(void* trans_data) {
+
+}
+
 wk_trans_t* wk_trans_create() {
   wk_trans_t* trans = (wk_trans_t*) malloc(sizeof(wk_trans_t));
   if (trans == NULL) {
     Rf_error("Failed to alloc wk_trans_t*"); // # nocov
   }
 
-  trans->flags_from = 0;
-  trans->flags_to = 0;
+  trans->flags_from = WK_FLAG_DIMS_UNKNOWN;
+  trans->flags_to = WK_FLAG_DIMS_UNKNOWN;
 
   trans->xyzm_out_min[0] = R_NegInf;
   trans->xyzm_out_min[1] = R_NegInf;
@@ -160,8 +164,9 @@ wk_trans_t* wk_trans_create() {
   trans->xyzm_out_max[2] = R_PosInf;
   trans->xyzm_out_max[3] = R_PosInf;
 
-  trans->trans_bbox = NULL;
   trans->trans = &wk_default_trans_trans;
+  trans->vector_start = &wk_default_trans_vector;
+  trans->vector_end = &wk_default_trans_vector;
   trans->trans_data = NULL;
 
   return trans;
