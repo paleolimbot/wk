@@ -5,7 +5,6 @@
 #' @param x A [wk_trans_affine()]
 #' @param dx,dy Coordinate offsets in the x and y direction
 #' @param rct_in,rct_out The input and output bounds
-#' @param
 #'
 #' @export
 #'
