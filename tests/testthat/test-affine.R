@@ -116,6 +116,11 @@ test_that("wk_affine_inverse() works", {
       )
     )
   )
+
+  expect_equal(
+    as.matrix(wk_affine_invert(wk_affine_translate(1, 2))),
+    as.matrix(wk_trans_inverse(wk_affine_translate(1, 2)))
+  )
 })
 
 test_that("wk_transform() works with an affine transformer", {
