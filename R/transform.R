@@ -33,6 +33,7 @@ wk_transform_filter <- function(handler, trans) {
 #' @param trans_ptr An external pointer to a wk_trans_t transform
 #'   struct.
 #' @param subclass An optional subclass to apply to the pointer
+#' @param x An object to be converted to a transform.
 #' @inheritParams wk_transform
 #'
 #' @export
@@ -41,19 +42,19 @@ wk_trans_inverse <- function(trans, ...) {
   UseMethod("wk_trans_inverse")
 }
 
-#' @rdname wk_transform
+#' @rdname wk_trans_inverse
 #' @export
 as_wk_trans <- function(x, ...) {
   UseMethod("as_wk_trans")
 }
 
-#' @rdname wk_transform
+#' @rdname wk_trans_inverse
 #' @export
 as_wk_trans.wk_trans <- function(x, ...) {
   x
 }
 
-#' @rdname wk_transform
+#' @rdname wk_trans_inverse
 #' @export
 new_wk_trans <- function(trans_ptr, subclass = character()) {
   stopifnot(typeof(trans_ptr) == "externalptr")

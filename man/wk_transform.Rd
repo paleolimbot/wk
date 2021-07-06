@@ -3,20 +3,11 @@
 \name{wk_transform}
 \alias{wk_transform}
 \alias{wk_transform_filter}
-\alias{as_wk_trans}
-\alias{as_wk_trans.wk_trans}
-\alias{new_wk_trans}
 \title{Apply coordinate transformations}
 \usage{
 wk_transform(handleable, trans, ...)
 
 wk_transform_filter(handler, trans)
-
-as_wk_trans(x, ...)
-
-\method{as_wk_trans}{wk_trans}(x, ...)
-
-new_wk_trans(trans_ptr, subclass = character())
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
@@ -27,8 +18,6 @@ new_wk_trans(trans_ptr, subclass = character())
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
-
-\item{subclass}{The handler subclass}
 }
 \description{
 Apply coordinate transformations

@@ -2,14 +2,25 @@
 % Please edit documentation in R/transform.R
 \name{wk_trans_inverse}
 \alias{wk_trans_inverse}
+\alias{as_wk_trans}
+\alias{as_wk_trans.wk_trans}
+\alias{new_wk_trans}
 \title{Generic transform class}
 \usage{
 wk_trans_inverse(trans, ...)
+
+as_wk_trans(x, ...)
+
+\method{as_wk_trans}{wk_trans}(x, ...)
+
+new_wk_trans(trans_ptr, subclass = character())
 }
 \arguments{
 \item{trans}{An external pointer to a wk_trans object}
 
 \item{...}{Passed to S3 methods}
+
+\item{x}{An object to be converted to a transform.}
 
 \item{trans_ptr}{An external pointer to a wk_trans_t transform
 struct.}
