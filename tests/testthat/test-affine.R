@@ -2,6 +2,7 @@
 test_that("wk_trans_affine() works", {
   expect_s3_class(wk_affine_identity(), "wk_trans_affine")
   expect_output(print(wk_affine_identity()), "wk_trans_affine")
+  expect_equal(format(as.matrix(wk_affine_identity())), format(wk_affine_identity()))
 })
 
 test_that("wk_trans_affine() errors for invalid matrix", {
@@ -29,6 +30,14 @@ test_that("wk_affine_scale() works", {
   expect_equal(
     as.matrix(wk_affine_scale(2, 3)) %*% rbind(coords, 1),
     rbind(matrix(c(0, 0, 2, 3, 4, 6, 6, 9), nrow = 2), 1)
+  )
+})
+
+test_that("wk_affine_rescale() works", {
+  coords <- matrix(c(0, 0, 1, 1, 2, 2, 3, 3), nrow = 2)
+  expect_equal(
+    as.matrix(wk_affine_rescale(rct(1, 1, 2, 2), rct(0, 0, 1, 1))) %*% rbind(coords, 1),
+    rbind(matrix(c(-1, -1, 0, 0, 1, 1, 2, 2), nrow = 2), 1)
   )
 })
 
