@@ -151,7 +151,8 @@ wk_trans_t* wk_trans_create() {
     Rf_error("Failed to alloc wk_trans_t*"); // # nocov
   }
 
-  trans->flags_out = WK_FLAG_DIMS_UNKNOWN;
+  trans->use_z = NA_INTEGER;
+  trans->use_m = NA_INTEGER;
 
   trans->xyzm_out_min[0] = R_NegInf;
   trans->xyzm_out_min[1] = R_NegInf;
