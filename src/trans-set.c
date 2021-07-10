@@ -32,7 +32,7 @@ void wk_trans_set_finalize(void* trans_data) {
 
 SEXP wk_c_trans_set_new(SEXP xy, SEXP use_z, SEXP use_m) {
     if (Rf_xlength(xy) != 4 || TYPEOF(xy) != VECSXP) {
-        Rf_error("`xy` must be an xyzm() object");
+        Rf_error("`xy` must be an xyzm() object"); // # nocov
     }
 
     // prepare data for C struct / validate args

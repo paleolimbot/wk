@@ -23,6 +23,19 @@ test_that("wk_trans_set() is vectorized", {
   )
 })
 
+test_that("wk_trans_set() can set ZM values at the same time", {
+  expect_identical(
+    wk_handle(
+      wkt("POINT (0 0)"),
+      wk_transform_filter(
+        wkt_writer(),
+        wk_trans_set(xyzm(NA, NA, 1, 2), use_z = TRUE, use_m = TRUE)
+      )
+    ),
+    wkt("POINT ZM (0 0 1 2)")
+  )
+})
+
 test_that("wk_trans_set() can set XY values", {
   expect_identical(
     wk_handle(
