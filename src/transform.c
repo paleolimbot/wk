@@ -135,13 +135,13 @@ int wk_trans_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t c
     trans_filter->xyzm_in[3] = coord[3];
   } else if (meta->flags & WK_FLAG_HAS_Z) {
     trans_filter->xyzm_in[2] = coord[2];
-    trans_filter->xyzm_in[3] = NA_REAL;
+    trans_filter->xyzm_in[3] = R_NaN;
   } else if (new_meta->flags & WK_FLAG_HAS_M) {
-    trans_filter->xyzm_in[2] = NA_REAL;
+    trans_filter->xyzm_in[2] = R_NaN;
     trans_filter->xyzm_in[3] = coord[2];
   } else {
-    trans_filter->xyzm_in[2] = NA_REAL;
-    trans_filter->xyzm_in[3] = NA_REAL;
+    trans_filter->xyzm_in[2] = R_NaN;
+    trans_filter->xyzm_in[3] = R_NaN;
   }
 
   int result = trans_filter->trans->trans(
