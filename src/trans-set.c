@@ -51,6 +51,7 @@ SEXP wk_c_trans_set_new(SEXP xy, SEXP use_z, SEXP use_m) {
 
     wk_trans_set_t* data = (wk_trans_set_t*) malloc(sizeof(wk_trans_set_t));
     if (data == NULL) {
+        free(trans); // # nocov
         Rf_error("Failed to alloc wk_trans_set_t"); // # nocov
     }
     

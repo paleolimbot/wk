@@ -31,16 +31,25 @@ int wk_trans_filter_vector_start(const wk_vector_meta_t* meta, void* handler_dat
   trans_filter->vector_meta.flags &= ~WK_FLAG_HAS_BOUNDS;
 
   // set the output dimensions NA_INTEGER means "leave alone"
+  int dims_maybe_unknown = 0;
   if (trans_filter->trans->use_z == 1) {
-    trans_filter->vector_meta.flags &= WK_FLAG_HAS_Z;
+    trans_filter->vector_meta.flags |= WK_FLAG_HAS_Z;
   } else if (trans_filter->trans->use_z == 0) {
     trans_filter->vector_meta.flags &= ~WK_FLAG_HAS_Z;
+  } else {
+    dims_maybe_unknown = 1;
   }
 
   if (trans_filter->trans->use_m == 1) {
-    trans_filter->vector_meta.flags &= WK_FLAG_HAS_M;
+    trans_filter->vector_meta.flags |= WK_FLAG_HAS_M;
   } else if (trans_filter->trans->use_m == 0) {
     trans_filter->vector_meta.flags &= ~WK_FLAG_HAS_M;
+  } else {
+    dims_maybe_unknown = 1;
+  }
+
+  if (!dims_maybe_unknown) {
+    trans_filter->vector_meta.flags &= ~WK_FLAG_DIMS_UNKNOWN;
   }
 
   trans_filter->feature_id = -1;
@@ -82,17 +91,17 @@ int wk_trans_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void
   memcpy(new_meta, meta, sizeof(wk_meta_t));
   new_meta->flags &= ~WK_FLAG_HAS_BOUNDS;
   if (trans_filter->trans->use_z == 1) {
-    new_meta->flags &= WK_FLAG_HAS_Z;
+    new_meta->flags |= WK_FLAG_HAS_Z;
   } else if (trans_filter->trans->use_z == 0) {
     new_meta->flags &= ~WK_FLAG_HAS_Z;
   }
 
   if (trans_filter->trans->use_m == 1) {
-    new_meta->flags &= WK_FLAG_HAS_M;
+    new_meta->flags |= WK_FLAG_HAS_M;
   } else if (trans_filter->trans->use_m == 0) {
     new_meta->flags &= ~WK_FLAG_HAS_M;
   }
-  
+
   return trans_filter->next->geometry_start(new_meta, part_id, trans_filter->next->handler_data);
 }
 

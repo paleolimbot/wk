@@ -705,18 +705,20 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_
   WKHandlerXPtr cppHandler(xptr);
   WKTStreamingHandler streamer(cppHandler);
 
-  cppHandler.vector_start(&globalMeta);
+  int result = cppHandler.vector_start(&globalMeta);
 
-  for (R_xlen_t i = 0; i < n_features; i++) {
-    if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
+  if (result != WK_ABORT) {
+    for (R_xlen_t i = 0; i < n_features; i++) {
+      if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
 
-    try {
-      if (streamer.readFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
-        break;
-      }
-    } catch (WKParseException& e) {
-      if (cppHandler.error(e.what()) == WK_ABORT) {
-        break;
+      try {
+        if (streamer.readFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
+          break;
+        }
+      } catch (WKParseException& e) {
+        if (cppHandler.error(e.what()) == WK_ABORT) {
+          break;
+        }
       }
     }
   }

@@ -31,6 +31,7 @@ SEXP wk_c_trans_affine_new(SEXP trans_matrix) {
     double* trans_matrix_ptr = REAL(trans_matrix);
     double* t = (double*) malloc(6 * sizeof(double));
     if (t == NULL) {
+        free(trans); // # nocov
         Rf_error("Failed to alloc double[6]"); // # nocov
     }
     t[0] = trans_matrix_ptr[0];
