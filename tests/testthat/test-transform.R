@@ -28,3 +28,21 @@ test_that("wk_transform() works", {
   # check error propagation
   expect_error(wk_transform(new_wk_wkt("POINT ENTPY"), wk_affine_identity()), "ENTPY")
 })
+
+test_that("wk_transform_filter() errors when the recursion limit is too high", {
+  make_really_recursive_geom <- function(n) {
+    wkt(paste0(
+      c(rep("GEOMETRYCOLLECTION (", n), "POINT (0 1)", rep(")", n)),
+      collapse = ""
+    ))
+  }
+
+  # errors in geometry_start
+  expect_error(
+    wk_handle(
+      make_really_recursive_geom(32),
+      wk_transform_filter(wk_void_handler(), wk_affine_identity())
+    ),
+    "Too many recursive levels"
+  )
+})

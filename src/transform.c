@@ -4,10 +4,12 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
+#define MAX_LEVELS 32
+
 typedef struct {
   wk_handler_t* next;
   wk_trans_t* trans;
-  wk_meta_t meta[32];
+  wk_meta_t meta[MAX_LEVELS];
   wk_vector_meta_t vector_meta;
   int recursive_level;
   R_xlen_t feature_id;
@@ -86,6 +88,9 @@ int wk_trans_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void
   trans_filter_t* trans_filter = (trans_filter_t*) handler_data;
 
   trans_filter->recursive_level++;
+  if (trans_filter->recursive_level >= MAX_LEVELS) {
+    Rf_error("Too many recursive levels for wk_transform_filter()");
+  }
 
   wk_meta_t* new_meta = trans_filter->meta + trans_filter->recursive_level;
   memcpy(new_meta, meta, sizeof(wk_meta_t));
