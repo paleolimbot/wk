@@ -21,6 +21,7 @@ typedef struct {
 void wk_trans_filter_initialize(int* dirty, void* handler_data) {
   trans_filter_t* trans_filter = (trans_filter_t*) handler_data;
   *dirty = 1;
+  trans_filter->trans->initialize(trans_filter->trans->trans_data);
   trans_filter->next->initialize(&trans_filter->next->dirty, trans_filter->next->handler_data);
 }
 
@@ -181,6 +182,7 @@ int wk_trans_filter_error(const char* message, void* handler_data) {
 
 void wk_trans_filter_deinitialize(void* handler_data) {
   trans_filter_t* trans_filter = (trans_filter_t*) handler_data;
+  trans_filter->trans->deinitialize(trans_filter->trans->trans_data);
   trans_filter->next->deinitialize(trans_filter->next->handler_data);
 }
 
