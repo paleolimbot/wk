@@ -450,12 +450,15 @@ typedef struct {
   double dy;
 } bump_trans_t;
 
-
 int bump_trans_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
   bump_trans_t* data = (bump_trans_t*) trans_data;
   xyzm_out[0] = xyzm_in[0] + data->dx;
   xyzm_out[1] = xyzm_in[1] + data->dy;
   return WK_CONTINUE;
+}
+
+void bump_trans_finalizer(void* trans_data) {
+  free(trans_data);
 }
 
 SEXP bump_trans_new(SEXP xy) {
@@ -464,8 +467,14 @@ SEXP bump_trans_new(SEXP xy) {
   
   wk_trans_t* trans = wk_trans_create();
   trans->trans = &bump_trans_trans;
+  trans->finalizer = &bump_trans_finalizer;
   
   bump_trans_t* data = (bump_trans_t*) malloc(sizeof(bump_trans_t));
+  if (data == NULL) {
+    free(trans);
+    Rf_error("Failed to alloc bump_trans_t*");
+  }
+  
   data->dx = dx;
   data->dy = dy;
   trans->trans_data = data;

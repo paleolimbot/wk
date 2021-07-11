@@ -168,6 +168,7 @@ wk_trans_t* wk_trans_create() {
   trans->trans = &wk_default_trans_trans;
   trans->vector_start = &wk_default_trans_vector;
   trans->vector_end = &wk_default_trans_vector;
+  trans->finalizer = &wk_default_trans_finalizer;
   trans->trans_data = NULL;
 
   return trans;
