@@ -743,7 +743,6 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     }
 
     // attr(sfc, "precision")
-    // this should really be parrt of wk_meta_t!
     SEXP precision;
     if (writer->precision == R_PosInf) {
         precision = PROTECT(Rf_ScalarReal(0.0));
