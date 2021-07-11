@@ -34,6 +34,7 @@ jobs:
         run: brew install udunits
       - name: Install dependencies
         run: |
+          options(pkgType = "binary")
           remotes::install_deps(dependencies = TRUE)
           install.packages(c("pkgdown", "decor", "bench"), type = "binary")
         shell: Rscript {0}
