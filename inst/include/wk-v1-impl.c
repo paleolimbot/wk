@@ -151,6 +151,7 @@ wk_trans_t* wk_trans_create() {
     Rf_error("Failed to alloc wk_trans_t*"); // # nocov
   }
 
+  trans->api_version = 1001;
   trans->use_z = NA_INTEGER;
   trans->use_m = NA_INTEGER;
 

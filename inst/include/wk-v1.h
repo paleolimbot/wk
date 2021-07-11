@@ -82,6 +82,7 @@ typedef struct {
 } wk_handler_t;
 
 typedef struct {
+    int api_version;
     void* trans_data;
     int use_z;
     int use_m;
