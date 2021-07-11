@@ -37,7 +37,7 @@ You can install the development version from
 remotes::install_github("paleolimbot/wk")
 ```
 
-If you can load the package, you’re good to go\!
+If you can load the package, you’re good to go!
 
 ``` r
 library(wk)
@@ -97,12 +97,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x7ffeeb9f3768> => WK_CONTINUE
-#>   feature_start (1): <0x7ffeeb9f3768>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x7ffeeb9f35e8> => WK_CONTINUE
-#>       coord (1): <0x7ffeeb9f35e8> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffeeb9f35e8> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffeeb9f3768>
+#> vector_start: <Unknown type / 0>[1] <0x7ffee3f8f590> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee3f8f590>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x7ffee3f8f418> => WK_CONTINUE
+#>       coord (1): <0x7ffee3f8f418> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee3f8f418> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee3f8f590>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -119,12 +119,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: LINESTRING B[1] <0x7ffeeb9f6368> => WK_CONTINUE
-#>   feature_start (1): <0x7ffeeb9f6368>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x7ffeeb9f62d0> => WK_CONTINUE
-#>       coord (1): <0x7ffeeb9f62d0> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffeeb9f62d0> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffeeb9f6368>
+#> vector_start: LINESTRING B[1] <0x7ffee3f92188> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee3f92188>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x7ffee3f920f0> => WK_CONTINUE
+#>       coord (1): <0x7ffee3f920f0> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee3f920f0> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee3f92188>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
