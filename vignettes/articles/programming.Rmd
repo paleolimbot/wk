@@ -451,7 +451,7 @@ typedef struct {
 } bump_trans_t;
 
 
-int bump_trans_trans(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data) {
+int bump_trans_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
   bump_trans_t* data = (bump_trans_t*) trans_data;
   xyzm_out[0] = xyzm_in[0] + data->dx;
   xyzm_out[1] = xyzm_in[1] + data->dy;

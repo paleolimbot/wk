@@ -89,7 +89,7 @@ typedef struct {
     double xyzm_out_min[4];
     double xyzm_out_max[4];
     void (*vector_start)(void* trans_data);
-    int (*trans)(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data);
+    int (*trans)(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data);
     void (*vector_end)(void* trans_data);
     void (*finalizer)(void* trans_data);
 } wk_trans_t;

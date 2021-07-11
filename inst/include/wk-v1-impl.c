@@ -129,7 +129,7 @@ SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler)
   return R_ExecWithCleanup(&wk_handler_run_internal, &run_data, &wk_handler_run_cleanup, &run_data);
 }
 
-int wk_default_trans_trans(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data) {
+int wk_default_trans_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
   xyzm_out[0] = xyzm_in[0];
   xyzm_out[1] = xyzm_in[1];
   xyzm_out[2] = xyzm_in[2];
