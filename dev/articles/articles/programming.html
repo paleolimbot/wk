@@ -102,23 +102,23 @@
   <span class="fu"><a href="../../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee48ee278&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee6990280&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (2): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee48ee0f8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee48ee0f8&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (2): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee6990108&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee6990108&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (2): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (3): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffee48ee0f8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffee48ee008&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;         coord (1): &lt;0x7ffee48ee008&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (2): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (3): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffee6990108&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffee6990018&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;         coord (1): &lt;0x7ffee6990018&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (3): &lt;0x7ffee48ee278&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee48ee278&gt;</span>
+<span class="co">#&gt;   feature_end (3): &lt;0x7ffee6990280&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee6990280&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
@@ -129,24 +129,24 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee48ed4a8&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee48ed4a8&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee48ed328&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee48ed328&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee698f4b0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee698f4b0&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee698f338&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee698f338&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee48ed4a8&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee48ed4a8&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee698f4b0&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee698f4b0&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span>
 <span class="fu"><a href="../../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee48efd80&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee48efd80&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffee48efce0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee48efce0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee6991d80&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee6991d80&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffee6991ce0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee6991ce0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee48efd80&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee48efd80&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee6991d80&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee6991d80&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 </div>
@@ -195,7 +195,7 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x7fdcf84d3710&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x7fc262461060&gt;</span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/wk_handle.sfg.html">wk_handle</a></span><span class="op">(</span>
@@ -541,11 +541,72 @@
   <span class="va">data</span>
 <span class="op">}</span></code></pre></div>
 </div>
+<div id="transforms" class="section level2">
+<h2 class="hasAnchor">
+<a href="#transforms" class="anchor"></a>Transforms</h2>
+<p>The bump operation we just wrote is an example of a common type of filter: a coordinate transform. Transforms get used in all sorts of places in the spatial/geometry world and have their own type that makes it slightly less verbose to create them and easier for them to be used in other ways.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="kw">typedef</span> <span class="kw">struct</span> {</span>
+<span id="cb21-8"><a href="#cb21-8"></a>  <span class="dt">double</span> dx;</span>
+<span id="cb21-9"><a href="#cb21-9"></a>  <span class="dt">double</span> dy;</span>
+<span id="cb21-10"><a href="#cb21-10"></a>} bump_trans_t;</span>
+<span id="cb21-11"><a href="#cb21-11"></a></span>
+<span id="cb21-12"><a href="#cb21-12"></a><span class="dt">int</span> bump_trans_trans(R_xlen_t feature_id, <span class="dt">const</span> <span class="dt">double</span>* xyzm_in, <span class="dt">double</span>* xyzm_out, <span class="dt">void</span>* trans_data) {</span>
+<span id="cb21-13"><a href="#cb21-13"></a>  bump_trans_t* data = (bump_trans_t*) trans_data;</span>
+<span id="cb21-14"><a href="#cb21-14"></a>  xyzm_out[<span class="dv">0</span>] = xyzm_in[<span class="dv">0</span>] + data-&gt;dx;</span>
+<span id="cb21-15"><a href="#cb21-15"></a>  xyzm_out[<span class="dv">1</span>] = xyzm_in[<span class="dv">1</span>] + data-&gt;dy;</span>
+<span id="cb21-16"><a href="#cb21-16"></a>  <span class="cf">return</span> WK_CONTINUE;</span>
+<span id="cb21-17"><a href="#cb21-17"></a>}</span>
+<span id="cb21-18"><a href="#cb21-18"></a></span>
+<span id="cb21-19"><a href="#cb21-19"></a><span class="dt">void</span> bump_trans_finalizer(<span class="dt">void</span>* trans_data) {</span>
+<span id="cb21-20"><a href="#cb21-20"></a>  free(trans_data);</span>
+<span id="cb21-21"><a href="#cb21-21"></a>}</span>
+<span id="cb21-22"><a href="#cb21-22"></a></span>
+<span id="cb21-23"><a href="#cb21-23"></a>SEXP bump_trans_new(SEXP xy) {</span>
+<span id="cb21-24"><a href="#cb21-24"></a>  <span class="dt">double</span> dx = REAL(xy)[<span class="dv">0</span>];</span>
+<span id="cb21-25"><a href="#cb21-25"></a>  <span class="dt">double</span> dy = REAL(xy)[<span class="dv">1</span>];</span>
+<span id="cb21-26"><a href="#cb21-26"></a>  </span>
+<span id="cb21-27"><a href="#cb21-27"></a>  wk_trans_t* trans = wk_trans_create();</span>
+<span id="cb21-28"><a href="#cb21-28"></a>  trans-&gt;trans = &amp;bump_trans_trans;</span>
+<span id="cb21-29"><a href="#cb21-29"></a>  trans-&gt;finalizer = &amp;bump_trans_finalizer;</span>
+<span id="cb21-30"><a href="#cb21-30"></a>  </span>
+<span id="cb21-31"><a href="#cb21-31"></a>  bump_trans_t* data = (bump_trans_t*) malloc(<span class="kw">sizeof</span>(bump_trans_t));</span>
+<span id="cb21-32"><a href="#cb21-32"></a>  <span class="cf">if</span> (data == NULL) {</span>
+<span id="cb21-33"><a href="#cb21-33"></a>    free(trans);</span>
+<span id="cb21-34"><a href="#cb21-34"></a>    Rf_error(<span class="st">"Failed to alloc bump_trans_t*"</span>);</span>
+<span id="cb21-35"><a href="#cb21-35"></a>  }</span>
+<span id="cb21-36"><a href="#cb21-36"></a>  </span>
+<span id="cb21-37"><a href="#cb21-37"></a>  data-&gt;dx = dx;</span>
+<span id="cb21-38"><a href="#cb21-38"></a>  data-&gt;dy = dy;</span>
+<span id="cb21-39"><a href="#cb21-39"></a>  trans-&gt;trans_data = data;</span>
+<span id="cb21-40"><a href="#cb21-40"></a>  </span>
+<span id="cb21-41"><a href="#cb21-41"></a>  <span class="cf">return</span> wk_trans_create_xptr(trans, R_NilValue, R_NilValue);</span>
+<span id="cb21-42"><a href="#cb21-42"></a>}</span></code></pre></div>
+<p>We need some R infrastructure to run these just like the C handlers:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">bump_trans</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="../../reference/wk_trans_inverse.html">new_wk_trans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/CallExternal.html">.Call</a></span><span class="op">(</span><span class="st">"bump_trans_new"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">bump</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="../../reference/wk_transform.html">wk_transform</a></span><span class="op">(</span><span class="va">handleable</span>, <span class="fu">bump_trans</span><span class="op">(</span><span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="fu">bump</span><span class="op">(</span><span class="fu"><a href="../../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 0)"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="fl">13</span><span class="op">)</span>
+<span class="co">#&gt; &lt;wk_wkt[1]&gt;</span>
+<span class="co">#&gt; [1] POINT (12 13)</span></code></pre></div>
+<p>The rules are still evolving since this is a new feature but at the very least you should never throw exceptions or error in your transform function (instead return <code>WK_ABORT</code> and error in <code>vector_end()</code>).</p>
+</div>
 <div id="performance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#performance" class="anchor"></a>Performance</h2>
-<p>The main issue with performance in wk extensions is that there are a <em>lot</em> of function calls. I haven’t found a place where this matters when writing C code, but when writing C++ some additional wrapper code is used to isolate the C and C++ frames so that exceptions aren’t thrown from C frames and <code>longjmp</code>s generated by the R API don’t jump over C++ object deleters. A quick test suggests that for readers and filters written in C++ this overhead is about 1 second per 1 million handler method calls; for handlers this overhead is more like 1 second per 7 million handler method calls. For both, it’s likely that whatever you are doing in C++ will be the limiting factor in your handler, but for very simple filters/readers you might consider rewriting your handler in C for performance.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<p>The main issue with performance in wk handlers is that there are a <em>lot</em> of function calls. I haven’t found a place where this matters when writing C code, but when writing C++ some additional wrapper code is used to isolate the C and C++ frames so that exceptions aren’t thrown from C frames and <code>longjmp</code>s generated by the R API don’t jump over C++ object deleters. A quick test suggests that for readers and filters written in C++ this overhead is about 1 second per 1 million handler method calls; for handlers this overhead is more like 1 second per 7 million handler method calls. For both, it’s likely that whatever you are doing in C++ will be the limiting factor in your handler, but for very simple filters/readers you might consider rewriting your handler in C for performance. Future versions of wk will hopefully eliminate this issue!</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cpp_void_handler</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../../reference/wk_handle.sfg.html">new_wk_handler</a></span><span class="op">(</span><span class="fu">cpp_void_handler_new</span><span class="op">(</span><span class="op">)</span>, <span class="st">"cpp_void_handler"</span><span class="op">)</span>
 <span class="op">}</span>
@@ -565,10 +626,10 @@
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   expression                                                     min   median</span>
 <span class="co">#&gt;   &lt;bch:expr&gt;                                                &lt;bch:tm&gt; &lt;bch:tm&gt;</span>
-<span class="co">#&gt; 1 wk_handle(nc_wkb, wk_void_handler())                       49.39µs   53.2µs</span>
-<span class="co">#&gt; 2 wk_handle(nc_wkb, cpp_void_handler())                     555.81µs  576.5µs</span>
-<span class="co">#&gt; 3 wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   81.43µs   86.1µs</span>
-<span class="co">#&gt; 4 wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   3.12ms    3.2ms</span>
+<span class="co">#&gt; 1 wk_handle(nc_wkb, wk_void_handler())                       49.59µs  52.67µs</span>
+<span class="co">#&gt; 2 wk_handle(nc_wkb, cpp_void_handler())                     531.42µs 578.71µs</span>
+<span class="co">#&gt; 3 wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   75.88µs  83.65µs</span>
+<span class="co">#&gt; 4 wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   3.21ms   3.33ms</span>
 <span class="co">#&gt; # … with 3 more variables: itr/sec &lt;dbl&gt;, mem_alloc &lt;bch:byt&gt;, gc/sec &lt;dbl&gt;</span></code></pre></div>
 </div>
   </div>
