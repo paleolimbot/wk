@@ -488,7 +488,7 @@ bump <- function(handleable, dx = 0, dy = 0) {
 bump(wkt("POINT (0 0)"), 12, 13)
 ```
 
-The rules are still evolving since this is a new feature but in general you should never throw exceptions or error in your transform function (instead return `WK_ABORT` and error in `vector_end()`).
+The rules are still evolving since this is a new feature but at the very least you should never throw exceptions or error in your transform function (instead return `WK_ABORT` and error in `vector_end()`).
 
 ## Performance
 
