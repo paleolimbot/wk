@@ -4,7 +4,7 @@
 #include "wk-v1.h"
 #include <stdlib.h>
 
-int wk_trans_affine_trans(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data) {
+int wk_trans_affine_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
     double* t = (double*) trans_data;
     xyzm_out[0] = t[0] * xyzm_in[0] + t[2] * xyzm_in[1] + t[4];
     xyzm_out[1] = t[1] * xyzm_in[0] + t[3] * xyzm_in[1] + t[5];

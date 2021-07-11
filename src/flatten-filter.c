@@ -18,8 +18,11 @@ typedef struct {
 } flatten_filter_t;
 
 #define HANDLE_OR_RETURN(expr)                                 \
-  result = expr;                                               \
-  if (result != WK_CONTINUE) return result
+    result = expr;                                             \
+    if (result == WK_ABORT_FEATURE) { \
+      Rf_error("wk_flatten_filter() does not support WK_ABORT_FEATURE"); \
+    } \
+    if (result != WK_CONTINUE) return result
 
 #define META_IS_COLLECTION(meta) \
   ((meta->geometry_type == WK_GEOMETRY) || \
@@ -163,10 +166,11 @@ int wk_flatten_filter_feature_null(void* handler_data) {
   wk_flatten_filter_append_details(flatten_filter);
 
   HANDLE_OR_RETURN(flatten_filter->next->feature_start(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
-  HANDLE_OR_RETURN(flatten_filter->next->null_feature(flatten_filter->next->handler_data));
-  HANDLE_OR_RETURN(flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data));
-  
-  return WK_CONTINUE;
+  result = flatten_filter->next->null_feature(flatten_filter->next->handler_data);
+  if (result != WK_CONTINUE) {
+    return result;
+  }
+  return flatten_filter->next->feature_end(&(flatten_filter->vector_meta), flatten_filter->feature_id_out, flatten_filter->next->handler_data);
 }
 
 int wk_flatten_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {

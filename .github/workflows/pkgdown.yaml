@@ -34,8 +34,11 @@ jobs:
         run: brew install udunits
       - name: Install dependencies
         run: |
+          options(pkgType = "binary")
           remotes::install_deps(dependencies = TRUE)
           install.packages(c("pkgdown", "decor", "bench"), type = "binary")
+          # we need dev cpp11 temporarily for the vignette to work
+          remotes::install_github("r-lib/cpp11")
         shell: Rscript {0}
 
       - name: Install package

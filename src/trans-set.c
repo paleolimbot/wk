@@ -11,7 +11,7 @@ typedef struct {
     R_xlen_t n;
 } wk_trans_set_t;
 
-int wk_trans_set_trans(R_xlen_t feature_id, double* xyzm_in, double* xyzm_out, void* trans_data) {
+int wk_trans_set_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
     wk_trans_set_t* data = (wk_trans_set_t*) trans_data;
     R_xlen_t set_id = feature_id % data->n;
     double set;
