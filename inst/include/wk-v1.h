@@ -83,7 +83,8 @@ typedef struct {
 
 typedef struct {
     void* trans_data;
-    uint32_t flags_out;
+    int use_z;
+    int use_m;
     double xyzm_out_min[4];
     double xyzm_out_max[4];
     void (*vector_start)(void* trans_data);

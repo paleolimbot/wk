@@ -52,6 +52,7 @@ extern SEXP wk_c_sfc_writer_new();
 extern SEXP wk_c_trans_affine_as_matrix(SEXP);
 extern SEXP wk_c_trans_affine_new(SEXP);
 extern SEXP wk_c_trans_filter_new(SEXP, SEXP);
+extern SEXP wk_c_trans_set_new(SEXP, SEXP, SEXP);
 extern SEXP wk_c_vector_meta_handler_new();
 extern SEXP wk_c_vertex_filter_new(SEXP, SEXP);
 extern SEXP wk_c_wkb_writer_new(SEXP, SEXP);
@@ -82,6 +83,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"wk_c_trans_affine_as_matrix",  (DL_FUNC) &wk_c_trans_affine_as_matrix,  1},
     {"wk_c_trans_affine_new",        (DL_FUNC) &wk_c_trans_affine_new,        1},
     {"wk_c_trans_filter_new",        (DL_FUNC) &wk_c_trans_filter_new,        2},
+    {"wk_c_trans_set_new",           (DL_FUNC) &wk_c_trans_set_new,           3},
     {"wk_c_vector_meta_handler_new", (DL_FUNC) &wk_c_vector_meta_handler_new, 0},
     {"wk_c_vertex_filter_new",       (DL_FUNC) &wk_c_vertex_filter_new,       2},
     {"wk_c_wkb_writer_new",          (DL_FUNC) &wk_c_wkb_writer_new,          2},
