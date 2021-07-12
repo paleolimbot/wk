@@ -1,9 +1,9 @@
 
-Fixes inconsistent source-header signature identified by the LTO check and eliminates the check failure on MacOS (oldrel).
+Fixes a number of bugs including a check failure on MacOS where sf was not installed.
 
 ## Test environments
 
-* local (MacOS, R 4.0.1)
+* local (MacOS, R 4.0.3)
 * GitHub Actions (ubuntu-20.04): release, devel
 * GitHub Actions (windows): release
 * Github Actions (macOS): release
