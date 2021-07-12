@@ -11,7 +11,6 @@
 #' @param use_z,use_m Used to declare the output type. Use `TRUE` to
 #'   ensure the output has that dimension, `FALSE` to ensure it does not,
 #'   and `NA` to leave the dimension unchanged.
-#' @param
 #'
 #' @export
 #'
