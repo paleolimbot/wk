@@ -1,4 +1,4 @@
-# wk (development version)
+# wk 0.5.0
 
 * Fixed bugs relating to the behaviour of wk classes as
   vectors (#64, #65, #67, #70).
