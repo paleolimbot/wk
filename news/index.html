@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -126,9 +126,26 @@
       <small>Source: <a href='https://github.com/paleolimbot/wk/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="wk-050" class="section level1">
+<h1 class="page-header" data-toc-text="0.5.0">
+<a href="#wk-050" class="anchor"></a>wk 0.5.0<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed bugs relating to the behaviour of wk classes as vectors (<a href='https://github.com/paleolimbot/wk/issues/64'>#64</a>, <a href='https://github.com/paleolimbot/wk/issues/65'>#65</a>, <a href='https://github.com/paleolimbot/wk/issues/67'>#67</a>, <a href='https://github.com/paleolimbot/wk/issues/70'>#70</a>).</li>
+<li>
+<code><a href="../reference/crc.html">crc()</a></code> objects are now correctly exported as polygons with a closed loop (<a href='https://github.com/paleolimbot/wk/issues/66'>#66</a>, <a href='https://github.com/paleolimbot/wk/issues/70'>#70</a>).</li>
+<li>Added <code><a href="../reference/wk_vertices.html">wk_vertices()</a></code> and <code><a href="../reference/wk_vertices.html">wk_coords()</a></code> to extract individual coordinate values from geometries with optional identifying information. For advanced users, the <code><a href="../reference/wk_vertices.html">wk_vertex_filter()</a></code> can be used as part of a pipeline to export coordinates as point geometries to another handler (<a href='https://github.com/paleolimbot/wk/issues/69'>#69</a>, <a href='https://github.com/paleolimbot/wk/issues/71'>#71</a>).</li>
+<li>Added <code><a href="../reference/wk_flatten.html">wk_flatten()</a></code> to extract geometries from collections. For advanced users, the <code><a href="../reference/wk_flatten.html">wk_flatten_filter()</a></code> can be used as part of a pipeline (<a href='https://github.com/paleolimbot/wk/issues/75'>#75</a>, <a href='https://github.com/paleolimbot/wk/issues/78'>#78</a>).</li>
+<li>
+<code><a href="https://rdrr.io/r/base/options.html">options("max.print")</a></code> is now respected by all vector classes (<a href='https://github.com/paleolimbot/wk/issues/72'>#72</a>, <a href='https://github.com/paleolimbot/wk/issues/74'>#74</a>).</li>
+<li>Moved implementation of plot methods from wkutils to wk to simplify the dependency structure of both packages (<a href='https://github.com/paleolimbot/wk/issues/80'>#80</a>, <a href='https://github.com/paleolimbot/wk/issues/76'>#76</a>).</li>
+<li>Added <code><a href="../reference/wk_linestring.html">wk_polygon()</a></code>, <code><a href="../reference/wk_linestring.html">wk_linestring()</a></code>, and <code><a href="../reference/wk_linestring.html">wk_collection()</a></code> to construct polygons, lines, and collections. For advanced users, <code><a href="../reference/wk_linestring.html">wk_polygon_filter()</a></code>, <code><a href="../reference/wk_linestring.html">wk_linestring_filter()</a></code>, and <code><a href="../reference/wk_linestring.html">wk_collection_filter()</a></code> can be used as part of a pipeline (<a href='https://github.com/paleolimbot/wk/issues/77'>#77</a>, <a href='https://github.com/paleolimbot/wk/issues/84'>#84</a>).</li>
+<li>Added a C-level transform struct that can be used to simplify the the common pattern of transforming coordinates. These structs can be created by other packages; however, the <code><a href="../reference/wk_trans_affine.html">wk_trans_affine()</a></code> and <code><a href="../reference/wk_set_z.html">wk_trans_set()</a></code> transforms are also built using this feature. These are run using the new <code><a href="../reference/wk_transform.html">wk_transform()</a></code> function and power the new <code><a href="../reference/wk_set_z.html">wk_set_z()</a></code>, <code><a href="../reference/wk_set_z.html">wk_set_m()</a></code>, <code><a href="../reference/wk_set_z.html">wk_drop_z()</a></code>, <code><a href="../reference/wk_set_z.html">wk_drop_m()</a></code>, functions (<a href='https://github.com/paleolimbot/wk/issues/87'>#87</a>, <a href='https://github.com/paleolimbot/wk/issues/88'>#88</a>, <a href='https://github.com/paleolimbot/wk/issues/89'>#89</a>).</li>
+</ul>
+</div>
     <div id="wk-041" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.1">
-<a href="#wk-041" class="anchor"></a>wk 0.4.1<small> Unreleased </small>
+<a href="#wk-041" class="anchor"></a>wk 0.4.1<small> 2021-03-16 </small>
 </h1>
 <ul>
 <li>Fix LTO and MacOS 3.6.2 check errors (<a href='https://github.com/paleolimbot/wk/issues/61'>#61</a>).</li>

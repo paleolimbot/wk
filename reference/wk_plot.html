@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Write geometry vectors — wk_writer.sfc • wk</title>
+<title>Plot well-known geometry vectors — wk_plot • wk</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,8 @@
 
 
 
-<meta property="og:title" content="Write geometry vectors — wk_writer.sfc" />
-<meta property="og:description" content="When writing transformation functions, it is often useful to know which
-handler should be used to create a (potentially modified) version
-of an object. Some transformers (e.g., wk_vertices()) modify
-the geometry type of an object, in which case a generic writer is needed.
-This defaults to wkb_writer() because it is fast and can handle
-all geometry types." />
+<meta property="og:title" content="Plot well-known geometry vectors — wk_plot" />
+<meta property="og:description" content="Plot well-known geometry vectors" />
 
 
 
@@ -128,47 +123,58 @@ all geometry types." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Write geometry vectors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-sf.R'><code>R/compat-sf.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/sfc-writer.R'><code>R/sfc-writer.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/wkb-writer.R'><code>R/wkb-writer.R</code></a>, and 3 more</small>
-    <div class="hidden name"><code>wk_writer.Rd</code></div>
+    <h1>Plot well-known geometry vectors</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/plot.R'><code>R/plot.R</code></a></small>
+    <div class="hidden name"><code>wk_plot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>When writing transformation functions, it is often useful to know which
-handler should be used to create a (potentially modified) version
-of an object. Some transformers (e.g., <code><a href='wk_vertices.html'>wk_vertices()</a></code>) modify
-the geometry type of an object, in which case a generic writer is needed.
-This defaults to <code>wkb_writer()</code> because it is fast and can handle
-all geometry types.</p>
+    <p>Plot well-known geometry vectors</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for sfc</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for sf</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>sfc_writer</span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='fu'>wkb_writer</span><span class='op'>(</span>buffer_size <span class='op'>=</span> <span class='fl'>2048L</span>, endian <span class='op'>=</span> <span class='cn'>NA_integer_</span><span class='op'>)</span>
-
-<span class='fu'>wkt_writer</span><span class='op'>(</span>precision <span class='op'>=</span> <span class='fl'>16L</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, generic <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_plot</span><span class='op'>(</span>
+  <span class='va'>handleable</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkt</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, precision <span class='op'>=</span> <span class='fl'>16</span>, trim <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for wk_wkb</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  rule <span class='op'>=</span> <span class='st'>"evenodd"</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for wk_xy</span>
-<span class='fu'>wk_writer</span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span>, generic <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>xy_writer</span><span class='op'>(</span><span class='op'>)</span></pre>
+<span class='co'># S3 method for wk_rct</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wk_crc</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,37 +186,43 @@ all geometry types.</p>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Passed to the writer constructor.</p></td>
+      <td><p>Passed to plotting functions for features: <code><a href='https://rdrr.io/r/graphics/points.html'>graphics::points()</a></code>
+for point and multipoint geometries, <code><a href='https://rdrr.io/r/graphics/lines.html'>graphics::lines()</a></code> for linestring
+and multilinestring geometries, and <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code> for polygon
+and multipolygon geometries.</p></td>
     </tr>
     <tr>
-      <th>buffer_size</th>
-      <td><p>Control the initial buffer size used when writing WKB.</p></td>
+      <th>asp, xlab, ylab</th>
+      <td><p>Passed to <code><a href='https://rdrr.io/r/graphics/plot.default.html'>graphics::plot()</a></code></p></td>
     </tr>
     <tr>
-      <th>endian</th>
-      <td><p>Use 1 for little endian, 0 for big endian, or NA for
-system endian.</p></td>
+      <th>bbox</th>
+      <td><p>The limits of the plot as a <code><a href='rct.html'>rct()</a></code> or compatible object</p></td>
     </tr>
     <tr>
-      <th>precision</th>
-      <td><p>If <code>trim</code> is <code>TRUE</code>, the total number of significant digits to keep
-for each result or the number of digits after the decimal place otherwise.</p></td>
+      <th>rule</th>
+      <td><p>The rule to use for filling polygons (see <code><a href='https://rdrr.io/r/graphics/polypath.html'>graphics::polypath()</a></code>)</p></td>
     </tr>
     <tr>
-      <th>trim</th>
-      <td><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></td>
+      <th>add</th>
+      <td><p>Should a new plot be created, or should <code>handleable</code> be added to the
+existing plot?</p></td>
     </tr>
     <tr>
-      <th>generic</th>
-      <td><p>Use <code>TRUE</code> to obtain a writer that can write all geometry
-types.</p></td>
+      <th>x</th>
+      <td><p>A <code><a href='wkb.html'>wkb()</a></code> or <code><a href='wkt.html'>wkt()</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <a href='wk_handle.sfg.html'>wk_handler</a>.</p>
+    <p>The input, invisibly.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>as_wkt</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='wkb.html'>as_wkb</a></span><span class='op'>(</span><span class='st'>"LINESTRING (0 0, 1 1)"</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='wk_plot-1.png' alt='' width='700' height='433' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

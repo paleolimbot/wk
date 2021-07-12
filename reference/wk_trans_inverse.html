@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Vctrs methods — vctrs-methods • wk</title>
+<title>Generic transform class — wk_trans_inverse • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Vctrs methods — vctrs-methods" />
-<meta property="og:description" content="Vctrs methods" />
+<meta property="og:title" content="Generic transform class — wk_trans_inverse" />
+<meta property="og:description" content="Generic transform class" />
 
 
 
@@ -123,53 +123,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Vctrs methods</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-vctrs.R'><code>R/compat-vctrs.R</code></a></small>
-    <div class="hidden name"><code>vctrs-methods.Rd</code></div>
+    <h1>Generic transform class</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/transform.R'><code>R/transform.R</code></a></small>
+    <div class="hidden name"><code>wk_trans_inverse.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Vctrs methods</p>
+    <p>Generic transform class</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vec_cast.wk_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>wk_trans_inverse</span><span class='op'>(</span><span class='va'>trans</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>vec_ptype2.wk_wkb</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>as_wk_trans</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>vec_cast.wk_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='co'># S3 method for wk_trans</span>
+<span class='fu'>as_wk_trans</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>vec_ptype2.wk_wkt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_xy</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_xy</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_xyz</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_xyz</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_xym</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_xym</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_xyzm</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_xyzm</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_rct</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_rct</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_cast.wk_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>vec_ptype2.wk_crc</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>new_wk_trans</span><span class='op'>(</span><span class='va'>trans_ptr</span>, subclass <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, y, to, ...</th>
-      <td><p>See <code><a href='https://vctrs.r-lib.org/reference/vec_cast.html'>vctrs::vec_cast()</a></code> and <code><a href='https://vctrs.r-lib.org/reference/vec_ptype2.html'>vctrs::vec_ptype2()</a></code>.</p></td>
+      <th>trans</th>
+      <td><p>An external pointer to a wk_trans object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Passed to S3 methods</p></td>
+    </tr>
+    <tr>
+      <th>x</th>
+      <td><p>An object to be converted to a transform.</p></td>
+    </tr>
+    <tr>
+      <th>trans_ptr</th>
+      <td><p>An external pointer to a wk_trans_t transform
+struct.</p></td>
+    </tr>
+    <tr>
+      <th>subclass</th>
+      <td><p>An optional subclass to apply to the pointer</p></td>
     </tr>
     </table>
 
