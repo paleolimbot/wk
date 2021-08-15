@@ -89,8 +89,8 @@ wk_affine_rescale <- function(rct_in, rct_out) {
   dy <- rct_out$ymin - rct_in$ymin
 
   wk_affine_compose(
-    wk_affine_translate(dx, dy),
-    wk_affine_scale(width_out / width_in, height_out / height_in)
+    wk_affine_scale(width_out / width_in, height_out / height_in),
+    wk_affine_translate(dx, dy)
   )
 }
 

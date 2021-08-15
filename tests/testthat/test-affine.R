@@ -35,9 +35,11 @@ test_that("wk_affine_scale() works", {
 
 test_that("wk_affine_rescale() works", {
   coords <- matrix(c(0, 0, 1, 1, 2, 2, 3, 3), nrow = 2)
+  # make sure we pick an example where the rescale + translate order matters
   expect_equal(
-    as.matrix(wk_affine_rescale(rct(1, 1, 2, 2), rct(0, 0, 1, 1))) %*% rbind(coords, 1),
-    rbind(matrix(c(-1, -1, 0, 0, 1, 1, 2, 2), nrow = 2), 1)
+    as.matrix(wk_affine_rescale(rct(1, 1, 2, 2), rct(12, 12, 13, 14))) %*%
+      rbind(coords, 1),
+    rbind(matrix(c(11, 11, 12, 13, 13, 15, 14, 17), nrow = 2), 1)
   )
 })
 

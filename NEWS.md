@@ -1,5 +1,8 @@
 # wk (development version)
 
+* Fixed `wk_affine_rescale()` to apply the translate and scale
+  operations in the correct order (#94).
+
 # wk 0.5.0
 
 * Fixed bugs relating to the behaviour of wk classes as
