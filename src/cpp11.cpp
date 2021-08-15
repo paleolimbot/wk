@@ -3,6 +3,7 @@
 
 
 #include "cpp11/declarations.hpp"
+#include <R_ext/Visibility.h>
 
 // handle-wkt.cpp
 cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_size);
@@ -28,9 +29,6 @@ extern "C" SEXP _wk_wk_cpp_wkt_formatter(SEXP precision, SEXP trim, SEXP max_coo
 
 extern "C" {
 /* .Call calls */
-extern SEXP _wk_wk_cpp_handle_wkt(SEXP, SEXP, SEXP);
-extern SEXP _wk_wk_cpp_wkt_formatter(SEXP, SEXP, SEXP);
-extern SEXP _wk_wk_cpp_wkt_writer(SEXP, SEXP);
 extern SEXP wk_c_bbox_handler_new();
 extern SEXP wk_c_collection_filter_new(SEXP, SEXP, SEXP);
 extern SEXP wk_c_count_handler_new();
@@ -92,7 +90,7 @@ static const R_CallMethodDef CallEntries[] = {
 };
 }
 
-extern "C" void R_init_wk(DllInfo* dll){
+extern "C" attribute_visible void R_init_wk(DllInfo* dll){
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
