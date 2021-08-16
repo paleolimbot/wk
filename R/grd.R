@@ -121,7 +121,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
     )
   }
 
-  new_grd(list(data = data, bbox = bbox), "grd_rct")
+  new_grd(list(data = data, bbox = bbox), "wk_grd_rct")
 }
 
 #' @rdname grd
@@ -160,7 +160,7 @@ grd_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
     )
   }
 
-  new_grd(list(data = data, bbox = bbox), "grd_xy")
+  new_grd(list(data = data, bbox = bbox), "wk_grd_xy")
 }
 
 #' @rdname grd
@@ -171,7 +171,7 @@ as_grd_rct <- function(x, ...) {
 
 #' @rdname grd
 #' @export
-as_grd_rct.grd_rct <- function(x, ...) {
+as_grd_rct.wk_grd_rct <- function(x, ...) {
   x
 }
 
@@ -183,7 +183,7 @@ as_grd_xy <- function(x, ...) {
 
 #' @rdname grd
 #' @export
-as_grd_xy.grd_xy <- function(x, ...) {
+as_grd_xy.wk_grd_xy <- function(x, ...) {
   x
 }
 
@@ -195,29 +195,29 @@ as_grd_xy.grd_xy <- function(x, ...) {
 #' @export
 #'
 new_grd <- function(x, subclass = character()) {
-  structure(x, class = union(subclass, "grd"))
+  structure(x, class = union(subclass, "wk_grd"))
 }
 
 #' @export
-wk_bbox.grd <- function(handleable, ...) {
+wk_bbox.wk_grd <- function(handleable, ...) {
   # take the bbox of the bbox to normalize a bounding box
   # with xmin > xmax
   wk_bbox(handleable$bbox)
 }
 
 #' @export
-wk_crs.grd <- function(x) {
+wk_crs.wk_grd <- function(x) {
   attr(x$bbox, "crs", exact = TRUE)
 }
 
 #' @export
-wk_set_crs.grd <- function(x, crs) {
+wk_set_crs.wk_grd <- function(x, crs) {
   x$bbox <- wk_set_crs(x$bbox, crs)
   x
 }
 
 #' @export
-format.grd <- function(x, ...) {
+format.wk_grd <- function(x, ...) {
   crs <- wk_crs(x)
   sprintf(
     "<%s [%s] => %s%s>",
@@ -229,7 +229,7 @@ format.grd <- function(x, ...) {
 }
 
 #' @export
-print.grd <- function(x, ...) {
+print.wk_grd <- function(x, ...) {
   cat(paste0(format(x), "\n"))
   utils::str(x)
   invisible(x)
