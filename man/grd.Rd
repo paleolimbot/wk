@@ -6,8 +6,10 @@
 \alias{grd_xy}
 \alias{as_grd_rct}
 \alias{as_grd_rct.wk_grd_rct}
+\alias{as_grd_rct.wk_grd_xy}
 \alias{as_grd_xy}
 \alias{as_grd_xy.wk_grd_xy}
+\alias{as_grd_xy.wk_grd_rct}
 \title{Raster-like objects}
 \usage{
 grd(
@@ -27,9 +29,13 @@ as_grd_rct(x, ...)
 
 \method{as_grd_rct}{wk_grd_rct}(x, ...)
 
+\method{as_grd_rct}{wk_grd_xy}(x, ...)
+
 as_grd_xy(x, ...)
 
 \method{as_grd_xy}{wk_grd_xy}(x, ...)
+
+\method{as_grd_xy}{wk_grd_rct}(x, ...)
 }
 \arguments{
 \item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object.}

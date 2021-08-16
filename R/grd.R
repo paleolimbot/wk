@@ -116,7 +116,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
           data = data,
           bbox = wk::wk_bbox(xy(crs = wk_crs(bbox)))
         ),
-        "grd_rct"
+        "wk_grd_rct"
       )
     )
   }
@@ -141,7 +141,7 @@ grd_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
           data = data,
           bbox = wk::wk_bbox(xy(crs = wk_crs(bbox)))
         ),
-        "grd_xy"
+        "wk_grd_xy"
       )
     )
   }
@@ -177,6 +177,29 @@ as_grd_rct.wk_grd_rct <- function(x, ...) {
 
 #' @rdname grd
 #' @export
+as_grd_rct.wk_grd_xy <- function(x, ...) {
+  # from a grd_xy, we assume these were the centres
+  nx <- dim(x$data)[1]
+  ny <- dim(x$data)[2]
+  rct <- unclass(x$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- if (nx > 1) width / (nx - 1) else 0
+  dy <- if (ny > 1) height / (ny - 1) else 0
+
+  bbox <- rct(
+    rct$xmin - dx / 2,
+    rct$ymin - dy / 2,
+    rct$xmax + dx / 2,
+    rct$ymax + dy / 2,
+    crs = wk_crs(x$bbox)
+  )
+
+  grd_rct(x$data, bbox)
+}
+
+#' @rdname grd
+#' @export
 as_grd_xy <- function(x, ...) {
   UseMethod("as_grd_xy")
 }
@@ -185,6 +208,29 @@ as_grd_xy <- function(x, ...) {
 #' @export
 as_grd_xy.wk_grd_xy <- function(x, ...) {
   x
+}
+
+#' @rdname grd
+#' @export
+as_grd_xy.wk_grd_rct <- function(x, ...) {
+  # from a grid_rct() we take the centers
+  nx <- dim(x$data)[1]
+  ny <- dim(x$data)[2]
+  rct <- unclass(x$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- width / nx
+  dy <- height / ny
+
+  bbox <- rct(
+    rct$xmin + dx / 2,
+    rct$ymin + dy / 2,
+    rct$xmax - dx / 2,
+    rct$ymax - dy / 2,
+    crs = wk_crs(x$bbox)
+  )
+
+  grd_xy(x$data, bbox)
 }
 
 #' S3 details for grid objects

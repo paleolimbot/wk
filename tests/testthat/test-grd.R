@@ -48,6 +48,23 @@ test_that("grd_xy() works", {
   expect_output(print(grid_crs), "wk_grd_xy")
 })
 
+test_that("grd_xy <-> grd_rct converters work", {
+  grid <- grd_rct(volcano)
+  expect_identical(as_grd_rct(as_grd_xy(grid)), grid)
+
+  empty <- grd_rct(matrix(nrow = 0, ncol = 0))
+  expect_identical(as_grd_rct(as_grd_xy(empty)), empty)
+
+  # make sure x/y value don't get lost for a single row/col
+  expect_identical(
+    wk_bbox(as_grd_rct(as_grd_xy(grd(nx = 10, ny = 1)))),
+    rct(0, 0.5, 10, 0.5)
+  )
+  expect_identical(
+    wk_bbox(as_grd_rct(as_grd_xy(grd(nx = 1, ny = 10)))),
+    rct(0.5, 0, 0.5, 10)
+  )
+})
 
 test_that("grd() works", {
   grid_nxny <- grd(nx = 10, ny = 20, type = "polygons")
