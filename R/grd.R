@@ -27,7 +27,7 @@
 #' grd_rct(volcano, bbox)
 #'
 grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
-                    type = c("polygons", "corners", "centers")) {
+                type = c("polygons", "corners", "centers")) {
   if (is.null(bbox)) {
     bbox <- NULL
   } else if (inherits(bbox, "wk_rct")) {
