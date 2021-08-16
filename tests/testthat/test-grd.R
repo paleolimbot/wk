@@ -1,6 +1,6 @@
 
 test_that("grd_rct() works", {
-  grid <- grd_rct(volcano)
+  grid <- grd_rct(t(volcano))
   expect_s3_class(grid, "wk_grd_rct")
   expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_rct(grid), grid)
@@ -26,14 +26,14 @@ test_that("grd_xy() works for an empty grid", {
 })
 
 test_that("grd_xy() works for h/v lines", {
-  hline <- grd_xy(matrix(nrow = 10, ncol = 1), rct(0, 0, 1, 0))
-  expect_identical(wk_bbox(hline), rct(0, 0, 1, 0))
-  vline <- grd_xy(matrix(nrow = 1, ncol = 10), rct(0, 0, 0, 1))
-  expect_identical(wk_bbox(vline), rct(0, 0, 0, 1))
+  hline <- grd_xy(matrix(nrow = 10, ncol = 1), rct(0, 0, 0, 1))
+  expect_identical(wk_bbox(hline), rct(0, 0, 0, 1))
+  vline <- grd_xy(matrix(nrow = 1, ncol = 10), rct(0, 0, 1, 0))
+  expect_identical(wk_bbox(vline), rct(0, 0, 1, 0))
 })
 
 test_that("grd_xy() works", {
-  grid <- grd_xy(volcano)
+  grid <- grd_xy(t(volcano))
   expect_s3_class(grid, "wk_grd_xy")
   expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_xy(grid), grid)
@@ -49,7 +49,7 @@ test_that("grd_xy() works", {
 })
 
 test_that("grd_xy <-> grd_rct converters work", {
-  grid <- grd_rct(volcano)
+  grid <- grd_rct(t(volcano))
   expect_identical(as_grd_rct(as_grd_xy(grid)), grid)
 
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
@@ -68,18 +68,18 @@ test_that("grd_xy <-> grd_rct converters work", {
 
 test_that("grd() works", {
   grid_nxny <- grd(nx = 10, ny = 20, type = "polygons")
-  expect_identical(dim(grid_nxny$data), c(10L, 20L, 0L))
+  expect_identical(dim(grid_nxny$data), c(20L, 10L, 0L))
   expect_identical(wk_bbox(grid_nxny), rct(0, 0, 10, 20))
 
   grid_dxdy <- grd(rct(0, 0, 10, 20), dx = 1, dy = 4)
-  expect_identical(dim(grid_dxdy$data), c(10L, 5L, 0L))
+  expect_identical(dim(grid_dxdy$data), c(5L, 10L, 0L))
   expect_identical(wk_bbox(grid_dxdy), rct(0, 0, 10, 20))
 
   center_nxny <- grd(nx = 10, ny = 20, type = "centers")
-  expect_identical(dim(center_nxny$data), c(10L, 20L, 0L))
+  expect_identical(dim(center_nxny$data), c(20L, 10L, 0L))
   expect_identical(wk_bbox(center_nxny), rct(0.5, 0.5, 9.5, 19.5))
 
   center_dxdy <- grd(rct(0, 0, 10, 20), dx = 1, dy = 4, type = "centers")
-  expect_identical(dim(center_dxdy$data), c(10L, 5L, 0L))
+  expect_identical(dim(center_dxdy$data), c(5L, 10L, 0L))
   expect_identical(wk_bbox(center_dxdy), rct(0.5, 2, 9.5, 18))
 })

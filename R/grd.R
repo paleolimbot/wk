@@ -23,7 +23,11 @@
 #' @examples
 #' grd_rct(volcano)
 #' # approx bounding box in New Zealand Transverse Mercator
-#' bbox <- wk::rct(5917019, 1756993, 5917466, 1757577, crs = "EPSG:2193")
+#' bbox <- wk::rct(
+#'   5917000,       1757000 + 870,
+#'   5917000 + 610, 1757000,
+#'   crs = "EPSG:2193"
+#' )
 #' grd_rct(volcano, bbox)
 #'
 grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
@@ -81,6 +85,9 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
         rct$ymax - dy / 2,
         crs = wk_crs(bbox)
       )
+    } else if (type == "corners") {
+      nx <- nx + 1
+      ny <- ny + 1
     }
   } else {
     stop(
@@ -90,7 +97,7 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
   }
 
   # use a length-zero logical() with correct x and y dims
-  data <- array(dim = c(nx, ny, 0))
+  data <- array(dim = c(ny, nx, 0))
 
   if (type == "polygons") {
     grd_rct(data, bbox)
@@ -101,7 +108,7 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
 
 #' @rdname grd
 #' @export
-grd_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
+grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   stopifnot(
     length(bbox) == 1,
@@ -126,7 +133,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
 
 #' @rdname grd
 #' @export
-grd_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
+grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   stopifnot(
     length(bbox) == 1,
@@ -147,14 +154,14 @@ grd_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
   }
 
   # with one value in the x dimension, we need a zero width bbox
-  if (dim(data)[1] == 1) {
+  if (dim(data)[2] == 1) {
     stopifnot(
       unclass(bbox)$xmax == unclass(bbox)$xmin
     )
   }
 
   # with one value in the y dimension, we need a zero height bbox
-  if (dim(data)[2] == 1) {
+  if (dim(data)[1] == 1) {
     stopifnot(
       unclass(bbox)$ymax == unclass(bbox)$ymin
     )
@@ -179,8 +186,8 @@ as_grd_rct.wk_grd_rct <- function(x, ...) {
 #' @export
 as_grd_rct.wk_grd_xy <- function(x, ...) {
   # from a grd_xy, we assume these were the centres
-  nx <- dim(x$data)[1]
-  ny <- dim(x$data)[2]
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
   rct <- unclass(x$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
@@ -214,8 +221,8 @@ as_grd_xy.wk_grd_xy <- function(x, ...) {
 #' @export
 as_grd_xy.wk_grd_rct <- function(x, ...) {
   # from a grid_rct() we take the centers
-  nx <- dim(x$data)[1]
-  ny <- dim(x$data)[2]
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
   rct <- unclass(x$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
@@ -248,7 +255,7 @@ new_grd <- function(x, subclass = character()) {
 wk_bbox.wk_grd <- function(handleable, ...) {
   # take the bbox of the bbox to normalize a bounding box
   # with xmin > xmax
-  wk_bbox(handleable$bbox)
+  wk_bbox(as_wkb(handleable$bbox))
 }
 
 #' @export
@@ -279,4 +286,71 @@ print.wk_grd <- function(x, ...) {
   cat(paste0(format(x), "\n"))
   utils::str(x)
   invisible(x)
+}
+
+#' @export
+as_xy.wk_grd_xy <- function(x, ...) {
+  rct <- unclass(x$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+
+  if (identical(width, -Inf) || identical(height, -Inf)) {
+    return(xy(crs = wk_crs(x)))
+  }
+
+  xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
+  ys <- seq(rct$ymin, rct$ymax, by = height / (ny - 1))
+  xy(
+    rep(xs, length(ys)),
+    rep(ys, each = length(xs))
+  )
+}
+
+#' @export
+as_rct.wk_grd_rct <- function(x, ...) {
+  rct <- unclass(x$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+
+  if (identical(width, -Inf) || identical(height, -Inf)) {
+    return(rct(crs = wk_crs(x)))
+  }
+
+  xs <- seq(rct$xmin, rct$xmax, by = width / nx)
+  ys <- seq(rct$ymin, rct$ymax, by = height / ny)
+  rct(
+    rep(xs[-length(xs)], ny),
+    rep(ys[-length(ys)], each = nx),
+    rep(xs[-1], ny),
+    rep(ys[-1], each = nx)
+  )
+}
+
+#' @export
+#' @importFrom grDevices as.raster
+as.raster.wk_grd_rct <- function(x, ...) {
+  # as.raster() works when values are [0..1]. We can emulate
+  # this default by rescaling the image data if it's not already
+  # a raster or nativeRaster.
+  if (inherits(x$data, "nativeRaster") || inherits(x$data, "raster")) {
+    x$data
+  } else {
+    range <- suppressWarnings(range(x$data, finite = TRUE))
+    if (all(is.finite(range)) && (diff(range) > .Machine$double.eps)) {
+      image <- (x$data - range[1]) / diff(range)
+    } else if (all(is.finite(range))) {
+      # constant value
+      image <- x$data
+      image[] <- 0.5
+    } else {
+      # all NA values or zero-length (likely for a grd())
+      image <- matrix(nrow = dim(x$data)[1], ncol = dim(x$data)[2])
+    }
+
+    as.raster(image)
+  }
 }

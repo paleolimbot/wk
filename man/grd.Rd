@@ -21,9 +21,9 @@ grd(
   type = c("polygons", "corners", "centers")
 )
 
-grd_rct(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2]))
+grd_rct(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
 
-grd_xy(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2]))
+grd_xy(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
 
 as_grd_rct(x, ...)
 
@@ -69,7 +69,11 @@ Raster-like objects
 \examples{
 grd_rct(volcano)
 # approx bounding box in New Zealand Transverse Mercator
-bbox <- wk::rct(5917019, 1756993, 5917466, 1757577, crs = "EPSG:2193")
+bbox <- wk::rct(
+  5917000,       1757000 + 870,
+  5917000 + 610, 1757000,
+  crs = "EPSG:2193"
+)
 grd_rct(volcano, bbox)
 
 }
