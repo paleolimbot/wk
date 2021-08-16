@@ -14,19 +14,19 @@
 #' @param ... Passed to S3 methods
 #'
 #' @return
-#'   - `wk_grid()` returns a `wk_grid_rct()` for `type == "polygons` or
-#'     a `wk_grid_xy()` otherwise.
-#'   - `wk_grid_rct()` returns an object of class "wk_grid_rct".
-#'   - `wk_grid_xy()` returns an object of class "wk_grid_xy".
+#'   - `grd()` returns a `grd_rct()` for `type == "polygons` or
+#'     a `grd_xy()` otherwise.
+#'   - `grd_rct()` returns an object of class "grd_rct".
+#'   - `grd_xy()` returns an object of class "grd_xy".
 #' @export
 #'
 #' @examples
-#' wk_grid_rct(volcano)
+#' grd_rct(volcano)
 #' # approx bounding box in New Zealand Transverse Mercator
 #' bbox <- wk::rct(5917019, 1756993, 5917466, 1757577, crs = "EPSG:2193")
-#' wk_grid_rct(volcano, bbox)
+#' grd_rct(volcano, bbox)
 #'
-wk_grid <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
+grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
                     type = c("polygons", "corners", "centers")) {
   if (is.null(bbox)) {
     bbox <- NULL
@@ -93,15 +93,15 @@ wk_grid <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
   data <- array(dim = c(nx, ny, 0))
 
   if (type == "polygons") {
-    wk_grid_rct(data, bbox)
+    grd_rct(data, bbox)
   } else {
-    wk_grid_xy(data, bbox)
+    grd_xy(data, bbox)
   }
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-wk_grid_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
+grd_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   stopifnot(
     length(bbox) == 1,
@@ -111,22 +111,22 @@ wk_grid_rct <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
   # with zero values in the xy direction, bbox is empty
   if ((dim(data)[1] * dim(data)[2]) == 0) {
     return(
-      new_wk_grid(
+      new_grd(
         list(
           data = data,
           bbox = wk::wk_bbox(xy(crs = wk_crs(bbox)))
         ),
-        "wk_grid_rct"
+        "grd_rct"
       )
     )
   }
 
-  new_wk_grid(list(data = data, bbox = bbox), "wk_grid_rct")
+  new_grd(list(data = data, bbox = bbox), "grd_rct")
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-wk_grid_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
+grd_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   stopifnot(
     length(bbox) == 1,
@@ -136,12 +136,12 @@ wk_grid_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
   # with zero values in the xy direction, bbox is empty
   if ((dim(data)[1] * dim(data)[2]) == 0) {
     return(
-      new_wk_grid(
+      new_grd(
         list(
           data = data,
           bbox = wk::wk_bbox(xy(crs = wk_crs(bbox)))
         ),
-        "wk_grid_xy"
+        "grd_xy"
       )
     )
   }
@@ -160,64 +160,64 @@ wk_grid_xy <- function(data, bbox = rct(0, 0, dim(data)[1], dim(data)[2])) {
     )
   }
 
-  new_wk_grid(list(data = data, bbox = bbox), "wk_grid_xy")
+  new_grd(list(data = data, bbox = bbox), "grd_xy")
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-as_wk_grid_rct <- function(x, ...) {
-  UseMethod("as_wk_grid_rct")
+as_grd_rct <- function(x, ...) {
+  UseMethod("as_grd_rct")
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-as_wk_grid_rct.wk_grid_rct <- function(x, ...) {
+as_grd_rct.grd_rct <- function(x, ...) {
   x
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-as_wk_grid_xy <- function(x, ...) {
-  UseMethod("as_wk_grid_xy")
+as_grd_xy <- function(x, ...) {
+  UseMethod("as_grd_xy")
 }
 
-#' @rdname wk_grid
+#' @rdname grd
 #' @export
-as_wk_grid_xy.wk_grid_xy <- function(x, ...) {
+as_grd_xy.grd_xy <- function(x, ...) {
   x
 }
 
 #' S3 details for grid objects
 #'
-#' @param x A [wk_grid()]
+#' @param x A [grd()]
 #' @param subclass An optional subclass.
 #'
 #' @export
 #'
-new_wk_grid <- function(x, subclass = character()) {
-  structure(x, class = union(subclass, "wk_grid"))
+new_grd <- function(x, subclass = character()) {
+  structure(x, class = union(subclass, "grd"))
 }
 
 #' @export
-wk_bbox.wk_grid <- function(handleable, ...) {
+wk_bbox.grd <- function(handleable, ...) {
   # take the bbox of the bbox to normalize a bounding box
   # with xmin > xmax
   wk_bbox(handleable$bbox)
 }
 
 #' @export
-wk_crs.wk_grid <- function(x) {
+wk_crs.grd <- function(x) {
   attr(x$bbox, "crs", exact = TRUE)
 }
 
 #' @export
-wk_set_crs.wk_grid <- function(x, crs) {
+wk_set_crs.grd <- function(x, crs) {
   x$bbox <- wk_set_crs(x$bbox, crs)
   x
 }
 
 #' @export
-format.wk_grid <- function(x, ...) {
+format.grd <- function(x, ...) {
   crs <- wk_crs(x)
   sprintf(
     "<%s [%s] => %s%s>",
@@ -229,7 +229,7 @@ format.wk_grid <- function(x, ...) {
 }
 
 #' @export
-print.wk_grid <- function(x, ...) {
+print.grd <- function(x, ...) {
   cat(paste0(format(x), "\n"))
   utils::str(x)
   invisible(x)
