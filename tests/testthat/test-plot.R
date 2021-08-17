@@ -57,6 +57,19 @@ test_that("crc plot method works", {
   expect_identical(plot(crc(1, 2, 3)), crc(1, 2, 3))
 })
 
+test_that("grd_xy() plot method works", {
+  grid <- grd(nx = 3, ny = 2, type = "centers")
+  expect_identical(
+    plot(
+      grid,
+      col = rgb(0:5, 0:5, 0:5, maxColorValue = 5),
+      pch = 16,
+      cex = 5
+    ),
+    grid
+  )
+})
+
 test_that("grd_rct() plot method works", {
   grid_empty <- grd(nx = 0, ny = 0)
   expect_identical(plot(grid_empty, bbox = rct(0, 0, 1, 1)), grid_empty)

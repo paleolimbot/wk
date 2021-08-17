@@ -288,6 +288,7 @@ plot.wk_crc <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
 #' @export
 plot.wk_grd_xy <- function(x, ...) {
   plot(as_xy(x), ...)
+  invisible(x)
 }
 
 #' @rdname wk_plot
