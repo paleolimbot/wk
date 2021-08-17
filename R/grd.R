@@ -355,9 +355,13 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
   # as.raster() works when values are [0..1]. We can emulate
   # this default by rescaling the image data if it's not already
   # a raster or nativeRaster.
+  is_simple_numeric <- (length(setdiff(class(x$data), c("matrix", "array"))) == 0) &&
+    !is.character(x$data) &&
+    (is.na(dim(x$data)[3]) || (dim(x$data)[3] <= 1))
+
   if (inherits(x$data, "nativeRaster")) {
     x$data
-  } else if ((length(setdiff(class(x$data), c("matrix", "array"))) == 0) && !is.character(x$data)) {
+  } else if (is_simple_numeric) {
     range <- suppressWarnings(range(x$data, finite = TRUE))
     if (all(is.finite(range)) && (diff(range) > .Machine$double.eps)) {
       image <- (x$data - range[1]) / diff(range)
