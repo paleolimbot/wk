@@ -1,11 +1,11 @@
 
 test_that("grd_rct() works", {
-  grid <- grd_rct(t(volcano))
+  grid <- grd_rct(volcano)
   expect_s3_class(grid, "wk_grd_rct")
   expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_rct(grid), grid)
   expect_null(wk_crs(grid))
-  expect_identical(wk_bbox(grid), rct(0, 0, 87, 61))
+  expect_identical(wk_bbox(grid), rct(0, 0, 61, 87))
 
   expect_match(format(grid), "wk_grd_rct")
   expect_output(print(grid), "wk_grd_rct")
@@ -33,12 +33,12 @@ test_that("grd_xy() works for h/v lines", {
 })
 
 test_that("grd_xy() works", {
-  grid <- grd_xy(t(volcano))
+  grid <- grd_xy(volcano)
   expect_s3_class(grid, "wk_grd_xy")
   expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_xy(grid), grid)
   expect_null(wk_crs(grid))
-  expect_identical(wk_bbox(grid), rct(0, 0, 87, 61))
+  expect_identical(wk_bbox(grid), rct(0, 0, 60, 86))
 
   expect_match(format(grid), "wk_grd_xy")
   expect_output(print(grid), "wk_grd_xy")
@@ -49,7 +49,7 @@ test_that("grd_xy() works", {
 })
 
 test_that("grd_xy <-> grd_rct converters work", {
-  grid <- grd_rct(t(volcano))
+  grid <- grd_rct(volcano)
   expect_identical(as_grd_rct(as_grd_xy(grid)), grid)
 
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
@@ -92,4 +92,46 @@ test_that("grd() works", {
   expect_identical(wk_bbox(corner_dxdy), rct(0, 0, 10, 20))
 
   expect_error(grd(), "Must specify")
+})
+
+test_that("as_xy() works for grd objects", {
+  data <- matrix(0:5, nrow = 2, ncol = 3)
+  grid <- grd_xy(data)
+
+  # order should match the internal ordering of data
+  # (row major unless specified)
+  expect_identical(
+    as_xy(grd_xy(data)),
+    c(
+      xy(0, 1),
+      xy(0, 0),
+      xy(1, 1),
+      xy(1, 0),
+      xy(2, 1),
+      xy(2, 0)
+    )
+  )
+
+  expect_identical(as_xy(as_grd_rct(grid)), as_xy(grid))
+})
+
+test_that("as_rct() works for grd objects", {
+  data <- matrix(0:5, nrow = 2, ncol = 3)
+  grid <- grd_rct(data)
+
+  # order should match the internal ordering of data
+  # (row major unless specified)
+  expect_identical(
+    as_rct(grid),
+    c(
+      rct(0, 1, 1, 2),
+      rct(0, 0, 1, 1),
+      rct(1, 1, 2, 2),
+      rct(1, 0, 2, 1),
+      rct(2, 1, 3, 2),
+      rct(2, 0, 3, 1)
+    )
+  )
+
+  expect_identical(as_xy(as_grd_rct(grid)), as_xy(grid))
 })

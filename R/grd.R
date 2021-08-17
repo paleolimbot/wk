@@ -133,7 +133,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
 
 #' @rdname grd
 #' @export
-grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
+grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1)) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   stopifnot(
     length(bbox) == 1,
@@ -300,11 +300,15 @@ as_xy.wk_grd_xy <- function(x, ...) {
     return(xy(crs = wk_crs(x)))
   }
 
+  # ordering such that values match up
+  # when dim(x$data) <- NULL (nativeRaster maybe should be
+  # special-cased or maybe there needs to be an order specified
+  # in the constructor
   xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
-  ys <- seq(rct$ymin, rct$ymax, by = height / (ny - 1))
+  ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
   xy(
-    rep(xs, length(ys)),
-    rep(ys, each = length(xs))
+    rep(xs, each = length(ys)),
+    rep(ys, length(xs))
   )
 }
 
@@ -320,14 +324,29 @@ as_rct.wk_grd_rct <- function(x, ...) {
     return(rct(crs = wk_crs(x)))
   }
 
+  # ordering such that values match up
+  # when dim(x$data) <- NULL (nativeRaster maybe should be
+  # special-cased or maybe there needs to be an order specified
+  # in the constructor
   xs <- seq(rct$xmin, rct$xmax, by = width / nx)
-  ys <- seq(rct$ymin, rct$ymax, by = height / ny)
+  ys <- seq(rct$ymax, rct$ymin, by = -height / ny)
+
   rct(
-    rep(xs[-length(xs)], ny),
-    rep(ys[-length(ys)], each = nx),
-    rep(xs[-1], ny),
-    rep(ys[-1], each = nx)
+    rep(xs[-length(xs)], each = ny),
+    rep(ys[-1], nx),
+    rep(xs[-1], each = ny),
+    rep(ys[-length(ys)], nx)
   )
+}
+
+#' @export
+as_xy.wk_grd_rct <- function(x, ...) {
+  as_xy(as_grd_xy(x))
+}
+
+#' @export
+as_rct.wk_grd_xy <- function(x, ...) {
+  as_rct(as_grd_rct(x))
 }
 
 #' @export
@@ -338,7 +357,7 @@ as.raster.wk_grd_rct <- function(x, ...) {
   # a raster or nativeRaster.
   if (inherits(x$data, "nativeRaster") || inherits(x$data, "raster")) {
     x$data
-  } else {
+  } else if (length(setdiff(class(x$data), c("matrix", "array"))) == 0) {
     range <- suppressWarnings(range(x$data, finite = TRUE))
     if (all(is.finite(range)) && (diff(range) > .Machine$double.eps)) {
       image <- (x$data - range[1]) / diff(range)
@@ -352,5 +371,7 @@ as.raster.wk_grd_rct <- function(x, ...) {
     }
 
     as.raster(image)
+  } else {
+    as.raster(x$data)
   }
 }

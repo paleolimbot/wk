@@ -23,7 +23,7 @@ grd(
 
 grd_rct(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
 
-grd_xy(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
+grd_xy(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1))
 
 as_grd_rct(x, ...)
 
