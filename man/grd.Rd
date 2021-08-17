@@ -69,7 +69,7 @@ Raster-like objects
 \examples{
 grd_rct(volcano)
 # approx bounding box in New Zealand Transverse Mercator
-bbox <- wk::rct(
+bbox <- rct(
   5917000,       1757000 + 870,
   5917000 + 610, 1757000,
   crs = "EPSG:2193"

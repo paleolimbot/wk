@@ -23,7 +23,7 @@
 #' @examples
 #' grd_rct(volcano)
 #' # approx bounding box in New Zealand Transverse Mercator
-#' bbox <- wk::rct(
+#' bbox <- rct(
 #'   5917000,       1757000 + 870,
 #'   5917000 + 610, 1757000,
 #'   crs = "EPSG:2193"
@@ -41,7 +41,7 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
   }
   type <- match.arg(type)
 
-  if (is.null(nx) && is.null(ny) && !is.null(bbox)) {
+  if (is.null(nx) && is.null(ny) && !is.null(dx) && !is.null(dy) && !is.null(bbox)) {
     rct <- unclass(bbox)
     width <- rct$xmax - rct$xmin
     height <- rct$ymax - rct$ymin
@@ -63,7 +63,7 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
         crs = wk_crs(bbox)
       )
     }
-  } else if (is.null(dx) && is.null(dy)) {
+  } else if (is.null(dx) && is.null(dy) && !is.null(nx) && !is.null(ny)) {
     if (is.null(bbox)) {
       bbox <- rct(0, 0, nx, ny)
     }

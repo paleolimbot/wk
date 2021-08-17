@@ -82,4 +82,14 @@ test_that("grd() works", {
   center_dxdy <- grd(rct(0, 0, 10, 20), dx = 1, dy = 4, type = "centers")
   expect_identical(dim(center_dxdy$data), c(5L, 10L, 0L))
   expect_identical(wk_bbox(center_dxdy), rct(0.5, 2, 9.5, 18))
+
+  corner_nxny <- grd(nx = 10, ny = 20, type = "corners")
+  expect_identical(dim(corner_nxny$data), c(21L, 11L, 0L))
+  expect_identical(wk_bbox(corner_nxny), rct(0, 0, 10, 20))
+
+  corner_dxdy <- grd(rct(0, 0, 10, 20), dx = 1, dy = 4, type = "corners")
+  expect_identical(dim(corner_dxdy$data), c(6L, 11L, 0L))
+  expect_identical(wk_bbox(corner_dxdy), rct(0, 0, 10, 20))
+
+  expect_error(grd(), "Must specify")
 })
