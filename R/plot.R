@@ -318,16 +318,18 @@ plot.wk_grd_rct <- function(x, ...,
   # empty raster can skip plotting
   rct <- unclass(x$bbox)
   if (identical(rct$xmax - rct$xmin, -Inf) || identical(rct$ymax - rct$ymin, -Inf)) {
-    return(x)
+    return(invisible(x))
   }
 
   # as.raster() takes care of the default details here
+  # call with native = TRUE, but realize this isn't implemented
+  # everywhere (so we may get a regular raster back)
   if (is.null(image)) {
-    image <- as.raster(x)
+    image <- as.raster(x, native = TRUE)
   }
 
-  if (!inherits(image, "rasterImage")) {
-    image <- as.raster(x)
+  if (!inherits(image, "nativeRaster")) {
+    image <- as.raster(x, native = TRUE)
   }
 
   # rasterImage refuses to flip images, so we have to do this ourselves
@@ -378,4 +380,6 @@ plot.wk_grd_rct <- function(x, ...,
     graphics::segments(xs, rct$ymin, xs, rct$ymax, col = border)
     graphics::segments(rct$xmin, ys, rct$xmax, ys, col = border)
   }
+
+  invisible(x)
 }
