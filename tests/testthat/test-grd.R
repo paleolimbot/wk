@@ -173,4 +173,10 @@ test_that("as.raster() works for grd_rct() objects", {
     as.raster(grid_num),
     as.raster(matrix(0:5, nrow = 2, ncol = 3) / 5)
   )
+
+  grid_cols <- grd_rct(matrix("#1a1a1a", nrow = 2, ncol = 3))
+  expect_identical(
+    as.raster(grid_cols),
+    as.raster(matrix("#1a1a1a", nrow = 2, ncol = 3))
+  )
 })
