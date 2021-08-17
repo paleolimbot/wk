@@ -67,6 +67,13 @@ test_that("grd_xy <-> grd_rct converters work", {
 })
 
 test_that("grd() works", {
+  grid_bbox <- grd(
+    bbox = xy(c(0, 10), c(0, 20)),
+    nx = 10, ny = 20, type = "polygons"
+  )
+  expect_identical(dim(grid_bbox$data), c(20L, 10L, 0L))
+  expect_identical(wk_bbox(grid_bbox), rct(0, 0, 10, 20))
+
   grid_nxny <- grd(nx = 10, ny = 20, type = "polygons")
   expect_identical(dim(grid_nxny$data), c(20L, 10L, 0L))
   expect_identical(wk_bbox(grid_nxny), rct(0, 0, 10, 20))
@@ -95,6 +102,9 @@ test_that("grd() works", {
 })
 
 test_that("as_xy() works for grd objects", {
+  grid_empty <- grd(nx = 0, ny = 0)
+  expect_identical(as_xy(grid_empty), xy(crs = NULL))
+
   data <- matrix(0:5, nrow = 2, ncol = 3)
   grid <- grd_xy(data)
 
@@ -116,6 +126,9 @@ test_that("as_xy() works for grd objects", {
 })
 
 test_that("as_rct() works for grd objects", {
+  grid_empty <- grd(nx = 0, ny = 0)
+  expect_identical(as_rct(grid_empty), rct(crs = NULL))
+
   data <- matrix(0:5, nrow = 2, ncol = 3)
   grid <- grd_rct(data)
 
@@ -133,5 +146,31 @@ test_that("as_rct() works for grd objects", {
     )
   )
 
-  expect_identical(as_xy(as_grd_rct(grid)), as_xy(grid))
+  expect_identical(as_rct(as_grd_xy(grid)), as_rct(grid))
+})
+
+test_that("as.raster() works for grd_rct() objects", {
+  grid_num <- grd_rct(matrix(1:6, nrow = 2, ncol = 3))
+  expect_identical(
+    as.raster(grid_num),
+    as.raster(matrix(0:5, nrow = 2, ncol = 3) / 5)
+  )
+
+  grid_constant <- grd_rct(matrix(0, nrow = 2, ncol = 3))
+  expect_identical(
+    as.raster(grid_constant),
+    as.raster(matrix(0.5, nrow = 2, ncol = 3))
+  )
+
+  grid_na <- grd_rct(matrix(NA, nrow = 2, ncol = 3))
+  expect_identical(
+    as.raster(grid_na),
+    as.raster(matrix(NA, nrow = 2, ncol = 3))
+  )
+
+  grid_raster <- grd_rct(as.raster(matrix(0:5, nrow = 2, ncol = 3) / 5))
+  expect_identical(
+    as.raster(grid_num),
+    as.raster(matrix(0:5, nrow = 2, ncol = 3) / 5)
+  )
 })

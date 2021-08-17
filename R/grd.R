@@ -351,7 +351,7 @@ as_rct.wk_grd_xy <- function(x, ...) {
 
 #' @export
 #' @importFrom grDevices as.raster
-as.raster.wk_grd_rct <- function(x, ...) {
+as.raster.wk_grd_rct <- function(x, ..., native = NA) {
   # as.raster() works when values are [0..1]. We can emulate
   # this default by rescaling the image data if it's not already
   # a raster or nativeRaster.
@@ -372,6 +372,6 @@ as.raster.wk_grd_rct <- function(x, ...) {
 
     as.raster(image)
   } else {
-    as.raster(x$data)
+    as.raster(x$data, native = native)
   }
 }
