@@ -75,7 +75,7 @@ test_that("grd_rct() plot method works", {
   expect_identical(plot(grid_empty, bbox = rct(0, 0, 1, 1)), grid_empty)
 
   grid_spec <- grd(nx = 3, ny = 2)
-  expect_identical(plot(grid_spec, border = "black"), grid_spec)
+  expect_identical(plot(grid_spec, border = NULL), grid_spec)
 
   grid_numeric <- grd_rct(matrix(0:5, nrow = 2, ncol = 3))
   expect_identical(plot(grid_numeric), grid_numeric)
