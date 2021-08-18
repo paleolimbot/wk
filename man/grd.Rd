@@ -10,6 +10,9 @@
 \alias{as_grd_xy}
 \alias{as_grd_xy.wk_grd_xy}
 \alias{as_grd_xy.wk_grd_rct}
+\alias{grd_data_spec}
+\alias{grd_data_spec.default}
+\alias{grd_data_spec.nativeRaster}
 \title{Raster-like objects}
 \usage{
 grd(
@@ -21,9 +24,17 @@ grd(
   type = c("polygons", "corners", "centers")
 )
 
-grd_rct(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
+grd_rct(
+  data,
+  bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
+  spec = grd_data_spec(data)
+)
 
-grd_xy(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1))
+grd_xy(
+  data,
+  bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
+  spec = grd_data_spec(data)
+)
 
 as_grd_rct(x, ...)
 
@@ -36,6 +47,12 @@ as_grd_xy(x, ...)
 \method{as_grd_xy}{wk_grd_xy}(x, ...)
 
 \method{as_grd_xy}{wk_grd_rct}(x, ...)
+
+grd_data_spec(data, ...)
+
+\method{grd_data_spec}{default}(data, ...)
+
+\method{grd_data_spec}{nativeRaster}(data, ...)
 }
 \arguments{
 \item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object.}
@@ -50,6 +67,9 @@ objects are the center of the \code{\link[=rct]{rct()}} grid; use "corners" to r
 a grid along the corners of \code{bbox}.}
 
 \item{data}{An object with two or more dimensions. Most usefully, a matrix.}
+
+\item{spec}{A \code{\link[=grd_data_spec]{grd_data_spec()}}, used if \code{data} has a non-standard dimension
+ordering or subset method implementation.}
 
 \item{x}{An object to convert to a grid}
 
