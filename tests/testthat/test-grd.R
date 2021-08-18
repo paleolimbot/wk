@@ -122,6 +122,19 @@ test_that("as_xy() works for grd objects", {
     )
   )
 
+  # math should be identical for xmin > xmax
+  expect_identical(
+    as_xy(grd_xy(data, rct(0, 0, -2, -1))),
+    c(
+      xy(0, -1),
+      xy(0, 0),
+      xy(-1, -1),
+      xy(-1, 0),
+      xy(-2, -1),
+      xy(-2, 0)
+    )
+  )
+
   expect_identical(as_xy(as_grd_rct(grid)), as_xy(grid))
 })
 
@@ -143,6 +156,18 @@ test_that("as_rct() works for grd objects", {
       rct(1, 0, 2, 1),
       rct(2, 1, 3, 2),
       rct(2, 0, 3, 1)
+    )
+  )
+
+  expect_identical(
+    as_rct(grd_rct(data, rct(0, 0, -3, -2))),
+    c(
+      rct(0, -1, -1, -2),
+      rct(0, 0, -1, -1),
+      rct(-1, -1, -2, -2),
+      rct(-1, 0, -2, -1),
+      rct(-2, -1, -3, -2),
+      rct(-2, -0, -3, -1)
     )
   )
 
