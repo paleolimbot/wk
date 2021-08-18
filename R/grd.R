@@ -176,17 +176,6 @@ grd_subset <- function(object, x = NULL, y = NULL, ..., bbox = NULL) {
 
 #' @export
 grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) {
-  rct <- unclass(object$spec$bbox)
-  width <- rct$xmax - rct$xmin
-  height <- rct$ymax - rct$ymin
-  nx <- object$spec$dims["x"]
-  ny <- object$spec$dims["y"]
-
-  # can't get any more subsetted than an empty grid!
-  if (identical(width, -Inf) || identical(height, -Inf)) {
-    return(object)
-  }
-
   if (missing(x)) {
     x <- NULL
   }
@@ -195,14 +184,41 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
     y <- NULL
   }
 
-  if (is.null(bbox) && (!is.null(x) || !is.null(y))) {
-    stop("Not implemented")
-  } else if (!is.null(bbox) && is.null(x) && is.null(y)) {
-    dx <- width / nx
-    dy <- height / ny
+  # get the cell information we need
+  rct <- unclass(object$spec$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  nx <- object$spec$dims["x"]
+  ny <- object$spec$dims["y"]
+  dx <- width / nx
+  dy <- height / ny
 
-    # probs wrong for flipped
+  # can't get any more subsetted than an empty grid!
+  if ((nx * ny) == 0) {
+    return(object)
+  }
+
+  # empty subset criteria -> no subset
+  if (is.null(bbox) && is.null(x) && is.null(y)) {
+    return(object)
+  }
+
+  if (is.null(bbox) && (!is.null(x) || !is.null(y))) {
+    # x and y must be NULL or specified by seq()
+    if (is.null(x)) {
+      x <- seq_len(nx)
+    } else {
+      stopifnot(length(unique(diff(x))) == 1)
+    }
+
+    if (is.null(y)) {
+      y <- seq_len(ny)
+    } else {
+      stopifnot(length(unique(diff(y))) == 1)
+    }
+  } else if (!is.null(bbox) && is.null(x) && is.null(y)) {
     rct_target <- unclass(if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox))
+
     ximin <- (rct_target$xmin - rct$xmin) / dx
     yimin <- (rct_target$ymin - rct$ymin) / dy
     ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
@@ -213,19 +229,33 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
     # this raster)
     x <- seq(floor(ximin), ceiling(ximax)) + 1L
     y <- seq(floor(yimin), ceiling(yimax)) + 1L
-
-    # clamp to actual indices
-    x <- x[(x >= 1L) & (x <= nx)]
-    y <- y[(y >= 1L) & (y <= ny)]
-
-    # re-define the bbox based on actual indices
-    rct$xmin <- rct$xmin + (min(x) - 1) * dx
-    rct$xmax <- rct$xmin + (max(x)) * dx
-    rct$ymin <- rct$ymin + (min(y) - 1) * dy
-    rct$ymax <- rct$ymin + (max(y)) * dy
   } else {
     stop("Must specify bbox OR (x | y)", call. = FALSE)
   }
+
+  # clamp to actual indices
+  x <- x[!is.na(x) & (x >= 1L) & (x <= nx)]
+  y <- y[!is.na(y) & (y >= 1L) & (y <= ny)]
+
+  # we want these sorted such that we get a bbox that
+  # properly has xmax > xmin
+  x <- sort(x, decreasing = width < 0)
+  y <- sort(y, decreasing = height < 0)
+  rct[c("xmin", "xmax")] <- as.list(range(c(rct$xmin, rct$xmax)))
+  rct[c("ymin", "ymax")] <- as.list(range(c(rct$ymin, rct$ymax)))
+  dy <- abs(dy)
+  dx <- abs(dx)
+
+  # re-define the bbox based on actual indices
+  # strategy is to keep the cell centres intact,
+  # which may change the bbox if downsampling
+  new_dx <- dx * abs(x[2] - x[1])
+  new_dy <- dy * abs(y[2] - y[1])
+  new_rct <- rct
+  new_rct$xmin <- rct$xmin + (min(x) - 1) * dx + (dx / 2) - (new_dx / 2)
+  new_rct$xmax <- rct$xmin + (max(x)) * dx - (dx / 2) + (new_dx / 2)
+  new_rct$ymin <- rct$ymin + (min(y) - 1) * dy + (dy / 2) - (new_dy / 2)
+  new_rct$ymax <- rct$ymin + (max(y)) * dy - (dy / 2) + (new_dy / 2)
 
   # about to potentially modify these
   data <- object$data
@@ -255,7 +285,7 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
   # reset the spec info
   spec <- new_wk_grd_data_spec(
     dim(data),
-    bbox = new_wk_rct(rct),
+    bbox = new_wk_rct(new_rct),
     data_order = spec$data_order,
     dim_order = spec$dim_order
   )
