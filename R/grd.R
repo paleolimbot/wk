@@ -361,7 +361,7 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
       image[] <- 0.5
     } else {
       # all NA values or zero-length (likely for a grd())
-      image <- matrix(nrow = dim(x$data)[1], ncol = dim(x$data)[2])
+      image <- matrix(nrow = x$spec$dims["y"], ncol = x$spec$dims["x"])
     }
 
     as.raster(image)
