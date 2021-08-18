@@ -170,6 +170,101 @@ as_grd_rct.wk_grd_rct <- function(x, ...) {
 
 #' @rdname grd
 #' @export
+grd_subset <- function(object, x = NULL, y = NULL, ..., bbox = NULL) {
+  UseMethod("grd_subset")
+}
+
+#' @export
+grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) {
+  rct <- unclass(object$spec$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  nx <- object$spec$dims["x"]
+  ny <- object$spec$dims["y"]
+
+  # can't get any more subsetted than an empty grid!
+  if (identical(width, -Inf) || identical(height, -Inf)) {
+    return(object)
+  }
+
+  if (missing(x)) {
+    x <- NULL
+  }
+
+  if (missing(y)) {
+    y <- NULL
+  }
+
+  if (is.null(bbox) && (!is.null(x) || !is.null(y))) {
+    stop("Not implemented")
+  } else if (!is.null(bbox) && is.null(x) && is.null(y)) {
+    dx <- width / nx
+    dy <- height / ny
+
+    # probs wrong for flipped
+    rct_target <- unclass(if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox))
+    ximin <- (rct_target$xmin - rct$xmin) / dx
+    yimin <- (rct_target$ymin - rct$ymin) / dy
+    ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
+    yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
+
+    # this subset will get us intersecting cells (should consider
+    # if returning a unique subset for the case of tiling along
+    # this raster)
+    x <- seq(floor(ximin), ceiling(ximax)) + 1L
+    y <- seq(floor(yimin), ceiling(yimax)) + 1L
+
+    # clamp to actual indices
+    x <- x[(x >= 1L) & (x <= nx)]
+    y <- y[(y >= 1L) & (y <= ny)]
+
+    # re-define the bbox based on actual indices
+    rct$xmin <- rct$xmin + (min(x) - 1) * dx
+    rct$xmax <- rct$xmin + (max(x)) * dx
+    rct$ymin <- rct$ymin + (min(y) - 1) * dy
+    rct$ymax <- rct$ymin + (max(y)) * dy
+  } else {
+    stop("Must specify bbox OR (x | y)", call. = FALSE)
+  }
+
+  # about to potentially modify these
+  data <- object$data
+  spec <- object$spec
+
+  # special case the nativeRaster, whose dims are lying about
+  # the ordering needed to index it
+  if (inherits(data, "nativeRaster")) {
+    dim(data) <- rev(dim(data))
+    spec$dim_order <- c("x", "y")
+  }
+
+  if (identical(spec$dim_order, c("y", "x"))) {
+    data <- data[y, x, drop = FALSE]
+  } else if(identical(spec$dim_order, c("x", "y"))) {
+    data <- data[x, y, drop = FALSE]
+  } else {
+    stop("Unsupported spec$dim_order", call. = FALSE) # nocov
+  }
+
+  # reset ordering for the constructor
+  if (inherits(data, "nativeRaster")) {
+    dim(data) <- rev(dim(data))
+    spec$dim_order <- c("y", "x")
+  }
+
+  # reset the spec info
+  spec <- new_wk_grd_data_spec(
+    dim(data),
+    bbox = new_wk_rct(rct),
+    data_order = spec$data_order,
+    dim_order = spec$dim_order
+  )
+
+  grd_rct(data, spec = spec)
+}
+
+#' @rdname grd
+#' @export
 as_grd_rct.wk_grd_xy <- function(x, ...) {
   # from a grd_xy, we assume these were the centres
   nx <- x$spec$dims["x"]
@@ -392,11 +487,9 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
 #' grd_data_spec(matrix())
 #'
 new_wk_grd_data_spec <- function(dims, bbox = NULL,
-                                 index_order = c("y", "x"),
-                                 dim_order = index_order,
+                                 dim_order = c("y", "x"),
                                  data_order = dim_order) {
   stopifnot(
-    setequal(index_order, c("x", "y")),
     setequal(dim_order, c("x", "y")),
     setequal(data_order, c("x", "y")),
     is.null(bbox) || (inherits(bbox, "wk_rct") && (length(bbox) == 1)),
@@ -409,8 +502,8 @@ new_wk_grd_data_spec <- function(dims, bbox = NULL,
     list(
       dims = dims,
       bbox = bbox,
-      index_order = index_order,
-      dim_order = dim_order
+      dim_order = dim_order,
+      data_order = data_order
     ),
     class = "wk_grd_data_spec"
   )
@@ -427,7 +520,6 @@ grd_data_spec <- function(data, ...) {
 grd_data_spec.default <- function(data, ...) {
   new_wk_grd_data_spec(
     dim(data), bbox = NULL,
-    index_order = c("y", "x"),
     dim_order = c("y", "x")
   )
 }
@@ -437,7 +529,7 @@ grd_data_spec.default <- function(data, ...) {
 grd_data_spec.nativeRaster <- function(data, ...) {
   new_wk_grd_data_spec(
     dim(data), bbox = NULL,
-    index_order = c("x", "y"),
-    dim_order = c("y", "x")
+    dim_order = c("y", "x"),
+    data_order = c("x", "y")
   )
 }
