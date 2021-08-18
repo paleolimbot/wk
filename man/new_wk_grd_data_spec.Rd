@@ -16,11 +16,13 @@ new_wk_grd_data_spec(
 
 \item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object.}
 
-\item{dim_order}{Mapping of dimensions to}
-
-\item{index_order}{Mapping of dimensions to index axes.
+\item{dim_order}{Mapping of dimensions to index axes.
 Default ("y", "x") reflects that of \code{\link[grDevices:as.raster]{grDevices::as.raster()}}
 and \code{\link[graphics:rasterImage]{graphics::rasterImage()}}.}
+
+\item{data_order}{Data axis order used to choose the order
+in which cells should be iterated to match the internal
+data representation.}
 }
 \value{
 An object of class "wk_grd_data_spec"

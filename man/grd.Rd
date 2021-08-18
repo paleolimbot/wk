@@ -6,7 +6,6 @@
 \alias{grd_xy}
 \alias{as_grd_rct}
 \alias{as_grd_rct.wk_grd_rct}
-\alias{grd_subset}
 \alias{as_grd_rct.wk_grd_xy}
 \alias{as_grd_xy}
 \alias{as_grd_xy.wk_grd_xy}
@@ -40,8 +39,6 @@ grd_xy(
 as_grd_rct(x, ...)
 
 \method{as_grd_rct}{wk_grd_rct}(x, ...)
-
-grd_subset(object, x = NULL, y = NULL, ..., bbox = NULL)
 
 \method{as_grd_rct}{wk_grd_xy}(x, ...)
 

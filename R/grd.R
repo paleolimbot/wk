@@ -168,8 +168,22 @@ as_grd_rct.wk_grd_rct <- function(x, ...) {
   x
 }
 
-#' @rdname grd
+
+#' Subset grd objects
+#'
+#' @param object A [grd()]
+#' @param x Indices in the x direction
+#' @param y Indices in the y direction
+#' @param ... Pased to the subset method
+#' @param bbox A bounding box to use as a subset
+#'
+#' @return A modified [grd()]
 #' @export
+#'
+#' @examples
+#' grid <- grd_rct(volcano)
+#' grd_subset(grid, seq(2, 61, by = 4), seq(2, 87, by = 4))
+#'
 grd_subset <- function(object, x = NULL, y = NULL, ..., bbox = NULL) {
   UseMethod("grd_subset")
 }
@@ -238,19 +252,21 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
   y <- y[!is.na(y) & (y >= 1L) & (y <= ny)]
 
   # we want these sorted such that we get a bbox that
-  # properly has xmax > xmin
+  # properly has xmax > xmin and ymax > ymin
   x <- sort(x, decreasing = width < 0)
   y <- sort(y, decreasing = height < 0)
   rct[c("xmin", "xmax")] <- as.list(range(c(rct$xmin, rct$xmax)))
   rct[c("ymin", "ymax")] <- as.list(range(c(rct$ymin, rct$ymax)))
   dy <- abs(dy)
   dx <- abs(dx)
+  downsample_x <- abs(x[2] - x[1])
+  downsample_y <- abs(y[2] - y[1])
 
   # re-define the bbox based on actual indices
   # strategy is to keep the cell centres intact,
   # which may change the bbox if downsampling
-  new_dx <- dx * abs(x[2] - x[1])
-  new_dy <- dy * abs(y[2] - y[1])
+  new_dx <- dx * downsample_x
+  new_dy <- dy * downsample_y
   new_rct <- rct
   new_rct$xmin <- rct$xmin + (min(x) - 1) * dx + (dx / 2) - (new_dx / 2)
   new_rct$xmax <- rct$xmin + (max(x)) * dx - (dx / 2) + (new_dx / 2)
@@ -504,10 +520,12 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
 #' order) to back a [grd()].
 #'
 #' @param dims The dimensions of the raster
-#' @param index_order Mapping of dimensions to index axes.
+#' @param dim_order Mapping of dimensions to index axes.
 #'   Default ("y", "x") reflects that of [grDevices::as.raster()]
 #'   and [graphics::rasterImage()].
-#' @param dim_order Mapping of dimensions to
+#' @param data_order Data axis order used to choose the order
+#'   in which cells should be iterated to match the internal
+#'   data representation.
 #' @inheritParams grd
 #'
 #' @return An object of class "wk_grd_data_spec"
