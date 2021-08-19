@@ -10,9 +10,6 @@
 \alias{as_grd_xy}
 \alias{as_grd_xy.wk_grd_xy}
 \alias{as_grd_xy.wk_grd_rct}
-\alias{grd_data_spec}
-\alias{grd_data_spec.default}
-\alias{grd_data_spec.nativeRaster}
 \title{Raster-like objects}
 \usage{
 grd(
@@ -27,13 +24,13 @@ grd(
 grd_rct(
   data,
   bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
-  spec = grd_data_spec(data)
+  data_order = c("x", "y")
 )
 
 grd_xy(
   data,
   bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
-  spec = grd_data_spec(data)
+  data_order = c("x", "y")
 )
 
 as_grd_rct(x, ...)
@@ -47,12 +44,6 @@ as_grd_xy(x, ...)
 \method{as_grd_xy}{wk_grd_xy}(x, ...)
 
 \method{as_grd_xy}{wk_grd_rct}(x, ...)
-
-grd_data_spec(data, ...)
-
-\method{grd_data_spec}{default}(data, ...)
-
-\method{grd_data_spec}{nativeRaster}(data, ...)
 }
 \arguments{
 \item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object.}
@@ -68,8 +59,9 @@ a grid along the corners of \code{bbox}.}
 
 \item{data}{An object with two or more dimensions. Most usefully, a matrix.}
 
-\item{spec}{A \code{\link[=grd_data_spec]{grd_data_spec()}}, used if \code{data} has a non-standard dimension
-ordering or subset method implementation.}
+\item{data_order}{The order in which the grid should be iterated to match
+the internal ordering of \code{data}. This is used for objects like nativeRaster
+whose internal data ordering is row-major.}
 
 \item{x}{An object to convert to a grid}
 

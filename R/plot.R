@@ -317,7 +317,7 @@ plot.wk_grd_rct <- function(x, ...,
   }
 
   # empty raster can skip plotting
-  rct <- unclass(x$spec$bbox)
+  rct <- unclass(x$bbox)
   if (identical(rct$xmax - rct$xmin, -Inf) || identical(rct$ymax - rct$ymin, -Inf)) {
     return(invisible(x))
   }

@@ -2,9 +2,10 @@
 #' Raster-like objects
 #'
 #' @param data An object with two or more dimensions. Most usefully, a matrix.
-#' @param spec A [grd_data_spec()], used if `data` has a non-standard dimension
-#'   ordering or subset method implementation.
 #' @param bbox A [rct()] containing the bounds and CRS of the object.
+#' @param data_order The order in which the grid should be iterated to match
+#'   the internal ordering of `data`. This is used for objects like nativeRaster
+#'   whose internal data ordering is row-major.
 #' @param nx,ny,dx,dy Either a number of cells in the x- and y- directions
 #'   or delta in the x- and y-directions (in which case `bbox` must
 #'   be specified).
@@ -111,49 +112,53 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
 #' @rdname grd
 #' @export
 grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
-                    spec = grd_data_spec(data)) {
-  stopifnot(inherits(spec, "wk_grd_data_spec"))
-  if (is.null(spec$bbox)) {
-    spec$bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+                    data_order = c("x", "y")) {
+  stopifnot(setequal(data_order, c("x", "y")))
+  if (is.null(bbox)) {
+    bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   }
+
+  dims <- c("x" = dim(data)[2], "y" = dim(data)[1])
 
   # with zero values in the xy direction, bbox is empty
-  if ((spec$dims["x"] * spec$dims["y"]) == 0) {
-    spec$bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
+  if ((dims["x"] * dims["y"]) == 0) {
+    bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
   }
 
-  new_grd(list(data = data, spec = spec), "wk_grd_rct")
+  new_grd(list(data = data, bbox = bbox, data_order = data_order), "wk_grd_rct")
 }
 
 #' @rdname grd
 #' @export
 grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
-                   spec = grd_data_spec(data)) {
-  stopifnot(inherits(spec, "wk_grd_data_spec"))
-  if (is.null(spec$bbox)) {
-    spec$bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+                   data_order = c("x", "y")) {
+  stopifnot(setequal(data_order, c("x", "y")))
+  if (is.null(bbox)) {
+    bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
   }
 
+  dims <- c("x" = dim(data)[2], "y" = dim(data)[1])
+
   # with zero values in the xy direction, bbox is empty
-  if ((spec$dims["x"] * spec$dims["y"]) == 0) {
-    spec$bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
+  if ((dims["x"] * dims["y"]) == 0) {
+    bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
   }
 
   # with one value in the x dimension, we need a zero width bbox
-  if (spec$dims["x"] == 1) {
+  if (dims["x"] == 1) {
     stopifnot(
       unclass(bbox)$xmax == unclass(bbox)$xmin
     )
   }
 
   # with one value in the y dimension, we need a zero height bbox
-  if (spec$dims["y"] == 1) {
+  if (dims["y"] == 1) {
     stopifnot(
       unclass(bbox)$ymax == unclass(bbox)$ymin
     )
   }
 
-  new_grd(list(data = data, spec = spec), "wk_grd_xy")
+  new_grd(list(data = data, bbox = bbox, data_order = data_order), "wk_grd_xy")
 }
 
 #' @rdname grd
@@ -199,11 +204,11 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
   }
 
   # get the cell information we need
-  rct <- unclass(object$spec$bbox)
+  rct <- unclass(object$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
-  nx <- object$spec$dims["x"]
-  ny <- object$spec$dims["y"]
+  nx <- dim(object$data)[2]
+  ny <- dim(object$data)[1]
   dx <- width / nx
   dy <- height / ny
 
@@ -275,62 +280,45 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
 
   # about to potentially modify these
   data <- object$data
-  spec <- object$spec
 
   # special case the nativeRaster, whose dims are lying about
   # the ordering needed to index it
   if (inherits(data, "nativeRaster")) {
     dim(data) <- rev(dim(data))
-    spec$dim_order <- c("x", "y")
-  }
-
-  if (identical(spec$dim_order, c("y", "x"))) {
-    data <- data[y, x, drop = FALSE]
-  } else if(identical(spec$dim_order, c("x", "y"))) {
-    data <- data[x, y, drop = FALSE]
-  } else {
-    stop("Unsupported spec$dim_order", call. = FALSE) # nocov
-  }
-
-  # reset ordering for the constructor
-  if (inherits(data, "nativeRaster")) {
+    data[x, y, drop = FALSE]
     dim(data) <- rev(dim(data))
-    spec$dim_order <- c("y", "x")
+  } else {
+    data <- data[y, x, ..., drop = FALSE]
   }
 
-  # reset the spec info
-  spec <- new_wk_grd_data_spec(
-    dim(data),
-    bbox = new_wk_rct(new_rct),
-    data_order = spec$data_order,
-    dim_order = spec$dim_order
+  grd_rct(
+    data,
+    bbox = new_wk_rct(new_rct, crs = wk_crs(object)),
+    data_order = object$data_order
   )
-
-  grd_rct(data, spec = spec)
 }
 
 #' @rdname grd
 #' @export
 as_grd_rct.wk_grd_xy <- function(x, ...) {
   # from a grd_xy, we assume these were the centres
-  nx <- x$spec$dims["x"]
-  ny <- x$spec$dims["y"]
-  rct <- unclass(x$spec$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
+  rct <- unclass(x$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
   dx <- if (nx > 1) width / (nx - 1) else 0
   dy <- if (ny > 1) height / (ny - 1) else 0
 
-  spec <- x$spec
-  spec$bbox <- rct(
+  bbox <- rct(
     rct$xmin - dx / 2,
     rct$ymin - dy / 2,
     rct$xmax + dx / 2,
     rct$ymax + dy / 2,
-    crs = wk_crs(spec$bbox)
+    crs = wk_crs(x$bbox)
   )
 
-  grd_rct(x$data, spec = spec)
+  grd_rct(x$data, bbox = bbox, data_order = x$data_order)
 }
 
 #' @rdname grd
@@ -349,24 +337,23 @@ as_grd_xy.wk_grd_xy <- function(x, ...) {
 #' @export
 as_grd_xy.wk_grd_rct <- function(x, ...) {
   # from a grid_rct() we take the centers
-  nx <- x$spec$dims["x"]
-  ny <- x$spec$dims["y"]
-  rct <- unclass(x$spec$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
+  rct <- unclass(x$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
   dx <- width / nx
   dy <- height / ny
 
-  spec <- x$spec
-  spec$bbox <- rct(
+  bbox <- rct(
     rct$xmin + dx / 2,
     rct$ymin + dy / 2,
     rct$xmax - dx / 2,
     rct$ymax - dy / 2,
-    crs = wk_crs(spec$bbox)
+    crs = wk_crs(x$bbox)
   )
 
-  grd_xy(x$data, spec = spec)
+  grd_xy(x$data, bbox = bbox, data_order = x$data_order)
 }
 
 #' S3 details for grid objects
@@ -384,17 +371,17 @@ new_grd <- function(x, subclass = character()) {
 wk_bbox.wk_grd <- function(handleable, ...) {
   # take the bbox of the bbox to normalize a bounding box
   # with xmin > xmax
-  wk_bbox(as_wkb(handleable$spec$bbox))
+  wk_bbox(as_wkb(handleable$bbox))
 }
 
 #' @export
 wk_crs.wk_grd <- function(x) {
-  attr(x$spec$bbox, "crs", exact = TRUE)
+  attr(x$bbox, "crs", exact = TRUE)
 }
 
 #' @export
 wk_set_crs.wk_grd <- function(x, crs) {
-  x$spec$bbox <- wk_set_crs(x$spec$bbox, crs)
+  x$bbox <- wk_set_crs(x$bbox, crs)
   x
 }
 
@@ -404,7 +391,7 @@ format.wk_grd <- function(x, ...) {
   sprintf(
     "<%s [%s] => %s%s>",
     class(x)[1],
-    paste0(x$spec$dims, collapse = " x "),
+    paste0(dim(x$data), collapse = " x "),
     wk_bbox(x),
     if (is.null(crs)) "" else paste0(" with crs=", format(crs))
   )
@@ -419,9 +406,9 @@ print.wk_grd <- function(x, ...) {
 
 #' @export
 as_xy.wk_grd_xy <- function(x, ...) {
-  rct <- unclass(x$spec$bbox)
-  nx <- x$spec$dims["x"]
-  ny <- x$spec$dims["y"]
+  rct <- unclass(x$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
 
@@ -438,15 +425,15 @@ as_xy.wk_grd_xy <- function(x, ...) {
   xy(
     rep(xs, each = length(ys)),
     rep(ys, length(xs)),
-    crs = wk_crs(x$spec$bbox)
+    crs = wk_crs(x$bbox)
   )
 }
 
 #' @export
 as_rct.wk_grd_rct <- function(x, ...) {
-  rct <- unclass(x$spec$bbox)
-  nx <- x$spec$dims["x"]
-  ny <- x$spec$dims["y"]
+  rct <- unclass(x$bbox)
+  nx <- dim(x$data)[2]
+  ny <- dim(x$data)[1]
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
 
@@ -466,7 +453,7 @@ as_rct.wk_grd_rct <- function(x, ...) {
     rep(ys[-1], nx),
     rep(xs[-1], each = ny),
     rep(ys[-length(ys)], nx),
-    crs = wk_crs(x$spec$bbox)
+    crs = wk_crs(x$bbox)
   )
 }
 
@@ -488,7 +475,7 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
   # a raster or nativeRaster.
   is_simple_numeric <- (length(setdiff(class(x$data), c("matrix", "array"))) == 0) &&
     !is.character(x$data) &&
-    (is.na(x$spec$dims[3]) || (x$spec$dims[3] <= 1))
+    (is.na(dim(x$data)[3]) || (dim(x$data)[3] <= 1))
 
   if (inherits(x$data, "nativeRaster")) {
     x$data
@@ -502,82 +489,11 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
       image[] <- 0.5
     } else {
       # all NA values or zero-length (likely for a grd())
-      image <- matrix(nrow = x$spec$dims["y"], ncol = x$spec$dims["x"])
+      image <- matrix(nrow = dim(x$data)[1], ncol = dim(x$data)[2])
     }
 
     as.raster(image)
   } else {
     as.raster(x$data, native = native)
   }
-}
-
-
-#' Grid detail specifications
-#'
-#' Wraps the details of the `data[]`, `dim(data)`, to allow multiple types
-#' of data to back a [grd()]. Notably, this allows a nativeRaster (whose
-#' data is defined in row-major order but dimensions report column-major
-#' order) to back a [grd()].
-#'
-#' @param dims The dimensions of the raster
-#' @param dim_order Mapping of dimensions to index axes.
-#'   Default ("y", "x") reflects that of [grDevices::as.raster()]
-#'   and [graphics::rasterImage()].
-#' @param data_order Data axis order used to choose the order
-#'   in which cells should be iterated to match the internal
-#'   data representation.
-#' @inheritParams grd
-#'
-#' @return An object of class "wk_grd_data_spec"
-#' @export
-#'
-#' @examples
-#' grd_data_spec(matrix())
-#'
-new_wk_grd_data_spec <- function(dims, bbox = NULL,
-                                 dim_order = c("y", "x"),
-                                 data_order = dim_order) {
-  stopifnot(
-    setequal(dim_order, c("x", "y")),
-    setequal(data_order, c("x", "y")),
-    is.null(bbox) || (inherits(bbox, "wk_rct") && (length(bbox) == 1)),
-    is.integer(dims), length(dims) >= 2
-  )
-
-  names(dims)[1:2] <- dim_order
-
-  structure(
-    list(
-      dims = dims,
-      bbox = bbox,
-      dim_order = dim_order,
-      data_order = data_order
-    ),
-    class = "wk_grd_data_spec"
-  )
-}
-
-#' @rdname grd
-#' @export
-grd_data_spec <- function(data, ...) {
-  UseMethod("grd_data_spec")
-}
-
-#' @rdname grd
-#' @export
-grd_data_spec.default <- function(data, ...) {
-  new_wk_grd_data_spec(
-    dim(data), bbox = NULL,
-    dim_order = c("y", "x")
-  )
-}
-
-#' @rdname grd
-#' @export
-grd_data_spec.nativeRaster <- function(data, ...) {
-  new_wk_grd_data_spec(
-    dim(data), bbox = NULL,
-    dim_order = c("y", "x"),
-    data_order = c("x", "y")
-  )
 }
