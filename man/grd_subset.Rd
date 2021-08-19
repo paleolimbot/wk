@@ -4,18 +4,18 @@
 \alias{grd_subset}
 \title{Subset grd objects}
 \usage{
-grd_subset(object, x = NULL, y = NULL, ..., bbox = NULL)
+grd_subset(object, y = NULL, x = NULL, bbox = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link[=grd]{grd()}}}
 
-\item{x}{Indices in the x direction}
-
 \item{y}{Indices in the y direction}
 
-\item{...}{Pased to the subset method}
+\item{x}{Indices in the x direction}
 
 \item{bbox}{A bounding box to use as a subset}
+
+\item{...}{Passed to subset methods}
 }
 \value{
 A modified \code{\link[=grd]{grd()}}

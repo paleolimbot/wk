@@ -345,7 +345,7 @@ plot.wk_grd_rct <- function(x, ...,
       border <- graphics::par("fg")
     }
 
-    # simplify borders by drawing segments + rect
+    # simplify borders by drawing segments
     nx <- dim(x$data)[2]
     ny <- dim(x$data)[1]
     width <- rct$xmax - rct$xmin
