@@ -122,16 +122,17 @@ test_that("as_xy() works for grd objects", {
     )
   )
 
-  # math should be identical for xmin > xmax
+  # order should still be top left -> bottom right
+  # even with flipped initial bbox
   expect_identical(
     as_xy(grd_xy(data, rct(0, 0, -2, -1))),
     c(
-      xy(0, -1),
-      xy(0, 0),
-      xy(-1, -1),
-      xy(-1, 0),
+      xy(-2, 0),
       xy(-2, -1),
-      xy(-2, 0)
+      xy(-1, 0),
+      xy(-1, -1),
+      xy(0, 0),
+      xy(0, -1)
     )
   )
 
@@ -162,12 +163,12 @@ test_that("as_rct() works for grd objects", {
   expect_identical(
     as_rct(grd_rct(data, rct(0, 0, -3, -2))),
     c(
-      rct(0, -1, -1, -2),
-      rct(0, 0, -1, -1),
-      rct(-1, -1, -2, -2),
-      rct(-1, 0, -2, -1),
-      rct(-2, -1, -3, -2),
-      rct(-2, -0, -3, -1)
+      rct(-3, -1, -2, 0),
+      rct(-3, -2, -2, -1),
+      rct(-2, -1, -1, 0),
+      rct(-2, -2, -1, -1),
+      rct(-1, -1, 0, 0),
+      rct(-1, -2, 0, -1)
     )
   )
 

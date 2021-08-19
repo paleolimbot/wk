@@ -333,32 +333,6 @@ plot.wk_grd_rct <- function(x, ...,
     image <- as.raster(x, native = TRUE)
   }
 
-  # rasterImage refuses to flip images, so we have to do this ourselves
-  if ((rct$ymin > rct$ymax) && (nrow(image) > 0)) {
-    if (inherits(image, "nativeRaster")) {
-      # the dimensions of a nativeRaster are lying in the sense that
-      # they are row-major but are being stored column-major in the way
-      # that R's indexing functions work
-      attrs <- attributes(image)
-      dim(image) <- rev(dim(image))
-      image <- image[, ncol(image):1, drop = FALSE]
-      attributes(image) <- attrs
-    } else {
-      image <- image[nrow(image):1, , drop = FALSE]
-    }
-  }
-
-  if ((rct$xmin > rct$xmax) && (ncol(image) > 0)) {
-    if (inherits(image, "nativeRaster")) {
-      attrs <- attributes(image)
-      dim(image) <- rev(dim(image))
-      image <- image[nrow(image):1, , drop = FALSE]
-      attributes(image) <- attrs
-    } else {
-      image <- image[, ncol(image):1, drop = FALSE]
-    }
-  }
-
   graphics::rasterImage(
     image,
     rct$xmin, rct$ymin, rct$xmax, rct$ymax,

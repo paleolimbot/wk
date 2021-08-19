@@ -114,14 +114,15 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
 grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
                     data_order = c("x", "y")) {
   stopifnot(setequal(data_order, c("x", "y")))
-  if (is.null(bbox)) {
-    bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
-  }
+  bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
 
-  dims <- c("x" = dim(data)[2], "y" = dim(data)[1])
+  # normalize data and bbox so that max > min
+  normalized <- grd_internal_normalize(data, bbox)
+  data <- normalized[[1]]
+  bbox <- normalized[[2]]
 
   # with zero values in the xy direction, bbox is empty
-  if ((dims["x"] * dims["y"]) == 0) {
+  if ((dim(data)[2] * dim(data)[1]) == 0) {
     bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
   }
 
@@ -133,26 +134,27 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
 grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
                    data_order = c("x", "y")) {
   stopifnot(setequal(data_order, c("x", "y")))
-  if (is.null(bbox)) {
-    bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
-  }
+  bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
 
-  dims <- c("x" = dim(data)[2], "y" = dim(data)[1])
+  # normalize data and bbox so that max > min
+  normalized <- grd_internal_normalize(data, bbox)
+  data <- normalized[[1]]
+  bbox <- normalized[[2]]
 
   # with zero values in the xy direction, bbox is empty
-  if ((dims["x"] * dims["y"]) == 0) {
+  if ((dim(data)[2] * dim(data)[1]) == 0) {
     bbox <- wk_bbox(xy(crs = wk_crs(bbox)))
   }
 
   # with one value in the x dimension, we need a zero width bbox
-  if (dims["x"] == 1) {
+  if (dim(data)[2] == 1) {
     stopifnot(
       unclass(bbox)$xmax == unclass(bbox)$xmin
     )
   }
 
   # with one value in the y dimension, we need a zero height bbox
-  if (dims["y"] == 1) {
+  if (dim(data)[1] == 1) {
     stopifnot(
       unclass(bbox)$ymax == unclass(bbox)$ymin
     )
@@ -236,7 +238,8 @@ grd_subset.wk_grd_rct <- function(object, x = NULL, y = NULL, ..., bbox = NULL) 
       stopifnot(length(unique(diff(y))) == 1)
     }
   } else if (!is.null(bbox) && is.null(x) && is.null(y)) {
-    rct_target <- unclass(if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox))
+    # normalize so that xmin < xmax, ymin < ymax
+    rct_target <- unclass(if (inherits(bbox, "wk_rct")) wk_bbox(as_wkb(bbox)) else wk_bbox(bbox))
 
     ximin <- (rct_target$xmin - rct$xmin) / dx
     yimin <- (rct_target$ymin - rct$ymin) / dy
@@ -496,4 +499,43 @@ as.raster.wk_grd_rct <- function(x, ..., native = NA) {
   } else {
     as.raster(x$data, native = native)
   }
+}
+
+# normalize the data and the bbox such that xmax > xmin and ymax > ymin
+grd_internal_normalize <- function(x, bbox) {
+  rct <- unclass(bbox)
+  new_rct <- rct
+
+  if ((rct$ymin > rct$ymax) && (dim(x)[1] > 0)) {
+    new_rct$ymin <- rct$ymax
+    new_rct$ymax <- rct$ymin
+
+    if (inherits(x, "nativeRaster")) {
+      # the dimensions of a nativeRaster are lying in the sense that
+      # they are row-major but are being stored column-major in the way
+      # that R's indexing functions work
+      attrs <- attributes(x)
+      dim(x) <- rev(dim(x))
+      x <- x[, ncol(x):1, drop = FALSE]
+      attributes(x) <- attrs
+    } else {
+      x <- x[nrow(x):1, , drop = FALSE]
+    }
+  }
+
+  if ((rct$xmin > rct$xmax) && (dim(x)[2] > 0)) {
+    new_rct$xmin <- rct$xmax
+    new_rct$xmax <- rct$xmin
+
+    if (inherits(x, "nativeRaster")) {
+      attrs <- attributes(x)
+      dim(x) <- rev(dim(x))
+      x <- x[nrow(x):1, , drop = FALSE]
+      attributes(x) <- attrs
+    } else {
+      x <- x[, ncol(x):1, drop = FALSE]
+    }
+  }
+
+  list(x = x, bbox = new_wk_rct(new_rct, crs = wk_crs(bbox)))
 }
