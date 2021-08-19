@@ -266,6 +266,12 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
     # normalized so that xmin < xmax, ymin < ymax
     rct_target <- unclass(if (inherits(bbox, "wk_rct")) wk_bbox(as_wkb(bbox)) else wk_bbox(bbox))
 
+    # clamp to current limits
+    rct_target$xmin <- max(rct_target$xmin, rct$xmin)
+    rct_target$ymin <- max(rct_target$ymin, rct$ymin)
+    rct_target$xmax <- min(rct_target$xmax, rct$xmax)
+    rct_target$ymax <- min(rct_target$ymax, rct$ymax)
+
     # remember that y indices are upside down compared to limits
     ximin <- (rct_target$xmin - rct$xmin) / dx
     yimin <- (rct$ymax - rct_target$ymax) / dy
