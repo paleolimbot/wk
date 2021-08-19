@@ -58,6 +58,13 @@ test_that("subset works for grd_rct", {
   expect_identical(grd_subset(grid), grid)
   expect_identical(grd_subset(grid, bbox = wk_bbox(grid)), grid)
   expect_identical(grd_subset(grid, 1:87, 1:61), grid)
+  expect_identical(grd_subset(grid, NULL, 1:61), grid)
+  expect_identical(grd_subset(grid, 1:87, NULL), grid)
+
+  # bad args
+  expect_error(grd_subset(grid, raw(), NULL), "must be NULL, numeric, or logical")
+  expect_error(grd_subset(grid, NULL, raw()), "must be NULL, numeric, or logical")
+  expect_error(grd_subset(grid, T, T, rct()), "Must specify")
 
   # check small subsets for exactness
   grid_23 <- grd_subset(grid, 1:2, 1:3)
@@ -97,7 +104,27 @@ test_that("subset works for grd_rct", {
     grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
     grd_subset(grid, x = 1:3, y = 1)
   )
+})
 
+test_that("grd_subset() works for a grd_rct backed by nativeRaster", {
+  # can aso check with PNG
+  # col_native <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = T)
+  # grid_native <- grd_rct(col_native)
+  # plot(grid_native)
+  # plot(grd_subset(grid_native, bbox = rct(20, 40, 60, 60)), border = T)
+
+  col_native <- structure(
+    c(-16777216L, -13421773L, -10066330L, -15066598L, -11711155L, -8355712L),
+    .Dim = 2:3,
+    class = "nativeRaster"
+  )
+
+  grid_native <- grd_rct(col_native)
+  grid_21 <- grd_subset(grid_native, y = 2, x = 2:3)
+  expect_identical(
+    as.integer(grid_21$data),
+    c(-11711155L, -8355712L)
+  )
 })
 
 test_that("grd_xy <-> grd_rct converters work", {

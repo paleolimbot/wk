@@ -327,9 +327,11 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
   # special case the nativeRaster, whose dims are lying about
   # the ordering needed to index it
   if (inherits(data, "nativeRaster")) {
+    attrs <- attributes(data)
     dim(data) <- rev(dim(data))
-    data[x, y, drop = FALSE]
-    dim(data) <- rev(dim(data))
+    data <- data[x, y, drop = FALSE]
+    attrs$dim <- rev(dim(data))
+    attributes(data) <- attrs
   } else {
     # we want to keep everything for existing dimensions
     # this means generating a list of missings to fill
