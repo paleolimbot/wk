@@ -46,7 +46,10 @@ as_grd_xy(x, ...)
 \method{as_grd_xy}{wk_grd_rct}(x, ...)
 }
 \arguments{
-\item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object.}
+\item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object. You can
+specify a \code{\link[=rct]{rct()}} with \code{xmin > xmax} or \code{ymin > ymax} which will flip
+the underlying data and return an object with a normalized bounding
+box and data.}
 
 \item{nx, ny, dx, dy}{Either a number of cells in the x- and y- directions
 or delta in the x- and y-directions (in which case \code{bbox} must
@@ -71,21 +74,42 @@ whose internal data ordering is row-major.}
 \itemize{
 \item \code{grd()} returns a \code{grd_rct()} for \verb{type == "polygons} or
 a \code{grd_xy()} otherwise.
-\item \code{grd_rct()} returns an object of class "grd_rct".
-\item \code{grd_xy()} returns an object of class "grd_xy".
+\item \code{grd_rct()} returns an object of class "wk_grd_rct".
+\item \code{grd_xy()} returns an object of class "wk_grd_xy".
 }
 }
 \description{
-Raster-like objects
+\code{\link[=grd]{grd()}} objects are just an array (any object with more than
+two \code{\link[=dim]{dim()}}s) and a bounding box (a \code{\link[=rct]{rct()}}, which may or
+may not have a \code{\link[=wk_crs]{wk_crs()}} attached). The ordering of the dimensions
+is y (indices increasing downwards), x (indices increasing to the right).
+This follows the ordering of \code{\link[=as.raster]{as.raster()}}/\code{\link[=rasterImage]{rasterImage()}} and aligns
+with the printing of matrices.
 }
 \examples{
-grd_rct(volcano)
-# approx bounding box in New Zealand Transverse Mercator
+# create a grid with no data (just for coordinates)
+(grid <- grd(nx = 2, ny = 2))
+as_rct(grid)
+as_xy(grid)
+plot(grid, border = "black")
+
+# more usefully, wraps a matrix or nd array + bbox
+# approx volcano in New Zealand Transverse Mercator
 bbox <- rct(
   5917000,       1757000 + 870,
   5917000 + 610, 1757000,
   crs = "EPSG:2193"
 )
-grd_rct(volcano, bbox)
+(grid <- grd_rct(volcano, bbox))
+
+# these come with a reasonable default plot method for matrix data
+plot(grid)
+
+# you can set the data or the bounding box after creation
+grid$bbox <- rct(0, 0, 1, 1)
+
+# subset by indices or rct
+plot(grid[c(FALSE, TRUE, FALSE), c(FALSE, TRUE, FALSE)])
+plot(grid[rct(0, 0, 0.5, 0.5)])
 
 }

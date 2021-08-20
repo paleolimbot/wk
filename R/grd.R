@@ -1,8 +1,18 @@
 
 #' Raster-like objects
 #'
+#' [grd()] objects are just an array (any object with more than
+#' two [dim()]s) and a bounding box (a [rct()], which may or
+#' may not have a [wk_crs()] attached). The ordering of the dimensions
+#' is y (indices increasing downwards), x (indices increasing to the right).
+#' This follows the ordering of [as.raster()]/[rasterImage()] and aligns
+#' with the printing of matrices.
+#'
 #' @param data An object with two or more dimensions. Most usefully, a matrix.
-#' @param bbox A [rct()] containing the bounds and CRS of the object.
+#' @param bbox A [rct()] containing the bounds and CRS of the object. You can
+#'   specify a [rct()] with `xmin > xmax` or `ymin > ymax` which will flip
+#'   the underlying data and return an object with a normalized bounding
+#'   box and data.
 #' @param data_order The order in which the grid should be iterated to match
 #'   the internal ordering of `data`. This is used for objects like nativeRaster
 #'   whose internal data ordering is row-major.
@@ -19,19 +29,35 @@
 #' @return
 #'   - `grd()` returns a `grd_rct()` for `type == "polygons` or
 #'     a `grd_xy()` otherwise.
-#'   - `grd_rct()` returns an object of class "grd_rct".
-#'   - `grd_xy()` returns an object of class "grd_xy".
+#'   - `grd_rct()` returns an object of class "wk_grd_rct".
+#'   - `grd_xy()` returns an object of class "wk_grd_xy".
 #' @export
 #'
 #' @examples
-#' grd_rct(volcano)
-#' # approx bounding box in New Zealand Transverse Mercator
+#' # create a grid with no data (just for coordinates)
+#' (grid <- grd(nx = 2, ny = 2))
+#' as_rct(grid)
+#' as_xy(grid)
+#' plot(grid, border = "black")
+#'
+#' # more usefully, wraps a matrix or nd array + bbox
+#' # approx volcano in New Zealand Transverse Mercator
 #' bbox <- rct(
 #'   5917000,       1757000 + 870,
 #'   5917000 + 610, 1757000,
 #'   crs = "EPSG:2193"
 #' )
-#' grd_rct(volcano, bbox)
+#' (grid <- grd_rct(volcano, bbox))
+#'
+#' # these come with a reasonable default plot method for matrix data
+#' plot(grid)
+#'
+#' # you can set the data or the bounding box after creation
+#' grid$bbox <- rct(0, 0, 1, 1)
+#'
+#' # subset by indices or rct
+#' plot(grid[c(FALSE, TRUE, FALSE), c(FALSE, TRUE, FALSE)])
+#' plot(grid[rct(0, 0, 0.5, 0.5)])
 #'
 grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
                 type = c("polygons", "corners", "centers")) {
@@ -318,6 +344,8 @@ dim.wk_grd <- function(x) {
   # for this method we never drop dimensions (can use $data[] to do this)
   stopifnot(identical(drop, FALSE))
 
+  bbox <- NULL
+
   if (missing(i)) {
     i <- NULL
   }
@@ -326,8 +354,22 @@ dim.wk_grd <- function(x) {
     j <- NULL
   }
 
-  result_xy <- grd_subset(x, i, j)
-  result_xy$data <- result_xy$data[, , ..., drop = FALSE]
+  # allow combination of i, j to be a rct() instead
+  if (inherits(i, "wk_rct") && is.null(j)) {
+    result_xy <- grd_subset(x, bbox = i)
+    if (length(dim(x$data)) > 2) {
+      result_xy$data <- result_xy$data[, , , ..., drop = FALSE]
+    } else {
+      result_xy$data <- result_xy$data[, , ..., drop = FALSE]
+    }
+  } else if (inherits(i, "wk_rct")) {
+    result_xy <- grd_subset(x, bbox = i)
+    result_xy$data <- result_xy$data[, , j, ..., drop = FALSE]
+  } else {
+    result_xy <- grd_subset(x, y = i, x = j)
+    result_xy$data <- result_xy$data[, , ..., drop = FALSE]
+  }
+
   result_xy
 }
 
