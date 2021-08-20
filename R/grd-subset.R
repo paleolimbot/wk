@@ -66,6 +66,7 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
       stopifnot(length(x) <= 1 || length(unique(diff(x))) == 1)
     } else if (is.logical(y)) {
       x <- which(rep_len(x, nx))
+      stopifnot(length(x) <= 1 || length(unique(diff(x))) == 1)
     } else {
       stop("`x` must be NULL, numeric, or logical", call. = FALSE)
     }
@@ -76,6 +77,7 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
       stopifnot(length(y) <= 1 || length(unique(diff(y))) == 1)
     } else if (is.logical(y)) {
       y <- which(rep_len(y, ny))
+      stopifnot(length(y) <= 1 || length(unique(diff(y))) == 1)
     } else {
       stop("`y` must be NULL, numeric, or logical", call. = FALSE)
     }
