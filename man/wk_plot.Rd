@@ -7,6 +7,8 @@
 \alias{plot.wk_xy}
 \alias{plot.wk_rct}
 \alias{plot.wk_crc}
+\alias{plot.wk_grd_xy}
+\alias{plot.wk_grd_rct}
 \title{Plot well-known geometry vectors}
 \usage{
 wk_plot(
@@ -47,6 +49,21 @@ wk_plot(
 \method{plot}{wk_rct}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
 
 \method{plot}{wk_crc}(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "", add = FALSE)
+
+\method{plot}{wk_grd_xy}(x, ...)
+
+\method{plot}{wk_grd_rct}(
+  x,
+  ...,
+  image = NULL,
+  interpolate = FALSE,
+  border = NA,
+  asp = 1,
+  bbox = NULL,
+  xlab = "",
+  ylab = "",
+  add = FALSE
+)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
@@ -67,6 +84,15 @@ and multipolygon geometries.}
 existing plot?}
 
 \item{x}{A \code{\link[=wkb]{wkb()}} or \code{\link[=wkt]{wkt()}}}
+
+\item{image}{A raster or nativeRaster to pass to \code{\link[graphics:rasterImage]{graphics::rasterImage()}}.
+use \code{NULL} to do a quick-and-dirty rescale of the data such that the low
+value is black and the high value is white.}
+
+\item{interpolate}{Use \code{TRUE} to perform interpoltion between color values.}
+
+\item{border}{Color to use for polygon borders. Use \code{NULL} for the default
+and \code{NA} to skip plotting borders.}
 }
 \value{
 The input, invisibly.

@@ -56,3 +56,60 @@ test_that("xy and rect plot methods work", {
 test_that("crc plot method works", {
   expect_identical(plot(crc(1, 2, 3)), crc(1, 2, 3))
 })
+
+test_that("grd_xy() plot method works", {
+  grid <- grd(nx = 3, ny = 2, type = "centers")
+  expect_identical(
+    plot(
+      grid,
+      col = rgb(0:5, 0:5, 0:5, maxColorValue = 5),
+      pch = 16,
+      cex = 5
+    ),
+    grid
+  )
+})
+
+test_that("grd_rct() plot method works", {
+  grid_empty <- grd(nx = 0, ny = 0)
+  expect_identical(plot(grid_empty, bbox = rct(0, 0, 1, 1)), grid_empty)
+
+  grid_spec <- grd(nx = 3, ny = 2)
+  expect_identical(plot(grid_spec, border = NULL), grid_spec)
+
+  grid_numeric <- grd_rct(matrix(0:5, nrow = 2, ncol = 3))
+  expect_identical(plot(grid_numeric), grid_numeric)
+
+  grid_raster <- grd_rct(as.raster(grid_numeric$data / 10))
+  expect_identical(plot(grid_raster), grid_raster)
+
+  grid_raster_rev_y <- grd_rct(
+    as.raster(grid_numeric$data / 10),
+    bbox = rct(0, 0, 3, -2)
+  )
+  expect_identical(plot(grid_raster_rev_y), grid_raster_rev_y)
+
+  grid_raster_rev_x <- grd_rct(
+    as.raster(grid_numeric$data / 10),
+    bbox = rct(0, 0, -3, 2)
+  )
+  expect_identical(plot(grid_raster_rev_x), grid_raster_rev_x)
+
+
+  # can aso check with PNG
+  # col_native <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = T)
+  col_native <- structure(
+    c(-16777216L, -13421773L, -10066330L, -15066598L, -11711155L, -8355712L),
+    .Dim = 2:3,
+    class = "nativeRaster"
+  )
+
+  grid_native <- grd_rct(col_native)
+  expect_identical(plot(grid_native), grid_native)
+
+  grid_native_rev_y <- grd_rct(col_native, rct(0, 0, 3, -2))
+  expect_identical(plot(grid_native_rev_y), grid_native_rev_y)
+
+  grid_native_rev_x <- grd_rct(col_native, rct(0, 0, -3, 2))
+  expect_identical(plot(grid_native_rev_x), grid_native_rev_x)
+})
