@@ -175,6 +175,14 @@ test_that("as_rct() works for grd objects", {
   expect_identical(as_rct(as_grd_xy(grid)), as_rct(grid))
 })
 
+test_that("grd matrix interface works", {
+  grid <- grd_rct(array(1:24, dim = c(2, 3, 4)))
+  expect_identical(grid[1, 1, ], grd_subset(grid, 1, 1))
+  expect_identical(grid[, , 1], grd_rct(grid$data[, , 1, drop = FALSE]))
+  expect_identical(dim(grid)[1], c(y = 2L))
+  expect_identical(dim(grid)["y"], c(y = 2L))
+})
+
 test_that("as.raster() works for grd_rct() objects", {
   grid_num <- grd_rct(matrix(1:6, nrow = 2, ncol = 3))
   expect_identical(
