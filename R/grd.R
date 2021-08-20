@@ -266,9 +266,7 @@ new_wk_grd <- function(x, subclass = character()) {
 
 #' @export
 wk_bbox.wk_grd <- function(handleable, ...) {
-  # take the bbox of the bbox to normalize a bounding box
-  # with xmin > xmax
-  wk_bbox(as_wkb(handleable$bbox))
+  handleable$bbox
 }
 
 #' @export
