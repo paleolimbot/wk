@@ -9,19 +9,28 @@ grd_subset(object, y = NULL, x = NULL, bbox = NULL, ...)
 \arguments{
 \item{object}{A \code{\link[=grd]{grd()}}}
 
-\item{y}{Indices in the y direction}
+\item{y, x}{Raw indices. These must be equally
+spaced if passed as numeric; if passed as logical they are
+recycled silently along each dimension.}
 
-\item{x}{Indices in the x direction}
-
-\item{bbox}{A bounding box to use as a subset}
+\item{bbox}{A bounding box to use as a subset. This is used
+to calculate a suitable \code{y} and \code{x} index vector representing
+all cells that intersect the \code{bbox}. Cells that only touch \code{bbox}
+on the bottom and right are not included in the subset, meaning you
+can safely tile a regularly-spaced grid along \code{object} without
+double-counting cells.}
 
 \item{...}{Passed to subset methods}
 }
 \value{
-A modified \code{\link[=grd]{grd()}}
+A modified \code{\link[=grd]{grd()}}.
 }
 \description{
-Subset grd objects
+The \code{\link[=grd_subset]{grd_subset()}} method handles the subsetting of a \code{\link[=grd]{grd()}}
+in x-y space. Ordering of indices is not considered and logical
+indies are recycled silently along dimensions. The result of
+a \code{\link[=grd_subset]{grd_subset()}} is always a \code{\link[=grd]{grd()}} of the same type whose
+relationship to x-y space has not changed.
 }
 \examples{
 grid <- grd_rct(volcano)

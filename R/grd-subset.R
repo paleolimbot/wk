@@ -1,13 +1,25 @@
 
 #' Subset grd objects
 #'
+#' The [grd_subset()] method handles the subsetting of a [grd()]
+#' in x-y space. Ordering of indices is not considered and logical
+#' indies are recycled silently along dimensions. The result of
+#' a [grd_subset()] is always a [grd()] of the same type whose
+#' relationship to x-y space has not changed.
+#'
 #' @param object A [grd()]
-#' @param x Indices in the x direction
-#' @param y Indices in the y direction
-#' @param bbox A bounding box to use as a subset
+#' @param y,x Raw indices. These must be equally
+#'   spaced if passed as numeric; if passed as logical they are
+#'   recycled silently along each dimension.
+#' @param bbox A bounding box to use as a subset. This is used
+#'   to calculate a suitable `y` and `x` index vector representing
+#'   all cells that intersect the `bbox`. Cells that only touch `bbox`
+#'   on the bottom and right are not included in the subset, meaning you
+#'   can safely tile a regularly-spaced grid along `object` without
+#'   double-counting cells.
 #' @param ... Passed to subset methods
 #'
-#' @return A modified [grd()]
+#' @return A modified [grd()].
 #' @export
 #'
 #' @examples
