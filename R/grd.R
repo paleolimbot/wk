@@ -282,6 +282,31 @@ wk_set_crs.wk_grd <- function(x, crs) {
   x
 }
 
+# interface for setting data and bbox
+
+#' @export
+`[[<-.wk_grd` <- function(x, i, value) {
+  x_bare <- unclass(x)
+  if (identical(i, "data")) {
+    stopifnot(length(dim(value)) >= 2)
+    x_bare$data <- value
+  } else if (identical(i, "bbox")) {
+    value <- if (inherits(value, "wk_rct")) wk_bbox(as_wkb(value)) else wk_bbox(value)
+    x_bare$bbox <- value
+  } else {
+    stop("Can't set element of a wk_grd that is not 'data' or 'bbox'", call. = FALSE)
+  }
+
+  class(x_bare) <- class(x)
+  x_bare
+}
+
+#' @export
+`$<-.wk_grd` <- function(x, i, value) {
+  x[[i]] <- value
+  x
+}
+
 # interface for matrix-like extraction and subsetting
 #' @export
 dim.wk_grd <- function(x) {

@@ -183,6 +183,30 @@ test_that("grd matrix interface works", {
   expect_identical(dim(grid)["y"], c(y = 2L))
 })
 
+test_that("grd[[]]<- interface works", {
+  grid <- grd_rct(array(1:24, dim = c(2, 3, 4)))
+
+  grid[["bbox"]] <- rct(0, 0, 1, 1)
+  expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
+
+  grid[["data"]] <- matrix()
+  expect_identical(grid, grd_rct(matrix(), rct(0, 0, 1, 1)))
+
+  expect_error(grid[["not_data_or_bbox"]] <- NULL, "Can't set element")
+})
+
+test_that("grd$<- interface works", {
+  grid <- grd_rct(array(1:24, dim = c(2, 3, 4)))
+
+  grid$bbox <- rct(0, 0, 1, 1)
+  expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
+
+  grid$data <- matrix()
+  expect_identical(grid, grd_rct(matrix(), rct(0, 0, 1, 1)))
+
+  expect_error(grid$not_data_or_bbox <- NULL, "Can't set element")
+})
+
 test_that("as.raster() works for grd_rct() objects", {
   grid_num <- grd_rct(matrix(1:6, nrow = 2, ncol = 3))
   expect_identical(
