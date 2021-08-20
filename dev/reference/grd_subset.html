@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Debug filters and handlers — wk_debug • wk</title>
+<title>Subset grd objects — grd_subset • wk</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,12 @@
 
 
 
-<meta property="og:title" content="Debug filters and handlers — wk_debug" />
-<meta property="og:description" content="Debug filters and handlers" />
+<meta property="og:title" content="Subset grd objects — grd_subset" />
+<meta property="og:description" content="The grd_subset() method handles the subsetting of a grd()
+in x-y space. Ordering of indices is not considered and logical
+indies are recycled silently along dimensions. The result of
+a grd_subset() is always a grd() of the same type whose
+relationship to x-y space has not changed." />
 
 
 <meta name="robots" content="noindex">
@@ -123,61 +127,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Debug filters and handlers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/debug.R'><code>R/debug.R</code></a></small>
-    <div class="hidden name"><code>wk_debug.Rd</code></div>
+    <h1>Subset grd objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/grd-subset.R'><code>R/grd-subset.R</code></a></small>
+    <div class="hidden name"><code>grd_subset.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Debug filters and handlers</p>
+    <p>The <code>grd_subset()</code> method handles the subsetting of a <code><a href='grd.html'>grd()</a></code>
+in x-y space. Ordering of indices is not considered and logical
+indies are recycled silently along dimensions. The result of
+a <code>grd_subset()</code> is always a <code><a href='grd.html'>grd()</a></code> of the same type whose
+relationship to x-y space has not changed.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>wk_debug</span><span class='op'>(</span><span class='va'>handleable</span>, handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>wk_debug_filter</span><span class='op'>(</span>handler <span class='op'>=</span> <span class='fu'><a href='wk_void.html'>wk_void_handler</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>grd_subset</span><span class='op'>(</span><span class='va'>object</span>, y <span class='op'>=</span> <span class='cn'>NULL</span>, x <span class='op'>=</span> <span class='cn'>NULL</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>handleable</th>
-      <td><p>A geometry vector (e.g., <code><a href='wkb.html'>wkb()</a></code>, <code><a href='wkt.html'>wkt()</a></code>, <code><a href='xy.html'>xy()</a></code>,
-<code><a href='rct.html'>rct()</a></code>, or <code><a href='https://r-spatial.github.io/sf/reference/sfc.html'>sf::st_sfc()</a></code>) for which <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> is defined.</p></td>
+      <th>object</th>
+      <td><p>A <code><a href='grd.html'>grd()</a></code></p></td>
     </tr>
     <tr>
-      <th>handler</th>
-      <td><p>A <a href='wk_handle.sfg.html'>wk_handler</a> object.</p></td>
+      <th>y, x</th>
+      <td><p>Raw indices. These must be equally
+spaced if passed as numeric; if passed as logical they are
+recycled silently along each dimension.</p></td>
+    </tr>
+    <tr>
+      <th>bbox</th>
+      <td><p>A bounding box to use as a subset. This is used
+to calculate a suitable <code>y</code> and <code>x</code> index vector representing
+all cells that intersect the <code>bbox</code>. Cells that only touch <code>bbox</code>
+on the bottom and right are not included in the subset, meaning you
+can safely tile a regularly-spaced grid along <code>object</code> without
+double-counting cells.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
+      <td><p>Passed to subset methods</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The result of the <code>handler</code>.</p>
+    <p>A modified <code><a href='grd.html'>grd()</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>wk_debug</span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee0ba9e40&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee0ba9e40&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee0ba9cc8&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee0ba9cc8&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee0ba9e40&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee0ba9e40&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='fu'><a href='wkt.html'>wkt</a></span><span class='op'>(</span><span class='st'>"POINT (1 1)"</span><span class='op'>)</span>, <span class='fu'>wk_debug_filter</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; initialize (dirty = 0  -&gt; 1)
-#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee0baac10&gt; =&gt; WK_CONTINUE
-#&gt;   feature_start (1): &lt;0x7ffee0baac10&gt;  =&gt; WK_CONTINUE
-#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee0baaa98&gt; =&gt; WK_CONTINUE
-#&gt;       coord (1): &lt;0x7ffee0baaa98&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE
-#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE
-#&gt;   feature_end (1): &lt;0x7ffee0baac10&gt;  =&gt; WK_CONTINUE
-#&gt; vector_end: &lt;0x7ffee0baac10&gt;
-#&gt; deinitialize</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='va'>grid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='grd.html'>grd_rct</a></span><span class='op'>(</span><span class='va'>volcano</span><span class='op'>)</span>
+<span class='fu'>grd_subset</span><span class='op'>(</span><span class='va'>grid</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>61</span>, by <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>87</span>, by <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;wk_grd_rct [15 x 15] =&gt; [-0.5 27.5 59.5 87.5]&gt;
+#&gt; List of 3
+#&gt;  $ data      : num [1:15, 1:15] 101 105 109 113 121 125 127 118 112 109 ...
+#&gt;  $ bbox      : wk_rct[1:1] [-0.5 27.5 59.5 87.5]
+#&gt;  $ data_order: chr [1:2] "x" "y"
+#&gt;  - attr(*, "class")= chr [1:2] "wk_grd_rct" "wk_grd"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

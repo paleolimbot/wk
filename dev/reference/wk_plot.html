@@ -174,7 +174,24 @@
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for wk_crc</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, asp <span class='op'>=</span> <span class='fl'>1</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, xlab <span class='op'>=</span> <span class='st'>""</span>, ylab <span class='op'>=</span> <span class='st'>""</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wk_grd_xy</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for wk_grd_rct</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  image <span class='op'>=</span> <span class='cn'>NULL</span>,
+  interpolate <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  border <span class='op'>=</span> <span class='cn'>NA</span>,
+  asp <span class='op'>=</span> <span class='fl'>1</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xlab <span class='op'>=</span> <span class='st'>""</span>,
+  ylab <span class='op'>=</span> <span class='st'>""</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -211,6 +228,21 @@ existing plot?</p></td>
     <tr>
       <th>x</th>
       <td><p>A <code><a href='wkb.html'>wkb()</a></code> or <code><a href='wkt.html'>wkt()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>image</th>
+      <td><p>A raster or nativeRaster to pass to <code><a href='https://rdrr.io/r/graphics/rasterImage.html'>graphics::rasterImage()</a></code>.
+use <code>NULL</code> to do a quick-and-dirty rescale of the data such that the low
+value is black and the high value is white.</p></td>
+    </tr>
+    <tr>
+      <th>interpolate</th>
+      <td><p>Use <code>TRUE</code> to perform interpoltion between color values.</p></td>
+    </tr>
+    <tr>
+      <th>border</th>
+      <td><p>Color to use for polygon borders. Use <code>NULL</code> for the default
+and <code>NA</code> to skip plotting borders.</p></td>
     </tr>
     </table>
 
