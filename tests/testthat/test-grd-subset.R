@@ -77,3 +77,12 @@ test_that("grd_subset() works for a grd_rct backed by nativeRaster", {
     c(-11711155L, -8355712L)
   )
 })
+
+test_that("grd_subset() preserves dimensions for nd arrays", {
+  grid <- grd_rct(array(1:24, dim = c(2, 3, 4)))
+
+  expect_identical(
+    grd_subset(grid, 1, 1),
+    grd_rct(array(c(1L, 7L, 13L, 19L), dim = c(1, 1, 4)), bbox = rct(0, 1, 1, 2))
+  )
+})
