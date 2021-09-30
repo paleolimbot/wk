@@ -168,7 +168,6 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
 
   grd_rct(
     data,
-    bbox = new_wk_rct(new_rct, crs = wk_crs(object)),
-    data_order = object$data_order
+    bbox = new_wk_rct(new_rct, crs = wk_crs(object))
   )
 }

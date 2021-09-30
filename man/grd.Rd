@@ -21,17 +21,9 @@ grd(
   type = c("polygons", "corners", "centers")
 )
 
-grd_rct(
-  data,
-  bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
-  data_order = c("x", "y")
-)
+grd_rct(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]))
 
-grd_xy(
-  data,
-  bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
-  data_order = c("x", "y")
-)
+grd_xy(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1))
 
 as_grd_rct(x, ...)
 
@@ -61,10 +53,6 @@ objects are the center of the \code{\link[=rct]{rct()}} grid; use "corners" to r
 a grid along the corners of \code{bbox}.}
 
 \item{data}{An object with two or more dimensions. Most usefully, a matrix.}
-
-\item{data_order}{The order in which the grid should be iterated to match
-the internal ordering of \code{data}. This is used for objects like nativeRaster
-whose internal data ordering is row-major.}
 
 \item{x}{An object to convert to a grid}
 

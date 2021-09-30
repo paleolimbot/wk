@@ -13,9 +13,6 @@
 #'   specify a [rct()] with `xmin > xmax` or `ymin > ymax` which will flip
 #'   the underlying data and return an object with a normalized bounding
 #'   box and data.
-#' @param data_order The order in which the grid should be iterated to match
-#'   the internal ordering of `data`. This is used for objects like nativeRaster
-#'   whose internal data ordering is row-major.
 #' @param nx,ny,dx,dy Either a number of cells in the x- and y- directions
 #'   or delta in the x- and y-directions (in which case `bbox` must
 #'   be specified).
@@ -137,10 +134,9 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
 
 #' @rdname grd
 #' @export
-grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
-                    data_order = c("x", "y")) {
-  stopifnot(setequal(data_order, c("x", "y")))
+grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+  data_order <- grd_data_order(data)
 
   # normalize data and bbox so that max > min
   normalized <- grd_internal_normalize(data, bbox)
@@ -166,10 +162,9 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
 
 #' @rdname grd
 #' @export
-grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
-                   data_order = c("x", "y")) {
-  stopifnot(setequal(data_order, c("x", "y")))
+grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1)) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+  data_order <- grd_data_order(data)
 
   # normalize data and bbox so that max > min
   normalized <- grd_internal_normalize(data, bbox)
@@ -239,7 +234,7 @@ as_grd_rct.wk_grd_xy <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_rct(x$data, bbox = bbox, data_order = x$data_order)
+  grd_rct(x$data, bbox = bbox)
 }
 
 #' @rdname grd
@@ -274,18 +269,35 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_xy(x$data, bbox = bbox, data_order = x$data_order)
+  grd_xy(x$data, bbox = bbox)
 }
 
 #' S3 details for grid objects
 #'
 #' @param x A [grd()]
 #' @param subclass An optional subclass.
+#' @param ... Passed to S3 methods
 #'
 #' @export
 #'
 new_wk_grd <- function(x, subclass = character()) {
   structure(x, class = union(subclass, "wk_grd"))
+}
+
+#' @rdname new_wk_grd
+#' @export
+grd_data_order <- function(x, ...) {
+  UseMethod("grd_data_order")
+}
+
+#' @export
+grd_data_order.default <- function(x, ...) {
+  c("y", "x")
+}
+
+#' @export
+grd_data_order.nativeRaster <- function(x, ...) {
+  c("x", "y")
 }
 
 # interface for wk methods
