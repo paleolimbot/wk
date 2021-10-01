@@ -458,11 +458,11 @@ as_xy.wk_grd_xy <- function(x, ...) {
   data_order <- gsub("^[+-]", "", x$data_order)
 
   if (identical(data_order, c("y", "x"))) {
-    if (startsWith("-", x$data_order[1])) {
+    if (startsWith(x$data_order[1], "-")) {
       ys <- rev(ys)
     }
 
-    if (startsWith("-", x$data_order[2])) {
+    if (startsWith(x$data_order[2], "-")) {
       xs <- rev(xs)
     }
 
@@ -472,11 +472,11 @@ as_xy.wk_grd_xy <- function(x, ...) {
       crs = wk_crs(x$bbox)
     )
   } else {
-    if (startsWith("-", x$data_order[2])) {
+    if (startsWith(x$data_order[2], "-")) {
       ys <- rev(ys)
     }
 
-    if (startsWith("-", x$data_order[1])) {
+    if (startsWith(x$data_order[1], "-")) {
       xs <- rev(xs)
     }
 
@@ -507,7 +507,7 @@ as_rct.wk_grd_rct <- function(x, ...) {
   data_order <- gsub("^[+-]", "", x$data_order)
 
   if (identical(data_order, c("y", "x"))) {
-    if (startsWith("-", x$data_order[1])) {
+    if (startsWith(x$data_order[1], "-")) {
       ys <- rev(ys)
       ymax <- rep(ys[-1], nx)
       ymin <- rep(ys[-length(ys)], nx)
@@ -516,7 +516,7 @@ as_rct.wk_grd_rct <- function(x, ...) {
       ymax <- rep(ys[-length(ys)], nx)
     }
 
-    if (startsWith("-", x$data_order[2])) {
+    if (startsWith(x$data_order[2], "-")) {
       xs <- rev(xs)
       xmax <- rep(xs[-length(xs)], each = ny)
       xmin <- rep(xs[-1], each = ny)
@@ -527,7 +527,7 @@ as_rct.wk_grd_rct <- function(x, ...) {
 
     rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
   } else {
-    if (startsWith("-", x$data_order[2])) {
+    if (startsWith(x$data_order[2], "-")) {
       ys <- rev(ys)
       ymax <- rep(ys[-1], each = nx)
       ymin <- rep(ys[-length(ys)], each = nx)
@@ -536,7 +536,7 @@ as_rct.wk_grd_rct <- function(x, ...) {
       ymax <- rep(ys[-length(ys)], each = nx)
     }
 
-    if (startsWith("-", x$data_order[1])) {
+    if (startsWith(x$data_order[1], "-")) {
       xs <- rev(xs)
       xmax <- rep(xs[-length(xs)], ny)
       xmin <- rep(xs[-1], ny)

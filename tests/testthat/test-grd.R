@@ -293,12 +293,12 @@ test_that("as_rct() works for flipped grd objects", {
   expect_identical(
     as_rct(grid),
     c(
-      rct(2, 1, 3, 2),
-      rct(1, 1, 2, 2),
-      rct(0, 1, 1, 2),
       rct(2, 0, 3, 1),
       rct(1, 0, 2, 1),
-      rct(0, 0, 1, 1)
+      rct(0, 0, 1, 1),
+      rct(2, 1, 3, 2),
+      rct(1, 1, 2, 2),
+      rct(0, 1, 1, 2)
     )
   )
 })
