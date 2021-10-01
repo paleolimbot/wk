@@ -123,3 +123,17 @@ test_that("subset works for grd_xy", {
     grd_subset(grid, x = 1:3, y = 1)
   )
 })
+
+test_that("grd_subset_indices() works for the identity case", {
+  grid <- grd_xy(volcano)
+  expect_identical(
+    grd_subset_indices(grid),
+    list(y = 1:87, x = 1:61, bbox = rct(0, 0, 60, 86))
+  )
+
+  grid <- grd_rct(volcano)
+  expect_identical(
+    grd_subset_indices(grid),
+    list(y = 1:87, x = 1:61, bbox = rct(0, 0, 61, 87))
+  )
+})

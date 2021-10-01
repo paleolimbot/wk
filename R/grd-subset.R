@@ -110,11 +110,6 @@ grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL
 
 #' @export
 grd_subset_indices.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
-  grd_subset_indices_internal(object, y, x, bbox)
-}
-
-
-grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL) {
   if (missing(x)) {
     x <- NULL
   }
@@ -123,6 +118,11 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
     y <- NULL
   }
 
+  grd_subset_indices_internal(object, y, x, bbox)
+}
+
+
+grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL) {
   # get the cell information we need
   rct <- unclass(object$bbox)
   width <- rct$xmax - rct$xmin
@@ -136,8 +136,8 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
   if ((nx * ny) == 0) {
     return(
       list(
-        x = seq_len(ncol(object)),
         y = seq_len(nrow(object)),
+        x = seq_len(ncol(object)),
         bbox = object$bbox
       )
     )
@@ -147,8 +147,8 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
   if (is.null(bbox) && is.null(x) && is.null(y)) {
     return(
       list(
-        x = seq_len(ncol(object)),
         y = seq_len(nrow(object)),
+        x = seq_len(ncol(object)),
         bbox = object$bbox
       )
     )
