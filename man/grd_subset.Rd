@@ -5,14 +5,14 @@
 \alias{grd_subset_indices}
 \title{Subset grd objects}
 \usage{
-grd_subset(object, y = NULL, x = NULL, bbox = NULL, ...)
+grd_subset(object, i = NULL, j = NULL, bbox = NULL, ...)
 
-grd_subset_indices(object, y = NULL, x = NULL, bbox = NULL, ...)
+grd_subset_indices(object, i = NULL, j = NULL, bbox = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link[=grd]{grd()}}}
 
-\item{y, x}{Raw indices. These must be equally
+\item{i, j}{Raw indices. These must be equally
 spaced if passed as numeric; if passed as logical they are
 recycled silently along each dimension.}
 

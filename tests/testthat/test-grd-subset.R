@@ -47,13 +47,13 @@ test_that("subset works for grd_rct", {
   # subset by bbox with exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0, 86, 3, 87)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 
   # subset by bbox with non-exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 })
 
@@ -71,7 +71,7 @@ test_that("grd_subset() works for a grd_rct backed by nativeRaster", {
   )
 
   grid_native <- grd_rct(col_native)
-  grid_21 <- grd_subset(grid_native, y = 2, x = 2:3)
+  grid_21 <- grd_subset(grid_native, i = 2, j = 2:3)
   expect_identical(
     as.integer(grid_21$data),
     c(-11711155L, -8355712L)
@@ -114,13 +114,13 @@ test_that("subset works for grd_xy", {
   # subset by bbox with exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0, 86, 2, 86)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 
   # subset by bbox with non-exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(-0.5, 85.9, 2.5, 86.1)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 })
 

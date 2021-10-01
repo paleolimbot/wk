@@ -400,7 +400,7 @@ dim.wk_grd <- function(x) {
     result_xy <- grd_subset(x, bbox = i)
     result_xy$data <- result_xy$data[, , j, ..., drop = FALSE]
   } else {
-    result_xy <- grd_subset(x, y = i, x = j)
+    result_xy <- grd_subset(x, i = i, j = j)
     result_xy$data <- result_xy$data[, , ..., drop = FALSE]
   }
 

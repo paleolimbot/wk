@@ -8,7 +8,7 @@
 #' relationship to x-y space has not changed.
 #'
 #' @param object A [grd()]
-#' @param y,x Raw indices. These must be equally
+#' @param i,j Raw indices. These must be equally
 #'   spaced if passed as numeric; if passed as logical they are
 #'   recycled silently along each dimension.
 #' @param bbox A bounding box to use as a subset. This is used
@@ -26,21 +26,21 @@
 #' grid <- grd_rct(volcano)
 #' grd_subset(grid, seq(2, 61, by = 4), seq(2, 87, by = 4))
 #'
-grd_subset <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
+grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset")
 }
 
 #' @export
-grd_subset.default <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
-  if (missing(x)) {
-    x <- NULL
+grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  if (missing(i)) {
+    i <- NULL
   }
 
-  if (missing(y)) {
-    y <- NULL
+  if (missing(j)) {
+    j <- NULL
   }
 
-  indices <- grd_subset_indices(object, y, x, bbox, ...)
+  indices <- grd_subset_indices(object, i, j, bbox, ...)
   x <- indices$j
   y <- indices$i
 
@@ -71,22 +71,22 @@ grd_subset.default <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_subset_indices <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
+grd_subset_indices <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset_indices")
 }
 
 #' @export
-grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
-  if (missing(x)) {
-    x <- NULL
+grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  if (missing(i)) {
+    i <- NULL
   }
 
-  if (missing(y)) {
-    y <- NULL
+  if (missing(j)) {
+    j <- NULL
   }
 
   grd <- as_grd_rct(object)
-  indices <- grd_subset_indices_internal(grd, y, x, bbox)
+  indices <- grd_subset_indices_internal(grd, i, j, bbox)
 
   # have to recalculate the bbox
   nx <- length(indices$j)
@@ -109,20 +109,24 @@ grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL
 }
 
 #' @export
-grd_subset_indices.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
-  if (missing(x)) {
-    x <- NULL
+grd_subset_indices.wk_grd_rct <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  if (missing(i)) {
+    i <- NULL
   }
 
-  if (missing(y)) {
-    y <- NULL
+  if (missing(j)) {
+    j <- NULL
   }
 
-  grd_subset_indices_internal(object, y, x, bbox)
+  grd_subset_indices_internal(object, i, j, bbox)
 }
 
 
-grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL) {
+grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL) {
+  # in this function, x and y are indices in that direction
+  x <- j
+  y <- i
+
   # get the cell information we need
   rct <- unclass(object$bbox)
   width <- rct$xmax - rct$xmin
