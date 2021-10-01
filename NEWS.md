@@ -2,6 +2,9 @@
 
 * Fixed `wk_affine_rescale()` to apply the translate and scale
   operations in the correct order (#94).
+* Add primitive to represent grids of points (`grd()`, `grd_xy()`)
+  or grids of rectangles (`grd_rct()`) with optional data
+  (i.e., a matrix or array) (#95, #96).
 
 # wk 0.5.0
 
