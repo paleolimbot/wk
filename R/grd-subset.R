@@ -41,8 +41,8 @@ grd_subset.default <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
   }
 
   indices <- grd_subset_indices(object, y, x, bbox, ...)
-  x <- indices$x
-  y <- indices$y
+  x <- indices$j
+  y <- indices$i
 
   # about to potentially modify data
   data <- object$data
@@ -89,8 +89,8 @@ grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL
   indices <- grd_subset_indices_internal(grd, y, x, bbox)
 
   # have to recalculate the bbox
-  nx <- length(indices$x)
-  ny <- length(indices$y)
+  nx <- length(indices$j)
+  ny <- length(indices$i)
   rct <- unclass(indices$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
@@ -136,8 +136,8 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
   if ((nx * ny) == 0) {
     return(
       list(
-        y = seq_len(nrow(object)),
-        x = seq_len(ncol(object)),
+        i = seq_len(nrow(object)),
+        j = seq_len(ncol(object)),
         bbox = object$bbox
       )
     )
@@ -147,8 +147,8 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
   if (is.null(bbox) && is.null(x) && is.null(y)) {
     return(
       list(
-        y = seq_len(nrow(object)),
-        x = seq_len(ncol(object)),
+        i = seq_len(nrow(object)),
+        j = seq_len(ncol(object)),
         bbox = object$bbox
       )
     )
@@ -241,5 +241,5 @@ grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL)
     new_rct$ymax <- -Inf
   }
 
-  list(y = y, x = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
+  list(i = y, j = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
 }
