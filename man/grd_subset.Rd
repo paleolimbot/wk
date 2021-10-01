@@ -2,9 +2,12 @@
 % Please edit documentation in R/grd-subset.R
 \name{grd_subset}
 \alias{grd_subset}
+\alias{grd_subset_indices}
 \title{Subset grd objects}
 \usage{
 grd_subset(object, y = NULL, x = NULL, bbox = NULL, ...)
+
+grd_subset_indices(object, y = NULL, x = NULL, bbox = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{\link[=grd]{grd()}}}
