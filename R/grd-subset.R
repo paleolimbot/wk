@@ -83,7 +83,9 @@ grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL
     y <- NULL
   }
 
-  grd_subset_indices_internal(object, y, x, bbox, ...)
+  grd <- as_grd_rct(object)
+  grd <- grd_subset(object, y, x, bbox)
+  as_grd_xy(object)
 }
 
 #' @export
@@ -96,10 +98,6 @@ grd_subset_indices.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NUL
     y <- NULL
   }
 
-  grd_subset_indices_internal(object, y, x, bbox, ...)
-}
-
-grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
   # get the cell information we need
   rct <- unclass(object$bbox)
   width <- rct$xmax - rct$xmin
