@@ -64,7 +64,9 @@ grd_subset.default <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
     data <- do.call("[", c(list(data, y, x), more_dims, list(drop = FALSE)))
   }
 
-  grd_rct(data, indices$bbox)
+  object$data <- data
+  object$bbox <- indices$bbox
+  object
 }
 
 #' @rdname grd_subset
@@ -84,12 +86,35 @@ grd_subset_indices.wk_grd_xy <- function(object, y = NULL, x = NULL, bbox = NULL
   }
 
   grd <- as_grd_rct(object)
-  grd <- grd_subset(object, y, x, bbox)
-  as_grd_xy(object)
+  indices <- grd_subset_indices_internal(grd, y, x, bbox)
+
+  # have to recalculate the bbox
+  nx <- length(indices$x)
+  ny <- length(indices$y)
+  rct <- unclass(indices$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- width / nx
+  dy <- height / ny
+
+  indices$bbox <- rct(
+    rct$xmin + dx / 2,
+    rct$ymin + dy / 2,
+    rct$xmax - dx / 2,
+    rct$ymax - dy / 2,
+    crs = wk_crs(indices$bbox)
+  )
+
+  indices
 }
 
 #' @export
 grd_subset_indices.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
+  grd_subset_indices_internal(object, y, x, bbox)
+}
+
+
+grd_subset_indices_internal <- function(object, y = NULL, x = NULL, bbox = NULL) {
   if (missing(x)) {
     x <- NULL
   }

@@ -327,7 +327,29 @@ wk_set_crs.wk_grd <- function(x, crs) {
     stopifnot(length(dim(value)) >= 2)
     x_bare$data <- value
   } else if (identical(i, "bbox")) {
-    value <- if (inherits(value, "wk_rct")) wk_bbox(as_wkb(value)) else wk_bbox(value)
+    if (inherits(value, "wk_rct")) {
+      # normalize so that max > min, but empty (Inf -Inf) is OK
+      rct <- unclass(value)
+
+      if (is.na(rct$xmin) || is.na(rct$xmax)) {
+        rct[c("xmin", "xmax")] <- list(Inf, -Inf)
+      }
+      if (is.na(rct$ymin) || is.na(rct$ymax)) {
+        rct[c("ymin", "ymax")] <- list(Inf, -Inf)
+      }
+
+      if ((rct$xmin > rct$xmax) && (rct$xmin != Inf) && (rct$xmax != -Inf)) {
+        rct[c("xmin", "xmax")] <- rct[c("xmax", "xmin")]
+      }
+      if ((rct$ymin > rct$ymax) && (rct$ymin != Inf) && (rct$ymax != -Inf)) {
+        rct[c("ymin", "ymax")] <- rct[c("ymax", "ymin")]
+      }
+
+      value <- new_wk_rct(rct, crs = wk_crs(value))
+    } else {
+      value <- wk_bbox(value)
+    }
+
     x_bare$bbox <- value
   } else {
     stop("Can't set element of a wk_grd that is not 'data' or 'bbox'", call. = FALSE)
