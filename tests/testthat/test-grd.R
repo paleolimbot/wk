@@ -173,6 +173,38 @@ test_that("as_xy() works for row-major grd objects", {
   expect_identical(as_xy(as_grd_rct(grid)), as_xy(grid))
 })
 
+test_that("as_xy() works for flipped grd objects", {
+  data <- matrix(0:5, nrow = 2, ncol = 3)
+  grid <- grd_xy(data)
+  grid$data_order <- c("-y", "-x")
+
+  expect_identical(
+    as_xy(grid),
+    c(
+      xy(2, 0),
+      xy(2, 1),
+      xy(1, 0),
+      xy(1, 1),
+      xy(0, 0),
+      xy(0, 1)
+    )
+  )
+
+  grid$data_order <- c("-x", "-y")
+
+  expect_identical(
+    as_xy(grid),
+    c(
+      xy(2, 0),
+      xy(1, 0),
+      xy(0, 0),
+      xy(2, 1),
+      xy(1, 1),
+      xy(0, 1)
+    )
+  )
+})
+
 test_that("as_rct() works for grd objects", {
   grid_empty <- grd(nx = 0, ny = 0)
   expect_identical(as_rct(grid_empty), rct(crs = NULL))
@@ -233,6 +265,42 @@ test_that("as_rct() works for row-major grd objects", {
   )
 
   expect_identical(as_rct(as_grd_xy(grid)), as_rct(grid))
+})
+
+test_that("as_rct() works for flipped grd objects", {
+  data <- matrix(0:5, nrow = 2, ncol = 3)
+  grid <- grd_rct(data)
+  grid$data_order <- c("-y", "-x")
+
+  # order should match the internal ordering of data
+  # (row major unless specified)
+  expect_identical(
+    as_rct(grid),
+    c(
+      rct(2, 0, 3, 1),
+      rct(2, 1, 3, 2),
+      rct(1, 0, 2, 1),
+      rct(1, 1, 2, 2),
+      rct(0, 0, 1, 1),
+      rct(0, 1, 1, 2)
+    )
+  )
+
+  grid$data_order <- c("-x", "-y")
+
+  # order should match the internal ordering of data
+  # (row major unless specified)
+  expect_identical(
+    as_rct(grid),
+    c(
+      rct(2, 1, 3, 2),
+      rct(1, 1, 2, 2),
+      rct(0, 1, 1, 2),
+      rct(2, 0, 3, 1),
+      rct(1, 0, 2, 1),
+      rct(0, 0, 1, 1)
+    )
+  )
 })
 
 test_that("grd matrix interface works", {
