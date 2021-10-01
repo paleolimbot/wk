@@ -32,14 +32,6 @@ grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
 
 #' @export
 grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  if (missing(i)) {
-    i <- NULL
-  }
-
-  if (missing(j)) {
-    j <- NULL
-  }
-
   indices <- grd_subset_indices(object, i, j, bbox, ...)
   x <- indices$j
   y <- indices$i
@@ -77,14 +69,6 @@ grd_subset_indices <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
 
 #' @export
 grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  if (missing(i)) {
-    i <- NULL
-  }
-
-  if (missing(j)) {
-    j <- NULL
-  }
-
   grd <- as_grd_rct(object)
   indices <- grd_subset_indices_internal(grd, i, j, bbox)
 
@@ -110,14 +94,6 @@ grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL
 
 #' @export
 grd_subset_indices.wk_grd_rct <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  if (missing(i)) {
-    i <- NULL
-  }
-
-  if (missing(j)) {
-    j <- NULL
-  }
-
   grd_subset_indices_internal(object, i, j, bbox)
 }
 
