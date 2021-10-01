@@ -356,10 +356,13 @@ wk_set_crs.wk_grd <- function(x, crs) {
 
     x_bare$bbox <- value
   } else if(identical(i, "data_order")) {
-    if (setequal(value, c("x", "y"))) {
+    if (setequal(gsub("^[+-]", "", value), c("x", "y"))) {
       x_bare$data_order <- value
     } else {
-      stop("element 'data_order' must be `c(\"y\", \"x\")` or `c(\"x\", \"y\")`", call. = FALSE)
+      stop(
+        "element 'data_order' must be `c(\"[-]y\", \"[-]x\")` or `c(\"[-]x\", \"[-]y\")`",
+        call. = FALSE
+      )
     }
   } else {
     stop("Can't set element of a wk_grd that is not 'data' or 'bbox'", call. = FALSE)
@@ -452,13 +455,31 @@ as_xy.wk_grd_xy <- function(x, ...) {
   ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
 
   # ordering such that values match up to internal data ordering
-  if (identical(x$data_order, c("y", "x"))) {
+  data_order <- gsub("^[+-]", "", x$data_order)
+
+  if (identical(data_order, c("y", "x"))) {
+    if (startsWith("-", x$data_order[1])) {
+      ys <- rev(ys)
+    }
+
+    if (startsWith("-", x$data_order[2])) {
+      xs <- rev(xs)
+    }
+
     xy(
       rep(xs, each = length(ys)),
       rep(ys, length(xs)),
       crs = wk_crs(x$bbox)
     )
   } else {
+    if (startsWith("-", x$data_order[2])) {
+      ys <- rev(ys)
+    }
+
+    if (startsWith("-", x$data_order[1])) {
+      xs <- rev(xs)
+    }
+
     xy(
       rep(xs, length(ys)),
       rep(ys, each = length(xs)),
@@ -483,23 +504,49 @@ as_rct.wk_grd_rct <- function(x, ...) {
   xs <- seq(rct$xmin, rct$xmax, by = width / nx)
   ys <- seq(rct$ymax, rct$ymin, by = -height / ny)
 
-  if (identical(x$data_order, c("y", "x"))) {
-    rct(
-      rep(xs[-length(xs)], each = ny),
-      rep(ys[-1], nx),
-      rep(xs[-1], each = ny),
-      rep(ys[-length(ys)], nx),
-      crs = wk_crs(x$bbox)
-    )
+  data_order <- gsub("^[+-]", "", x$data_order)
+
+  if (identical(data_order, c("y", "x"))) {
+    if (startsWith("-", x$data_order[1])) {
+      ys <- rev(ys)
+      ymax <- rep(ys[-1], nx)
+      ymin <- rep(ys[-length(ys)], nx)
+    } else {
+      ymin <- rep(ys[-1], nx)
+      ymax <- rep(ys[-length(ys)], nx)
+    }
+
+    if (startsWith("-", x$data_order[2])) {
+      xs <- rev(xs)
+      xmax <- rep(xs[-length(xs)], each = ny)
+      xmin <- rep(xs[-1], each = ny)
+    } else {
+      xmin <- rep(xs[-length(xs)], each = ny)
+      xmax <- rep(xs[-1], each = ny)
+    }
+
+    rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
   } else {
-    rct(
-      rep(xs[-length(xs)], ny),
-      rep(ys[-1], each = nx),
-      rep(xs[-1], ny),
-      rep(ys[-length(ys)], each = nx),
-      crs = wk_crs(x$bbox)
-    )
+    if (startsWith("-", x$data_order[2])) {
+      ys <- rev(ys)
+      ymax <- rep(ys[-1], each = nx)
+      ymin <- rep(ys[-length(ys)], each = nx)
+    } else {
+      ymin <- rep(ys[-1], each = nx)
+      ymax <- rep(ys[-length(ys)], each = nx)
+    }
+
+    if (startsWith("-", x$data_order[1])) {
+      xs <- rev(xs)
+      xmax <- rep(xs[-length(xs)], ny)
+      xmin <- rep(xs[-1], ny)
+    } else {
+      xmin <- rep(xs[-length(xs)], ny)
+      xmax <- rep(xs[-1], ny)
+    }
   }
+
+  rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
 }
 
 #' @export

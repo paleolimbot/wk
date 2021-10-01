@@ -258,6 +258,10 @@ test_that("grd[[]]<- interface works", {
   grid[["data"]] <- matrix()
   expect_identical(grid, grd_rct(matrix(), rct(0, 0, 1, 1)))
 
+  grid[["data_order"]] <- c("x", "y")
+  expect_identical(grid$data_order, c("x", "y"))
+  expect_error(grid[["data_order"]] <- c("x", "y", "z"), "element 'data_order' must be")
+
   expect_error(grid[["not_data_or_bbox"]] <- NULL, "Can't set element")
 })
 
@@ -269,6 +273,10 @@ test_that("grd$<- interface works", {
 
   grid$data <- matrix()
   expect_identical(grid, grd_rct(matrix(), rct(0, 0, 1, 1)))
+
+  grid$data_order <- c("x", "y")
+  expect_identical(grid$data_order, c("x", "y"))
+  expect_error(grid$data_order <- c("x", "y", "z"), "element 'data_order' must be")
 
   expect_error(grid$not_data_or_bbox <- NULL, "Can't set element")
 })
