@@ -234,7 +234,9 @@ as_grd_rct.wk_grd_xy <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_rct(x$data, bbox = bbox)
+  grd <- grd_rct(x$data, bbox = bbox)
+  grd$data_order <- x$data_order
+  grd
 }
 
 #' @rdname grd
@@ -269,7 +271,9 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_xy(x$data, bbox = bbox)
+  grd <- grd_xy(x$data, bbox = bbox)
+  grd$data_order <- x$data_order
+  grd
 }
 
 #' S3 details for grid objects
@@ -351,6 +355,12 @@ wk_set_crs.wk_grd <- function(x, crs) {
     }
 
     x_bare$bbox <- value
+  } else if(identical(i, "data_order")) {
+    if (setequal(value, c("x", "y"))) {
+      x_bare$data_order <- value
+    } else {
+      stop("element 'data_order' must be `c(\"y\", \"x\")` or `c(\"x\", \"y\")`", call. = FALSE)
+    }
   } else {
     stop("Can't set element of a wk_grd that is not 'data' or 'bbox'", call. = FALSE)
   }
@@ -438,17 +448,23 @@ as_xy.wk_grd_xy <- function(x, ...) {
     return(xy(crs = wk_crs(x)))
   }
 
-  # ordering such that values match up
-  # when dim(x$data) <- NULL (nativeRaster maybe should be
-  # special-cased or maybe there needs to be an order specified
-  # in the constructor
   xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
   ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
-  xy(
-    rep(xs, each = length(ys)),
-    rep(ys, length(xs)),
-    crs = wk_crs(x$bbox)
-  )
+
+  # ordering such that values match up to internal data ordering
+  if (identical(x$data_order, c("y", "x"))) {
+    xy(
+      rep(xs, each = length(ys)),
+      rep(ys, length(xs)),
+      crs = wk_crs(x$bbox)
+    )
+  } else {
+    xy(
+      rep(xs, length(ys)),
+      rep(ys, each = length(xs)),
+      crs = wk_crs(x$bbox)
+    )
+  }
 }
 
 #' @export
@@ -463,20 +479,27 @@ as_rct.wk_grd_rct <- function(x, ...) {
     return(rct(crs = wk_crs(x)))
   }
 
-  # ordering such that values match up
-  # when dim(x$data) <- NULL (nativeRaster maybe should be
-  # special-cased or maybe there needs to be an order specified
-  # in the constructor
+  # ordering such that values match up to internal data ordering
   xs <- seq(rct$xmin, rct$xmax, by = width / nx)
   ys <- seq(rct$ymax, rct$ymin, by = -height / ny)
 
-  rct(
-    rep(xs[-length(xs)], each = ny),
-    rep(ys[-1], nx),
-    rep(xs[-1], each = ny),
-    rep(ys[-length(ys)], nx),
-    crs = wk_crs(x$bbox)
-  )
+  if (identical(x$data_order, c("y", "x"))) {
+    rct(
+      rep(xs[-length(xs)], each = ny),
+      rep(ys[-1], nx),
+      rep(xs[-1], each = ny),
+      rep(ys[-length(ys)], nx),
+      crs = wk_crs(x$bbox)
+    )
+  } else {
+    rct(
+      rep(xs[-length(xs)], ny),
+      rep(ys[-1], each = nx),
+      rep(xs[-1], ny),
+      rep(ys[-length(ys)], each = nx),
+      crs = wk_crs(x$bbox)
+    )
+  }
 }
 
 #' @export
