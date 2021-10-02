@@ -8,7 +8,7 @@
 #' relationship to x-y space has not changed.
 #'
 #' @param object A [grd()]
-#' @param y,x Raw indices. These must be equally
+#' @param i,j Raw indices. These must be equally
 #'   spaced if passed as numeric; if passed as logical they are
 #'   recycled silently along each dimension.
 #' @param bbox A bounding box to use as a subset. This is used
@@ -26,19 +26,82 @@
 #' grid <- grd_rct(volcano)
 #' grd_subset(grid, seq(2, 61, by = 4), seq(2, 87, by = 4))
 #'
-grd_subset <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
+grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset")
 }
 
 #' @export
-grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) {
-  if (missing(x)) {
-    x <- NULL
+grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  indices <- grd_subset_indices(object, i, j, bbox, ...)
+  x <- indices$j
+  y <- indices$i
+
+  # about to potentially modify data
+  data <- object$data
+
+  # special case the nativeRaster, whose dims are lying about
+  # the ordering needed to index it
+  if (inherits(data, "nativeRaster")) {
+    attrs <- attributes(data)
+    dim(data) <- rev(dim(data))
+    data <- data[x, y, drop = FALSE]
+    attrs$dim <- rev(dim(data))
+    attributes(data) <- attrs
+  } else {
+    # we want to keep everything for existing dimensions
+    # this means generating a list of missings to fill
+    # the correct number of additional dimensions
+    n_more_dims <- length(dim(data)) - 2L
+    more_dims <- alist(1, )[rep(2, n_more_dims)]
+    data <- do.call("[", c(list(data, y, x), more_dims, list(drop = FALSE)))
   }
 
-  if (missing(y)) {
-    y <- NULL
-  }
+  object$data <- data
+  object$bbox <- indices$bbox
+  object
+}
+
+#' @rdname grd_subset
+#' @export
+grd_subset_indices <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  UseMethod("grd_subset_indices")
+}
+
+#' @export
+grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  grd <- as_grd_rct(object)
+  indices <- grd_subset_indices_internal(grd, i, j, bbox)
+
+  # have to recalculate the bbox
+  nx <- length(indices$j)
+  ny <- length(indices$i)
+  rct <- unclass(indices$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- width / nx
+  dy <- height / ny
+
+  indices$bbox <- rct(
+    rct$xmin + dx / 2,
+    rct$ymin + dy / 2,
+    rct$xmax - dx / 2,
+    rct$ymax - dy / 2,
+    crs = wk_crs(indices$bbox)
+  )
+
+  indices
+}
+
+#' @export
+grd_subset_indices.wk_grd_rct <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+  grd_subset_indices_internal(object, i, j, bbox)
+}
+
+
+grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL) {
+  # in this function, x and y are indices in that direction
+  x <- j
+  y <- i
 
   # get the cell information we need
   rct <- unclass(object$bbox)
@@ -51,12 +114,24 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
 
   # can't get any more subsetted than an empty grid!
   if ((nx * ny) == 0) {
-    return(object)
+    return(
+      list(
+        i = seq_len(nrow(object)),
+        j = seq_len(ncol(object)),
+        bbox = object$bbox
+      )
+    )
   }
 
   # empty subset criteria -> no subset
   if (is.null(bbox) && is.null(x) && is.null(y)) {
-    return(object)
+    return(
+      list(
+        i = seq_len(nrow(object)),
+        j = seq_len(ncol(object)),
+        bbox = object$bbox
+      )
+    )
   }
 
   if (is.null(bbox) && (!is.null(x) || !is.null(y))) {
@@ -146,29 +221,5 @@ grd_subset.wk_grd_rct <- function(object, y = NULL, x = NULL, bbox = NULL, ...) 
     new_rct$ymax <- -Inf
   }
 
-  # about to potentially modify data
-  data <- object$data
-
-  # special case the nativeRaster, whose dims are lying about
-  # the ordering needed to index it
-  if (inherits(data, "nativeRaster")) {
-    attrs <- attributes(data)
-    dim(data) <- rev(dim(data))
-    data <- data[x, y, drop = FALSE]
-    attrs$dim <- rev(dim(data))
-    attributes(data) <- attrs
-  } else {
-    # we want to keep everything for existing dimensions
-    # this means generating a list of missings to fill
-    # the correct number of additional dimensions
-    n_more_dims <- length(dim(data)) - 2L
-    more_dims <- alist(1, )[rep(2, n_more_dims)]
-    data <- do.call("[", c(list(data, y, x), more_dims, list(drop = FALSE)))
-  }
-
-  grd_rct(
-    data,
-    bbox = new_wk_rct(new_rct, crs = wk_crs(object)),
-    data_order = object$data_order
-  )
+  list(i = y, j = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
 }

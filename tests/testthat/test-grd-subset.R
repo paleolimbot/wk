@@ -47,13 +47,13 @@ test_that("subset works for grd_rct", {
   # subset by bbox with exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0, 86, 3, 87)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 
   # subset by bbox with non-exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
-    grd_subset(grid, x = 1:3, y = 1)
+    grd_subset(grid, j = 1:3, i = 1)
   )
 })
 
@@ -71,7 +71,7 @@ test_that("grd_subset() works for a grd_rct backed by nativeRaster", {
   )
 
   grid_native <- grd_rct(col_native)
-  grid_21 <- grd_subset(grid_native, y = 2, x = 2:3)
+  grid_21 <- grd_subset(grid_native, i = 2, j = 2:3)
   expect_identical(
     as.integer(grid_21$data),
     c(-11711155L, -8355712L)
@@ -84,5 +84,56 @@ test_that("grd_subset() preserves dimensions for nd arrays", {
   expect_identical(
     grd_subset(grid, 1, 1),
     grd_rct(array(c(1L, 7L, 13L, 19L), dim = c(1, 1, 4)), bbox = rct(0, 1, 1, 2))
+  )
+})
+
+test_that("subset works for grd_xy", {
+  empty <- grd_xy(matrix(nrow = 0, ncol = 0))
+  expect_identical(grd_subset(empty), empty)
+
+  grid <- grd_xy(volcano)
+
+  # ways to identity subset
+  expect_identical(grd_subset(grid), grid)
+  expect_identical(grd_subset(grid, bbox = wk_bbox(grid)), grid)
+  expect_identical(grd_subset(grid, 1:87, 1:61), grid)
+  expect_identical(grd_subset(grid, NULL, 1:61), grid)
+  expect_identical(grd_subset(grid, 1:87, NULL), grid)
+
+  # check small subsets for exactness
+  grid_23 <- grd_subset(grid, 1:2, 1:3)
+  expect_identical(grid_23$data, volcano[1:2, 1:3])
+  expect_identical(wk_bbox(grid_23), rct(0, 85, 2, 86))
+
+  # subset by logical
+  expect_identical(
+    grd_subset(grid, c(rep(T, 2), rep(F, 85)), c(rep(T, 3), rep(F, 58))),
+    grd_subset(grid, 1:2, 1:3)
+  )
+
+  # subset by bbox with exact boundaries
+  expect_identical(
+    grd_subset(grid, bbox = rct(0, 86, 2, 86)),
+    grd_subset(grid, j = 1:3, i = 1)
+  )
+
+  # subset by bbox with non-exact boundaries
+  expect_identical(
+    grd_subset(grid, bbox = rct(-0.5, 85.9, 2.5, 86.1)),
+    grd_subset(grid, j = 1:3, i = 1)
+  )
+})
+
+test_that("grd_subset_indices() works for the identity case", {
+  grid <- grd_xy(volcano)
+  expect_identical(
+    grd_subset_indices(grid),
+    list(i = 1:87, j = 1:61, bbox = rct(0, 0, 60, 86))
+  )
+
+  grid <- grd_rct(volcano)
+  expect_identical(
+    grd_subset_indices(grid),
+    list(i = 1:87, j = 1:61, bbox = rct(0, 0, 61, 87))
   )
 })

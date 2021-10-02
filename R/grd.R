@@ -13,9 +13,6 @@
 #'   specify a [rct()] with `xmin > xmax` or `ymin > ymax` which will flip
 #'   the underlying data and return an object with a normalized bounding
 #'   box and data.
-#' @param data_order The order in which the grid should be iterated to match
-#'   the internal ordering of `data`. This is used for objects like nativeRaster
-#'   whose internal data ordering is row-major.
 #' @param nx,ny,dx,dy Either a number of cells in the x- and y- directions
 #'   or delta in the x- and y-directions (in which case `bbox` must
 #'   be specified).
@@ -137,10 +134,9 @@ grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,
 
 #' @rdname grd
 #' @export
-grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
-                    data_order = c("x", "y")) {
-  stopifnot(setequal(data_order, c("x", "y")))
+grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+  data_order <- grd_data_order(data)
 
   # normalize data and bbox so that max > min
   normalized <- grd_internal_normalize(data, bbox)
@@ -166,10 +162,9 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1]),
 
 #' @rdname grd
 #' @export
-grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1),
-                   data_order = c("x", "y")) {
-  stopifnot(setequal(data_order, c("x", "y")))
+grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1)) {
   bbox <- if (inherits(bbox, "wk_rct")) bbox else wk_bbox(bbox)
+  data_order <- grd_data_order(data)
 
   # normalize data and bbox so that max > min
   normalized <- grd_internal_normalize(data, bbox)
@@ -239,7 +234,9 @@ as_grd_rct.wk_grd_xy <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_rct(x$data, bbox = bbox, data_order = x$data_order)
+  grd <- grd_rct(x$data, bbox = bbox)
+  grd$data_order <- x$data_order
+  grd
 }
 
 #' @rdname grd
@@ -274,18 +271,37 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
     crs = wk_crs(x$bbox)
   )
 
-  grd_xy(x$data, bbox = bbox, data_order = x$data_order)
+  grd <- grd_xy(x$data, bbox = bbox)
+  grd$data_order <- x$data_order
+  grd
 }
 
 #' S3 details for grid objects
 #'
 #' @param x A [grd()]
 #' @param subclass An optional subclass.
+#' @param ... Passed to S3 methods
 #'
 #' @export
 #'
 new_wk_grd <- function(x, subclass = character()) {
   structure(x, class = union(subclass, "wk_grd"))
+}
+
+#' @rdname new_wk_grd
+#' @export
+grd_data_order <- function(x, ...) {
+  UseMethod("grd_data_order")
+}
+
+#' @export
+grd_data_order.default <- function(x, ...) {
+  c("y", "x")
+}
+
+#' @export
+grd_data_order.nativeRaster <- function(x, ...) {
+  c("x", "y")
 }
 
 # interface for wk methods
@@ -315,8 +331,39 @@ wk_set_crs.wk_grd <- function(x, crs) {
     stopifnot(length(dim(value)) >= 2)
     x_bare$data <- value
   } else if (identical(i, "bbox")) {
-    value <- if (inherits(value, "wk_rct")) wk_bbox(as_wkb(value)) else wk_bbox(value)
+    if (inherits(value, "wk_rct")) {
+      # normalize so that max > min, but empty (Inf -Inf) is OK
+      rct <- unclass(value)
+
+      if (is.na(rct$xmin) || is.na(rct$xmax)) {
+        rct[c("xmin", "xmax")] <- list(Inf, -Inf)
+      }
+      if (is.na(rct$ymin) || is.na(rct$ymax)) {
+        rct[c("ymin", "ymax")] <- list(Inf, -Inf)
+      }
+
+      if ((rct$xmin > rct$xmax) && (rct$xmin != Inf) && (rct$xmax != -Inf)) {
+        rct[c("xmin", "xmax")] <- rct[c("xmax", "xmin")]
+      }
+      if ((rct$ymin > rct$ymax) && (rct$ymin != Inf) && (rct$ymax != -Inf)) {
+        rct[c("ymin", "ymax")] <- rct[c("ymax", "ymin")]
+      }
+
+      value <- new_wk_rct(rct, crs = wk_crs(value))
+    } else {
+      value <- wk_bbox(value)
+    }
+
     x_bare$bbox <- value
+  } else if(identical(i, "data_order")) {
+    if (setequal(gsub("^[+-]", "", value), c("x", "y"))) {
+      x_bare$data_order <- value
+    } else {
+      stop(
+        "element 'data_order' must be `c(\"[-]y\", \"[-]x\")` or `c(\"[-]x\", \"[-]y\")`",
+        call. = FALSE
+      )
+    }
   } else {
     stop("Can't set element of a wk_grd that is not 'data' or 'bbox'", call. = FALSE)
   }
@@ -366,7 +413,7 @@ dim.wk_grd <- function(x) {
     result_xy <- grd_subset(x, bbox = i)
     result_xy$data <- result_xy$data[, , j, ..., drop = FALSE]
   } else {
-    result_xy <- grd_subset(x, y = i, x = j)
+    result_xy <- grd_subset(x, i = i, j = j)
     result_xy$data <- result_xy$data[, , ..., drop = FALSE]
   }
 
@@ -404,17 +451,41 @@ as_xy.wk_grd_xy <- function(x, ...) {
     return(xy(crs = wk_crs(x)))
   }
 
-  # ordering such that values match up
-  # when dim(x$data) <- NULL (nativeRaster maybe should be
-  # special-cased or maybe there needs to be an order specified
-  # in the constructor
   xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
   ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
-  xy(
-    rep(xs, each = length(ys)),
-    rep(ys, length(xs)),
-    crs = wk_crs(x$bbox)
-  )
+
+  # ordering such that values match up to internal data ordering
+  data_order <- gsub("^[+-]", "", x$data_order)
+
+  if (identical(data_order, c("y", "x"))) {
+    if (startsWith(x$data_order[1], "-")) {
+      ys <- rev(ys)
+    }
+
+    if (startsWith(x$data_order[2], "-")) {
+      xs <- rev(xs)
+    }
+
+    xy(
+      rep(xs, each = length(ys)),
+      rep(ys, length(xs)),
+      crs = wk_crs(x$bbox)
+    )
+  } else {
+    if (startsWith(x$data_order[2], "-")) {
+      ys <- rev(ys)
+    }
+
+    if (startsWith(x$data_order[1], "-")) {
+      xs <- rev(xs)
+    }
+
+    xy(
+      rep(xs, length(ys)),
+      rep(ys, each = length(xs)),
+      crs = wk_crs(x$bbox)
+    )
+  }
 }
 
 #' @export
@@ -429,20 +500,53 @@ as_rct.wk_grd_rct <- function(x, ...) {
     return(rct(crs = wk_crs(x)))
   }
 
-  # ordering such that values match up
-  # when dim(x$data) <- NULL (nativeRaster maybe should be
-  # special-cased or maybe there needs to be an order specified
-  # in the constructor
+  # ordering such that values match up to internal data ordering
   xs <- seq(rct$xmin, rct$xmax, by = width / nx)
   ys <- seq(rct$ymax, rct$ymin, by = -height / ny)
 
-  rct(
-    rep(xs[-length(xs)], each = ny),
-    rep(ys[-1], nx),
-    rep(xs[-1], each = ny),
-    rep(ys[-length(ys)], nx),
-    crs = wk_crs(x$bbox)
-  )
+  data_order <- gsub("^[+-]", "", x$data_order)
+
+  if (identical(data_order, c("y", "x"))) {
+    if (startsWith(x$data_order[1], "-")) {
+      ys <- rev(ys)
+      ymax <- rep(ys[-1], nx)
+      ymin <- rep(ys[-length(ys)], nx)
+    } else {
+      ymin <- rep(ys[-1], nx)
+      ymax <- rep(ys[-length(ys)], nx)
+    }
+
+    if (startsWith(x$data_order[2], "-")) {
+      xs <- rev(xs)
+      xmax <- rep(xs[-length(xs)], each = ny)
+      xmin <- rep(xs[-1], each = ny)
+    } else {
+      xmin <- rep(xs[-length(xs)], each = ny)
+      xmax <- rep(xs[-1], each = ny)
+    }
+
+    rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
+  } else {
+    if (startsWith(x$data_order[2], "-")) {
+      ys <- rev(ys)
+      ymax <- rep(ys[-1], each = nx)
+      ymin <- rep(ys[-length(ys)], each = nx)
+    } else {
+      ymin <- rep(ys[-1], each = nx)
+      ymax <- rep(ys[-length(ys)], each = nx)
+    }
+
+    if (startsWith(x$data_order[1], "-")) {
+      xs <- rev(xs)
+      xmax <- rep(xs[-length(xs)], ny)
+      xmin <- rep(xs[-1], ny)
+    } else {
+      xmin <- rep(xs[-length(xs)], ny)
+      xmax <- rep(xs[-1], ny)
+    }
+  }
+
+  rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
 }
 
 #' @export
