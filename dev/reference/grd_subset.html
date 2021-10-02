@@ -140,7 +140,9 @@ a <code>grd_subset()</code> is always a <code><a href='grd.html'>grd()</a></code
 relationship to x-y space has not changed.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>grd_subset</span><span class='op'>(</span><span class='va'>object</span>, y <span class='op'>=</span> <span class='cn'>NULL</span>, x <span class='op'>=</span> <span class='cn'>NULL</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>grd_subset</span><span class='op'>(</span><span class='va'>object</span>, i <span class='op'>=</span> <span class='cn'>NULL</span>, j <span class='op'>=</span> <span class='cn'>NULL</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>grd_subset_indices</span><span class='op'>(</span><span class='va'>object</span>, i <span class='op'>=</span> <span class='cn'>NULL</span>, j <span class='op'>=</span> <span class='cn'>NULL</span>, bbox <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,7 +152,7 @@ relationship to x-y space has not changed.</p>
       <td><p>A <code><a href='grd.html'>grd()</a></code></p></td>
     </tr>
     <tr>
-      <th>y, x</th>
+      <th>i, j</th>
       <td><p>Raw indices. These must be equally
 spaced if passed as numeric; if passed as logical they are
 recycled silently along each dimension.</p></td>
@@ -181,7 +183,7 @@ double-counting cells.</p></td>
 #&gt; List of 3
 #&gt;  $ data      : num [1:15, 1:15] 101 105 109 113 121 125 127 118 112 109 ...
 #&gt;  $ bbox      : wk_rct[1:1] [-0.5 27.5 59.5 87.5]
-#&gt;  $ data_order: chr [1:2] "x" "y"
+#&gt;  $ data_order: chr [1:2] "y" "x"
 #&gt;  - attr(*, "class")= chr [1:2] "wk_grd_rct" "wk_grd"</div><div class='input'>
 </div></pre>
   </div>
