@@ -323,8 +323,11 @@ test_that("grd[[]]<- interface works", {
   grid[["bbox"]] <- rct(0, 0, 1, 1)
   expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
 
-  # make sure this is normalized
+  # make sure this is normalized/converted
   grid[["bbox"]] <- rct(1, 1, 0, 0)
+  expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
+
+  grid[["bbox"]] <- as_wkb(rct(1, 1, 0, 0))
   expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
 
   grid[["data"]] <- matrix()
