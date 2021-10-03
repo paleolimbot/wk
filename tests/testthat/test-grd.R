@@ -115,6 +115,9 @@ test_that("as_xy() works for grd objects", {
   grid_empty <- grd(nx = 0, ny = 0)
   expect_identical(as_xy(grid_empty), xy(crs = NULL))
 
+  grid1 <- grd(nx = 1, ny = 1)
+  expect_identical(as_xy(grid1), xy(0.5, 0.5))
+
   data <- matrix(0:5, nrow = 2, ncol = 3)
   grid <- grd_xy(data)
 

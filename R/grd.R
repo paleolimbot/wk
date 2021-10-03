@@ -451,8 +451,17 @@ as_xy.wk_grd_xy <- function(x, ...) {
     return(xy(crs = wk_crs(x)))
   }
 
-  xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
-  ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
+  if (nx == 1L) {
+    xs <- rct$xmin
+  } else {
+    xs <- seq(rct$xmin, rct$xmax, by = width / (nx - 1))
+  }
+
+  if (ny == 1L) {
+    ys <- rct$ymin
+  } else {
+    ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
+  }
 
   # ordering such that values match up to internal data ordering
   data_order <- gsub("^[+-]", "", x$data_order)
