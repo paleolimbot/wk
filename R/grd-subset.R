@@ -222,9 +222,16 @@ grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
       j = seq(floor(ximin) + 1L, ximax)
     )
   } else if (inherits(object, "wk_grd_xy")) {
-    # this subset gets us any cell that intersects the bbox
+    # this subset gets us any point that intersects the bbox
     # including the boundary on all sides
-    stop("Not implemented")
+    ximin <- (rct_target$xmin - rct$xmin) / dx
+    yimin <- (rct$ymax - rct_target$ymax) / dy
+    ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
+    yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
+    list(
+      i = seq(ceiling(yimin + 1L), floor(yimax) + 1L),
+      j = seq(ceiling(ximin + 1L), floor(ximax) + 1L)
+    )
   } else {
     stop("Unknown containment option", call. = FALSE) # nocov
   }
