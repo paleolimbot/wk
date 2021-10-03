@@ -228,9 +228,15 @@ grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
     yimin <- (rct$ymax - rct_target$ymax) / dy
     ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
     yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
+
+    yimin <- ceiling(yimin + 1L)
+    yimax <- floor(yimax) + 1L
+    ximin <- ceiling(ximin + 1L)
+    ximax <- floor(ximax) + 1L
+
     list(
-      i = seq(ceiling(yimin + 1L), floor(yimax) + 1L),
-      j = seq(ceiling(ximin + 1L), floor(ximax) + 1L)
+      i = if (yimax >= yimin) seq(yimin, yimax) else integer(),
+      j = if (ximax >= ximin) seq(ximin, ximax) else integer()
     )
   } else {
     stop("Unknown containment option", call. = FALSE) # nocov
