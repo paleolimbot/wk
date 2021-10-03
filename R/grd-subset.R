@@ -69,27 +69,7 @@ grd_subset_indices <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
 
 #' @export
 grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  grd <- as_grd_rct(object)
-  indices <- grd_subset_indices_internal(grd, i, j, bbox)
-
-  # have to recalculate the bbox
-  nx <- length(indices$j)
-  ny <- length(indices$i)
-  rct <- unclass(indices$bbox)
-  width <- rct$xmax - rct$xmin
-  height <- rct$ymax - rct$ymin
-  dx <- width / nx
-  dy <- height / ny
-
-  indices$bbox <- rct(
-    rct$xmin + dx / 2,
-    rct$ymin + dy / 2,
-    rct$xmax - dx / 2,
-    rct$ymax - dy / 2,
-    crs = wk_crs(indices$bbox)
-  )
-
-  indices
+  grd_subset_indices_internal(object, i, j, bbox)
 }
 
 #' @export
@@ -97,20 +77,23 @@ grd_subset_indices.wk_grd_rct <- function(object, i = NULL, j = NULL, bbox = NUL
   grd_subset_indices_internal(object, i, j, bbox)
 }
 
-
 grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL) {
-  # in this function, x and y are indices in that direction
-  x <- j
-  y <- i
-
   # get the cell information we need
   rct <- unclass(object$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
   nx <- dim(object$data)[2]
   ny <- dim(object$data)[1]
-  dx <- width / nx
-  dy <- height / ny
+
+  if (inherits(object, "wk_grd_rct")) {
+    dx <- width / nx
+    dy <- height / ny
+  } else if (inherits(object, "wk_grd_xy")) {
+    dx <- width / (nx - 1)
+    dy <- height / (ny- 1)
+  } else {
+    stop("Unknown object type", call. = FALSE) # nocov
+  }
 
   # can't get any more subsetted than an empty grid!
   if ((nx * ny) == 0) {
@@ -124,7 +107,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   }
 
   # empty subset criteria -> no subset
-  if (is.null(bbox) && is.null(x) && is.null(y)) {
+  if (is.null(bbox) && is.null(i) && is.null(j)) {
     return(
       list(
         i = seq_len(nrow(object)),
@@ -134,44 +117,96 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
     )
   }
 
-  if (is.null(bbox) && (!is.null(x) || !is.null(y))) {
-    if (is.null(x)) {
-      x <- seq_len(nx)
-    } else if (is.numeric(x)) {
-      stopifnot(length(x) <= 1 || length(unique(diff(x))) == 1)
-    } else if (is.logical(y)) {
-      x <- which(rep_len(x, nx))
-      stopifnot(length(x) <= 1 || length(unique(diff(x))) == 1)
+  if (is.null(bbox) && (!is.null(i) || !is.null(j))) {
+    indices <- grd_expand_ij_internal(i, j, nx, ny)
+  } else if (!is.null(bbox) && is.null(i) && is.null(j)) {
+    indices <- grd_expand_bbox_rct_internal(object, bbox, dx, dy)
+  } else {
+    stop("Must specify bbox OR (i | j)", call. = FALSE)
+  }
+
+  x <- indices$j
+  y <- indices$i
+
+  # clamp to actual indices
+  x <- x[!is.na(x) & (x >= 1L) & (x <= nx)]
+  y <- y[!is.na(y) & (y >= 1L) & (y <= ny)]
+
+  # sort to avoid flipping any data
+  x <- sort(x)
+  y <- sort(y)
+
+  # re-define the bbox based on actual index subset
+  new_rct <- rct
+
+  if (inherits(object, "wk_grd_rct")) {
+    # strategy is to keep the cell centres intact on downsample
+    if (length(x) > 0) {
+      downsample_x <- x[2] - x[1]
+      new_dx <- if (length(x) >= 2) dx * downsample_x else dx
+      new_rct$xmin <- rct$xmin + ((min(x) - 1) * dx) + (dx / 2) - (new_dx / 2)
+      new_rct$xmax <- rct$xmin + (max(x) * dx) - (dx / 2) + (new_dx / 2)
     } else {
-      stop("`x` must be NULL, numeric, or logical", call. = FALSE)
+      new_rct$xmin <- Inf
+      new_rct$xmax <- -Inf
     }
 
-    if (is.null(y)) {
-      y <- seq_len(ny)
-    } else if (is.numeric(y)) {
-      stopifnot(length(y) <= 1 || length(unique(diff(y))) == 1)
-    } else if (is.logical(y)) {
-      y <- which(rep_len(y, ny))
-      stopifnot(length(y) <= 1 || length(unique(diff(y))) == 1)
+    if (length(y) > 0) {
+      downsample_y <- y[2] - y[1]
+      new_dy <- if (length(y) >= 2) dy * downsample_y else dy
+      new_rct$ymin <- rct$ymax - (max(y) * dy) + (dy / 2) - (new_dy / 2)
+      new_rct$ymax <- rct$ymax - ((min(y) - 1) * dy) - (dy / 2) + (new_dy / 2)
     } else {
-      stop("`y` must be NULL, numeric, or logical", call. = FALSE)
+      new_rct$ymin <- Inf
+      new_rct$ymax <- -Inf
     }
-  } else if (!is.null(bbox) && is.null(x) && is.null(y)) {
-    # normalized so that xmin < xmax, ymin < ymax
-    rct_target <- unclass(if (inherits(bbox, "wk_rct")) wk_bbox(as_wkb(bbox)) else wk_bbox(bbox))
+  } else if (inherits(object, "wk_grd_xy")) {
+    if (length(x) > 0) {
+      new_rct$xmin <- rct$xmin + (x[1] - 1L) * dx
+      new_rct$xmax <- rct$xmin + (x[length(x)] - 1L) * dx
+    } else {
+      new_rct$xmin <- Inf
+      new_rct$xmax <- -Inf
+    }
 
-    # clamp to current limits
-    rct_target$xmin <- max(rct_target$xmin, rct$xmin)
-    rct_target$ymin <- max(rct_target$ymin, rct$ymin)
-    rct_target$xmax <- min(rct_target$xmax, rct$xmax)
-    rct_target$ymax <- min(rct_target$ymax, rct$ymax)
+    if (length(y) > 0) {
+      new_rct$ymin <- rct$ymax - (y[1] - 1L) * dy
+      new_rct$ymax <- rct$ymax - (y[length(y)] - 1L) * dy
+    } else {
+      new_rct$ymin <- Inf
+      new_rct$ymax <- -Inf
+    }
+  } else {
+    stop("Unknown object type", call. = FALSE) # nocov
+  }
 
-    # remember that y indices are upside down compared to limits
-    ximin <- (rct_target$xmin - rct$xmin) / dx
-    yimin <- (rct$ymax - rct_target$ymax) / dy
-    ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
-    yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
+  list(i = y, j = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
+}
 
+grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
+  # for access to members
+  rct <- unclass(object$bbox)
+
+  # normalized so that xmin < xmax, ymin < ymax
+  if (inherits(bbox_target, "wk_rct")) {
+    rct_target <- unclass(wk_bbox(as_wkb(bbox_target)))
+  } else {
+    rct_target <- unclass(wk_bbox(bbox_target))
+  }
+
+  # clamp to current limits
+  rct_target$xmin <- max(rct_target$xmin, rct$xmin)
+  rct_target$ymin <- max(rct_target$ymin, rct$ymin)
+  rct_target$xmax <- min(rct_target$xmax, rct$xmax)
+  rct_target$ymax <- min(rct_target$ymax, rct$ymax)
+
+  # remember that y indices are upside down compared to limits
+  ximin <- (rct_target$xmin - rct$xmin) / dx
+  yimin <- (rct$ymax - rct_target$ymax) / dy
+  ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
+  yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
+
+  if (inherits(object, "wk_grd_rct")) {
     # this subset will get us intersecting cells but NOT cells
     # that only touch on the bottom/right
     if (ceiling(ximax) != ximax) {
@@ -182,44 +217,41 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
       yimax <- ceiling(yimax)
     }
 
-    x <- seq(floor(ximin) + 1L, ximax)
-    y <- seq(floor(yimin) + 1L, yimax)
+    list(
+      i = seq(floor(yimin) + 1L, yimax),
+      j = seq(floor(ximin) + 1L, ximax)
+    )
+  } else if (inherits(object, "wk_grd_xy")) {
+    # this subset gets us any cell that intersects the bbox
+    # including the boundary on all sides
+    stop("Not implemented")
   } else {
-    stop("Must specify bbox OR (x | y)", call. = FALSE)
+    stop("Unknown containment option", call. = FALSE) # nocov
+  }
+}
+
+grd_expand_ij_internal <- function(i, j, nx, ny) {
+  if (is.null(j)) {
+    j <- seq_len(nx)
+  } else if (is.numeric(j)) {
+    stopifnot(length(j) <= 1 || length(unique(diff(j))) == 1)
+  } else if (is.logical(j)) {
+    j <- which(rep_len(j, nx))
+    stopifnot(length(j) <= 1 || length(unique(diff(j))) == 1)
+  } else {
+    stop("`j` must be NULL, numeric, or logical", call. = FALSE)
   }
 
-  # clamp to actual indices
-  x <- x[!is.na(x) & (x >= 1L) & (x <= nx)]
-  y <- y[!is.na(y) & (y >= 1L) & (y <= ny)]
-
-  # sort to avoid flipping any data
-  x <- sort(x)
-  y <- sort(y)
-
-  # re-define the bbox based on actual indices
-  # strategy is to keep the cell centres intact,
-  # which may change the bbox if downsampling
-  new_rct <- rct
-
-  if (length(x) > 0) {
-    downsample_x <- x[2] - x[1]
-    new_dx <- if (length(x) >= 2) dx * downsample_x else dx
-    new_rct$xmin <- rct$xmin + ((min(x) - 1) * dx) + (dx / 2) - (new_dx / 2)
-    new_rct$xmax <- rct$xmin + (max(x) * dx) - (dx / 2) + (new_dx / 2)
+  if (is.null(i)) {
+    i <- seq_len(ny)
+  } else if (is.numeric(i)) {
+    stopifnot(length(i) <= 1 || length(unique(diff(i))) == 1)
+  } else if (is.logical(i)) {
+    i <- which(rep_len(i, ny))
+    stopifnot(length(i) <= 1 || length(unique(diff(i))) == 1)
   } else {
-    new_rct$xmin <- Inf
-    new_rct$xmax <- -Inf
+    stop("`i` must be NULL, numeric, or logical", call. = FALSE)
   }
 
-  if (length(y) > 0) {
-    downsample_y <- y[2] - y[1]
-    new_dy <- if (length(y) >= 2) dy * downsample_y else dy
-    new_rct$ymin <- rct$ymax - (max(y) * dy) + (dy / 2) - (new_dy / 2)
-    new_rct$ymax <- rct$ymax - ((min(y) - 1) * dy) - (dy / 2) + (new_dy / 2)
-  } else {
-    new_rct$ymin <- Inf
-    new_rct$ymax <- -Inf
-  }
-
-  list(i = y, j = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
+  list(i = i, j = j)
 }
