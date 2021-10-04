@@ -157,8 +157,8 @@ test_that("grd_subset_indices() works for the identity case", {
   expect_identical(
     grd_subset_indices(grid),
     list(
-      i = c(start = 0L, stop = unname(nrow(grid)), step = 1L),
-      j = c(start = 0L, stop = unname(ncol(grid)), step = 1L),
+      i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
+      j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
       bbox = grid$bbox
     )
   )
@@ -167,8 +167,8 @@ test_that("grd_subset_indices() works for the identity case", {
   expect_identical(
     grd_subset_indices(grid),
     list(
-      i = c(start = 0L, stop = unname(nrow(grid)), step = 1L),
-      j = c(start = 0L, stop = unname(ncol(grid)), step = 1L),
+      i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
+      j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
       bbox = grid$bbox
     )
   )

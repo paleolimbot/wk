@@ -142,8 +142,8 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   if ((nx * ny) == 0) {
     return(
       list(
-        i = c(start = 0L, stop = ny, step = 1L),
-        j = c(start = 0L, stop = nx, step = 1L),
+        i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
+        j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
         bbox = object$bbox
       )
     )
@@ -153,8 +153,8 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   if (is.null(bbox) && is.null(i) && is.null(j)) {
     return(
       list(
-        i = c(start = 0L, stop = ny, step = 1L),
-        j = c(start = 0L, stop = nx, step = 1L),
+        i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
+        j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
         bbox = object$bbox
       )
     )
