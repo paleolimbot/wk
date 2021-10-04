@@ -58,6 +58,12 @@ test_that("subset works for grd_rct", {
     grd_subset(grid, j = 1:3, i = 1)
   )
 
+  # subset by empty bbox
+  expect_identical(
+    grd_subset(grid, bbox = rct(Inf, Inf, -Inf, -Inf)),
+    grd_subset(grid, integer(), integer())
+  )
+
   # subset by bbox with non-exact boundaries
   expect_identical(
     grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
@@ -131,6 +137,12 @@ test_that("subset works for grd_xy", {
   expect_identical(
     grd_subset(grid, bbox = rct(0, 86, 2, 86)),
     grd_subset(grid, j = 1:3, i = 1)
+  )
+
+  # subset by empty bbox
+  expect_identical(
+    grd_subset(grid, bbox = rct(Inf, Inf, -Inf, -Inf)),
+    grd_subset(grid, integer(), integer())
   )
 
   # subset by bbox with non-exact boundaries

@@ -200,6 +200,13 @@ grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
   rct_target$xmax <- min(rct_target$xmax, rct$xmax)
   rct_target$ymax <- min(rct_target$ymax, rct$ymax)
 
+  # It might be possible here to have a non-intersecting rct_target
+  # in which case we can return an empty subset.
+  # Notably, rct(Inf, Inf, -Inf, -Inf)
+  if ((rct_target$xmin > rct_target$xmax) || (rct_target$ymin > rct_target$ymax)) {
+    return(list(i = integer(), j = integer()))
+  }
+
   # remember that y indices are upside down compared to limits
   ximin <- (rct_target$xmin - rct$xmin) / dx
   yimin <- (rct$ymax - rct_target$ymax) / dy
