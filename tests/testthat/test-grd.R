@@ -310,8 +310,8 @@ test_that("grd matrix interface works", {
   grid <- grd_rct(array(1:24, dim = c(2, 3, 4)))
   expect_identical(grid[1, 1, ], grd_subset(grid, 1, 1))
   expect_identical(grid[, , 1], grd_rct(grid$data[, , 1, drop = FALSE]))
-  expect_identical(dim(grid)[1], c(y = 2L))
-  expect_identical(dim(grid)["y"], c(y = 2L))
+  expect_identical(dim(grid)[1], 2L)
+  expect_identical(dim(grid)[2], 3L)
 
   # rct subsetting
   expect_identical(grid[rct(0, 1, 1, 2), ], grd_subset(grid, 1, 1))

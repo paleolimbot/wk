@@ -379,9 +379,7 @@ wk_set_crs.wk_grd <- function(x, crs) {
 # interface for matrix-like extraction and subsetting
 #' @export
 dim.wk_grd <- function(x) {
-  dims <- dim(x$data)
-  names(dims)[1:2] <- c("y", "x")
-  dims
+  dim(x$data)
 }
 
 #' @export
