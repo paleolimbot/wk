@@ -156,12 +156,20 @@ test_that("grd_subset_indices() works for the identity case", {
   grid <- grd_xy(volcano)
   expect_identical(
     grd_subset_indices(grid),
-    list(i = 1:87, j = 1:61, bbox = rct(0, 0, 60, 86))
+    list(
+      i = c(start = 0L, stop = unname(nrow(grid)), step = 1L),
+      j = c(start = 0L, stop = unname(ncol(grid)), step = 1L),
+      bbox = grid$bbox
+    )
   )
 
   grid <- grd_rct(volcano)
   expect_identical(
     grd_subset_indices(grid),
-    list(i = 1:87, j = 1:61, bbox = rct(0, 0, 61, 87))
+    list(
+      i = c(start = 0L, stop = unname(nrow(grid)), step = 1L),
+      j = c(start = 0L, stop = unname(ncol(grid)), step = 1L),
+      bbox = grid$bbox
+    )
   )
 })

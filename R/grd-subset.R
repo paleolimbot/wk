@@ -33,8 +33,19 @@ grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
 #' @export
 grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   indices <- grd_subset_indices(object, i, j, bbox, ...)
-  x <- indices$j
-  y <- indices$i
+
+  # convert zero-based start/stop/step to vectors of indices
+  if (is.na(indices$i["start"]) || (indices$i["start"] == indices$i["stop"])) {
+    i <- integer()
+  } else {
+    i <- seq(indices$i["start"] + 1L, indices$i["stop"], by = indices$i["step"])
+  }
+
+  if (is.na(indices$j["start"]) || (indices$j["start"] == indices$j["stop"])) {
+    j <- integer()
+  } else {
+    j <- seq(indices$j["start"] + 1L, indices$j["stop"], by = indices$j["step"])
+  }
 
   # about to potentially modify data
   data <- object$data
@@ -44,7 +55,7 @@ grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   if (inherits(data, "nativeRaster")) {
     attrs <- attributes(data)
     dim(data) <- rev(dim(data))
-    data <- data[x, y, drop = FALSE]
+    data <- data[j, i, drop = FALSE]
     attrs$dim <- rev(dim(data))
     attributes(data) <- attrs
   } else {
@@ -53,7 +64,7 @@ grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
     # the correct number of additional dimensions
     n_more_dims <- length(dim(data)) - 2L
     more_dims <- alist(1, )[rep(2, n_more_dims)]
-    data <- do.call("[", c(list(data, y, x), more_dims, list(drop = FALSE)))
+    data <- do.call("[", c(list(data, i, j), more_dims, list(drop = FALSE)))
   }
 
   object$data <- data
@@ -99,8 +110,8 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   if ((nx * ny) == 0) {
     return(
       list(
-        i = seq_len(nrow(object)),
-        j = seq_len(ncol(object)),
+        i = c(start = 0L, stop = ny, step = 1L),
+        j = c(start = 0L, stop = nx, step = 1L),
         bbox = object$bbox
       )
     )
@@ -110,8 +121,8 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   if (is.null(bbox) && is.null(i) && is.null(j)) {
     return(
       list(
-        i = seq_len(nrow(object)),
-        j = seq_len(ncol(object)),
+        i = c(start = 0L, stop = ny, step = 1L),
+        j = c(start = 0L, stop = nx, step = 1L),
         bbox = object$bbox
       )
     )
@@ -180,7 +191,12 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
     stop("Unknown object type", call. = FALSE) # nocov
   }
 
-  list(i = y, j = x, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
+  # eventually this can be computed more efficiently based on the above
+  list(
+    i = c(start = y[1] - 1L, stop = y[length(y)], step = y[min(2, length(y))] - y[1]),
+    j = c(start = x[1] - 1L, stop = x[length(x)], step = x[min(2, length(x))] - x[1]),
+    bbox = new_wk_rct(new_rct, crs = wk_crs(object))
+  )
 }
 
 grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
