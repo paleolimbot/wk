@@ -32,7 +32,9 @@ double-counting cells.}
 \item \code{grd_subset()}: A modified \code{\link[=grd]{grd()}}.
 \item \code{grd_subset_indices()}: A \code{list()} with components
 \code{i} (\code{c(start = , stop = , step = )}), \code{j} (\code{c(start = , stop = , step = )}),
-and \code{bbox} (\code{\link[=rct]{rct()}} of length 1).
+and \code{bbox} (\code{\link[=rct]{rct()}} of length 1). In this value \code{start} is the index before
+the first element and \code{stop} is the last element (equivalent to notation
+for a zero-based Python slice).
 }
 }
 \description{

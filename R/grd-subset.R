@@ -25,7 +25,9 @@
 #'   - `grd_subset()`: A modified [grd()].
 #'   - `grd_subset_indices()`: A `list()` with components
 #'     `i` (`c(start = , stop = , step = )`), `j` (`c(start = , stop = , step = )`),
-#'     and `bbox` ([rct()] of length 1).
+#'     and `bbox` ([rct()] of length 1). In this value `start` is the index before
+#'     the first element and `stop` is the last element (equivalent to notation
+#'     for a zero-based Python slice).
 #' @export
 #'
 #' @examples
