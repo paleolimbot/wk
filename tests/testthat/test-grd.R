@@ -115,6 +115,9 @@ test_that("as_xy() works for grd objects", {
   grid_empty <- grd(nx = 0, ny = 0)
   expect_identical(as_xy(grid_empty), xy(crs = NULL))
 
+  grid1 <- grd(nx = 1, ny = 1)
+  expect_identical(as_xy(grid1), xy(0.5, 0.5))
+
   data <- matrix(0:5, nrow = 2, ncol = 3)
   grid <- grd_xy(data)
 
@@ -329,6 +332,8 @@ test_that("grd[[]]<- interface works", {
 
   grid[["bbox"]] <- as_wkb(rct(1, 1, 0, 0))
   expect_identical(wk_bbox(grid), rct(0, 0, 1, 1))
+
+  expect_error(grid[["bbox"]] <- rct(NA, 1, 0, 0), "Can't set missing")
 
   grid[["data"]] <- matrix()
   expect_identical(grid, grd_rct(matrix(), rct(0, 0, 1, 1)))

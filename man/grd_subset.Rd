@@ -14,7 +14,9 @@ grd_subset_indices(object, i = NULL, j = NULL, bbox = NULL, ...)
 
 \item{i, j}{Raw indices. These must be equally
 spaced if passed as numeric; if passed as logical they are
-recycled silently along each dimension.}
+recycled silently along each dimension. Indexing grd objects
+is always 1-based and always starts from the left and top of
+the bounding box regardless of internal data ordering.}
 
 \item{bbox}{A bounding box to use as a subset. This is used
 to calculate a suitable \code{y} and \code{x} index vector representing
@@ -26,7 +28,14 @@ double-counting cells.}
 \item{...}{Passed to subset methods}
 }
 \value{
-A modified \code{\link[=grd]{grd()}}.
+\itemize{
+\item \code{grd_subset()}: A modified \code{\link[=grd]{grd()}}.
+\item \code{grd_subset_indices()}: A \code{list()} with components
+\code{i} (\code{c(start = , stop = , step = )}), \code{j} (\code{c(start = , stop = , step = )}),
+and \code{bbox} (\code{\link[=rct]{rct()}} of length 1). In this value \code{start} is the index before
+the first element and \code{stop} is the last element (equivalent to notation
+for a zero-based Python slice).
+}
 }
 \description{
 The \code{\link[=grd_subset]{grd_subset()}} method handles the subsetting of a \code{\link[=grd]{grd()}}
