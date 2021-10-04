@@ -18,6 +18,14 @@ test_that("subset works for grd_rct", {
   expect_error(grd_subset(grid, T, T, rct()), "Must specify")
 
   # check small subsets for exactness
+  grid_00 <- grd_subset(grid, integer(), integer())
+  expect_identical(grid_00$data, volcano[integer(), integer()])
+  expect_identical(wk_bbox(grid_00), rct(Inf, Inf, -Inf, -Inf))
+
+  grid_11 <- grd_subset(grid, 2, 2)
+  expect_identical(grid_11$data, volcano[2, 2, drop = FALSE])
+  expect_identical(wk_bbox(grid_11), rct(1, 85, 2, 86))
+
   grid_23 <- grd_subset(grid, 1:2, 1:3)
   expect_identical(grid_23$data, volcano[1:2, 1:3])
   expect_identical(wk_bbox(grid_23), rct(0, 85, 3, 87))
@@ -101,6 +109,14 @@ test_that("subset works for grd_xy", {
   expect_identical(grd_subset(grid, 1:87, NULL), grid)
 
   # check small subsets for exactness
+  grid_00 <- grd_subset(grid, integer(), integer())
+  expect_identical(grid_00$data, volcano[integer(), integer()])
+  expect_identical(wk_bbox(grid_00), rct(Inf, Inf, -Inf, -Inf))
+
+  grid_11 <- grd_subset(grid, 2, 2)
+  expect_identical(grid_11$data, volcano[2, 2, drop = FALSE])
+  expect_identical(wk_bbox(grid_11), rct(1, 85, 1, 85))
+
   grid_23 <- grd_subset(grid, 1:2, 1:3)
   expect_identical(grid_23$data, volcano[1:2, 1:3])
   expect_identical(wk_bbox(grid_23), rct(0, 85, 2, 86))

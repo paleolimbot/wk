@@ -335,11 +335,9 @@ wk_set_crs.wk_grd <- function(x, crs) {
       # normalize so that max > min, but empty (Inf -Inf) is OK
       rct <- unclass(value)
 
-      if (is.na(rct$xmin) || is.na(rct$xmax)) {
-        rct[c("xmin", "xmax")] <- list(Inf, -Inf)
-      }
-      if (is.na(rct$ymin) || is.na(rct$ymax)) {
-        rct[c("ymin", "ymax")] <- list(Inf, -Inf)
+      # missings make no sense in this context
+      if (any(vapply(rct, is.na, logical(1)))) {
+        stop("Can't set missing bounding box for grd objects", call. = FALSE)
       }
 
       if ((rct$xmin > rct$xmax) && (rct$xmin != Inf) && (rct$xmax != -Inf)) {
