@@ -69,6 +69,12 @@ test_that("subset works for grd_rct", {
     grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
     grd_subset(grid, j = 1:3, i = 1)
   )
+
+  # subset by arbitrary object with non-exact boundaries
+  expect_identical(
+    grd_subset(grid, bbox = as_wkb(rct(0.5, 86.1, 2.5, 86.9))),
+    grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9))
+  )
 })
 
 test_that("grd_subset() works for a grd_rct backed by nativeRaster", {
@@ -149,6 +155,12 @@ test_that("subset works for grd_xy", {
   expect_identical(
     grd_subset(grid, bbox = rct(-0.5, 85.9, 2.5, 86.1)),
     grd_subset(grid, j = 1:3, i = 1)
+  )
+
+  # subset by arbitrary object with non-exact boundaries
+  expect_identical(
+    grd_subset(grid, bbox = as_wkb(rct(0.5, 86.1, 2.5, 86.9))),
+    grd_subset(grid, bbox = rct(0.5, 86.1, 2.5, 86.9))
   )
 })
 
