@@ -155,7 +155,9 @@ relationship to x-y space has not changed.</p>
       <th>i, j</th>
       <td><p>Raw indices. These must be equally
 spaced if passed as numeric; if passed as logical they are
-recycled silently along each dimension.</p></td>
+recycled silently along each dimension. Indexing grd objects
+is always 1-based and always starts from the left and top of
+the bounding box regardless of internal data ordering.</p></td>
     </tr>
     <tr>
       <th>bbox</th>
@@ -174,7 +176,16 @@ double-counting cells.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A modified <code><a href='grd.html'>grd()</a></code>.</p>
+    
+<ul>
+<li><p><code>grd_subset()</code>: A modified <code><a href='grd.html'>grd()</a></code>.</p></li>
+<li><p><code>grd_subset_indices()</code>: A <code><a href='https://rdrr.io/r/base/list.html'>list()</a></code> with components
+<code>i</code> (<code><a href='https://rdrr.io/r/base/c.html'>c(start = , stop = , step = )</a></code>), <code>j</code> (<code><a href='https://rdrr.io/r/base/c.html'>c(start = , stop = , step = )</a></code>),
+and <code>bbox</code> (<code><a href='rct.html'>rct()</a></code> of length 1). In this value <code>start</code> is the index before
+the first element and <code>stop</code> is the last element (equivalent to notation
+for a zero-based Python slice).</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>grid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='grd.html'>grd_rct</a></span><span class='op'>(</span><span class='va'>volcano</span><span class='op'>)</span>
