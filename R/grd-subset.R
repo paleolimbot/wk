@@ -10,7 +10,9 @@
 #' @param object A [grd()]
 #' @param i,j Raw indices. These must be equally
 #'   spaced if passed as numeric; if passed as logical they are
-#'   recycled silently along each dimension.
+#'   recycled silently along each dimension. Indexing grd objects
+#'   is always 1-based and always starts from the left and top of
+#'   the bounding box regardless of internal data ordering.
 #' @param bbox A bounding box to use as a subset. This is used
 #'   to calculate a suitable `y` and `x` index vector representing
 #'   all cells that intersect the `bbox`. Cells that only touch `bbox`
@@ -19,7 +21,11 @@
 #'   double-counting cells.
 #' @param ... Passed to subset methods
 #'
-#' @return A modified [grd()].
+#' @return
+#'   - `grd_subset()`: A modified [grd()].
+#'   - `grd_subset_indices()`: A `list()` with components
+#'     `i` (`c(start = , stop = , step = )`), `j` (`c(start = , stop = , step = )`),
+#'     and `bbox` ([rct()] of length 1).
 #' @export
 #'
 #' @examples
@@ -34,14 +40,38 @@ grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
 grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   indices <- grd_subset_indices(object, i, j, bbox, ...)
 
+  if (is.na(indices$i["start"])) {
+    indices$i["start"] <- 0L
+  }
+
+  if (is.na(indices$i["stop"])) {
+    indices$i["stop"] <- unname(dim(object)[1])
+  }
+
+  if (is.na(indices$i["step"])) {
+    indices$i["step"] <- 1L
+  }
+
+  if (is.na(indices$j["start"])) {
+    indices$j["start"] <- 0L
+  }
+
+  if (is.na(indices$j["stop"])) {
+    indices$j["stop"] <- unname(dim(object)[2])
+  }
+
+  if (is.na(indices$j["step"])) {
+    indices$j["step"] <- 1L
+  }
+
   # convert zero-based start/stop/step to vectors of indices
-  if (is.na(indices$i["start"]) || (indices$i["start"] == indices$i["stop"])) {
+  if (indices$i["start"] >= indices$i["stop"]) {
     i <- integer()
   } else {
     i <- seq(indices$i["start"] + 1L, indices$i["stop"], by = indices$i["step"])
   }
 
-  if (is.na(indices$j["start"]) || (indices$j["start"] == indices$j["stop"])) {
+  if (indices$j["start"] >= indices$j["stop"]) {
     j <- integer()
   } else {
     j <- seq(indices$j["start"] + 1L, indices$j["stop"], by = indices$j["step"])
@@ -192,11 +222,19 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   }
 
   # eventually this can be computed more efficiently based on the above
-  list(
-    i = c(start = y[1] - 1L, stop = y[length(y)], step = y[min(2, length(y))] - y[1]),
-    j = c(start = x[1] - 1L, stop = x[length(x)], step = x[min(2, length(x))] - x[1]),
-    bbox = new_wk_rct(new_rct, crs = wk_crs(object))
-  )
+  if (length(y) == 0) {
+    i <- c(start = 0L, stop = 0L, step = 1L)
+  } else {
+    i <- c(start = y[1] - 1L, stop = y[length(y)], step = y[min(2, length(y))] - y[1])
+  }
+
+  if (length(x) == 0) {
+    j <- c(start = 0L, stop = 0L, step = 1L)
+  } else {
+    j <- c(start = x[1] - 1L, stop = x[length(x)], step = x[min(2, length(x))] - x[1])
+  }
+
+  list(i = i, j = j, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
 }
 
 grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
