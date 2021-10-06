@@ -12,13 +12,15 @@
 #'   spaced if passed as numeric; if passed as logical they are
 #'   recycled silently along each dimension. Indexing grd objects
 #'   is always 1-based and always starts from the left and top of
-#'   the bounding box regardless of internal data ordering.
+#'   the bounding box regardless of internal data ordering. A
+#'   `list()` containing `i` and `j` elements can also be supplied.
 #' @param bbox A bounding box to use as a subset. This is used
 #'   to calculate a suitable `y` and `x` index vector representing
 #'   all cells that intersect the `bbox`. Cells that only touch `bbox`
 #'   on the bottom and right are not included in the subset, meaning you
 #'   can safely tile a regularly-spaced grid along `object` without
 #'   double-counting cells.
+#' @param point A [handleable][wk_handle] of points.
 #' @param ... Passed to subset methods
 #'
 #' @return
@@ -36,6 +38,48 @@
 #'
 grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_subset_data <- function(object, i = NULL, j = NULL, ...) {
+  UseMethod("grd_subset")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_crop <- function(object, bbox, ...) {
+  UseMethod("grd_crop")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_extend <- function(object, bbox, ...) {
+  UseMethod("grd_extend")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_index <- function(object, point, ...) {
+  UseMethod("grd_index")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_index_range <- function(object, bbox, ...) {
+  UseMethod("grd_index_range")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_cell <- function(object, i = NULL, j = NULL, ...) {
+  UseMethod("grd_cell")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_center <- function(object, i = NULL, j = NULL, ...) {
+  UseMethod("grd_center")
 }
 
 #' @export

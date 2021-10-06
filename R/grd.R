@@ -280,7 +280,8 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
 #'
 #' @param x A [grd()]
 #' @param subclass An optional subclass.
-#' @param ... Passed to S3 methods
+#'
+#' @return An object inheriting from 'wk_grd'
 #'
 #' @export
 #'
@@ -288,19 +289,94 @@ new_wk_grd <- function(x, subclass = character()) {
   structure(x, class = union(subclass, "wk_grd"))
 }
 
-#' @rdname new_wk_grd
+
+#' Grid information
+#'
+#' @param grid A [grd_xy()], [grd_rct()], or other object
+#'   implementing `grd_*()` methods.
+#' @param grid_data The `$data` member of a [grd_xy()], [grd_rct()],
+#'   or other object implementing `grd_*()` methods.
+#'
+#' @return
+#'   - `grd_summary()` returns a `list()` with components
+#'     `xmin`, `ymin`, `xmax`, `ymax`,
+#'     `nx`, `ny`, `dx`, `dy`, `width`, and `height`.
+#'   - `grd_data_order()` returns `c("y", "x")` for
+#'     data with a column-major internal ordering and
+#'     `c("x", "y")` for data with a row-major internal
+#'     ordering. Both 'x' and 'y' can be modified with
+#'     a negative sign to indicate right-to-left
+#'     or bottom-to-top ordering, respectively.
 #' @export
-grd_data_order <- function(x, ...) {
+#'
+#' @examples
+#' grd_summary(grd(nx = 3, ny = 2))
+#'
+grd_summary <- function(grid) {
+  UseMethod("grd_summary")
+}
+
+#' @export
+grd_summary.wk_grd_rct <- function(grid) {
+  nx <- dim(grid$data)[2]
+  ny <- dim(grid$data)[1]
+  rct <- unclass(grid$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- width / nx
+  dy <- height / ny
+
+  list(
+    xmin = rct$xmin,
+    ymin = rct$ymin,
+    xmax = rct$xmax,
+    ymax = rct$ymax,
+    nx = nx,
+    ny = ny,
+    dx = dx,
+    dy = dy,
+    width = width,
+    height = height
+  )
+}
+
+#' @export
+grd_summary.wk_grd_xy <- function(grid) {
+  nx <- dim(grid$data)[2]
+  ny <- dim(grid$data)[1]
+  rct <- unclass(grid$bbox)
+  width <- rct$xmax - rct$xmin
+  height <- rct$ymax - rct$ymin
+  dx <- if (nx > 1) width / (nx - 1) else 0
+  dy <- if (ny > 1) height / (ny - 1) else 0
+
+  list(
+    xmin = rct$xmin,
+    ymin = rct$ymin,
+    xmax = rct$xmax,
+    ymax = rct$ymax,
+    nx = nx,
+    ny = ny,
+    dx = dx,
+    dy = dy,
+    width = width,
+    height = height
+  )
+}
+
+#' @rdname grd_summary
+#' @export
+grd_data_order <- function(grid_data) {
   UseMethod("grd_data_order")
 }
 
 #' @export
-grd_data_order.default <- function(x, ...) {
+grd_data_order.default <- function(grid_data) {
   c("y", "x")
 }
 
 #' @export
-grd_data_order.nativeRaster <- function(x, ...) {
+grd_data_order.nativeRaster <- function(grid_data) {
   c("x", "y")
 }
 

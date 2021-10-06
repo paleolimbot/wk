@@ -2,10 +2,31 @@
 % Please edit documentation in R/grd-subset.R
 \name{grd_subset}
 \alias{grd_subset}
+\alias{grd_subset_data}
+\alias{grd_crop}
+\alias{grd_extend}
+\alias{grd_index}
+\alias{grd_index_range}
+\alias{grd_cell}
+\alias{grd_center}
 \alias{grd_subset_indices}
 \title{Subset grd objects}
 \usage{
 grd_subset(object, i = NULL, j = NULL, bbox = NULL, ...)
+
+grd_subset_data(object, i = NULL, j = NULL, ...)
+
+grd_crop(object, bbox, ...)
+
+grd_extend(object, bbox, ...)
+
+grd_index(object, point, ...)
+
+grd_index_range(object, bbox, ...)
+
+grd_cell(object, i = NULL, j = NULL, ...)
+
+grd_center(object, i = NULL, j = NULL, ...)
 
 grd_subset_indices(object, i = NULL, j = NULL, bbox = NULL, ...)
 }
@@ -16,7 +37,8 @@ grd_subset_indices(object, i = NULL, j = NULL, bbox = NULL, ...)
 spaced if passed as numeric; if passed as logical they are
 recycled silently along each dimension. Indexing grd objects
 is always 1-based and always starts from the left and top of
-the bounding box regardless of internal data ordering.}
+the bounding box regardless of internal data ordering. A
+\code{list()} containing \code{i} and \code{j} elements can also be supplied.}
 
 \item{bbox}{A bounding box to use as a subset. This is used
 to calculate a suitable \code{y} and \code{x} index vector representing
@@ -26,6 +48,8 @@ can safely tile a regularly-spaced grid along \code{object} without
 double-counting cells.}
 
 \item{...}{Passed to subset methods}
+
+\item{point}{A \link[=wk_handle]{handleable} of points.}
 }
 \value{
 \itemize{

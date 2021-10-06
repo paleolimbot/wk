@@ -2,19 +2,17 @@
 % Please edit documentation in R/grd.R
 \name{new_wk_grd}
 \alias{new_wk_grd}
-\alias{grd_data_order}
 \title{S3 details for grid objects}
 \usage{
 new_wk_grd(x, subclass = character())
-
-grd_data_order(x, ...)
 }
 \arguments{
 \item{x}{A \code{\link[=grd]{grd()}}}
 
 \item{subclass}{An optional subclass.}
-
-\item{...}{Passed to S3 methods}
+}
+\value{
+An object inheriting from 'wk_grd'
 }
 \description{
 S3 details for grid objects
