@@ -165,25 +165,10 @@ grd_subset_indices.wk_grd_rct <- function(grid, i = NULL, j = NULL, bbox = NULL,
 }
 
 grd_subset_indices_internal <- function(grid, i = NULL, j = NULL, bbox = NULL) {
-  # get the cell information we need
-  rct <- unclass(grid$bbox)
-  width <- rct$xmax - rct$xmin
-  height <- rct$ymax - rct$ymin
-  nx <- dim(grid$data)[2]
-  ny <- dim(grid$data)[1]
-
-  if (inherits(grid, "wk_grd_rct")) {
-    dx <- width / nx
-    dy <- height / ny
-  } else if (inherits(grid, "wk_grd_xy")) {
-    dx <- width / (nx - 1)
-    dy <- height / (ny- 1)
-  } else {
-    stop("Unknown grid type", call. = FALSE) # nocov
-  }
+  s <- grd_summary(grid)
 
   # can't get any more subsetted than an empty grid!
-  if ((nx * ny) == 0) {
+  if ((s$nx * s$ny) == 0) {
     return(
       list(
         i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
@@ -205,9 +190,9 @@ grd_subset_indices_internal <- function(grid, i = NULL, j = NULL, bbox = NULL) {
   }
 
   if (is.null(bbox) && (!is.null(i) || !is.null(j))) {
-    indices <- grd_expand_ij_internal(i, j, nx, ny)
+    indices <- grd_expand_ij_internal(i, j, s$nx, s$ny)
   } else if (!is.null(bbox) && is.null(i) && is.null(j)) {
-    indices <- grd_expand_bbox_rct_internal(grid, bbox, dx, dy)
+    indices <- grd_expand_bbox_rct_internal(grid, bbox, s$dx, s$dy)
   } else {
     stop("Must specify bbox OR (i | j)", call. = FALSE)
   }
@@ -216,23 +201,23 @@ grd_subset_indices_internal <- function(grid, i = NULL, j = NULL, bbox = NULL) {
   y <- indices$i
 
   # clamp to actual indices
-  x <- x[!is.na(x) & (x >= 1L) & (x <= nx)]
-  y <- y[!is.na(y) & (y >= 1L) & (y <= ny)]
+  x <- x[!is.na(x) & (x >= 1L) & (x <= s$nx)]
+  y <- y[!is.na(y) & (y >= 1L) & (y <= s$ny)]
 
   # sort to avoid flipping any data
   x <- sort(x)
   y <- sort(y)
 
   # re-define the bbox based on actual index subset
-  new_rct <- rct
+  new_rct <- s[c("xmin", "ymin", "xmax", "ymax")]
 
   if (inherits(grid, "wk_grd_rct")) {
     # strategy is to keep the cell centres intact on downsample
     if (length(x) > 0) {
       downsample_x <- x[2] - x[1]
-      new_dx <- if (length(x) >= 2) dx * downsample_x else dx
-      new_rct$xmin <- rct$xmin + ((min(x) - 1) * dx) + (dx / 2) - (new_dx / 2)
-      new_rct$xmax <- rct$xmin + (max(x) * dx) - (dx / 2) + (new_dx / 2)
+      new_dx <- if (length(x) >= 2) s$dx * downsample_x else s$dx
+      new_rct$xmin <- s$xmin + ((min(x) - 1) * s$dx) + (s$dx / 2) - (new_dx / 2)
+      new_rct$xmax <- s$xmin + (max(x) * s$dx) - (s$dx / 2) + (new_dx / 2)
     } else {
       new_rct$xmin <- Inf
       new_rct$xmax <- -Inf
@@ -240,25 +225,25 @@ grd_subset_indices_internal <- function(grid, i = NULL, j = NULL, bbox = NULL) {
 
     if (length(y) > 0) {
       downsample_y <- y[2] - y[1]
-      new_dy <- if (length(y) >= 2) dy * downsample_y else dy
-      new_rct$ymin <- rct$ymax - (max(y) * dy) + (dy / 2) - (new_dy / 2)
-      new_rct$ymax <- rct$ymax - ((min(y) - 1) * dy) - (dy / 2) + (new_dy / 2)
+      new_dy <- if (length(y) >= 2) s$dy * downsample_y else s$dy
+      new_rct$ymin <- s$ymax - (max(y) * s$dy) + (s$dy / 2) - (new_dy / 2)
+      new_rct$ymax <- s$ymax - ((min(y) - 1) * s$dy) - (s$dy / 2) + (new_dy / 2)
     } else {
       new_rct$ymin <- Inf
       new_rct$ymax <- -Inf
     }
   } else if (inherits(grid, "wk_grd_xy")) {
     if (length(x) > 0) {
-      new_rct$xmin <- rct$xmin + (x[1] - 1L) * dx
-      new_rct$xmax <- rct$xmin + (x[length(x)] - 1L) * dx
+      new_rct$xmin <- s$xmin + (x[1] - 1L) * s$dx
+      new_rct$xmax <- s$xmin + (x[length(x)] - 1L) * s$dx
     } else {
       new_rct$xmin <- Inf
       new_rct$xmax <- -Inf
     }
 
     if (length(y) > 0) {
-      new_rct$ymin <- rct$ymax - (y[1] - 1L) * dy
-      new_rct$ymax <- rct$ymax - (y[length(y)] - 1L) * dy
+      new_rct$ymin <- s$ymax - (y[1] - 1L) * s$dy
+      new_rct$ymax <- s$ymax - (y[length(y)] - 1L) * s$dy
     } else {
       new_rct$ymin <- Inf
       new_rct$ymax <- -Inf
