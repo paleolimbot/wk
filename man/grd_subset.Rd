@@ -10,32 +10,33 @@
 \alias{grd_cell}
 \alias{grd_center}
 \alias{grd_subset_indices}
-\title{Subset grd objects}
+\title{Subset grd grids}
 \usage{
-grd_subset(object, i = NULL, j = NULL, bbox = NULL, ...)
+grd_subset(grid, i = NULL, j = NULL, bbox = NULL, ...)
 
-grd_subset_data(object, i = NULL, j = NULL, ...)
+grd_subset_data(grid, i = NULL, j = NULL, ...)
 
-grd_crop(object, bbox, ...)
+grd_crop(grid, bbox, ...)
 
-grd_extend(object, bbox, ...)
+grd_extend(grid, bbox, ...)
 
-grd_index(object, point, ...)
+grd_index(grid, point, ...)
 
-grd_index_range(object, bbox, ...)
+grd_index_range(grid, bbox, ...)
 
-grd_cell(object, i = NULL, j = NULL, ...)
+grd_cell(grid, i = NULL, j = NULL, ...)
 
-grd_center(object, i = NULL, j = NULL, ...)
+grd_center(grid, i = NULL, j = NULL, ...)
 
-grd_subset_indices(object, i = NULL, j = NULL, bbox = NULL, ...)
+grd_subset_indices(grid, i = NULL, j = NULL, bbox = NULL, ...)
 }
 \arguments{
-\item{object}{A \code{\link[=grd]{grd()}}}
+\item{grid}{A \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}}, or other object
+implementing \verb{grd_*()} methods.}
 
 \item{i, j}{Raw indices. These must be equally
 spaced if passed as numeric; if passed as logical they are
-recycled silently along each dimension. Indexing grd objects
+recycled silently along each dimension. Indexing grd grids
 is always 1-based and always starts from the left and top of
 the bounding box regardless of internal data ordering. A
 \code{list()} containing \code{i} and \code{j} elements can also be supplied.}
@@ -44,7 +45,7 @@ the bounding box regardless of internal data ordering. A
 to calculate a suitable \code{y} and \code{x} index vector representing
 all cells that intersect the \code{bbox}. Cells that only touch \code{bbox}
 on the bottom and right are not included in the subset, meaning you
-can safely tile a regularly-spaced grid along \code{object} without
+can safely tile a regularly-spaced grid along \code{grid} without
 double-counting cells.}
 
 \item{...}{Passed to subset methods}

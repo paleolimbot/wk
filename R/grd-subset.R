@@ -1,5 +1,5 @@
 
-#' Subset grd objects
+#' Subset grd grids
 #'
 #' The [grd_subset()] method handles the subsetting of a [grd()]
 #' in x-y space. Ordering of indices is not considered and logical
@@ -7,10 +7,10 @@
 #' a [grd_subset()] is always a [grd()] of the same type whose
 #' relationship to x-y space has not changed.
 #'
-#' @param object A [grd()]
+#' @inheritParams grd_summary
 #' @param i,j Raw indices. These must be equally
 #'   spaced if passed as numeric; if passed as logical they are
-#'   recycled silently along each dimension. Indexing grd objects
+#'   recycled silently along each dimension. Indexing grd grids
 #'   is always 1-based and always starts from the left and top of
 #'   the bounding box regardless of internal data ordering. A
 #'   `list()` containing `i` and `j` elements can also be supplied.
@@ -18,7 +18,7 @@
 #'   to calculate a suitable `y` and `x` index vector representing
 #'   all cells that intersect the `bbox`. Cells that only touch `bbox`
 #'   on the bottom and right are not included in the subset, meaning you
-#'   can safely tile a regularly-spaced grid along `object` without
+#'   can safely tile a regularly-spaced grid along `grid` without
 #'   double-counting cells.
 #' @param point A [handleable][wk_handle] of points.
 #' @param ... Passed to subset methods
@@ -36,62 +36,62 @@
 #' grid <- grd_rct(volcano)
 #' grd_subset(grid, seq(2, 61, by = 4), seq(2, 87, by = 4))
 #'
-grd_subset <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+grd_subset <- function(grid, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_subset_data <- function(object, i = NULL, j = NULL, ...) {
+grd_subset_data <- function(grid, i = NULL, j = NULL, ...) {
   UseMethod("grd_subset")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_crop <- function(object, bbox, ...) {
+grd_crop <- function(grid, bbox, ...) {
   UseMethod("grd_crop")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_extend <- function(object, bbox, ...) {
+grd_extend <- function(grid, bbox, ...) {
   UseMethod("grd_extend")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_index <- function(object, point, ...) {
+grd_index <- function(grid, point, ...) {
   UseMethod("grd_index")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(object, bbox, ...) {
+grd_index_range <- function(grid, bbox, ...) {
   UseMethod("grd_index_range")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_cell <- function(object, i = NULL, j = NULL, ...) {
+grd_cell <- function(grid, i = NULL, j = NULL, ...) {
   UseMethod("grd_cell")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_center <- function(object, i = NULL, j = NULL, ...) {
+grd_center <- function(grid, i = NULL, j = NULL, ...) {
   UseMethod("grd_center")
 }
 
 #' @export
-grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  indices <- grd_subset_indices(object, i, j, bbox, ...)
+grd_subset.default <- function(grid, i = NULL, j = NULL, bbox = NULL, ...) {
+  indices <- grd_subset_indices(grid, i, j, bbox, ...)
 
   if (is.na(indices$i["start"])) {
     indices$i["start"] <- 0L
   }
 
   if (is.na(indices$i["stop"])) {
-    indices$i["stop"] <- unname(dim(object)[1])
+    indices$i["stop"] <- unname(dim(grid)[1])
   }
 
   if (is.na(indices$i["step"])) {
@@ -103,7 +103,7 @@ grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   }
 
   if (is.na(indices$j["stop"])) {
-    indices$j["stop"] <- unname(dim(object)[2])
+    indices$j["stop"] <- unname(dim(grid)[2])
   }
 
   if (is.na(indices$j["step"])) {
@@ -124,7 +124,7 @@ grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
   }
 
   # about to potentially modify data
-  data <- object$data
+  data <- grid$data
 
   # special case the nativeRaster, whose dims are lying about
   # the ordering needed to index it
@@ -143,43 +143,43 @@ grd_subset.default <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
     data <- do.call("[", c(list(data, i, j), more_dims, list(drop = FALSE)))
   }
 
-  object$data <- data
-  object$bbox <- indices$bbox
-  object
+  grid$data <- data
+  grid$bbox <- indices$bbox
+  grid
 }
 
 #' @rdname grd_subset
 #' @export
-grd_subset_indices <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
+grd_subset_indices <- function(grid, i = NULL, j = NULL, bbox = NULL, ...) {
   UseMethod("grd_subset_indices")
 }
 
 #' @export
-grd_subset_indices.wk_grd_xy <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  grd_subset_indices_internal(object, i, j, bbox)
+grd_subset_indices.wk_grd_xy <- function(grid, i = NULL, j = NULL, bbox = NULL, ...) {
+  grd_subset_indices_internal(grid, i, j, bbox)
 }
 
 #' @export
-grd_subset_indices.wk_grd_rct <- function(object, i = NULL, j = NULL, bbox = NULL, ...) {
-  grd_subset_indices_internal(object, i, j, bbox)
+grd_subset_indices.wk_grd_rct <- function(grid, i = NULL, j = NULL, bbox = NULL, ...) {
+  grd_subset_indices_internal(grid, i, j, bbox)
 }
 
-grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL) {
+grd_subset_indices_internal <- function(grid, i = NULL, j = NULL, bbox = NULL) {
   # get the cell information we need
-  rct <- unclass(object$bbox)
+  rct <- unclass(grid$bbox)
   width <- rct$xmax - rct$xmin
   height <- rct$ymax - rct$ymin
-  nx <- dim(object$data)[2]
-  ny <- dim(object$data)[1]
+  nx <- dim(grid$data)[2]
+  ny <- dim(grid$data)[1]
 
-  if (inherits(object, "wk_grd_rct")) {
+  if (inherits(grid, "wk_grd_rct")) {
     dx <- width / nx
     dy <- height / ny
-  } else if (inherits(object, "wk_grd_xy")) {
+  } else if (inherits(grid, "wk_grd_xy")) {
     dx <- width / (nx - 1)
     dy <- height / (ny- 1)
   } else {
-    stop("Unknown object type", call. = FALSE) # nocov
+    stop("Unknown grid type", call. = FALSE) # nocov
   }
 
   # can't get any more subsetted than an empty grid!
@@ -188,7 +188,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
       list(
         i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
         j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
-        bbox = object$bbox
+        bbox = grid$bbox
       )
     )
   }
@@ -199,7 +199,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
       list(
         i = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
         j = c(start = NA_integer_, stop = NA_integer_, step = NA_integer_),
-        bbox = object$bbox
+        bbox = grid$bbox
       )
     )
   }
@@ -207,7 +207,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   if (is.null(bbox) && (!is.null(i) || !is.null(j))) {
     indices <- grd_expand_ij_internal(i, j, nx, ny)
   } else if (!is.null(bbox) && is.null(i) && is.null(j)) {
-    indices <- grd_expand_bbox_rct_internal(object, bbox, dx, dy)
+    indices <- grd_expand_bbox_rct_internal(grid, bbox, dx, dy)
   } else {
     stop("Must specify bbox OR (i | j)", call. = FALSE)
   }
@@ -226,7 +226,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
   # re-define the bbox based on actual index subset
   new_rct <- rct
 
-  if (inherits(object, "wk_grd_rct")) {
+  if (inherits(grid, "wk_grd_rct")) {
     # strategy is to keep the cell centres intact on downsample
     if (length(x) > 0) {
       downsample_x <- x[2] - x[1]
@@ -247,7 +247,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
       new_rct$ymin <- Inf
       new_rct$ymax <- -Inf
     }
-  } else if (inherits(object, "wk_grd_xy")) {
+  } else if (inherits(grid, "wk_grd_xy")) {
     if (length(x) > 0) {
       new_rct$xmin <- rct$xmin + (x[1] - 1L) * dx
       new_rct$xmax <- rct$xmin + (x[length(x)] - 1L) * dx
@@ -264,7 +264,7 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
       new_rct$ymax <- -Inf
     }
   } else {
-    stop("Unknown object type", call. = FALSE) # nocov
+    stop("Unknown grid type", call. = FALSE) # nocov
   }
 
   # eventually this can be computed more efficiently based on the above
@@ -280,12 +280,12 @@ grd_subset_indices_internal <- function(object, i = NULL, j = NULL, bbox = NULL)
     j <- c(start = x[1] - 1L, stop = x[length(x)], step = x[min(2, length(x))] - x[1])
   }
 
-  list(i = i, j = j, bbox = new_wk_rct(new_rct, crs = wk_crs(object)))
+  list(i = i, j = j, bbox = new_wk_rct(new_rct, crs = wk_crs(grid)))
 }
 
-grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
+grd_expand_bbox_rct_internal <- function(grid, bbox_target, dx, dy) {
   # for access to members
-  rct <- unclass(object$bbox)
+  rct <- unclass(grid$bbox)
 
   # normalized so that xmin < xmax, ymin < ymax
   if (inherits(bbox_target, "wk_rct")) {
@@ -313,7 +313,7 @@ grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
   ximax <- ximin + (rct_target$xmax - rct_target$xmin) / dx
   yimax <- yimin + (rct_target$ymax - rct_target$ymin) / dy
 
-  if (inherits(object, "wk_grd_rct")) {
+  if (inherits(grid, "wk_grd_rct")) {
     # this subset will get us intersecting cells but NOT cells
     # that only touch on the bottom/right
     if (ceiling(ximax) != ximax) {
@@ -326,7 +326,7 @@ grd_expand_bbox_rct_internal <- function(object, bbox_target, dx, dy) {
 
     yimin <- floor(yimin) + 1L
     ximin <- floor(ximin) + 1L
-  } else if (inherits(object, "wk_grd_xy")) {
+  } else if (inherits(grid, "wk_grd_xy")) {
     # this subset gets us any point that intersects the bbox
     # including the boundary on all sides
     yimin <- ceiling(yimin + 1L)

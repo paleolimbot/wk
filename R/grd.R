@@ -218,19 +218,13 @@ as_grd_rct.wk_grd_rct <- function(x, ...) {
 #' @export
 as_grd_rct.wk_grd_xy <- function(x, ...) {
   # from a grd_xy, we assume these were the centres
-  nx <- dim(x$data)[2]
-  ny <- dim(x$data)[1]
-  rct <- unclass(x$bbox)
-  width <- rct$xmax - rct$xmin
-  height <- rct$ymax - rct$ymin
-  dx <- if (nx > 1) width / (nx - 1) else 0
-  dy <- if (ny > 1) height / (ny - 1) else 0
+  s <- grd_summary(x)
 
   bbox <- rct(
-    rct$xmin - dx / 2,
-    rct$ymin - dy / 2,
-    rct$xmax + dx / 2,
-    rct$ymax + dy / 2,
+    s$xmin - s$dx / 2,
+    s$ymin - s$dy / 2,
+    s$xmax + s$dx / 2,
+    s$ymax + s$dy / 2,
     crs = wk_crs(x$bbox)
   )
 
@@ -255,19 +249,13 @@ as_grd_xy.wk_grd_xy <- function(x, ...) {
 #' @export
 as_grd_xy.wk_grd_rct <- function(x, ...) {
   # from a grid_rct() we take the centers
-  nx <- dim(x$data)[2]
-  ny <- dim(x$data)[1]
-  rct <- unclass(x$bbox)
-  width <- rct$xmax - rct$xmin
-  height <- rct$ymax - rct$ymin
-  dx <- width / nx
-  dy <- height / ny
+  s <- grd_summary(x)
 
   bbox <- rct(
-    rct$xmin + dx / 2,
-    rct$ymin + dy / 2,
-    rct$xmax - dx / 2,
-    rct$ymax - dy / 2,
+    s$xmin + s$dx / 2,
+    s$ymin + s$dy / 2,
+    s$xmax - s$dx / 2,
+    s$ymax - s$dy / 2,
     crs = wk_crs(x$bbox)
   )
 
