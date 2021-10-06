@@ -1,4 +1,14 @@
 
+test_that("grd_index() works for grd_xy()", {
+  empty <- grd_xy(matrix(nrow = 0, ncol = 0))
+  expect_identical(grd_index(empty, xy(0, 0)), list(i = NA_real_, j = NA_real_))
+
+  grid <- grd_xy(volcano)
+  expect_identical(grd_index(grid, xy(NA, NA)), list(i = NA_real_, j = NA_real_))
+
+  expect_identical(grd_index(grid, xy(0, 0)), list(i = 1, j = 87))
+})
+
 test_that("grd_index_range() works for grd_rct()", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
   expect_identical(

@@ -20,9 +20,9 @@ grd_crop(grid, bbox, ...)
 
 grd_extend(grid, bbox, ...)
 
-grd_index(grid, point, ...)
+grd_index(grid, point, ..., snap = round)
 
-grd_index_range(grid, bbox, ...)
+grd_index_range(grid, bbox, ..., snap = list(floor, ceiling))
 
 grd_cell(grid, i = NULL, j = NULL, ...)
 
@@ -51,9 +51,18 @@ double-counting cells.}
 \item{...}{Passed to subset methods}
 
 \item{point}{A \link[=wk_handle]{handleable} of points.}
+
+\item{snap}{A function that transforms real-valued indices to integer
+indices (e.g., \code{\link[=floor]{floor()}}, \code{\link[=ceiling]{ceiling()}}, or \code{\link[=round]{round()}}).
+For \code{\link[=grd_index_range]{grd_index_range()}}, a \code{list()} with exactly two elements to be called
+for the minimum and maximum index values, respectively.}
 }
 \value{
 \itemize{
+\item \code{grd_index()}: returns a \code{list(i, j)} of index values corresponding
+to the input points and adjusted according to \code{snap}. Index values
+will be outside \code{dim(grid)} for points outside \code{wk_bbox(grid)} including
+negative values.
 \item \code{grd_subset()}: A modified \code{\link[=grd]{grd()}}.
 \item \code{grd_subset_indices()}: A \code{list()} with components
 \code{i} (\code{c(start = , stop = , step = )}), \code{j} (\code{c(start = , stop = , step = )}),

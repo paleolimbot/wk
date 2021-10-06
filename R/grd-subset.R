@@ -21,9 +21,17 @@
 #'   can safely tile a regularly-spaced grid along `grid` without
 #'   double-counting cells.
 #' @param point A [handleable][wk_handle] of points.
+#' @param snap A function that transforms real-valued indices to integer
+#'   indices (e.g., [floor()], [ceiling()], or [round()]).
+#'   For [grd_index_range()], a `list()` with exactly two elements to be called
+#'   for the minimum and maximum index values, respectively.
 #' @param ... Passed to subset methods
 #'
 #' @return
+#'   - `grd_index()`: returns a `list(i, j)` of index values corresponding
+#'     to the input points and adjusted according to `snap`. Index values
+#'     will be outside `dim(grid)` for points outside `wk_bbox(grid)` including
+#'     negative values.
 #'   - `grd_subset()`: A modified [grd()].
 #'   - `grd_subset_indices()`: A `list()` with components
 #'     `i` (`c(start = , stop = , step = )`), `j` (`c(start = , stop = , step = )`),
@@ -60,18 +68,36 @@ grd_extend <- function(grid, bbox, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_index <- function(grid, point, ...) {
+grd_index <- function(grid, point, ..., snap = round) {
   UseMethod("grd_index")
+}
+
+#' #' @export
+#' grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
+#'   s <- grd_summary(grid)
+#'   point <- unclass(as_xy(point))
+#'   i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
+#'   j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
+#'   list(i = snap(i + 1L), j = snap(j + 1L))
+#' }
+
+#' @export
+grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
+  s <- grd_summary(grid)
+  point <- unclass(as_xy(point))
+  i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
+  j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
+  list(i = snap(i + 1L), j = snap(j + 1L))
 }
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(grid, bbox, ...) {
+grd_index_range <- function(grid, bbox, ..., snap = list(floor, ceiling)) {
   UseMethod("grd_index_range")
 }
 
 #' @export
-grd_index_range.default <- function(grid, bbox, ...) {
+grd_index_range.default <- function(grid, bbox, ..., snap = list(floor, ceiling)) {
   # for access to members
   s <- grd_summary(grid)
 
