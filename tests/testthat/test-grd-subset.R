@@ -1,4 +1,96 @@
 
+test_that("grd_index_range() works for grd_rct()", {
+  empty <- grd_rct(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    grd_index_range(empty, rct(0, 0, 1, 1)),
+    list(i = integer(), j = integer())
+  )
+
+  grid <- grd_rct(volcano)
+  expect_identical(
+    grd_index_range(grid, rct(NA, NA, NA, NA)),
+    list(i = integer(), j = integer())
+  )
+
+  expect_identical(
+    grd_index_range(grid, wk_bbox(grid)),
+    list(
+      i = c(start = 0, stop = nrow(grid), step = NA_integer_),
+      j = c(start = 0, stop = ncol(grid), step = NA_integer_)
+    )
+  )
+
+  # bbox with exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = rct(0, 86, 3, 87)),
+    list(
+      i = c(start = 0, stop = 1, step = NA_integer_),
+      j = c(start = 0, stop = 3, step = NA_integer_)
+    )
+  )
+
+  # subset by bbox with non-exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = rct(0.5, 86.1, 2.5, 86.9)),
+    list(
+      i = c(start = 0, stop = 1, step = NA_integer_),
+      j = c(start = 0, stop = 3, step = NA_integer_)
+    )
+  )
+
+  # subset by arbitrary object with non-exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = as_wkb(rct(0.5, 86.1, 2.5, 86.9))),
+    grd_index_range(grid, bbox = rct(0.5, 86.1, 2.5, 86.9))
+  )
+})
+
+test_that("grd_index_range() works for grd_xy()", {
+  empty <- grd_xy(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    grd_index_range(empty, rct(0, 0, 1, 1)),
+    list(i = integer(), j = integer())
+  )
+
+  grid <- grd_xy(volcano)
+  expect_identical(
+    grd_index_range(grid, rct(NA, NA, NA, NA)),
+    list(i = integer(), j = integer())
+  )
+
+  expect_identical(
+    grd_index_range(grid, wk_bbox(grid)),
+    list(
+      i = c(start = 0, stop = nrow(grid), step = NA_integer_),
+      j = c(start = 0, stop = ncol(grid), step = NA_integer_)
+    )
+  )
+
+  # bbox with exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = rct(0, 85, 3, 86)),
+    list(
+      i = c(start = 0, stop = 2, step = NA_integer_),
+      j = c(start = 0, stop = 4, step = NA_integer_)
+    )
+  )
+
+  # subset by bbox with non-exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = rct(0.5, 85.9, 2.5, 86.1)),
+    list(
+      i = c(start = 0, stop = 1, step = NA_integer_),
+      j = c(start = 1, stop = 3, step = NA_integer_)
+    )
+  )
+
+  # subset by arbitrary object with non-exact boundaries
+  expect_identical(
+    grd_index_range(grid, bbox = as_wkb(rct(0.5, 86.1, 2.5, 86.9))),
+    grd_index_range(grid, bbox = rct(0.5, 86.1, 2.5, 86.9))
+  )
+})
+
 test_that("subset works for grd_rct", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
   expect_identical(grd_subset(empty), empty)

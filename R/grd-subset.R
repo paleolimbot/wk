@@ -70,6 +70,68 @@ grd_index_range <- function(grid, bbox, ...) {
   UseMethod("grd_index_range")
 }
 
+#' @export
+grd_index_range.default <- function(grid, bbox, ...) {
+  # for access to members
+  s <- grd_summary(grid)
+
+  # normalized so that xmin < xmax, ymin < ymax
+  if (inherits(bbox, "wk_rct")) {
+    rct_target <- unclass(wk_bbox(as_wkb(bbox)))
+  } else {
+    rct_target <- unclass(wk_bbox(bbox))
+  }
+
+  rct_target_width <- rct_target$xmax - rct_target$xmin
+  rct_target_height <- rct_target$ymax - rct_target$ymin
+
+  # remember that y indices are upside down compared to limits
+  ximin <- (rct_target$xmin - s$xmin) / s$dx
+  yimin <- (s$ymax - rct_target$ymax) / s$dy
+  ximax <- ximin + rct_target_width / s$dx
+  yimax <- yimin + rct_target_height / s$dy
+
+  if (inherits(grid, "wk_grd_rct")) {
+    # this subset will get us intersecting cells but NOT cells
+    # that only touch on the bottom/right
+    if (isTRUE(ceiling(ximax) != ximax)) {
+      ximax <- ceiling(ximax)
+    }
+
+    if (isTRUE(ceiling(yimax) != yimax)) {
+      yimax <- ceiling(yimax)
+    }
+
+    yimin <- floor(yimin) + 1L
+    ximin <- floor(ximin) + 1L
+  } else if (inherits(grid, "wk_grd_xy")) {
+    # this subset gets us any point that intersects the bbox
+    # including the boundary on all sides
+    yimin <- ceiling(yimin + 1L)
+    yimax <- floor(yimax) + 1L
+    ximin <- ceiling(ximin + 1L)
+    ximax <- floor(ximax) + 1L
+  } else {
+    stop("Unknown object type in grd_index_range.default()", call. = FALSE) # nocov
+  }
+
+
+  # return a consistent value for an empty grid subset
+  if (rct_target_height == -Inf || s$height == -Inf) {
+    i <- integer()
+  } else {
+    i <- c(start = yimin - 1L, stop = yimax, step = NA_integer_)
+  }
+
+  if (rct_target_width == -Inf || s$width == -Inf) {
+    j <- integer()
+  } else {
+    j <- c(start = ximin - 1L, stop = ximax, step = NA_integer_)
+  }
+
+  list(i = i, j = j)
+}
+
 #' @rdname grd_subset
 #' @export
 grd_cell <- function(grid, i = NULL, j = NULL, ...) {
