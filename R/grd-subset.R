@@ -51,6 +51,15 @@ grd_subset <- function(grid, i = NULL, j = NULL, ...) {
 
 #' @export
 grd_subset.wk_grd_rct <- function(grid, i = NULL, j = NULL, ...) {
+  grd_subset_grd_internal(grid, i, j)
+}
+
+#' @export
+grd_subset.wk_grd_xy <- function(grid, i = NULL, j = NULL, ...) {
+  grd_subset_grd_internal(grid, i, j)
+}
+
+grd_subset_grd_internal <- function(grid, i = NULL, j = NULL) {
   ij <- ij_from_args(i, j)
 
   # convert i and j into start, stop, step
@@ -72,7 +81,7 @@ grd_subset.wk_grd_rct <- function(grid, i = NULL, j = NULL, ...) {
   if (!is.finite(rct_new$xmax - rct_new$xmin)) {
     rct_new$xmin <- Inf
     rct_new$xmax <- -Inf
-  } else {
+  } else if (inherits(grid, "wk_grd_rct")) {
     rct_new$xmin <- rct_new$xmin - dx / 2
     rct_new$xmax <- rct_new$xmax + dx / 2
   }
@@ -80,7 +89,7 @@ grd_subset.wk_grd_rct <- function(grid, i = NULL, j = NULL, ...) {
   if (!is.finite(rct_new$ymax - rct_new$ymin)) {
     rct_new$ymin <- Inf
     rct_new$ymax <- -Inf
-  } else {
+  } else if (inherits(grid, "wk_grd_rct")) {
     rct_new$ymin <- rct_new$ymin - dy / 2
     rct_new$ymax <- rct_new$ymax + dy / 2
   }
