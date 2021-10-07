@@ -50,65 +50,43 @@ grd_subset <- function(grid, i = NULL, j = NULL, ...) {
 }
 
 #' @export
-grd_subset.default <- function(grid, i = NULL, j = NULL, ...) {
+grd_subset.wk_grd_rct <- function(grid, i = NULL, j = NULL, ...) {
   ij <- ij_from_args(i, j)
 
-  # we'll subset the data using 'censor' but need the whole range
-  # so that we know what the bounds of the final grid are
-  ij$i <- ij_expand_one(ij$i, dim(grid)[1], out_of_bounds = "keep")
-  ij$j <- ij_expand_one(ij$j, dim(grid)[2], out_of_bounds = "keep")
-
-  # non-finite values don't make sense here because there is no way to
-  # keep the relationship between a cell and the bbox
-  if (any(!is.finite(ij$i)) && any(!is.finite(ij$j))) {
-    stop("Can't subset grd objects using non-finite indices", call. = FALSE)
-  }
-
-  if (length(ij$i) <= 1L) {
-    di <- 1L
-  } else {
-    di <- unique(diff(ij$i))
-    if ((length(di) != 1L) || (di > 0)) {
-      stop(
-        "Can't subset grid using non equally-spaced ascending `i` indices",
-        call. = FALSE
-      )
-    }
-  }
-
-  if (length(ij$i) <= 1L) {
-    di <- 1L
-  } else {
-    di <- unique(diff(ij$i))
-    if ((length(di) != 1L) || (di > 0)) {
-      stop(
-        "Can't subset grid using non equally-spaced ascending `i` indices",
-        call. = FALSE
-      )
-    }
-  }
-
-  if (length(ij$j) <= 1L) {
-    dj <- 1L
-  } else {
-    dj <- unique(diff(ij$j))
-    if ((length(dj) != 1L) || (dj > 0)) {
-      stop(
-        "Can't subset grid using non equally-spaced ascending `j` indices",
-        call. = FALSE
-      )
-    }
-  }
+  # convert i and j into start, stop, step
+  i <- ij_to_slice_one(ij$i, dim(grid)[1])
+  j <- ij_to_slice_one(ij$j, dim(grid)[2])
 
   # calculate bbox
   s <- grd_summary(grid)
-  dx <- dj * s$dx
-  dy <- di * s$dy
+  dx <- unname(j["step"] * s$dx)
+  dy <- unname(i["step"] * s$dy)
+  center_min <- unclass(grd_cell_center(grid, i["stop"], j["start"] + 1L))
+  center_max <- unclass(grd_cell_center(grid, i["start"] + 1L, j["stop"]))
+  rct_new <- list(
+    xmin = center_min$x, ymin = center_min$y,
+    xmax = center_max$x, ymax = center_max$y
+  )
 
+  # check for empty subsets in both directions
+  if (!is.finite(rct_new$xmax - rct_new$xmin)) {
+    rct_new$xmin <- Inf
+    rct_new$xmax <- -Inf
+  } else {
+    rct_new$xmin <- rct_new$xmin - dx / 2
+    rct_new$xmax <- rct_new$xmax + dx / 2
+  }
 
+  if (!is.finite(rct_new$ymax - rct_new$ymin)) {
+    rct_new$ymin <- Inf
+    rct_new$ymax <- -Inf
+  } else {
+    rct_new$ymin <- rct_new$ymin - dy / 2
+    rct_new$ymax <- rct_new$ymax + dy / 2
+  }
 
-  grid$data <- grd_subset_data(grid$data, ij)
-  grid$bbox <- indices$bbox
+  grid$data <- grd_subset_data(grid$data, i, j)
+  grid$bbox <- new_wk_rct(rct_new, crs = wk_crs(grid))
   grid
 }
 
@@ -141,8 +119,6 @@ grd_subset_data.default <- function(grid_data, i = NULL, j = NULL, ...) {
     more_dims <- alist(1, )[rep(2, n_more_dims)]
     do.call("[", c(list(grid_data, ij$i, ij$j), more_dims, list(drop = FALSE)))
   }
-
-  grid_data
 }
 
 #' @rdname grd_subset
@@ -321,7 +297,7 @@ grd_cell_center.wk_grd_xy <- function(grid, i, j = NULL, ..., out_of_bounds = "k
 ij_from_args <- function(i, j = NULL) {
   if (is.null(i) && is.null(j)) {
     list(i = NULL, j = NULL)
-  } else if (is.null(j)) {
+  } else if (is.null(j) && is.list(i)) {
     i
   } else {
     list(i = i, j = j)
@@ -373,8 +349,11 @@ ij_to_slice_one <- function(i, n) {
   } else if (identical(names(i), c("start", "stop", "step"))) {
     value_na <- is.na(i)
     i[value_na] <- c(0L, n, 1L)[value_na]
+    i["stop"] <- max(i["start"], i["stop"])
   } else if (is.numeric(i)) {
-    if (length(i) <= 1L) {
+    if (length(i) == 0L) {
+      i <- integer()
+    } else if ((length(i) == 1L) && is.finite(i)) {
       i <- c(start = i - 1L, stop = i, step = 1L)
     } else {
       if (any(!is.finite(i))) {

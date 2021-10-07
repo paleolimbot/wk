@@ -463,14 +463,14 @@ dim.wk_grd <- function(x) {
 
   # allow combination of i, j to be a rct() instead
   if (inherits(i, "wk_rct") && is.null(j)) {
-    result_xy <- grd_subset(x, bbox = i)
+    result_xy <- grd_crop(x, bbox = i)
     if (length(dim(x$data)) > 2) {
       result_xy$data <- result_xy$data[, , , ..., drop = FALSE]
     } else {
       result_xy$data <- result_xy$data[, , ..., drop = FALSE]
     }
   } else if (inherits(i, "wk_rct")) {
-    result_xy <- grd_subset(x, bbox = i)
+    result_xy <- grd_crop(x, bbox = i)
     result_xy$data <- result_xy$data[, , j, ..., drop = FALSE]
   } else {
     result_xy <- grd_subset(x, i = i, j = j)

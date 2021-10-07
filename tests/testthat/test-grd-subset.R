@@ -223,9 +223,8 @@ test_that("subset works for grd_rct", {
   expect_identical(grd_subset(grid, 1:87, NULL), grid)
 
   # bad args
-  expect_error(grd_subset(grid, raw(), NULL), "must be NULL, numeric, or logical")
-  expect_error(grd_subset(grid, NULL, raw()), "must be NULL, numeric, or logical")
-  expect_error(grd_subset(grid, T, T, rct()), "Must specify")
+  expect_error(grd_subset(grid, raw(), NULL), "must be NULL, numeric, or")
+  expect_error(grd_subset(grid, NULL, raw()), "must be NULL, numeric, or")
 
   # check small subsets for exactness
   grid_00 <- grd_subset(grid, integer(), integer())
@@ -330,6 +329,8 @@ test_that("ij_expand_one works", {
 test_that("ij_to_slice_one works", {
   expect_identical(ij_to_slice_one(NULL, 0L), c(start = 0L, stop = 0L, step = 1L))
   expect_identical(ij_to_slice_one(NULL, 2L), c(start = 0L, stop = 2L, step = 1L))
+  expect_identical(ij_to_slice_one(integer(), 2L), integer())
+  expect_identical(ij_to_slice_one(1L, 2L), c(start = 0L, stop = 1L, step = 1L))
   expect_identical(ij_to_slice_one(4:8, 10L), c(start = 3L, stop = 8L, step = 1L))
   expect_identical(
     ij_to_slice_one(seq(1L, 9L, by = 2L), 10L),
@@ -343,6 +344,24 @@ test_that("ij_to_slice_one works", {
     ij_to_slice_one(c(start = 1L, stop = 2L, step = 3L), 10L),
     c(start = 1L, stop = 2L, step = 3L)
   )
+
+  expect_error(
+    ij_to_slice_one(c(1, 2, 4), 1L),
+    "must be equally spaced"
+  )
+
+  expect_error(
+    ij_to_slice_one(c(1, 0, -1), 1L),
+    "must be equally spaced and ascending"
+  )
+
+  expect_error(
+    ij_to_slice_one(NA_integer_, 1L),
+    "must be finite"
+  )
+
+  expect_error(
+    ij_to_slice_one(logical(), 1L),
+    "must be NULL, numeric, or"
+  )
 })
-
-

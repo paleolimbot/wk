@@ -19,7 +19,7 @@
 \usage{
 grd_subset(grid, i = NULL, j = NULL, ...)
 
-grd_subset_data(grid, i = NULL, j = NULL, ...)
+grd_subset_data(grid_data, i = NULL, j = NULL, ...)
 
 grd_crop(grid, bbox, ..., snap = list(round, round))
 
@@ -57,6 +57,9 @@ the bounding box regardless of internal data ordering. A
 \code{list()} containing \code{i} and \code{j} elements can also be supplied.}
 
 \item{...}{Passed to subset methods}
+
+\item{grid_data}{The \verb{$data} member of a \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}},
+or other object implementing \verb{grd_*()} methods.}
 
 \item{bbox}{A bounding box to use as a subset. This is used
 to calculate a suitable \code{y} and \code{x} index vector representing
