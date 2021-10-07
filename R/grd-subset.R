@@ -72,14 +72,21 @@ grd_index <- function(grid, point, ..., snap = round) {
   UseMethod("grd_index")
 }
 
-#' #' @export
-#' grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
-#'   s <- grd_summary(grid)
-#'   point <- unclass(as_xy(point))
-#'   i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
-#'   j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
-#'   list(i = snap(i + 1L), j = snap(j + 1L))
-#' }
+#' @export
+grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
+  s <- grd_summary(grid)
+  point <- unclass(as_xy(point))
+  i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
+  j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
+
+  # we need round() to round up 0.5 but only for the boundary case
+  if (identical(snap, round)) {
+    i <- ifelse(i %% 1 == 0, i + sqrt(.Machine$double.eps), i)
+    j <- ifelse(j %% 1 == 0, j + sqrt(.Machine$double.eps), j)
+  }
+
+  list(i = snap(i - 0.5) + 1L, j = snap(j - 0.5) + 1L)
+}
 
 #' @export
 grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
