@@ -313,7 +313,7 @@ test_that("subset works for grd_xy", {
   expect_identical(wk_bbox(grid_23), rct(0, 85, 2, 86))
 })
 
-test_that("ij_expand works", {
+test_that("ij_expand_one works", {
   expect_identical(ij_expand_one(NULL, 0L), integer())
   expect_identical(ij_expand_one(NULL, 2L), 1:2)
   expect_identical(ij_expand_one(4:8, 10L), 4:8)
@@ -326,3 +326,23 @@ test_that("ij_expand works", {
   expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "discard"), 1L)
   expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "squish"), c(1L, 1L, 1L))
 })
+
+test_that("ij_to_slice_one works", {
+  expect_identical(ij_to_slice_one(NULL, 0L), c(start = 0L, stop = 0L, step = 1L))
+  expect_identical(ij_to_slice_one(NULL, 2L), c(start = 0L, stop = 2L, step = 1L))
+  expect_identical(ij_to_slice_one(4:8, 10L), c(start = 3L, stop = 8L, step = 1L))
+  expect_identical(
+    ij_to_slice_one(seq(1L, 9L, by = 2L), 10L),
+    c(start = 0L, stop = 9L, step = 2L)
+  )
+  expect_identical(
+    ij_to_slice_one(c(start = NA, stop = NA, step = NA), 10L),
+    c(start = 0L, stop = 10L, step = 1L)
+  )
+  expect_identical(
+    ij_to_slice_one(c(start = 1L, stop = 2L, step = 3L), 10L),
+    c(start = 1L, stop = 2L, step = 3L)
+  )
+})
+
+

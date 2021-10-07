@@ -15,10 +15,9 @@
 \alias{grd_cell_center}
 \alias{grd_cell_center.wk_grd_rct}
 \alias{grd_cell_center.wk_grd_xy}
-\alias{grd_subset_indices}
 \title{Subset grd grids}
 \usage{
-grd_subset(grid, i = NULL, j = NULL, bbox = NULL, ...)
+grd_subset(grid, i = NULL, j = NULL, ...)
 
 grd_subset_data(grid, i = NULL, j = NULL, ...)
 
@@ -45,8 +44,6 @@ grd_cell_center(grid, i, j = NULL, ...)
 \method{grd_cell_center}{wk_grd_rct}(grid, i, j = NULL, ..., out_of_bounds = "keep")
 
 \method{grd_cell_center}{wk_grd_xy}(grid, i, j = NULL, ..., out_of_bounds = "keep")
-
-grd_subset_indices(grid, i = NULL, j = NULL, bbox = NULL, ...)
 }
 \arguments{
 \item{grid}{A \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}}, or other object
@@ -59,14 +56,14 @@ is always 1-based and always starts from the left and top of
 the bounding box regardless of internal data ordering. A
 \code{list()} containing \code{i} and \code{j} elements can also be supplied.}
 
+\item{...}{Passed to subset methods}
+
 \item{bbox}{A bounding box to use as a subset. This is used
 to calculate a suitable \code{y} and \code{x} index vector representing
 all cells that intersect the \code{bbox}. Cells that only touch \code{bbox}
 on the bottom and right are not included in the subset, meaning you
 can safely tile a regularly-spaced grid along \code{grid} without
 double-counting cells.}
-
-\item{...}{Passed to subset methods}
 
 \item{snap}{A function that transforms real-valued indices to integer
 indices (e.g., \code{\link[=floor]{floor()}}, \code{\link[=ceiling]{ceiling()}}, or \code{\link[=round]{round()}}).
