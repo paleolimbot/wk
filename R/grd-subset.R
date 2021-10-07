@@ -20,6 +20,7 @@
 #'   on the bottom and right are not included in the subset, meaning you
 #'   can safely tile a regularly-spaced grid along `grid` without
 #'   double-counting cells.
+#' @param out_of_bounds One of 'keep', 'censor', 'discard', or 'squish'
 #' @param point A [handleable][wk_handle] of points.
 #' @param snap A function that transforms real-valued indices to integer
 #'   indices (e.g., [floor()], [ceiling()], or [round()]).
@@ -56,14 +57,33 @@ grd_subset_data <- function(grid, i = NULL, j = NULL, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_crop <- function(grid, bbox, ...) {
+grd_crop <- function(grid, bbox, ..., snap = list(round, round)) {
   UseMethod("grd_crop")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_extend <- function(grid, bbox, ...) {
+grd_crop.default <- function(grid, bbox, ..., snap = list(round, round)) {
+  ij <- grd_index_range(grid, bbox, snap)
+
+  ij$i["start"] <- max(ij$i["start"], 1L)
+  ij$i["stop"] <- min(ij$i["stop"], dim(grid)[1])
+  ij$j["start"] <- max(ij$j["start"], 1L)
+  ij$j["stop"] <- min(ij$j["stop"], dim(grid)[2])
+
+  grd_subset(grid, ij)
+}
+
+#' @rdname grd_subset
+#' @export
+grd_extend <- function(grid, bbox, ..., snap = list(round, round)) {
   UseMethod("grd_extend")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_extend.default <- function(grid, bbox, ..., snap = list(round, round)) {
+  grd_subset(grid, grd_index_range(grid, bbox, snap))
 }
 
 #' @rdname grd_subset
@@ -95,7 +115,7 @@ grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(grid, bbox, ..., snap = list(floor, ceiling)) {
+grd_index_range <- function(grid, bbox, ..., snap = list(round, round)) {
   UseMethod("grd_index_range")
 }
 

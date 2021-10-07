@@ -4,7 +4,9 @@
 \alias{grd_subset}
 \alias{grd_subset_data}
 \alias{grd_crop}
+\alias{grd_crop.default}
 \alias{grd_extend}
+\alias{grd_extend.default}
 \alias{grd_index}
 \alias{grd_index_range}
 \alias{grd_cell_bounds}
@@ -20,13 +22,17 @@ grd_subset(grid, i = NULL, j = NULL, bbox = NULL, ...)
 
 grd_subset_data(grid, i = NULL, j = NULL, ...)
 
-grd_crop(grid, bbox, ...)
+grd_crop(grid, bbox, ..., snap = list(round, round))
 
-grd_extend(grid, bbox, ...)
+\method{grd_crop}{default}(grid, bbox, ..., snap = list(round, round))
+
+grd_extend(grid, bbox, ..., snap = list(round, round))
+
+\method{grd_extend}{default}(grid, bbox, ..., snap = list(round, round))
 
 grd_index(grid, point, ..., snap = round)
 
-grd_index_range(grid, bbox, ..., snap = list(floor, ceiling))
+grd_index_range(grid, bbox, ..., snap = list(round, round))
 
 grd_cell_bounds(grid, i, j = NULL, ...)
 
@@ -62,12 +68,14 @@ double-counting cells.}
 
 \item{...}{Passed to subset methods}
 
-\item{point}{A \link[=wk_handle]{handleable} of points.}
-
 \item{snap}{A function that transforms real-valued indices to integer
 indices (e.g., \code{\link[=floor]{floor()}}, \code{\link[=ceiling]{ceiling()}}, or \code{\link[=round]{round()}}).
 For \code{\link[=grd_index_range]{grd_index_range()}}, a \code{list()} with exactly two elements to be called
 for the minimum and maximum index values, respectively.}
+
+\item{point}{A \link[=wk_handle]{handleable} of points.}
+
+\item{out_of_bounds}{One of 'keep', 'censor', 'discard', or 'squish'}
 }
 \value{
 \itemize{
