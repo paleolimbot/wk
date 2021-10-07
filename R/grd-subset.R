@@ -136,14 +136,76 @@ grd_index_range.default <- function(grid, bbox, ..., snap = list(round, round)) 
 
 #' @rdname grd_subset
 #' @export
-grd_cell <- function(grid, i = NULL, j = NULL, ...) {
-  UseMethod("grd_cell")
+grd_cell_bounds <- function(grid, i, j = NULL, ...) {
+  UseMethod("grd_cell_bounds")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_center <- function(grid, i = NULL, j = NULL, ...) {
-  UseMethod("grd_center")
+grd_cell_bounds.wk_grd_rct <- function(grid, i, j = NULL, ..., out_of_bounds = "keep") {
+  s <- grd_summary(grid)
+
+  # non-numeric values don't make sense here because i and j are vectorized
+  # instead of crossed to form the final values
+  ij <- ij_from_args(i, j)
+  if (!is.numeric(ij$i) || !is.numeric(ij$j)) {
+    stop("`i` and `j` must be numeric index vectors in grd_cell_bounds()")
+  }
+
+  # recycle to a common length
+  ij[] <- recycle_common(ij$i, ij$j)
+
+  # handle out_of_bounds
+  ij <- ij_handle_out_of_bounds2(ij, list(s$ny, s$nx), out_of_bounds)
+
+  xmin <- s$xmin + (ij$j - 1) * s$dx
+  xmax <- s$xmin + ij$j * s$dx
+  ymin <- s$ymax - ij$i * s$dy
+  ymax <- s$ymax - (ij$i - 1) * s$dy
+
+  rct(xmin, ymin, xmax, ymax, crs = wk_crs(grid))
+}
+
+#' @rdname grd_subset
+#' @export
+grd_cell_bounds.wk_grd_xy <- function(grid, i, j = NULL, ..., out_of_bounds = "keep") {
+  grd_cell_bounds(as_grd_rct(grid), i, j, out_of_bounds = out_of_bounds)
+}
+
+#' @rdname grd_subset
+#' @export
+grd_cell_center <- function(grid, i, j = NULL, ...) {
+  UseMethod("grd_cell_center")
+}
+
+#' @rdname grd_subset
+#' @export
+grd_cell_center.wk_grd_rct <- function(grid, i, j = NULL, ..., out_of_bounds = "keep") {
+  s <- grd_summary(grid)
+
+  # non-numeric values don't make sense here because i and j are vectorized
+  # instead of crossed to form the final values
+  ij <- ij_from_args(i, j)
+  if (!is.numeric(ij$i) || !is.numeric(ij$j)) {
+    stop("`i` and `j` must be numeric index vectors in grd_cell_bounds()")
+  }
+
+  # recycle to a common length
+  ij[] <- recycle_common(ij$i, ij$j)
+
+  # handle out_of_bounds
+  ij <- ij_handle_out_of_bounds2(ij, list(s$ny, s$nx), out_of_bounds)
+
+  x <- s$xmin + (ij$j - 1) * s$dx + s$dx / 2
+  y <- s$ymax - (ij$i - 1) * s$dy - s$dy / 2
+
+  xy(x, y, crs = wk_crs(grid))
+}
+
+#' @rdname grd_subset
+#' @export
+grd_cell_center.wk_grd_xy <- function(grid, i, j = NULL, ..., out_of_bounds = "keep") {
+  grd_cell_center(as_grd_rct(grid), i, j, out_of_bounds = out_of_bounds)
 }
 
 #' @export
@@ -416,4 +478,87 @@ grd_expand_ij_internal <- function(i, j, nx, ny) {
   }
 
   list(i = i, j = j)
+}
+
+
+ij_from_args <- function(i, j = NULL) {
+  if (is.null(i) && is.null(j)) {
+    list(i = NULL, j = NULL)
+  } else if (is.null(j)) {
+    i
+  } else {
+    list(i = i, j = j)
+  }
+}
+
+ij_expand_one <- function(i, n, out_of_bounds = "keep") {
+  if (is.null(i)) {
+    i <- if (n > 0) seq(1L, n) else integer()
+  } else if (identical(names(i), c("start", "stop", "step"))) {
+    value_na <- is.na(i)
+    i[value_na] <- c(0L, n, 1L)[value_na]
+    if (i["stop"] > i["start"]) {
+      i <- seq(i["start"] + 1L, i["stop"], by = i["step"])
+    } else {
+      i <- integer()
+    }
+  } else if (is.numeric(i)) {
+    i <- i
+  } else {
+    stop(
+      "index vectors must be NULL, numeric, or c(start = , stop =, step =)",
+      call. = FALSE
+    )
+  }
+
+  if (out_of_bounds == "censor") {
+    i[(i > n) | (i < 1)] <- NA_integer_
+  } else if (out_of_bounds == "keep") {
+    # do nothing
+  } else if (out_of_bounds == "discard") {
+    i <- i[(i <= n) & (i >= 1)]
+  } else if (out_of_bounds == "squish") {
+    i[i < 1L] <- 1L
+    i[i > n] <- n
+  } else {
+    stop(
+      "`out_of_bounds` must be one of 'censor', 'keep', 'discard', or 'squish'",
+      call. = FALSE
+    )
+  }
+
+  i
+}
+
+ij_handle_out_of_bounds2 <- function(ij, n, out_of_bounds) {
+  if (out_of_bounds == "keep") {
+    return(ij)
+  }
+
+  oob_i <- !is.na(ij$i) & ((ij$i > n[[1]]) | (ij$i < 1L))
+  oob_j <- !is.na(ij$j) & ((ij$j > n[[2]]) | (ij$j < 1L))
+  oob_either <- oob_i | oob_j
+  if (!any(oob_either)) {
+    return(ij)
+  }
+
+  if (out_of_bounds == "censor") {
+    ij$i[oob_either] <- NA_integer_
+    ij$j[oob_either] <- NA_integer_
+  } else if (out_of_bounds == "discard") {
+    ij$i <- ij$i[!oob_either]
+    ij$j <- ij$j[!oob_either]
+  } else if (out_of_bounds == "squish") {
+    ij$i[!is.na(ij$i) & (ij$i < 1L)] <- 1L
+    ij$j[!is.na(ij$j) & (ij$j < 1L)] <- 1L
+    ij$i[!is.na(ij$i) & (ij$i > n[[1]])] <- n[[1]]
+    ij$j[!is.na(ij$j) & (ij$j > n[[2]])] <- n[[2]]
+  } else {
+    stop(
+      "`out_of_bounds` must be one of 'censor', 'keep', 'discard', or 'squish'",
+      call. = FALSE
+    )
+  }
+
+  ij
 }

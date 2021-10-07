@@ -7,8 +7,12 @@
 \alias{grd_extend}
 \alias{grd_index}
 \alias{grd_index_range}
-\alias{grd_cell}
-\alias{grd_center}
+\alias{grd_cell_bounds}
+\alias{grd_cell_bounds.wk_grd_rct}
+\alias{grd_cell_bounds.wk_grd_xy}
+\alias{grd_cell_center}
+\alias{grd_cell_center.wk_grd_rct}
+\alias{grd_cell_center.wk_grd_xy}
 \alias{grd_subset_indices}
 \title{Subset grd grids}
 \usage{
@@ -24,9 +28,17 @@ grd_index(grid, point, ..., snap = round)
 
 grd_index_range(grid, bbox, ..., snap = list(floor, ceiling))
 
-grd_cell(grid, i = NULL, j = NULL, ...)
+grd_cell_bounds(grid, i, j = NULL, ...)
 
-grd_center(grid, i = NULL, j = NULL, ...)
+\method{grd_cell_bounds}{wk_grd_rct}(grid, i, j = NULL, ..., out_of_bounds = "keep")
+
+\method{grd_cell_bounds}{wk_grd_xy}(grid, i, j = NULL, ..., out_of_bounds = "keep")
+
+grd_cell_center(grid, i, j = NULL, ...)
+
+\method{grd_cell_center}{wk_grd_rct}(grid, i, j = NULL, ..., out_of_bounds = "keep")
+
+\method{grd_cell_center}{wk_grd_xy}(grid, i, j = NULL, ..., out_of_bounds = "keep")
 
 grd_subset_indices(grid, i = NULL, j = NULL, bbox = NULL, ...)
 }

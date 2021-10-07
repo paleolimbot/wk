@@ -114,6 +114,102 @@ test_that("grd_index_range() works for grd_xy()", {
   )
 })
 
+test_that("grd_cell_bounds() works for grd_rct()", {
+  empty <- grd_rct(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    wk_bbox(grd_cell_bounds(empty, 0, 0)),
+    wk_bbox(rct(NA, NA, NA, NA))
+  )
+
+  grid <- grd(nx = 3, ny = 2)
+  expect_identical(grd_cell_bounds(grid, 1, 1), rct(0, 1, 1, 2))
+  expect_identical(grd_cell_bounds(grid, 0, 0), rct(-1, 2, 0, 3))
+  expect_identical(
+    grd_cell_bounds(grid, 0, 0, out_of_bounds = "discard"),
+    rct(crs = NULL)
+  )
+  expect_identical(
+    wk_bbox(grd_cell_bounds(grid, 0, 0, out_of_bounds = "censor")),
+    wk_bbox(rct(NA, NA, NA, NA))
+  )
+  expect_identical(
+    grd_cell_bounds(grid, 0, 0, out_of_bounds = "squish"),
+    grd_cell_bounds(grid, 1, 1)
+  )
+})
+
+test_that("grd_cell_bounds() works for grd_xy()", {
+  empty <- grd_rct(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    wk_bbox(grd_cell_bounds(empty, 0, 0)),
+    wk_bbox(rct(NA, NA, NA, NA))
+  )
+
+  grid <- grd(nx = 3, ny = 2, type = "centers")
+  expect_identical(grd_cell_bounds(grid, 1, 1), rct(0, 1, 1, 2))
+  expect_identical(grd_cell_bounds(grid, 0, 0), rct(-1, 2, 0, 3))
+  expect_identical(
+    grd_cell_bounds(grid, 0, 0, out_of_bounds = "discard"),
+    rct(crs = NULL)
+  )
+  expect_identical(
+    wk_bbox(grd_cell_bounds(grid, 0, 0, out_of_bounds = "censor")),
+    wk_bbox(rct(NA, NA, NA, NA))
+  )
+  expect_identical(
+    grd_cell_bounds(grid, 0, 0, out_of_bounds = "squish"),
+    grd_cell_bounds(grid, 1, 1)
+  )
+})
+
+test_that("grd_cell_center() works for grd_rct()", {
+  empty <- grd_rct(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    grd_cell_center(empty, 0, 0),
+    xy(NA, NA)
+  )
+
+  grid <- grd(nx = 3, ny = 2)
+  expect_identical(grd_cell_center(grid, 1, 1), xy(0.5, 1.5))
+  expect_identical(grd_cell_center(grid, 0, 0), xy(-0.5, 2.5))
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "discard"),
+    xy(crs = NULL)
+  )
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "censor"),
+    xy(NA, NA)
+  )
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "squish"),
+    grd_cell_center(grid, 1, 1)
+  )
+})
+
+test_that("grd_cell_center() works for grd_xy()", {
+  empty <- grd_xy(matrix(nrow = 0, ncol = 0))
+  expect_identical(
+    grd_cell_center(empty, 0, 0),
+    xy(NA, NA)
+  )
+
+  grid <- grd(nx = 3, ny = 2, type = "centers")
+  expect_identical(grd_cell_center(grid, 1, 1), xy(0.5, 1.5))
+  expect_identical(grd_cell_center(grid, 0, 0), xy(-0.5, 2.5))
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "discard"),
+    xy(crs = NULL)
+  )
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "censor"),
+    xy(NA, NA)
+  )
+  expect_identical(
+    grd_cell_center(grid, 0, 0, out_of_bounds = "squish"),
+    grd_cell_center(grid, 1, 1)
+  )
+})
+
 test_that("subset works for grd_rct", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
   expect_identical(grd_subset(empty), empty)
@@ -299,4 +395,18 @@ test_that("grd_subset_indices() works for the identity case", {
       bbox = grid$bbox
     )
   )
+})
+
+test_that("ij_expand works", {
+  expect_identical(ij_expand_one(NULL, 0L), integer())
+  expect_identical(ij_expand_one(NULL, 2L), 1:2)
+  expect_identical(ij_expand_one(4:8, 10L), 4:8)
+  expect_identical(ij_expand_one(c(start = NA, stop = NA, step = NA), 10L), 1:10)
+  expect_identical(ij_expand_one(c(start = 0L, stop = 4L, step = NA), 10L), 1:4)
+  expect_identical(ij_expand_one(c(start = 0L, stop = 4L, step = 2L), 10L), c(1L, 3L))
+
+  expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "keep"), 0:2)
+  expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "censor"), c(NA, 1L, NA))
+  expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "discard"), 1L)
+  expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "squish"), c(1L, 1L, 1L))
 })
