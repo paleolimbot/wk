@@ -314,10 +314,10 @@ test_that("grd matrix interface works", {
   expect_identical(dim(grid)[2], 3L)
 
   # rct subsetting
-  expect_identical(grid[rct(0, 1, 1, 2), ], grd_subset(grid, 1, 1))
-  expect_equal(unname(dim(grid[rct(0, 1, 1, 2), 1])), c(1L, 1L, 1L))
+  expect_identical(grid[rct(0.1, 1.1, 0.9, 1.9), ], grd_subset(grid, 1, 1))
+  expect_equal(unname(dim(grid[rct(0.1, 1.1, 0.9, 1.9), 1])), c(1L, 1L, 1L))
   grid$data <- grid$data[, , 1, drop = TRUE]
-  expect_identical(grid[rct(0, 1, 1, 2), ], grd_subset(grid, 1, 1))
+  expect_identical(grid[rct(0.1, 1.1, 0.9, 1.9), ], grd_subset(grid, 1, 1))
 })
 
 test_that("grd[[]]<- interface works", {

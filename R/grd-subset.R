@@ -132,9 +132,9 @@ grd_crop <- function(grid, bbox, ..., snap = list(round, round)) {
 grd_crop.default <- function(grid, bbox, ..., snap = list(round, round)) {
   ij <- grd_index_range(grid, bbox, snap)
 
-  ij$i["start"] <- max(ij$i["start"], 1L)
+  ij$i["start"] <- max(ij$i["start"], 0L)
   ij$i["stop"] <- min(ij$i["stop"], dim(grid)[1])
-  ij$j["start"] <- max(ij$j["start"], 1L)
+  ij$j["start"] <- max(ij$j["start"], 0L)
   ij$j["stop"] <- min(ij$j["stop"], dim(grid)[2])
 
   grd_subset(grid, ij)
@@ -311,7 +311,7 @@ ij_expand_one <- function(i, n, out_of_bounds = "keep") {
     value_na <- is.na(i)
     i[value_na] <- c(0L, n, 1L)[value_na]
     if (i["stop"] > i["start"]) {
-      i <- seq(i["start"] + 1L, i["stop"], by = i["step"])
+      i <- unname(seq(i["start"] + 1L, i["stop"], by = i["step"]))
     } else {
       i <- integer()
     }
