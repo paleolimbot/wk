@@ -76,8 +76,8 @@ grd_index <- function(grid, point, ..., snap = round) {
 grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
   s <- grd_summary(grid)
   point <- unclass(as_xy(point))
-  i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
-  j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
+  i <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
+  j <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
 
   # we need round() to round up 0.5 but only for the boundary case
   if (identical(snap, round)) {
@@ -90,11 +90,7 @@ grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
 
 #' @export
 grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
-  s <- grd_summary(grid)
-  point <- unclass(as_xy(point))
-  i <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
-  j <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
-  list(i = snap(i + 1L), j = snap(j + 1L))
+  grd_index(as_grd_rct(grid), point, snap = snap)
 }
 
 #' @rdname grd_subset
@@ -104,62 +100,35 @@ grd_index_range <- function(grid, bbox, ..., snap = list(floor, ceiling)) {
 }
 
 #' @export
-grd_index_range.default <- function(grid, bbox, ..., snap = list(floor, ceiling)) {
-  # for access to members
-  s <- grd_summary(grid)
-
+grd_index_range.default <- function(grid, bbox, ..., snap = list(round, round)) {
   # normalized so that xmin < xmax, ymin < ymax
   if (inherits(bbox, "wk_rct")) {
-    rct_target <- unclass(wk_bbox(as_wkb(bbox)))
+    bbox <- wk_bbox(as_wkb(bbox))
   } else {
-    rct_target <- unclass(wk_bbox(bbox))
+    bbox <- wk_bbox(bbox)
   }
 
+  indices <- grd_index(grid, as_xy(wk_vertices(bbox)))
+
+  # return a consistent value for an empty grid subset
+  s <- grd_summary(grid)
+  rct_target <- unclass(bbox)
   rct_target_width <- rct_target$xmax - rct_target$xmin
   rct_target_height <- rct_target$ymax - rct_target$ymin
 
-  # remember that y indices are upside down compared to limits
-  ximin <- (rct_target$xmin - s$xmin) / s$dx
-  yimin <- (s$ymax - rct_target$ymax) / s$dy
-  ximax <- ximin + rct_target_width / s$dx
-  yimax <- yimin + rct_target_height / s$dy
+  indices_min <- grd_index(grid, xy(rct_target$xmin, rct_target$ymax), snap = snap[[1]])
+  indices_max <- grd_index(grid, xy(rct_target$xmax, rct_target$ymin), snap = snap[[2]])
 
-  if (inherits(grid, "wk_grd_rct")) {
-    # this subset will get us intersecting cells but NOT cells
-    # that only touch on the bottom/right
-    if (isTRUE(ceiling(ximax) != ximax)) {
-      ximax <- ceiling(ximax)
-    }
-
-    if (isTRUE(ceiling(yimax) != yimax)) {
-      yimax <- ceiling(yimax)
-    }
-
-    yimin <- floor(yimin) + 1L
-    ximin <- floor(ximin) + 1L
-  } else if (inherits(grid, "wk_grd_xy")) {
-    # this subset gets us any point that intersects the bbox
-    # including the boundary on all sides
-    yimin <- ceiling(yimin + 1L)
-    yimax <- floor(yimax) + 1L
-    ximin <- ceiling(ximin + 1L)
-    ximax <- floor(ximax) + 1L
-  } else {
-    stop("Unknown object type in grd_index_range.default()", call. = FALSE) # nocov
-  }
-
-
-  # return a consistent value for an empty grid subset
   if (rct_target_height == -Inf || s$height == -Inf) {
     i <- integer()
   } else {
-    i <- c(start = yimin - 1L, stop = yimax, step = NA_integer_)
+    i <- c(start = indices_min$i - 1L, stop = indices_max$i, step = NA_integer_)
   }
 
   if (rct_target_width == -Inf || s$width == -Inf) {
     j <- integer()
   } else {
-    j <- c(start = ximin - 1L, stop = ximax, step = NA_integer_)
+    j <- c(start = indices_min$j - 1L, stop = indices_max$j, step = NA_integer_)
   }
 
   list(i = i, j = j)
