@@ -319,6 +319,13 @@ test_that("crop/extend works for grd_rct", {
     grd_crop(grid, rct(0, 0, 2, 2)),
     grd_subset(grid, 1:2, 1:2)
   )
+
+  grid <- grd(nx = 3, ny = 2, type = "corners")
+  expect_identical(grd_crop(grid, grid$bbox), grid)
+  expect_identical(
+    grd_crop(grid, rct(0, 0, 2, 2)),
+    grd_subset(grid, 1:2, 1:2)
+  )
 })
 
 test_that("crop/extend works for grd_xy", {

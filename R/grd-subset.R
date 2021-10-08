@@ -132,14 +132,14 @@ grd_subset_data.default <- function(grid_data, i = NULL, j = NULL, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_crop <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+grd_crop <- function(grid, bbox, ..., snap = grd_snap_nearest) {
   UseMethod("grd_crop")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_crop.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
-  ij <- grd_index_range(grid, bbox, snap)
+grd_crop.wk_grd_rct <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+  ij <- grd_index_range(grid, bbox, snap = snap)
 
   ij$i["start"] <- max(ij$i["start"], 0L)
   ij$i["stop"] <- min(ij$i["stop"], dim(grid)[1])
@@ -151,14 +151,33 @@ grd_crop.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
 
 #' @rdname grd_subset
 #' @export
-grd_extend <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+grd_crop.wk_grd_xy <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+  ij <- grd_index_range(grid, bbox, snap = snap)
+
+  ij$i["start"] <- max(ij$i["start"], 0L)
+  ij$i["stop"] <- min(ij$i["stop"], dim(grid)[1])
+  ij$j["start"] <- max(ij$j["start"], 0L)
+  ij$j["stop"] <- min(ij$j["stop"], dim(grid)[2])
+
+  grd_subset(grid, ij)
+}
+
+#' @rdname grd_subset
+#' @export
+grd_extend <- function(grid, bbox, ..., snap = grd_snap_nearest) {
   UseMethod("grd_extend")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_extend.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
-  grd_subset(grid, grd_index_range(grid, bbox, snap))
+grd_extend.wk_grd_rct <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+  grd_subset(grid, grd_index_range(grid, bbox, snap = snap))
+}
+
+#' @rdname grd_subset
+#' @export
+grd_extend.wk_grd_xy <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+  grd_subset(grid, grd_index_range(grid, bbox, snap = snap))
 }
 
 #' @rdname grd_subset
@@ -173,13 +192,6 @@ grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
   point <- unclass(as_xy(point))
   i <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
   j <- if (s$height == -Inf) rep(NA_real_, length(point$x)) else (point$x - s$xmin) / s$dx
-
-  # we need round() to round up 0.5 but only for the boundary case
-  if (identical(snap, round)) {
-    i <- ifelse(i %% 1 == 0, i + sqrt(.Machine$double.eps), i)
-    j <- ifelse(j %% 1 == 0, j + sqrt(.Machine$double.eps), j)
-  }
-
   list(i = snap(i - 0.5) + 1L, j = snap(j - 0.5) + 1L)
 }
 
@@ -190,17 +202,21 @@ grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+grd_index_range <- function(grid, bbox, ..., snap = grd_snap_nearest) {
   UseMethod("grd_index_range")
 }
 
 #' @export
-grd_index_range.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
+grd_index_range.default <- function(grid, bbox, ..., snap = grd_snap_nearest) {
   # normalized so that xmin < xmax, ymin < ymax
   if (inherits(bbox, "wk_rct")) {
     bbox <- wk_bbox(as_wkb(bbox))
   } else {
     bbox <- wk_bbox(bbox)
+  }
+
+  if (is.function(snap)) {
+    snap <- list(snap, snap)
   }
 
   indices <- grd_index(grid, as_xy(wk_vertices(bbox)))
@@ -418,4 +434,39 @@ ij_handle_out_of_bounds2 <- function(ij, n, out_of_bounds) {
   }
 
   ij
+}
+
+#' Index snap functions
+#'
+#' These functions can be used in [grd_index()] and
+#' [grd_index_range()]. Unlike their base counterparts
+#' [round()], [floor()], and [ceiling()], these functions
+#' (1) always round 0.5 up, (2) always return the next
+#' or previous whole number even when the current value
+#' is a whole number.
+#'
+#' @param x A vector of rescaled but non-integer indices
+#'
+#' @return A vector of integer indices
+#' @export
+#'
+#' @examples
+#' grd_snap_next(seq(0, 3, 0.25))
+#' grd_snap_previous(seq(0, 3, 0.25))
+#' grd_snap_nearest(seq(0, 3, 0.25))
+#'
+grd_snap_next <- function(x) {
+  ifelse((x %% 1L) == 0, x + 1L, ceiling(x))
+}
+
+#' @rdname grd_snap_next
+#' @export
+grd_snap_previous <- function(x) {
+  ifelse((x %% 1L) == 0, x - 1L, floor(x))
+}
+
+#' @rdname grd_snap_next
+#' @export
+grd_snap_nearest <- function(x) {
+  ifelse(((x + 0.5) %% 1L) == 0, ceiling(x), round(x))
 }

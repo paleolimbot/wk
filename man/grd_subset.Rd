@@ -4,9 +4,11 @@
 \alias{grd_subset}
 \alias{grd_subset_data}
 \alias{grd_crop}
-\alias{grd_crop.default}
+\alias{grd_crop.wk_grd_rct}
+\alias{grd_crop.wk_grd_xy}
 \alias{grd_extend}
-\alias{grd_extend.default}
+\alias{grd_extend.wk_grd_rct}
+\alias{grd_extend.wk_grd_xy}
 \alias{grd_index}
 \alias{grd_index_range}
 \alias{grd_cell_bounds}
@@ -21,17 +23,21 @@ grd_subset(grid, i = NULL, j = NULL, ...)
 
 grd_subset_data(grid_data, i = NULL, j = NULL, ...)
 
-grd_crop(grid, bbox, ..., snap = list(ceiling, floor))
+grd_crop(grid, bbox, ..., snap = grd_snap_nearest)
 
-\method{grd_crop}{default}(grid, bbox, ..., snap = list(ceiling, floor))
+\method{grd_crop}{wk_grd_rct}(grid, bbox, ..., snap = grd_snap_nearest)
 
-grd_extend(grid, bbox, ..., snap = list(ceiling, floor))
+\method{grd_crop}{wk_grd_xy}(grid, bbox, ..., snap = list(ceiling, floor))
 
-\method{grd_extend}{default}(grid, bbox, ..., snap = list(ceiling, floor))
+grd_extend(grid, bbox, ..., snap = grd_snap_nearest)
+
+\method{grd_extend}{wk_grd_rct}(grid, bbox, ..., snap = grd_snap_nearest)
+
+\method{grd_extend}{wk_grd_xy}(grid, bbox, ..., snap = list(ceiling, floor))
 
 grd_index(grid, point, ..., snap = round)
 
-grd_index_range(grid, bbox, ..., snap = list(ceiling, floor))
+grd_index_range(grid, bbox, ..., snap = grd_snap_nearest)
 
 grd_cell_bounds(grid, i, j = NULL, ...)
 
