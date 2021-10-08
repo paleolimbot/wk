@@ -312,11 +312,15 @@ test_that("subset works for grd_xy", {
   expect_identical(wk_bbox(grid_23), rct(0, 85, 2, 86))
 })
 
-test_that("crop/extend works for grd_rct", {
+test_that("crop works for grd_rct and grd_xy", {
   grid <- grd(nx = 3, ny = 2)
   expect_identical(grd_crop(grid, grid$bbox), grid)
   expect_identical(
     grd_crop(grid, rct(0, 0, 2, 2)),
+    grd_subset(grid, 1:2, 1:2)
+  )
+  expect_identical(
+    grd_crop(grid, rct(-1, -1, 2, 2)),
     grd_subset(grid, 1:2, 1:2)
   )
 
@@ -325,6 +329,34 @@ test_that("crop/extend works for grd_rct", {
   expect_identical(
     grd_crop(grid, rct(0, 0, 2, 2)),
     grd_subset(grid, 1:3, 1:3)
+  )
+  expect_identical(
+    grd_crop(grid, rct(-1, -1, 2, 2)),
+    grd_subset(grid, 1:3, 1:3)
+  )
+})
+
+test_that("crop/extend works for grd_rct", {
+  grid <- grd(nx = 3, ny = 2)
+  expect_identical(grd_extend(grid, grid$bbox), grid)
+  expect_identical(
+    grd_extend(grid, rct(0, 0, 2, 2)),
+    grd_subset(grid, 1:2, 1:2)
+  )
+  expect_identical(
+    grd_extend(grid, rct(-1, -1, 2, 2)),
+    grd_subset(grid, 1:3, 0:2)
+  )
+
+  grid <- grd(nx = 3, ny = 2, type = "corners")
+  expect_identical(grd_extend(grid, grid$bbox), grid)
+  expect_identical(
+    grd_extend(grid, rct(0, 0, 2, 2)),
+    grd_subset(grid, 1:3, 1:3)
+  )
+  expect_identical(
+    grd_extend(grid, rct(-1, -1, 2, 2)),
+    grd_subset(grid, 1:4, 0:3)
   )
 })
 
