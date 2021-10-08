@@ -386,3 +386,9 @@ test_that("ij_to_slice_one works", {
     "must be NULL, numeric, or"
   )
 })
+
+test_that("snap functions work as expected", {
+  expect_identical(grd_snap_next(seq(0, 1, 0.25)), c(1, 1, 1, 1, 2))
+  expect_identical(grd_snap_previous(seq(0, 1, 0.25)), c(-1, 0, 0, 0, 0))
+  expect_identical(grd_snap_nearest(seq(0, 1, 0.25)), c(0, 0, 1, 1, 1))
+})
