@@ -53,7 +53,8 @@
 #' grid$bbox <- rct(0, 0, 1, 1)
 #'
 #' # subset by indices or rct
-#' plot(grid[c(FALSE, TRUE, FALSE), c(FALSE, TRUE, FALSE)])
+#' plot(grid[1:2, 1:2])
+#' plot(grid[c(start = NA, stop = NA, step = 2), c(start = NA, stop = NA, step = 2)])
 #' plot(grid[rct(0, 0, 0.5, 0.5)])
 #'
 grd <- function(bbox = NULL, nx = NULL, ny = NULL, dx = NULL, dy = NULL,

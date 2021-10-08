@@ -1,10 +1,10 @@
 
 test_that("grd_index() works for grd_rct()", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
-  expect_identical(grd_index(empty, xy(0, 0)), list(i = NA_real_, j = NA_real_))
+  expect_identical(grd_index(empty, xy(0, 0)), list(i = NA_integer_, j = NA_integer_))
 
   grid <- grd_rct(volcano)
-  expect_identical(grd_index(grid, xy(NA, NA)), list(i = NA_real_, j = NA_real_))
+  expect_identical(grd_index(grid, xy(NA, NA)), list(i = NA_integer_, j = NA_integer_))
 
   expect_identical(grd_index(grid, xy(0.5, 0.5)), list(i = 87, j = 1))
   expect_identical(grd_index(grid, xy(0, 87)), list(i = 1, j = 1))
@@ -14,10 +14,10 @@ test_that("grd_index() works for grd_rct()", {
 
 test_that("grd_index() works for grd_xy()", {
   empty <- grd_xy(matrix(nrow = 0, ncol = 0))
-  expect_identical(grd_index(empty, xy(0, 0)), list(i = NA_real_, j = NA_real_))
+  expect_identical(grd_index(empty, xy(0, 0)), list(i = NA_integer_, j = NA_integer_))
 
   grid <- grd_xy(volcano)
-  expect_identical(grd_index(grid, xy(NA, NA)), list(i = NA_real_, j = NA_real_))
+  expect_identical(grd_index(grid, xy(NA, NA)), list(i = NA_integer_, j = NA_integer_))
 
   expect_identical(grd_index(grid, xy(0, 0)), list(i = 87, j = 1))
 })
@@ -324,7 +324,7 @@ test_that("crop/extend works for grd_rct", {
   expect_identical(grd_crop(grid, grid$bbox), grid)
   expect_identical(
     grd_crop(grid, rct(0, 0, 2, 2)),
-    grd_subset(grid, 1:2, 1:2)
+    grd_subset(grid, 1:3, 1:3)
   )
 })
 
@@ -388,7 +388,6 @@ test_that("ij_to_slice_one works", {
 })
 
 test_that("snap functions work as expected", {
-  expect_identical(grd_snap_next(seq(0, 1, 0.25)), c(1, 1, 1, 1, 2))
-  expect_identical(grd_snap_previous(seq(0, 1, 0.25)), c(-1, 0, 0, 0, 0))
-  expect_identical(grd_snap_nearest(seq(0, 1, 0.25)), c(0, 0, 1, 1, 1))
+  expect_identical(grd_snap_next(seq(0, 1, 0.25)), c(0, 0, 1, 1, 1))
+  expect_identical(grd_snap_previous(seq(0, 1, 0.25)), c(0, 0, 0, 1, 1))
 })

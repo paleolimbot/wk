@@ -3,14 +3,11 @@
 \name{grd_snap_next}
 \alias{grd_snap_next}
 \alias{grd_snap_previous}
-\alias{grd_snap_nearest}
 \title{Index snap functions}
 \usage{
 grd_snap_next(x)
 
 grd_snap_previous(x)
-
-grd_snap_nearest(x)
 }
 \arguments{
 \item{x}{A vector of rescaled but non-integer indices}
@@ -20,15 +17,14 @@ A vector of integer indices
 }
 \description{
 These functions can be used in \code{\link[=grd_index]{grd_index()}} and
-\code{\link[=grd_index_range]{grd_index_range()}}. Unlike their base counterparts
-\code{\link[=round]{round()}}, \code{\link[=floor]{floor()}}, and \code{\link[=ceiling]{ceiling()}}, these functions
-(1) always round 0.5 up, (2) always return the next
-or previous whole number even when the current value
-is a whole number.
+\code{\link[=grd_index_range]{grd_index_range()}}. These functions differ in the way
+they round 0.5: \code{\link[=grd_snap_next]{grd_snap_next()}} always rounds up
+and \code{\link[=grd_snap_previous]{grd_snap_previous()}} always rounds down. You can
+also use \code{\link[=floor]{floor()}} and \code{\link[=ceiling]{ceiling()}} as index
+snap functions.
 }
 \examples{
-grd_snap_next(seq(0, 3, 0.25))
-grd_snap_previous(seq(0, 3, 0.25))
-grd_snap_nearest(seq(0, 3, 0.25))
+grd_snap_next(seq(0, 2, 0.25))
+grd_snap_previous(seq(0, 2, 0.25))
 
 }

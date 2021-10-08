@@ -132,13 +132,13 @@ grd_subset_data.default <- function(grid_data, i = NULL, j = NULL, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_crop <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_crop <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   UseMethod("grd_crop")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_crop.wk_grd_rct <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_crop.wk_grd_rct <- function(grid, bbox, ..., snap = grd_snap_previous) {
   ij <- grd_index_range(grid, bbox, snap = snap)
 
   ij$i["start"] <- max(ij$i["start"], 0L)
@@ -164,13 +164,13 @@ grd_crop.wk_grd_xy <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
 
 #' @rdname grd_subset
 #' @export
-grd_extend <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_extend <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   UseMethod("grd_extend")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_extend.wk_grd_rct <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_extend.wk_grd_rct <- function(grid, bbox, ..., snap = list(grd_snap_next, grd_snap_previous)) {
   grd_subset(grid, grd_index_range(grid, bbox, snap = snap))
 }
 
@@ -182,12 +182,12 @@ grd_extend.wk_grd_xy <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
 
 #' @rdname grd_subset
 #' @export
-grd_index <- function(grid, point, ..., snap = round) {
+grd_index <- function(grid, point, ..., snap = grd_snap_next) {
   UseMethod("grd_index")
 }
 
 #' @export
-grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
+grd_index.wk_grd_rct <- function(grid, point, ..., snap = grd_snap_next) {
   s <- grd_summary(grid)
   point <- unclass(as_xy(point))
   i <- if (s$width == -Inf) rep(NA_real_, length(point$x)) else (s$ymax - point$y) / s$dy
@@ -196,18 +196,18 @@ grd_index.wk_grd_rct <- function(grid, point, ..., snap = round) {
 }
 
 #' @export
-grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
+grd_index.wk_grd_xy <- function(grid, point, ..., snap = grd_snap_next) {
   grd_index(as_grd_rct(grid), point, snap = snap)
 }
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_index_range <- function(grid, bbox, ..., snap = grd_snap_next) {
   UseMethod("grd_index_range")
 }
 
 #' @export
-grd_index_range.default <- function(grid, bbox, ..., snap = grd_snap_nearest) {
+grd_index_range.default <- function(grid, bbox, ..., snap = grd_snap_next) {
   # normalized so that xmin < xmax, ymin < ymax
   if (inherits(bbox, "wk_rct")) {
     bbox <- wk_bbox(as_wkb(bbox))
@@ -439,11 +439,11 @@ ij_handle_out_of_bounds2 <- function(ij, n, out_of_bounds) {
 #' Index snap functions
 #'
 #' These functions can be used in [grd_index()] and
-#' [grd_index_range()]. Unlike their base counterparts
-#' [round()], [floor()], and [ceiling()], these functions
-#' (1) always round 0.5 up, (2) always return the next
-#' or previous whole number even when the current value
-#' is a whole number.
+#' [grd_index_range()]. These functions differ in the way
+#' they round 0.5: [grd_snap_next()] always rounds up
+#' and [grd_snap_previous()] always rounds down. You can
+#' also use [floor()] and [ceiling()] as index
+#' snap functions.
 #'
 #' @param x A vector of rescaled but non-integer indices
 #'
@@ -451,22 +451,15 @@ ij_handle_out_of_bounds2 <- function(ij, n, out_of_bounds) {
 #' @export
 #'
 #' @examples
-#' grd_snap_next(seq(0, 3, 0.25))
-#' grd_snap_previous(seq(0, 3, 0.25))
-#' grd_snap_nearest(seq(0, 3, 0.25))
+#' grd_snap_next(seq(0, 2, 0.25))
+#' grd_snap_previous(seq(0, 2, 0.25))
 #'
 grd_snap_next <- function(x) {
-  ifelse((x %% 1L) == 0, x + 1L, ceiling(x))
+  ifelse(((x + 0.5) %% 1L) == 0, ceiling(x), round(x))
 }
 
 #' @rdname grd_snap_next
 #' @export
 grd_snap_previous <- function(x) {
-  ifelse((x %% 1L) == 0, x - 1L, floor(x))
-}
-
-#' @rdname grd_snap_next
-#' @export
-grd_snap_nearest <- function(x) {
-  ifelse(((x + 0.5) %% 1L) == 0, ceiling(x), round(x))
+  ifelse(((x + 0.5) %% 1L) == 0, floor(x), round(x))
 }
