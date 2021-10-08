@@ -136,6 +136,8 @@ test_that("grd_cell_bounds() works for grd_rct()", {
     grd_cell_bounds(grid, 0, 0, out_of_bounds = "squish"),
     grd_cell_bounds(grid, 1, 1)
   )
+
+  expect_error(grd_cell_bounds(grid, "fish", "fish"), "must be numeric")
 })
 
 test_that("grd_cell_bounds() works for grd_xy()", {
@@ -160,6 +162,8 @@ test_that("grd_cell_bounds() works for grd_xy()", {
     grd_cell_bounds(grid, 0, 0, out_of_bounds = "squish"),
     grd_cell_bounds(grid, 1, 1)
   )
+
+  expect_error(grd_cell_bounds(grid, "fish", "fish"), "must be numeric")
 })
 
 test_that("grd_cell_center() works for grd_rct()", {
@@ -184,6 +188,8 @@ test_that("grd_cell_center() works for grd_rct()", {
     grd_cell_center(grid, 0, 0, out_of_bounds = "squish"),
     grd_cell_center(grid, 1, 1)
   )
+
+  expect_error(grd_cell_bounds(grid, "fish", "fish"), "must be numeric")
 })
 
 test_that("grd_cell_center() works for grd_xy()", {
@@ -208,6 +214,8 @@ test_that("grd_cell_center() works for grd_xy()", {
     grd_cell_center(grid, 0, 0, out_of_bounds = "squish"),
     grd_cell_center(grid, 1, 1)
   )
+
+  expect_error(grd_cell_bounds(grid, "fish", "fish"), "must be numeric")
 })
 
 test_that("subset works for grd_rct", {
@@ -377,6 +385,41 @@ test_that("ij_expand_one works", {
   expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "censor"), c(NA, 1L, NA))
   expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "discard"), 1L)
   expect_identical(ij_expand_one(0:2, 1L, out_of_bounds = "squish"), c(1L, 1L, 1L))
+  expect_error(ij_expand_one(0:2, 1L, out_of_bounds = "not an option"), "must be one of")
+
+  expect_identical(ij_expand_one(c(start = 0, stop = 0, step = 1L), 1L), integer())
+  expect_error(ij_expand_one(TRUE, 1L), "must be NULL, numeric")
+})
+
+test_that("ij_handle_out_of_bounds2 works", {
+  # no oob
+  expect_identical(
+    ij_handle_out_of_bounds2(list(i = 1:3, j = 4:6), n = c(3, 6), out_of_bounds = "keep"),
+    list(i = 1:3, j = 4:6)
+  )
+
+  ij <- list(i = 0:2, j = 4:6)
+  expect_identical(
+    ij_handle_out_of_bounds2(ij, n = c(2L, 5L), out_of_bounds = "keep"),
+    ij
+  )
+  expect_identical(
+    ij_handle_out_of_bounds2(ij, n = c(2L, 5L), out_of_bounds = "censor"),
+    list(i = c(NA, 1L, NA), j = c(NA, 5L, NA))
+  )
+  expect_identical(
+    ij_handle_out_of_bounds2(ij, n = c(2L, 5L), out_of_bounds = "discard"),
+    list(i = 1L, j = 5L)
+  )
+  expect_identical(
+    ij_handle_out_of_bounds2(ij, n = c(2L, 5L), out_of_bounds = "squish"),
+    list(i = c(1L, 1L, 2L), j = c(4L, 5L, 5L))
+  )
+
+  expect_error(
+    ij_handle_out_of_bounds2(ij, c(2L, 5L), out_of_bounds = "not an option"),
+    "must be one of"
+  )
 })
 
 test_that("ij_to_slice_one works", {
