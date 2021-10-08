@@ -312,6 +312,20 @@ test_that("subset works for grd_xy", {
   expect_identical(wk_bbox(grid_23), rct(0, 85, 2, 86))
 })
 
+test_that("crop/extend works for grd_rct", {
+  grid <- grd(nx = 3, ny = 2)
+  expect_identical(grd_crop(grid, grid$bbox), grid)
+  expect_identical(
+    grd_crop(grid, rct(0, 0, 2, 2)),
+    grd_subset(grid, 1:2, 1:2)
+  )
+})
+
+test_that("crop/extend works for grd_xy", {
+  grid <- grd(nx = 2, ny = 1, type = "corners")
+  expect_identical(grd_crop(grid, grid$bbox), grid)
+})
+
 test_that("ij_expand_one works", {
   expect_identical(ij_expand_one(NULL, 0L), integer())
   expect_identical(ij_expand_one(NULL, 2L), 1:2)
@@ -327,7 +341,7 @@ test_that("ij_expand_one works", {
 })
 
 test_that("ij_to_slice_one works", {
-  expect_identical(ij_to_slice_one(NULL, 0L), c(start = 0L, stop = 0L, step = 1L))
+  expect_identical(ij_to_slice_one(NULL, 0L), integer())
   expect_identical(ij_to_slice_one(NULL, 2L), c(start = 0L, stop = 2L, step = 1L))
   expect_identical(ij_to_slice_one(integer(), 2L), integer())
   expect_identical(ij_to_slice_one(1L, 2L), c(start = 0L, stop = 1L, step = 1L))

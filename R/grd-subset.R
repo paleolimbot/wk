@@ -132,13 +132,13 @@ grd_subset_data.default <- function(grid_data, i = NULL, j = NULL, ...) {
 
 #' @rdname grd_subset
 #' @export
-grd_crop <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_crop <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   UseMethod("grd_crop")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_crop.default <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_crop.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   ij <- grd_index_range(grid, bbox, snap)
 
   ij$i["start"] <- max(ij$i["start"], 0L)
@@ -151,13 +151,13 @@ grd_crop.default <- function(grid, bbox, ..., snap = list(round, round)) {
 
 #' @rdname grd_subset
 #' @export
-grd_extend <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_extend <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   UseMethod("grd_extend")
 }
 
 #' @rdname grd_subset
 #' @export
-grd_extend.default <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_extend.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   grd_subset(grid, grd_index_range(grid, bbox, snap))
 }
 
@@ -190,12 +190,12 @@ grd_index.wk_grd_xy <- function(grid, point, ..., snap = round) {
 
 #' @rdname grd_subset
 #' @export
-grd_index_range <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_index_range <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   UseMethod("grd_index_range")
 }
 
 #' @export
-grd_index_range.default <- function(grid, bbox, ..., snap = list(round, round)) {
+grd_index_range.default <- function(grid, bbox, ..., snap = list(ceiling, floor)) {
   # normalized so that xmin < xmax, ymin < ymax
   if (inherits(bbox, "wk_rct")) {
     bbox <- wk_bbox(as_wkb(bbox))
@@ -354,11 +354,11 @@ ij_expand_one <- function(i, n, out_of_bounds = "keep") {
 
 ij_to_slice_one <- function(i, n) {
   if (is.null(i)) {
-    i <- c(start = 0L, stop = n, step = 1L)
+    i <- if (n == 0L) integer() else c(start = 0L, stop = n, step = 1L)
   } else if (identical(names(i), c("start", "stop", "step"))) {
     value_na <- is.na(i)
     i[value_na] <- c(0L, n, 1L)[value_na]
-    i["stop"] <- max(i["start"], i["stop"])
+    i <- if (i["start"] >= i["stop"]) integer() else i
   } else if (is.numeric(i)) {
     if (length(i) == 0L) {
       i <- integer()

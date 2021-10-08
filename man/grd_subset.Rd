@@ -21,17 +21,17 @@ grd_subset(grid, i = NULL, j = NULL, ...)
 
 grd_subset_data(grid_data, i = NULL, j = NULL, ...)
 
-grd_crop(grid, bbox, ..., snap = list(round, round))
+grd_crop(grid, bbox, ..., snap = list(ceiling, floor))
 
-\method{grd_crop}{default}(grid, bbox, ..., snap = list(round, round))
+\method{grd_crop}{default}(grid, bbox, ..., snap = list(ceiling, floor))
 
-grd_extend(grid, bbox, ..., snap = list(round, round))
+grd_extend(grid, bbox, ..., snap = list(ceiling, floor))
 
-\method{grd_extend}{default}(grid, bbox, ..., snap = list(round, round))
+\method{grd_extend}{default}(grid, bbox, ..., snap = list(ceiling, floor))
 
 grd_index(grid, point, ..., snap = round)
 
-grd_index_range(grid, bbox, ..., snap = list(round, round))
+grd_index_range(grid, bbox, ..., snap = list(ceiling, floor))
 
 grd_cell_bounds(grid, i, j = NULL, ...)
 
