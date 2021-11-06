@@ -179,7 +179,7 @@
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>A set containing one or more of <code><a href='https://rdrr.io/r/base/c.html'>c("x", "y", "z", "m")</a></code>.</p></td>
+      <td><p>A set containing one or more of <code>c("x", "y", "z", "m")</code>.</p></td>
     </tr>
     </table>
 
@@ -188,16 +188,20 @@
     <p>A vector of coordinate values.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>xy</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_xy[5]&gt;
-#&gt; [1] (1 1) (2 2) (3 3) (4 4) (5 5)</div><div class='input'><span class='fu'>xyz</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_xyz[5]&gt;
-#&gt; [1] Z (1 1 10) Z (2 2 10) Z (3 3 10) Z (4 4 10) Z (5 5 10)</div><div class='input'><span class='fu'>xym</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_xym[5]&gt;
-#&gt; [1] M (1 1 10) M (2 2 10) M (3 3 10) M (4 4 10) M (5 5 10)</div><div class='input'><span class='fu'>xyzm</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>12</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;wk_xyzm[5]&gt;
-#&gt; [1] ZM (1 1 10 12) ZM (2 2 10 12) ZM (3 3 10 12) ZM (4 4 10 12) ZM (5 5 10 12)</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>xy</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;wk_xy[5]&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] (1 1) (2 2) (3 3) (4 4) (5 5)</span>
+<span class='r-in'><span class='fu'>xyz</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;wk_xyz[5]&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] Z (1 1 10) Z (2 2 10) Z (3 3 10) Z (4 4 10) Z (5 5 10)</span>
+<span class='r-in'><span class='fu'>xym</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;wk_xym[5]&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] M (1 1 10) M (2 2 10) M (3 3 10) M (4 4 10) M (5 5 10)</span>
+<span class='r-in'><span class='fu'>xyzm</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>12</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;wk_xyzm[5]&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] ZM (1 1 10 12) ZM (2 2 10 12) ZM (3 3 10 12) ZM (4 4 10 12) ZM (5 5 10 12)</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
