@@ -31,6 +31,14 @@ wk_handle <- function(handleable, handler, ...) {
 
 #' @rdname wk_handle
 #' @export
+is_handleable <- function(handleable) {
+  force(handleable)
+  # use vector_meta because it doesn't ever iterate over an entire vector
+  tryCatch({wk_vector_meta(handleable); TRUE}, error = function(e) FALSE)
+}
+
+#' @rdname wk_handle
+#' @export
 new_wk_handler <- function(handler_ptr, subclass = character()) {
   stopifnot(typeof(handler_ptr) == "externalptr")
   structure(handler_ptr, class = union(subclass, "wk_handler"))

@@ -5,9 +5,6 @@
 #' @inheritParams wk_translate
 #' @inheritParams wk_crs
 #' @inheritParams wk_identity
-#' @param .env Passed to [getS3method()], which is used to find
-#'   the column in a [data.frame()] for which a [wk_handle()]
-#'   method is defined.
 #'
 #' @export
 #'
@@ -16,7 +13,7 @@
 #' wk_translate(wkt("POINT (0 1)"), data.frame(col_name = wkb()))
 #' wk_translate(data.frame(a = wkt("POINT (0 1)")), data.frame(wkb()))
 #'
-wk_handle.data.frame <- function(handleable, handler, ..., .env = parent.frame()) {
+wk_handle.data.frame <- function(handleable, handler, ...) {
   col <- handleable_column_name(handleable)
   wk_handle(handleable[[col]], handler, ...)
 }
@@ -73,8 +70,8 @@ wk_restore.tbl_df <- function(handleable, result, ...) {
 
 #' @rdname wk_handle.data.frame
 #' @export
-wk_translate.data.frame <- function(handleable, to, ..., .env = parent.frame()) {
-  col <- writable_column_name(to)
+wk_translate.data.frame <- function(handleable, to, ...) {
+  col <- handleable_column_name(to)
   col_value <- wk_translate(handleable, to[[col]], ...)
 
   if (inherits(handleable, "data.frame")) {
@@ -91,50 +88,36 @@ wk_translate.data.frame <- function(handleable, to, ..., .env = parent.frame()) 
 
 #' @rdname wk_handle.data.frame
 #' @export
-wk_translate.tbl_df <- function(handleable, to, ..., .env = parent.frame()) {
-  tibble::as_tibble(wk_translate.data.frame(handleable, to, ..., .env = .env))
+wk_translate.tbl_df <- function(handleable, to, ...) {
+  tibble::as_tibble(wk_translate.data.frame(handleable, to, ...))
 }
 
-handleable_column_name <- function(df, .env = parent.frame()) {
-  has_method <- vapply(df, has_wk_handle_method, FUN.VALUE = logical(1), .env = .env)
+#' @rdname wk_slice
+#' @export
+wk_slice.data.frame <- function(handleable, from = NULL, to = NULL, ...) {
+  stopifnot(is_handleable(handleable))
 
-  if (sum(has_method) != 1) {
+  from <- from %||% 1L
+  to <- to %||% nrow(handleable)
+  from <- max(from, 1L)
+  to <- min(to, nrow(handleable))
+
+  if (to >= from) {
+    handleable[from:to, , drop = FALSE]
+  } else {
+    handleable[integer(0), , drop = FALSE]
+  }
+}
+
+handleable_column_name <- function(df) {
+  has_method <- vapply(df, is_handleable, FUN.VALUE = logical(1))
+
+  if (!any(has_method)) {
     stop(
-      "To be used with wk_handle(), a data.frame must have exactly one handleable column.",
+      "To be used with wk_handle(), a data.frame must have at least one handleable column.",
       call. = FALSE
     )
   }
 
-  names(df)[has_method]
-}
-
-has_wk_handle_method <- function(x, .env = parent.frame()) {
-  has_s3_method("wk_handle", x, .env)
-}
-
-writable_column_name <- function(df, .env = parent.frame()) {
-  has_method <- vapply(df, has_wk_writer_method, FUN.VALUE = logical(1), .env = .env)
-
-  if (sum(has_method) != 1) {
-    stop(
-      "To be used with wk_translate(), a data.frame must have exactly one wk_writer() column.",
-      call. = FALSE
-    )
-  }
-
-  names(df)[has_method]
-}
-
-has_wk_writer_method <- function(x, .env = parent.frame()) {
-  has_s3_method("wk_writer", x, .env)
-}
-
-has_s3_method <- function(fun, obj, .env) {
-  for (cls in class(obj)) {
-    if (!is.null(utils::getS3method(fun, cls, optional = TRUE, envir = .env))) {
-      return(TRUE)
-    }
-  }
-
-  FALSE
+  names(df)[which(has_method)[1L]]
 }
