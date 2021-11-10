@@ -1,10 +1,12 @@
 
-#' Extract regions of handleable objects
+#' Handle specific regions of objects
 #'
 #' @inheritParams wk_handle
 #' @param from 1-based index of the feature to start from
 #' @param to 1-based index of the feature to end at
-#' @param ... Ignored
+#' @param times The number of times the entire handleable should be
+#'   repeated.
+#' @param each The number of times each feature should be repeated.
 #'
 #' @return A subset of `handleable`
 #' @export
@@ -16,13 +18,17 @@
 #'   from = 3, to = 5
 #' )
 #'
-wk_slice <- function(handleable, from = NULL, to = NULL, ...) {
+wk_slice <- function(handleable,
+                     from = NULL, to = NULL, times = 1L, each = 1L,
+                     handler = wk_writer(handleable), ...) {
   UseMethod("wk_slice")
 }
 
 #' @rdname wk_slice
 #' @export
-wk_slice.default <- function(handleable, from = NULL, to = NULL, ...) {
+wk_slice.default <- function(handleable,
+                             from = NULL, to = NULL, times = 1L, each = 1L,
+                             handler = wk_writer(handleable), ...) {
   # make sure we're dealing with a handleable and a vector
   stopifnot(is_handleable(handleable), is_vector_class(handleable))
 
@@ -32,8 +38,8 @@ wk_slice.default <- function(handleable, from = NULL, to = NULL, ...) {
   to <- min(to, length(handleable))
 
   if (to >= from) {
-    handleable[from:to]
+    wk_handle(handleable[rep(rep(from:to, each = each), times = times)], handler, ...)
   } else {
-    handleable[integer(0)]
+    wk_handle(handleable[integer(0)], handler, ...)
   }
 }

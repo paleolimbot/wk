@@ -94,19 +94,19 @@ wk_translate.tbl_df <- function(handleable, to, ...) {
 
 #' @rdname wk_slice
 #' @export
-wk_slice.data.frame <- function(handleable, from = NULL, to = NULL, ...) {
-  stopifnot(is_handleable(handleable))
-
-  from <- from %||% 1L
-  to <- to %||% nrow(handleable)
-  from <- max(from, 1L)
-  to <- min(to, nrow(handleable))
-
-  if (to >= from) {
-    handleable[from:to, , drop = FALSE]
-  } else {
-    handleable[integer(0), , drop = FALSE]
-  }
+wk_slice.data.frame <- function(handleable,
+                                from = NULL, to = NULL, times = 1L, each = 1L,
+                                handler = wk_writer(handleable), ...) {
+  handleable_col <- handleable_column_name(handleable)
+  wk_slice(
+    handleable[[handleable_col]],
+    handler = handler,
+    from = from,
+    to = to,
+    times = times,
+    each = each,
+    ...
+  )
 }
 
 handleable_column_name <- function(df) {

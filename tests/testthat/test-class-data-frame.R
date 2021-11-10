@@ -93,18 +93,16 @@ test_that("wk_translate() works for tibble::tibble()", {
 })
 
 test_that("wk_slice() works for data.frame", {
-  expect_equal(
+  expect_identical(
     wk_slice(data.frame(geom = xy(1:5, 1:5)), 3, 6),
-    data.frame(geom = xy(3:5, 3:5)),
-    ignore_attr = TRUE
+    xy(3:5, 3:5)
   )
-  expect_equal(
+  expect_identical(
     wk_slice(data.frame(geom = xy(1:5, 1:5)), 0, 2),
-    data.frame(geom = xy(1:2, 1:2)),
-    ignore_attr = TRUE
+    xy(1:2, 1:2)
   )
   expect_identical(
     wk_slice(data.frame(geom = xy(1:5, 1:5)), 5, 4),
-    data.frame(geom = xy(crs = NULL))
+    xy(crs = NULL)
   )
 })

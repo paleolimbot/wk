@@ -4,13 +4,37 @@
 \alias{wk_slice.data.frame}
 \alias{wk_slice}
 \alias{wk_slice.default}
-\title{Extract regions of handleable objects}
+\title{Handle specific regions of objects}
 \usage{
-\method{wk_slice}{data.frame}(handleable, from = NULL, to = NULL, ...)
+\method{wk_slice}{data.frame}(
+  handleable,
+  from = NULL,
+  to = NULL,
+  times = 1L,
+  each = 1L,
+  handler = wk_writer(handleable),
+  ...
+)
 
-wk_slice(handleable, from = NULL, to = NULL, ...)
+wk_slice(
+  handleable,
+  from = NULL,
+  to = NULL,
+  times = 1L,
+  each = 1L,
+  handler = wk_writer(handleable),
+  ...
+)
 
-\method{wk_slice}{default}(handleable, from = NULL, to = NULL, ...)
+\method{wk_slice}{default}(
+  handleable,
+  from = NULL,
+  to = NULL,
+  times = 1L,
+  each = 1L,
+  handler = wk_writer(handleable),
+  ...
+)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
@@ -20,13 +44,20 @@ wk_slice(handleable, from = NULL, to = NULL, ...)
 
 \item{to}{1-based index of the feature to end at}
 
-\item{...}{Ignored}
+\item{times}{The number of times the entire handleable should be
+repeated.}
+
+\item{each}{The number of times each feature should be repeated.}
+
+\item{handler}{A \link[=wk_handle]{wk_handler} object.}
+
+\item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
 }
 \value{
 A subset of \code{handleable}
 }
 \description{
-Extract regions of handleable objects
+Handle specific regions of objects
 }
 \examples{
 wk_slice(xy(1:5, 1:5), from = 3, to = 5)
