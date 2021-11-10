@@ -53,7 +53,13 @@ is_wk_handler <- function(handler) {
 #' @rdname wk_handle
 #' @export
 as_wk_handler <- function(handler, ...) {
-  if (is.function(handler)) handler() else handler
+  if (is.function(handler)) {
+    handler()
+  } else if (is_wk_handler(handler)) {
+    handler
+  } else {
+    stop("`handler` must be a wk handler object",  call. = FALSE)
+  }
 }
 
 #' @export
