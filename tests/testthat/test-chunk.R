@@ -1,4 +1,21 @@
 
+test_that("chunk map feature works", {
+  expect_null(wk_chunk_map_feature(xy(1:5, 1:5), identity))
+  expect_null(wk_chunk_map_feature(xy(), identity))
+
+  expect_identical(
+    wk_chunk_map_feature(
+      wk_linestring(xy(1:10, 1:10), c(1, 1, 2, 2, 2, 3, 3, 4, 4, 4)),
+      function(features) {
+        coords <- wk_coords(features)
+        vapply(split(coords, coords$feature_id), nrow, integer(1))
+      },
+      output_template = integer()
+    ),
+    c(2L, 3L, 2L, 3L)
+  )
+})
+
 test_that("single chunk strategy works", {
   feat <- c(as_wkt(xy(1:4, 1:4)), wkt("LINESTRING (1 1, 2 2)"))
   expect_identical(
