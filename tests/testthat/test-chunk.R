@@ -14,6 +14,29 @@ test_that("chunk map feature works", {
     ),
     c(2L, 3L, 2L, 3L)
   )
+
+  # check with list(handleable) vs just handleable
+  expect_identical(
+    wk_chunk_map_feature(xy(1:5, 1:5), identity, output_template = xy()),
+    wk_chunk_map_feature(list(xy(1:5, 1:5)), identity, output_template = xy())
+  )
+
+  # invalid inputs
+  expect_error(wk_chunk_map_feature(NULL), "must be a list")
+  expect_error(wk_chunk_map_feature(list(NULL)), "must be objects with a")
+  expect_error(wk_chunk_map_feature(xy(1:5, 1:5), "not a function"), "is not TRUE")
+  expect_error(
+    wk_chunk_map_feature(xy(1:5, 1:5), identity, vector_args = "bad arg"),
+    "is not TRUE"
+  )
+  expect_error(
+    wk_chunk_map_feature(xy(1:5, 1:5), identity, input_handler_factory = "bad arg"),
+    "is not TRUE"
+  )
+  expect_error(
+    wk_chunk_map_feature(xy(1:5, 1:5), identity, strategy = "bad arg"),
+    "is not TRUE"
+  )
 })
 
 test_that("single chunk strategy works", {

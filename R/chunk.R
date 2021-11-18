@@ -60,6 +60,14 @@ wk_chunk_map_feature <- function(handleables, fun,
     stop("All items in `handleables` must be objects with a wk_handle() method", call. = FALSE)
   }
 
+  stopifnot(
+    is.function(fun),
+    is.null(vector_args) || inherits(vector_args, "data.frame"),
+    is.null(args) || is.list(args),
+    is.function(input_handler_factory),
+    is.function(strategy)
+  )
+
   # get the number of features
   vector_metas <- lapply(handleables, wk_vector_meta)
   sizes <- vapply(vector_metas, "[[", "size", FUN.VALUE = double(1))
