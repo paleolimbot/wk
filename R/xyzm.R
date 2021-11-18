@@ -294,7 +294,7 @@ format.wk_xyzm <- function(x, ...) {
   result <- Map(
     "[<-",
     unclass(x),
-    i,
+    list(i),
     fill_missing_dims(unclass(replacement), xy_dims(x), length(replacement))
   )
 
