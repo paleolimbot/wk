@@ -112,7 +112,7 @@ wk_chunk_map_feature <- function(handleables, fun,
       if (sizes[handleable_i] == 1L) {
         wk_handle(handleable, input_handler_factory(handleable))
       } else {
-        wk_slice(
+        wk_handle_slice(
           handleable,
           from = from, to = to,
           handler =  input_handler_factory(handleable)

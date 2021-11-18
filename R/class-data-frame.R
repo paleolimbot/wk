@@ -92,19 +92,15 @@ wk_translate.tbl_df <- function(handleable, to, ...) {
   tibble::as_tibble(wk_translate.data.frame(handleable, to, ...))
 }
 
-#' @rdname wk_slice
+#' @rdname wk_handle_slice
 #' @export
-wk_slice.data.frame <- function(handleable,
-                                from = NULL, to = NULL, times = 1L, each = 1L,
-                                handler = wk_writer(handleable), ...) {
+wk_handle_slice.data.frame <- function(handleable, handler,
+                                       from = NULL, to = NULL, ...) {
   handleable_col <- handleable_column_name(handleable)
-  wk_slice(
-    handleable[[handleable_col]],
-    handler = handler,
+  wk_handle_slice(
+    handleable[[handleable_col]], handler,
     from = from,
     to = to,
-    times = times,
-    each = each,
     ...
   )
 }
