@@ -22,3 +22,7 @@ recycle_common <- function(...) {
 
   lapply(dots, rep_len, final_length)
 }
+
+is_vector_class <- function(x) {
+  identical(class(x[integer(0)]), class(x))
+}

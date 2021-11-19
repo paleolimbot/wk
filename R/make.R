@@ -62,18 +62,27 @@ wk_collection <- function(handleable, geometry_type = wk_geometry_type("geometry
 #' @rdname wk_linestring
 #' @export
 wk_linestring_filter <- function(handler, feature_id = 1L) {
-  .Call(wk_c_linestring_filter_new, as_wk_handler(handler), feature_id)
+  new_wk_handler(
+    .Call(wk_c_linestring_filter_new, as_wk_handler(handler), feature_id),
+    "wk_linestring_filter"
+  )
 }
 
 #' @rdname wk_linestring
 #' @export
 wk_polygon_filter <- function(handler, feature_id = 1L, ring_id = 1L) {
-  .Call(wk_c_polygon_filter_new, handler, feature_id, ring_id)
+  new_wk_handler(
+    .Call(wk_c_polygon_filter_new, handler, feature_id, ring_id),
+    "wk_polygon_filter"
+  )
 }
 
 #' @rdname wk_linestring
 #' @export
 wk_collection_filter <- function(handler, geometry_type = wk_geometry_type("geometrycollection"),
                                  feature_id = 1L) {
-  .Call(wk_c_collection_filter_new, as_wk_handler(handler), geometry_type, feature_id)
+  new_wk_handler(
+    .Call(wk_c_collection_filter_new, as_wk_handler(handler), geometry_type, feature_id),
+    "wk_collection_filter"
+  )
 }
