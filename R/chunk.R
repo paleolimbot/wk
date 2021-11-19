@@ -126,7 +126,7 @@ wk_chunk_map_feature <- function(handleables, fun,
       vector_args[from:to, , drop = FALSE]
     }
 
-    result_i <- do.call(fun, c(handleables, vector_args_chunk, args))
+    result_i <- do.call(fun, c(handleables_chunk, vector_args_chunk, args))
     if (!is.null(output)) {
       output[from:to] <- result_i
     }
