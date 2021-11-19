@@ -124,7 +124,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Use data.frame with wk</h1>
-    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-data-frame.R'><code>R/compat-data-frame.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/compat-sf.R'><code>R/compat-sf.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/paleolimbot/wk/blob/master/R/class-data-frame.R'><code>R/class-data-frame.R</code></a>, <a href='https://github.com/paleolimbot/wk/blob/master/R/class-sf.R'><code>R/class-sf.R</code></a></small>
     <div class="hidden name"><code>wk_handle.data.frame.Rd</code></div>
     </div>
 
@@ -133,7 +133,7 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='wk_handle.sfg.html'>wk_handle</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>handler</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'><a href='wk_writer.sfc.html'>wk_writer</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -151,10 +151,10 @@
 <span class='fu'><a href='wk_identity.html'>wk_restore</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>result</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for tbl_df</span>
-<span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span>, .env <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for sf</span>
 <span class='fu'><a href='wk_translate.sfc.html'>wk_translate</a></span><span class='op'>(</span><span class='va'>handleable</span>, <span class='va'>to</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -177,12 +177,6 @@
     <tr>
       <th>...</th>
       <td><p>Passed to the <code><a href='wk_handle.sfg.html'>wk_handle()</a></code> method.</p></td>
-    </tr>
-    <tr>
-      <th>.env</th>
-      <td><p>Passed to <code><a href='https://rdrr.io/r/utils/getS3method.html'>getS3method()</a></code>, which is used to find
-the column in a <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame()</a></code> for which a <code><a href='wk_handle.sfg.html'>wk_handle()</a></code>
-method is defined.</p></td>
     </tr>
     <tr>
       <th>x</th>
