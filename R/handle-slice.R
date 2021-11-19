@@ -9,9 +9,10 @@
 #' @export
 #'
 #' @examples
-#' wk_handle_slice(xy(1:5, 1:5), from = 3, to = 5)
+#' wk_handle_slice(xy(1:5, 1:5), wkt_writer(), from = 3, to = 5)
 #' wk_handle_slice(
 #'   data.frame(let = letters[1:5], geom = xy(1:5, 1:5)),
+#'   wkt_writer(),
 #'   from = 3, to = 5
 #' )
 #'
