@@ -1,10 +1,10 @@
 
 // Endian tools -----------------------------
 
-#include <Rconfig.h> // for WORDS_BIG_ENDIAN
+#include <Rconfig.h> // for WORDS_BIGENDIAN
 
 // IS_LITTLE_ENDIAN, IS_BIG_ENDIAN
-#if defined(WORDS_BIG_ENDIAN)
+#if defined(WORDS_BIGENDIAN)
 #define IS_BIG_ENDIAN
 #undef IS_LITTLE_ENDIAN
 #else
