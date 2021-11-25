@@ -2,7 +2,10 @@
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
+#include "altrep.h"
 #include "wk-v1.h"
+
+#define ALTREP_CHUNK_SIZE 1024
 
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
   result = expr;                                               \
@@ -11,10 +14,19 @@
 SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
     R_xlen_t n_features = Rf_xlength(VECTOR_ELT(data, 0));
     int coord_size = Rf_length(data);
-    double* data_ptr[coord_size];
+    double* data_ptr[4];
+    R_xlen_t data_ptr_i = 0;
+
+#ifdef HAS_ALTREP
+    SEXP altrep_buffer = PROTECT(Rf_allocVector(REALSXP, ALTREP_CHUNK_SIZE * 4));
+    for (int j = 0; j < coord_size; j++) {
+      data_ptr[j] = REAL(altrep_buffer) + (ALTREP_CHUNK_SIZE * j);
+    }
+#else
     for (int j = 0; j < coord_size; j++) {
         data_ptr[j] = REAL(VECTOR_ELT(data, j));
     }
+#endif
 
     wk_vector_meta_t vector_meta;
     WK_VECTOR_META_RESET(vector_meta, WK_POINT);
@@ -37,14 +49,26 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-            
+
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 
             int coord_empty = 1;
+
+#ifdef HAS_ALTREP
+            data_ptr_i = i % ALTREP_CHUNK_SIZE;
+            if (data_ptr_i == 0) {
+              for (int j = 0; j < coord_size; j++) {
+                REAL_GET_REGION(VECTOR_ELT(data, j), i, ALTREP_CHUNK_SIZE, data_ptr[j]);
+              }
+            }
+#else
+            data_ptr_i = i;
+#endif
+
             for (int j = 0; j < coord_size; j++) {
-                coord[j] = data_ptr[j][i];
-                meta.bounds_min[j] = data_ptr[j][i];
-                meta.bounds_max[j] = data_ptr[j][i];
+                coord[j] = data_ptr[j][data_ptr_i];
+                meta.bounds_min[j] = data_ptr[j][data_ptr_i];
+                meta.bounds_max[j] = data_ptr[j][data_ptr_i];
 
                 if (!ISNAN(coord[j])) {
                     coord_empty = 0;
@@ -68,6 +92,10 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
             }
         }
     }
+
+#ifdef HAS_ALTREP
+    UNPROTECT(1);
+#endif
 
     SEXP result = PROTECT(handler->vector_end(&vector_meta, handler->handler_data));
     UNPROTECT(1);
