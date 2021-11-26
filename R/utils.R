@@ -20,7 +20,8 @@ recycle_common <- function(...) {
     stop(sprintf("Incompatible lengths: %s", lengths_label))
   }
 
-  lapply(dots, rep_len, final_length)
+  dots[lengths != final_length] <- lapply(dots[lengths != final_length], rep_len, final_length)
+  dots
 }
 
 is_vector_class <- function(x) {
