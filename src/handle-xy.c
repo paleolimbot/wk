@@ -51,8 +51,6 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
 
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
 
-            int coord_empty = 1;
-
 #ifdef HAS_ALTREP
             data_ptr_i = i % ALTREP_CHUNK_SIZE;
             if (data_ptr_i == 0) {
@@ -64,6 +62,7 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
             data_ptr_i = i;
 #endif
 
+            int coord_empty = 1;
             for (int j = 0; j < coord_size; j++) {
                 coord[j] = data_ptr[j][data_ptr_i];
                 meta.bounds_min[j] = data_ptr[j][data_ptr_i];
