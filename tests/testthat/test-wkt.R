@@ -25,6 +25,12 @@ test_that("wkt class works", {
   expect_identical(x[1], wkt("POINT (11 12)"))
 })
 
+test_that("wkt() and parse_wkt() strip attributes", {
+  text <- structure("POINT (40 10)", some_attr = "value")
+  expect_identical(wkt(text), wkt("POINT (40 10)"))
+  expect_identical(parse_wkt(text), wkt("POINT (40 10)"))
+})
+
 test_that("as_wkt() works", {
   x <- wkt("POINT (40 10)")
   expect_identical(as_wkt(x), x)
