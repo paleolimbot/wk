@@ -5,7 +5,6 @@
 #include "altrep.h"
 #include "wk-v1.h"
 
-#define ALTREP_CHUNK_SIZE 1024
 
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
   result = expr;                                               \

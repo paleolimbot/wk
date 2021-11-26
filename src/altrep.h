@@ -29,3 +29,5 @@ extern "C" {
 #endif
 
 #endif
+
+#define ALTREP_CHUNK_SIZE 1024
