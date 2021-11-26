@@ -4,6 +4,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
+#include "altrep.h"
 #include <math.h>
 
 #define REAL_NA(val) (ISNA(val) || ISNAN(val))
@@ -50,9 +51,18 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
 
     R_xlen_t n_features = Rf_xlength(VECTOR_ELT(data, 0));
     double* data_ptr[3];
+    R_xlen_t data_ptr_i = 0;
+
+#ifdef HAS_ALTREP
+    SEXP altrep_buffer = PROTECT(Rf_allocVector(REALSXP, ALTREP_CHUNK_SIZE * 4));
     for (int j = 0; j < 3; j++) {
-        data_ptr[j] = REAL(VECTOR_ELT(data, j));
+      data_ptr[j] = REAL(altrep_buffer) + (ALTREP_CHUNK_SIZE * j);
     }
+#else
+    for (int j = 0; j < 3; j++) {
+      data_ptr[j] = REAL(VECTOR_ELT(data, j));
+    }
+#endif
 
     wk_vector_meta_t vector_meta;
     WK_VECTOR_META_RESET(vector_meta, WK_POLYGON);
@@ -67,8 +77,19 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
 
         for (R_xlen_t i = 0; i < n_features; i++) {
             if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-            
+
             HANDLE_CONTINUE_OR_BREAK(handler->feature_start(&vector_meta, i, handler->handler_data));
+
+#ifdef HAS_ALTREP
+            data_ptr_i = i % ALTREP_CHUNK_SIZE;
+            if (data_ptr_i == 0) {
+              for (int j = 0; j < 3; j++) {
+                REAL_GET_REGION(VECTOR_ELT(data, j), i, ALTREP_CHUNK_SIZE, data_ptr[j]);
+              }
+            }
+#else
+            data_ptr_i = i;
+#endif
 
             cx = data_ptr[0][i];
             cy = data_ptr[1][i];
@@ -103,7 +124,7 @@ SEXP wk_read_crc(SEXP data_coords, wk_handler_t* handler) {
     }
 
     SEXP result = PROTECT(handler->vector_end(&vector_meta, handler->handler_data));
-    UNPROTECT(1);
+    UNPROTECT(2);
     return result;
 }
 
