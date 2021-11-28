@@ -101,8 +101,12 @@ SEXP wk_read_rct(SEXP data, wk_handler_t* handler) {
         }
     }
 
+#ifdef HAS_ALTREP
+    UNPROTECT(1);
+#endif
+
     SEXP result = PROTECT(handler->vector_end(&vector_meta, handler->handler_data));
-    UNPROTECT(2);
+    UNPROTECT(1);
     return result;
 }
 

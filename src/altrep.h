@@ -31,3 +31,6 @@ extern "C" {
 #endif
 
 #define ALTREP_CHUNK_SIZE 1024
+
+// uncomment to force a check without ALTREP defines
+// #undef HAS_ALTREP
