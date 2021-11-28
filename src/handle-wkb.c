@@ -38,22 +38,31 @@ int wkb_read_uint(wkb_reader_t* reader, uint32_t* value);
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords, int n_dim);
 void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
 
-static inline int wkb_read_check_buffer(wkb_reader_t* reader, size_t bytes) {
-  if ((reader->offset + bytes) <= reader->size) {
+static inline int wkb_read_check_buffer(wkb_reader_t* reader, R_xlen_t bytes) {
+  R_xlen_t bytes_to_keep = reader->size - reader->offset;
+  if ((bytes_to_keep - bytes) >= 0) {
       return WK_CONTINUE;
   }
 
-  reader->buffer_sexp_i += reader->offset;
-  reader->size = RAW_GET_REGION(
+  // We can do this without a memmove() by just issuing slightly overlapping
+  // RAW_GET_REGION() calls, but there are some cases where this might cause
+  // an altrep implementation to seek backwards in a file which is slow.
+  if (bytes_to_keep > 0) {
+    memmove(reader->buffer, reader->buffer + reader->offset, bytes_to_keep);
+  }
+
+  R_xlen_t new_bytes = RAW_GET_REGION(
       reader->buffer_sexp,
       reader->buffer_sexp_i,
-      ALTREP_CHUNK_SIZE,
-      reader->buffer
+      ALTREP_CHUNK_SIZE - bytes_to_keep,
+      reader->buffer + bytes_to_keep
   );
   reader->offset = 0;
+  reader->buffer_sexp_i += new_bytes;
+  reader->size = bytes_to_keep + new_bytes;
 
   if (reader->size == 0) {
-      wkb_read_set_errorf(reader, "Unexpected end of buffer (%d/%d)", reader->offset + bytes, reader->size);
+      wkb_read_set_errorf(reader, "Unexpected end of buffer at %d bytes", reader->buffer_sexp_i);
       return WK_ABORT_FEATURE;
   }
 
