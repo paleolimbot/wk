@@ -23,7 +23,11 @@ typedef struct {
     R_xlen_t feat_id;
     SEXP buffer_sexp;
     R_xlen_t buffer_sexp_i;
+#ifdef HAS_ALTREP
     unsigned char buffer[ALTREP_CHUNK_SIZE];
+#else
+    unsigned char* buffer;
+#endif
     size_t size;
     size_t offset;
     char swap_endian;
@@ -44,6 +48,9 @@ static inline int wkb_read_check_buffer(wkb_reader_t* reader, R_xlen_t bytes) {
       return WK_CONTINUE;
   }
 
+#ifdef HAS_ALTREP
+  // with ALTREP, we try to refill the buffer
+
   // We can do this without a memmove() by just issuing slightly overlapping
   // RAW_GET_REGION() calls, but there are some cases where this might cause
   // an altrep implementation to seek backwards in a file which is slow.
@@ -60,6 +67,12 @@ static inline int wkb_read_check_buffer(wkb_reader_t* reader, R_xlen_t bytes) {
   reader->offset = 0;
   reader->buffer_sexp_i += new_bytes;
   reader->size = bytes_to_keep + new_bytes;
+#else
+  // without ALTREP, reader->size is the full length of the RAW() buffer, so we've
+  // hit the end of it
+  reader->size = 0;
+  reader->buffer_sexp_i += reader->offset;
+#endif
 
   if (reader->size == 0) {
       wkb_read_set_errorf(reader, "Unexpected end of buffer at %d bytes", reader->buffer_sexp_i);
@@ -267,7 +280,13 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
                 reader.buffer_sexp = item;
                 reader.buffer_sexp_i = 0;
                 reader.offset = 0;
+
+#ifdef HAS_ALTREP
                 reader.size = 0;
+#else
+                reader.size = Rf_xlength(item);
+                reader.buffer = RAW(item);
+#endif
                 reader.error_code = WK_NO_ERROR_CODE;
                 reader.error_buf[0] = '\0';
 
