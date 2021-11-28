@@ -2,6 +2,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
+#include "altrep.h"
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
@@ -14,7 +15,10 @@ typedef struct {
   wk_handler_t* next;
   int geometry_type_out;
   R_xlen_t feature_id;
+  SEXP feature_id_sexp;
+#ifndef HAS_ALTREP
   int* feature_id_spec;
+#endif
   R_xlen_t n_feature_id_spec;
   int last_feature_id_spec;
   int is_new_feature;
@@ -55,13 +59,13 @@ int wk_collection_filter_vector_start(const wk_vector_meta_t* meta, void* handle
   collection_filter->vector_meta.geometry_type = collection_filter->geometry_type_out;
   collection_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   WK_META_RESET(collection_filter->meta, collection_filter->geometry_type_out);
-  
+
   return collection_filter->next->vector_start(&(collection_filter->vector_meta), collection_filter->next->handler_data);
 }
 
 SEXP wk_collection_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
-  
+
   // if there weren't any features we need to start one
   int result = WK_CONTINUE;
   if (collection_filter->feature_id_out == -1) {
@@ -72,7 +76,7 @@ SEXP wk_collection_filter_vector_end(const wk_vector_meta_t* meta, void* handler
   if (result != WK_ABORT) {
     wk_collection_end(collection_filter);
   }
-  
+
   return collection_filter->next->vector_end(&(collection_filter->vector_meta), collection_filter->next->handler_data);
 }
 
@@ -81,7 +85,11 @@ int wk_collection_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t fe
 
   collection_filter->feature_id++;
   R_xlen_t spec_i = collection_filter->feature_id % collection_filter->n_feature_id_spec;
+#ifdef HAS_ALTREP
+  int feature_id_spec = INTEGER_ELT(collection_filter->feature_id_sexp, spec_i);
+#else
   int feature_id_spec = collection_filter->feature_id_spec[spec_i];
+#endif
   int feature_id_spec_changed = feature_id_spec != collection_filter->last_feature_id_spec;
   collection_filter->last_feature_id_spec = feature_id_spec;
 
@@ -179,7 +187,9 @@ void wk_collection_filter_finalize(void* handler_data) {
 }
 
 SEXP wk_c_collection_filter_new(SEXP handler_xptr, SEXP geometry_type, SEXP feature_id) {
+#ifndef HAS_ALTREP
   int* feature_id_spec = INTEGER(feature_id);
+#endif
   int geometry_type_int = INTEGER(geometry_type)[0];
 
   wk_handler_t* handler = wk_handler_create();
@@ -211,7 +221,7 @@ SEXP wk_c_collection_filter_new(SEXP handler_xptr, SEXP geometry_type, SEXP feat
     Rf_error("Failed to alloc handler data"); // # nocov
   }
 
-  collection_filter->next = R_ExternalPtrAddr(handler_xptr);
+  collection_filter->next = (wk_handler_t*) R_ExternalPtrAddr(handler_xptr);
   if (collection_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(collection_filter); // # nocov
@@ -222,7 +232,10 @@ SEXP wk_c_collection_filter_new(SEXP handler_xptr, SEXP geometry_type, SEXP feat
   collection_filter->part_id = 0;
   collection_filter->feature_id = -1;
   collection_filter->feature_id_out = 0;
+  collection_filter->feature_id_sexp = feature_id;
+#ifndef HAS_ALTREP
   collection_filter->feature_id_spec = feature_id_spec;
+#endif
   collection_filter->n_feature_id_spec = Rf_xlength(feature_id);
   collection_filter->is_new_feature = 0;
   collection_filter->last_feature_id_spec = NA_INTEGER;
