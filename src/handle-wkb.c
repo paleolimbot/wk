@@ -23,7 +23,7 @@ typedef struct {
     R_xlen_t feat_id;
     SEXP buffer_sexp;
     R_xlen_t buffer_sexp_i;
-#ifdef HAS_ALTREP
+#ifdef HAS_ALTREP_RAW
     unsigned char buffer[ALTREP_CHUNK_SIZE];
 #else
     unsigned char* buffer;
@@ -48,7 +48,7 @@ static inline int wkb_read_check_buffer(wkb_reader_t* reader, R_xlen_t bytes) {
       return WK_CONTINUE;
   }
 
-#ifdef HAS_ALTREP
+#ifdef HAS_ALTREP_RAW
   // with ALTREP, we try to refill the buffer
 
   // We can do this without a memmove() by just issuing slightly overlapping
@@ -281,7 +281,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
                 reader.buffer_sexp_i = 0;
                 reader.offset = 0;
 
-#ifdef HAS_ALTREP
+#ifdef HAS_ALTREP_RAW
                 reader.size = 0;
 #else
                 reader.size = Rf_xlength(item);

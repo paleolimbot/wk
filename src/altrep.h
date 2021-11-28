@@ -28,6 +28,12 @@ extern "C" {
 #include <R_ext/Altrep.h>
 #endif
 
+#if (defined(R_VERSION) && R_VERSION >= R_Version(3, 6, 0))
+
+#define HAS_ALTREP_RAW
+
+#endif
+
 #endif
 
 #define ALTREP_CHUNK_SIZE 1024
