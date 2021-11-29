@@ -14,12 +14,6 @@
 wkt <- function(x = character(), crs = wk_crs_auto()) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-
-  # check first to avoid materializing altrep vectors
-  if (!is.null(attributes(x))) {
-    attributes(x) <- NULL
-  }
-
   wkt <- new_wk_wkt(x, crs = crs)
   validate_wk_wkt(x)
   wkt
@@ -30,12 +24,6 @@ wkt <- function(x = character(), crs = wk_crs_auto()) {
 parse_wkt <- function(x, crs = wk_crs_auto()) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-
-  # check first to avoid materializing altrep vectors
-  if (!is.null(attributes(x))) {
-    attributes(x) <- NULL
-  }
-
   parse_base(new_wk_wkt(x, crs = crs), wkt_problems(x))
 }
 
