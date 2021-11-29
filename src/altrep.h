@@ -17,9 +17,15 @@
 #define class klass
 
 // Because functions declared in <R_ext/Altrep.h> have C linkage
+#ifdef __cplusplus
 extern "C" {
+#endif
+
 #include <R_ext/Altrep.h>
+
+#ifdef __cplusplus
 }
+#endif
 
 // undo the workaround
 #undef class

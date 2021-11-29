@@ -20,12 +20,14 @@ test_that("wkb class works", {
   expect_identical(x[[1]], x[1])
   expect_s3_class(c(x, x), "wk_wkb")
   expect_identical(rep(x, 2), c(x, x))
-  expect_identical(rep_len(x, 2), c(x, x))
   expect_identical(rep(wkb(), 3), wkb())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"
   expect_identical(as_wkt(x[1]), wkt("POINT (11 12)"))
+
+  skip_if_not(packageVersion("base") >= "3.6")
+  expect_identical(rep_len(x, 2), c(x, x))
 })
 
 test_that("as_wkb() works", {

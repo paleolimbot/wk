@@ -31,14 +31,9 @@ test_that("wk_vctr class works", {
   expect_error(as.data.frame(x), "cannot coerce")
 })
 
-test_that("rep() and rep_len() works for list wk_vctrs", {
+test_that("rep() works for list wk_vctrs", {
   expect_identical(
     rep(structure(list(NULL), class = "wk_vctr"), 3),
-    structure(list(NULL, NULL, NULL), class = "wk_vctr")
-  )
-
-  expect_identical(
-    rep_len(structure(list(NULL), class = "wk_vctr"), 3),
     structure(list(NULL, NULL, NULL), class = "wk_vctr")
   )
 
@@ -46,17 +41,31 @@ test_that("rep() and rep_len() works for list wk_vctrs", {
     rep(structure(list(), class = "wk_vctr"), 3),
     structure(list(), class = "wk_vctr")
   )
+})
+
+test_that("rep() works for chr wk_vctrs", {
+  expect_identical(
+    rep(structure(NA_character_, class = "wk_vctr"), 3),
+    structure(rep(NA_character_, 3), class = "wk_vctr")
+  )
+
+  expect_identical(
+    rep(structure(character(), class = "wk_vctr"), 3),
+    structure(character(), class = "wk_vctr")
+  )
+})
+
+test_that("rep_len() works for wk_vctr objects", {
+  skip_if_not(packageVersion("base") >= "3.6")
+
+  expect_identical(
+    rep_len(structure(list(NULL), class = "wk_vctr"), 3),
+    structure(list(NULL, NULL, NULL), class = "wk_vctr")
+  )
 
   expect_identical(
     rep_len(structure(list(), class = "wk_vctr"), 3),
     structure(list(NULL, NULL, NULL), class = "wk_vctr")
-  )
-})
-
-test_that("rep() and rep_len() works for chr wk_vctrs", {
-  expect_identical(
-    rep(structure(NA_character_, class = "wk_vctr"), 3),
-    structure(rep(NA_character_, 3), class = "wk_vctr")
   )
 
   expect_identical(
@@ -65,15 +74,11 @@ test_that("rep() and rep_len() works for chr wk_vctrs", {
   )
 
   expect_identical(
-    rep(structure(character(), class = "wk_vctr"), 3),
-    structure(character(), class = "wk_vctr")
-  )
-
-  expect_identical(
     rep_len(structure(character(), class = "wk_vctr"), 3),
     structure(rep(NA_character_, 3), class = "wk_vctr")
   )
 })
+
 
 test_that("c() for wk_vctr handles crs attributes", {
   expect_identical(
