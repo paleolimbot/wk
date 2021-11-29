@@ -2,6 +2,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
+#include "altrep.h"
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
@@ -13,7 +14,10 @@
 typedef struct {
   wk_handler_t* next;
   R_xlen_t feature_id;
+  SEXP feature_id_sexp;
+#ifndef HAS_ALTREP
   int* feature_id_spec;
+#endif
   R_xlen_t n_feature_id_spec;
   int last_feature_id_spec;
   int is_new_feature;
@@ -54,7 +58,7 @@ int wk_linestring_filter_vector_start(const wk_vector_meta_t* meta, void* handle
   linestring_filter->vector_meta.geometry_type = WK_LINESTRING;
   linestring_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   WK_META_RESET(linestring_filter->meta, WK_LINESTRING);
-  
+
   return linestring_filter->next->vector_start(&(linestring_filter->vector_meta), linestring_filter->next->handler_data);
 }
 
@@ -63,7 +67,11 @@ int wk_linestring_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t fe
 
   linestring_filter->feature_id++;
   R_xlen_t spec_i = linestring_filter->feature_id % linestring_filter->n_feature_id_spec;
+#ifdef HAS_ALTREP
+  int feature_id_spec = INTEGER_ELT(linestring_filter->feature_id_sexp, spec_i);
+#else
   int feature_id_spec = linestring_filter->feature_id_spec[spec_i];
+#endif
   int feature_id_spec_changed = feature_id_spec != linestring_filter->last_feature_id_spec;
   linestring_filter->last_feature_id_spec = feature_id_spec;
 
@@ -117,7 +125,7 @@ SEXP wk_linestring_filter_vector_end(const wk_vector_meta_t* meta, void* handler
   if (result != WK_ABORT) {
     wk_linestring_end(linestring_filter);
   }
-  
+
   return linestring_filter->next->vector_end(&(linestring_filter->vector_meta), linestring_filter->next->handler_data);
 }
 
@@ -167,7 +175,9 @@ void wk_linestring_filter_finalize(void* handler_data) {
 }
 
 SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id) {
+#ifndef HAS_ALTREP
   int* feature_id_spec = INTEGER(feature_id);
+#endif
 
   wk_handler_t* handler = wk_handler_create();
 
@@ -198,7 +208,7 @@ SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id) {
     Rf_error("Failed to alloc handler data"); // # nocov
   }
 
-  linestring_filter->next = R_ExternalPtrAddr(handler_xptr);
+  linestring_filter->next = (wk_handler_t*) R_ExternalPtrAddr(handler_xptr);
   if (linestring_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(linestring_filter);
@@ -208,7 +218,10 @@ SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id) {
   linestring_filter->coord_id = 0;
   linestring_filter->feature_id = -1;
   linestring_filter->feature_id_out = 0;
+  linestring_filter->feature_id_sexp = feature_id;
+#ifndef HAS_ALTREP
   linestring_filter->feature_id_spec = feature_id_spec;
+#endif
   linestring_filter->n_feature_id_spec = Rf_xlength(feature_id);
   linestring_filter->is_new_feature = 0;
   linestring_filter->last_feature_id_spec = NA_INTEGER;

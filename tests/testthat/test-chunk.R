@@ -45,6 +45,7 @@ test_that("chunk map feature works", {
 })
 
 test_that("chunk map feature works with vectorized and non-vectorized args", {
+  skip_if_not(packageVersion("base") >= "3.6")
 
   wk_chunk_map_feature(
     xy(1, 1),

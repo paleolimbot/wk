@@ -3,6 +3,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
+#include "altrep.h"
 #include <memory.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -20,7 +21,13 @@
 typedef struct {
     wk_handler_t* handler;
     R_xlen_t feat_id;
+    SEXP buffer_sexp;
+    R_xlen_t buffer_sexp_i;
+#ifdef HAS_ALTREP_RAW
+    unsigned char buffer[ALTREP_CHUNK_SIZE];
+#else
     unsigned char* buffer;
+#endif
     size_t size;
     size_t offset;
     char swap_endian;
@@ -35,13 +42,44 @@ int wkb_read_uint(wkb_reader_t* reader, uint32_t* value);
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords, int n_dim);
 void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
 
-static inline int wkb_read_check_buffer(wkb_reader_t* reader, size_t bytes) {
-    if ((reader->offset + bytes) <= reader->size) {
-        return WK_CONTINUE;
-    } else {
-        wkb_read_set_errorf(reader, "Unexpected end of buffer (%d/%d)", reader->offset + bytes, reader->size);
-        return WK_ABORT_FEATURE;
-    }
+static inline int wkb_read_check_buffer(wkb_reader_t* reader, R_xlen_t bytes) {
+  R_xlen_t bytes_to_keep = reader->size - reader->offset;
+  if ((bytes_to_keep - bytes) >= 0) {
+      return WK_CONTINUE;
+  }
+
+#ifdef HAS_ALTREP_RAW
+  // with ALTREP, we try to refill the buffer
+
+  // We can do this without a memmove() by just issuing slightly overlapping
+  // RAW_GET_REGION() calls, but there are some cases where this might cause
+  // an altrep implementation to seek backwards in a file which is slow.
+  if (bytes_to_keep > 0) {
+    memmove(reader->buffer, reader->buffer + reader->offset, bytes_to_keep);
+  }
+
+  R_xlen_t new_bytes = RAW_GET_REGION(
+      reader->buffer_sexp,
+      reader->buffer_sexp_i,
+      ALTREP_CHUNK_SIZE - bytes_to_keep,
+      reader->buffer + bytes_to_keep
+  );
+  reader->offset = 0;
+  reader->buffer_sexp_i += new_bytes;
+  reader->size = bytes_to_keep + new_bytes;
+#else
+  // without ALTREP, reader->size is the full length of the RAW() buffer, so we've
+  // hit the end of it
+  reader->size = 0;
+  reader->buffer_sexp_i += reader->offset;
+#endif
+
+  if (reader->size == 0) {
+      wkb_read_set_errorf(reader, "Unexpected end of buffer at %d bytes", reader->buffer_sexp_i);
+      return WK_ABORT_FEATURE;
+  }
+
+  return WK_CONTINUE;
 }
 
 #define HANDLE_OR_RETURN(expr)                                 \
@@ -104,7 +142,6 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
 int wkb_read_endian(wkb_reader_t* reader, unsigned char* value) {
     int result;
     HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(unsigned char)));
-
     memcpy(value, reader->buffer + reader->offset, sizeof(unsigned char));
     reader->offset += sizeof(unsigned char);
     return WK_CONTINUE;
@@ -113,7 +150,6 @@ int wkb_read_endian(wkb_reader_t* reader, unsigned char* value) {
 int wkb_read_uint(wkb_reader_t* reader, uint32_t* value) {
     int result;
     HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint32_t)));
-
     if (reader->swap_endian) {
         uint32_t swappable;
         memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint32_t));
@@ -173,11 +209,11 @@ int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n
     double coord[4];
     int result;
 
-    HANDLE_OR_RETURN(wkb_read_check_buffer(reader, n_dim * n_coords * sizeof(double)));
-
     if (reader->swap_endian) {
         uint64_t swappable, swapped;
         for (uint32_t i = 0; i < n_coords; i++) {
+            HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint64_t) * n_dim));
+
             for (int j = 0; j < n_dim; j++) {
                 memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
                 reader->offset += sizeof(double);
@@ -186,19 +222,20 @@ int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n
                 memcpy(coord + j, &swapped, sizeof(double));
             }
 
-          HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
+            HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
         }
     } else {
         // seems to be slightly faster than memcpy(coord, ..., coord_size)
         uint64_t swappable;
         for (uint32_t i = 0; i < n_coords; i++) {
+            HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint64_t) * n_dim));
             for (int j = 0; j < n_dim; j++) {
                 memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
                 reader->offset += sizeof(double);
                 memcpy(coord + j, &swappable, sizeof(double));
             }
 
-          HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
+            HANDLE_OR_RETURN(reader->handler->coord(meta, coord, i, reader->handler->handler_data));
         }
     }
 
@@ -231,7 +268,7 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
         for (R_xlen_t i = 0; i < n_features; i++) {
             // each feature could be huge, so check frequently
             if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-            
+
             reader.feat_id = i;
             item = VECTOR_ELT(data, i);
 
@@ -240,9 +277,16 @@ SEXP wkb_read_wkb(SEXP data, wk_handler_t* handler) {
             if (item == R_NilValue) {
                 HANDLE_CONTINUE_OR_BREAK(handler->null_feature(handler->handler_data));
             } else {
-                reader.buffer = RAW(item);
-                reader.size = Rf_xlength(item);
+                reader.buffer_sexp = item;
+                reader.buffer_sexp_i = 0;
                 reader.offset = 0;
+
+#ifdef HAS_ALTREP_RAW
+                reader.size = 0;
+#else
+                reader.size = Rf_xlength(item);
+                reader.buffer = RAW(item);
+#endif
                 reader.error_code = WK_NO_ERROR_CODE;
                 reader.error_buf[0] = '\0';
 

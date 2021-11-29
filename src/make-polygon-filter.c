@@ -2,6 +2,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include "wk-v1.h"
+#include "altrep.h"
 
 #define HANDLE_OR_RETURN(expr)                                 \
     result = expr;                                             \
@@ -13,8 +14,12 @@
 typedef struct {
   wk_handler_t* next;
   R_xlen_t feature_id;
+  SEXP feature_id_sexp;
+  SEXP ring_id_sexp;
+#ifndef HAS_ALTREP
   int* feature_id_spec;
   int* ring_id_spec;
+#endif
   R_xlen_t n_feature_id_spec;
   R_xlen_t n_ring_id_spec;
   int last_feature_id_spec;
@@ -53,7 +58,7 @@ static inline int wk_ring_start(polygon_filter_t* polygon_filter) {
 
 static inline int wk_ring_end(polygon_filter_t* polygon_filter) {
   int result;
-  
+
   // close the loop if necessary
   for (int i = 0; i < polygon_filter->last_coord_size; i++) {
       if (polygon_filter->last_coord[i] != polygon_filter->first_coord[i]) {
@@ -88,7 +93,7 @@ int wk_polygon_filter_vector_start(const wk_vector_meta_t* meta, void* handler_d
   polygon_filter->vector_meta.geometry_type = WK_POLYGON;
   polygon_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   WK_META_RESET(polygon_filter->meta, WK_POLYGON);
-  
+
   return polygon_filter->next->vector_start(&(polygon_filter->vector_meta), polygon_filter->next->handler_data);
 }
 
@@ -98,12 +103,20 @@ int wk_polygon_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_
   polygon_filter->feature_id++;
   R_xlen_t spec_i = polygon_filter->feature_id % polygon_filter->n_feature_id_spec;
 
+#ifdef HAS_ALTREP
+  int feature_id_spec = INTEGER_ELT(polygon_filter->feature_id_sexp, spec_i);
+#else
   int feature_id_spec = polygon_filter->feature_id_spec[spec_i];
+#endif
   int feature_id_spec_changed = feature_id_spec != polygon_filter->last_feature_id_spec;
   polygon_filter->last_feature_id_spec = feature_id_spec;
 
   spec_i = polygon_filter->feature_id % polygon_filter->n_ring_id_spec;
+#ifdef HAS_ALTREP
+  int ring_id_spec = INTEGER_ELT(polygon_filter->ring_id_sexp, spec_i);
+#else
   int ring_id_spec = polygon_filter->ring_id_spec[spec_i];
+#endif
   int ring_id_spec_changed = ring_id_spec != polygon_filter->last_ring_id_spec;
   polygon_filter->last_ring_id_spec = ring_id_spec;
 
@@ -120,8 +133,8 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   // We always need to keep a copy of the last coordinate because we
   // need to check for closed rings and the ring end method gets called
   // at the *next* coordinate where there's a new feature.
-  polygon_filter->last_coord_size = 2 + 
-    ((meta->flags & WK_FLAG_HAS_Z) != 0) + 
+  polygon_filter->last_coord_size = 2 +
+    ((meta->flags & WK_FLAG_HAS_Z) != 0) +
     ((meta->flags & WK_FLAG_HAS_M) != 0);
   memset(polygon_filter->last_coord, 0, 4 * sizeof(double));
   memcpy(polygon_filter->last_coord, coord, polygon_filter->last_coord_size * sizeof(double));
@@ -135,7 +148,7 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
     if (polygon_filter->feature_id > 0) {
       HANDLE_OR_RETURN(wk_polygon_end(polygon_filter));
     }
-    
+
     polygon_filter->meta.flags = meta->flags;
     polygon_filter->meta.flags &= ~WK_FLAG_HAS_BOUNDS;
     polygon_filter->meta.precision = meta->precision;
@@ -183,7 +196,7 @@ SEXP wk_polygon_filter_vector_end(const wk_vector_meta_t* meta, void* handler_da
       wk_polygon_end(polygon_filter);
     }
   }
-  
+
   return polygon_filter->next->vector_end(&(polygon_filter->vector_meta), polygon_filter->next->handler_data);
 }
 
@@ -231,8 +244,10 @@ void wk_polygon_filter_finalize(void* handler_data) {
 }
 
 SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
+#ifndef HAS_ALTREP
   int* feature_id_spec = INTEGER(feature_id);
   int* ring_id_spec = INTEGER(ring_id);
+#endif
 
   wk_handler_t* handler = wk_handler_create();
 
@@ -263,7 +278,7 @@ SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
     Rf_error("Failed to alloc handler data"); // # nocov
   }
 
-  polygon_filter->next = R_ExternalPtrAddr(handler_xptr);
+  polygon_filter->next = (wk_handler_t*) R_ExternalPtrAddr(handler_xptr);
   if (polygon_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(polygon_filter); // # nocov
@@ -274,8 +289,12 @@ SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
   polygon_filter->ring_id = 0;
   polygon_filter->feature_id = -1;
   polygon_filter->feature_id_out = 0;
+  polygon_filter->feature_id_sexp = feature_id;
+  polygon_filter->ring_id_sexp = ring_id;
+#ifndef HAS_ALTREP
   polygon_filter->feature_id_spec = feature_id_spec;
   polygon_filter->ring_id_spec = ring_id_spec;
+#endif
   polygon_filter->n_feature_id_spec = Rf_xlength(feature_id);
   polygon_filter->n_ring_id_spec = Rf_xlength(ring_id);
   polygon_filter->is_new_feature = 0;
