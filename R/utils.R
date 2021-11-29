@@ -7,6 +7,13 @@ new_data_frame <- function(x) {
   structure(x, row.names = c(NA, length(x[[1]])), class = "data.frame")
 }
 
+# rep_len became an S3 generic in R 3.6, so we need to use
+# something else to make sure recycle_common() works on old
+# R versions
+rep_len_compat <- function(x, length_out) {
+  rep(x, length.out = length_out)
+}
+
 recycle_common <- function(...) {
   dots <- list(...)
   lengths <- vapply(dots, length, integer(1))
@@ -20,7 +27,7 @@ recycle_common <- function(...) {
     stop(sprintf("Incompatible lengths: %s", lengths_label))
   }
 
-  dots[lengths != final_length] <- lapply(dots[lengths != final_length], rep_len, final_length)
+  dots[lengths != final_length] <- lapply(dots[lengths != final_length], rep_len_compat, final_length)
   dots
 }
 
