@@ -4,6 +4,8 @@
   operations in the correct order (#94).
 * Add `wk_handle_slice()` and `wk_chunk_map_feature()` to support
   a chunk + apply workflow when working with large vectors (#101, #107).
+* C and R code was rewritten to avoid materializing ALTREP vectors
+  (#103, #109).
 
 # wk 0.5.0
 
