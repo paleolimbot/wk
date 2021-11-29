@@ -67,6 +67,8 @@ test_that("wk_rcrd works", {
 test_that("rep_len() works for wk_rcrd", {
   skip_if_not(packageVersion("base") >= "3.6")
 
+  xy_rcrd <- structure(list(x = as.numeric(1:3), y = c(2, 2, 2)), class = "wk_rcrd")
+
   expect_identical(
     rep_len(xy_rcrd, 6),
     structure(list(x = as.numeric(c(1:3, 1:3)), y = rep(2, 6)), class = "wk_rcrd")
