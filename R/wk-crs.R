@@ -114,6 +114,59 @@ wk_crs_equal_generic.double <- function(x, y, ...) {
   isTRUE(x == y)
 }
 
+#' CRS object generic methods
+#'
+#' @param crs An arbitrary R object
+#' @param verbose Use `TRUE` to request a more verbose version of the
+#'   PROJ definition (e.g., WKT2). The default of `FALSE` should return
+#'   the most compact version that completely describes the CRS. An
+#'   authority:code string (e.g., "OGC:CRS84") is the recommended way
+#'   to represent a CRS when `verbose` is `FALSE`, if possible, falling
+#'   back to the most recent version of WKT2.
+#' @param proj_version A [package_version()] of the PROJ version, or
+#'   `NULL` if the PROJ version is unknown.
+#'
+#' @return
+#'   - `wk_crs_proj_definition()` Returns a string used to represent the
+#'     CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
+#'     you should check `proj_version` if you want this to work with older
+#'     versions of PROJ.
+#' @export
+#'
+#' @examples
+#' wk_crs_proj_definition("EPSG:4326")
+#'
+wk_crs_proj_definition <- function(crs, proj_version = NULL, verbose = FALSE) {
+  UseMethod("wk_crs_proj_definition")
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.NULL <- function(crs, proj_version = NULL, verbose = FALSE) {
+  NA_character_
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.character <- function(crs, proj_version = NULL, verbose = FALSE) {
+  stopifnot(length(crs) == 1)
+  crs
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.double <- function(crs, proj_version = NULL, verbose = FALSE) {
+  stopifnot(length(crs) == 1)
+  if (is.na(crs)) wk_crs_proj_definition(NULL) else paste0("EPSG:", crs)
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.integer <- function(crs, proj_version = NULL, verbose = FALSE) {
+  stopifnot(length(crs) == 1)
+  if (is.na(crs)) wk_crs_proj_definition(NULL) else paste0("EPSG:", crs)
+}
+
 #' Special CRS values
 #'
 #' The CRS handling in the wk package requires two sentinel CRS values.
@@ -164,3 +217,11 @@ format.wk_crs_inherit <- function(x, ...) {
 print.wk_crs_inherit <- function(x, ...) {
   cat("<wk_crs_inherit>\n")
 }
+
+wk_crs_format <- function(x, ...) {
+  tryCatch(
+    wk_crs_proj_definition(x, verbose = FALSE),
+    error = function(e) format(x, ...)
+  )
+}
+

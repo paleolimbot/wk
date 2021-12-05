@@ -50,6 +50,16 @@ test_that("crs output computing works", {
   expect_error(wk_crs_output(wk_set_crs(x, 1), wk_set_crs(x, 2)), "are not equal")
 })
 
+test_that("crs_proj_definition() works", {
+  expect_identical(wk_crs_proj_definition(NULL), NA_character_)
+  expect_identical(wk_crs_proj_definition(1234), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_real_), NA_character_)
+  expect_identical(wk_crs_proj_definition(1234L), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_integer_), NA_character_)
+  expect_identical(wk_crs_proj_definition("EPSG:1234"), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_character_), NA_character_)
+})
+
 test_that("wk_crs_inherit() prints as expected", {
   expect_match(format(wk_crs_inherit()), "wk_crs_inherit")
   expect_output(print(wk_crs_inherit()), "wk_crs_inherit")

@@ -107,9 +107,6 @@ wk_crs.sfg <- function(x) {
   sf::NA_crs_
 }
 
-# These methods are exported in latest sf, and depending on the order
-# a user loads the namespaces, the other method may get called.
-
 #' @export
 as_wkb.sfc <- function(x, ...) {
   wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
@@ -123,6 +120,19 @@ as_wkb.sfg <- function(x, ...) {
 #' @export
 wk_crs_equal_generic.crs <- function(x, y, ...) {
   x == sf::st_crs(y)
+}
+
+#' @export
+wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE) {
+  if (is.na(crs)) {
+    wk_crs_proj_definition(NULL)
+  } else if (verbose) {
+    crs$Wkt %||% crs$wkt
+  } else if (isTRUE(is.na(crs$epsg))) {
+    wk_crs_proj_definition(crs$input)
+  } else {
+    paste0("EPSG:", crs$epsg)
+  }
 }
 
 wk_crs_from_sf <- function(x) {

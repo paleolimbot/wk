@@ -33,7 +33,7 @@ print.wk_rcrd <- function(x, ...) {
   if (is.null(crs)) {
     cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
   } else {
-    cat(sprintf("<%s[%s] with CRS=%s>\n", class(x)[1], length(x), format(crs)))
+    cat(sprintf("<%s[%s] with CRS=%s>\n", class(x)[1], length(x), wk_crs_format(crs)))
   }
 
   if (length(x) == 0) {

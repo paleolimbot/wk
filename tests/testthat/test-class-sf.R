@@ -8,6 +8,15 @@ test_that("sf CRS objects can be compared", {
   expect_true(wk_crs_equal(NULL, sf::st_crs(NA)))
 })
 
+test_that("wk_crs_proj_definition() works for sf crs objects", {
+  skip_if_not_installed("sf")
+
+  expect_identical(wk_crs_proj_definition(sf::NA_crs_), NA_character_)
+  expect_identical(wk_crs_proj_definition(sf::st_crs(4326)), "EPSG:4326")
+  expect_match(wk_crs_proj_definition(sf::st_crs(4326), verbose = TRUE), "^GEOGCS")
+  expect_identical(wk_crs_proj_definition(sf::st_crs("OGC:CRS84")), "OGC:CRS84")
+})
+
 test_that("wk_crs/set_crs works on sf/sfc", {
   skip_if_not_installed("sf")
 
