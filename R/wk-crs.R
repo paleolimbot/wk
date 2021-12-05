@@ -194,6 +194,34 @@ wk_crs_inherit <- function() {
 
 #' @rdname wk_crs_inherit
 #' @export
+wk_crs_longlat <- function(crs = NULL) {
+  if (inherits(crs, "wk_crs_inherit") || is.null(crs) || identical(crs, "WGS84")) {
+    return("OGC:CRS84")
+  }
+
+  crs_proj <- wk_crs_proj_definition(crs)
+  switch(
+    crs_proj,
+    `OGC:CRS84` = ,
+    `EPSG:4326` = ,
+    WGS84 = "OGC:CRS84",
+    `OGC:CRS27` = ,
+    `EPSG:4267` = ,
+    NAD27 = "OGC:CRS27",
+    `OGC:CRS83` = ,
+    `EPSG:4269` = ,
+    NAD83 = "OGC:CRS83",
+    stop(
+      sprintf(
+        "Can't guess authority-compliant long/lat definition from CRS '%s'",
+        format(crs)
+      )
+    )
+  )
+}
+
+#' @rdname wk_crs_inherit
+#' @export
 wk_crs_auto <- function() {
   structure(list(), class = "wk_crs_auto")
 }

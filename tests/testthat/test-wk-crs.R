@@ -60,6 +60,27 @@ test_that("crs_proj_definition() works", {
   expect_identical(wk_crs_proj_definition(NA_character_), NA_character_)
 })
 
+test_that("wk_crs_longlat() works for common datums", {
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(wk_crs_inherit()), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("OGC:CRS84"), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("EPSG:4326"), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("WGS84"), "OGC:CRS84")
+
+  expect_identical(wk_crs_longlat("OGC:CRS83"), "OGC:CRS83")
+  expect_identical(wk_crs_longlat("EPSG:4269"), "OGC:CRS83")
+  expect_identical(wk_crs_longlat("NAD83"), "OGC:CRS83")
+
+  expect_identical(wk_crs_longlat("OGC:CRS27"), "OGC:CRS27")
+  expect_identical(wk_crs_longlat("EPSG:4267"), "OGC:CRS27")
+  expect_identical(wk_crs_longlat("NAD27"), "OGC:CRS27")
+
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+})
+
 test_that("wk_crs_inherit() prints as expected", {
   expect_match(format(wk_crs_inherit()), "wk_crs_inherit")
   expect_output(print(wk_crs_inherit()), "wk_crs_inherit")
