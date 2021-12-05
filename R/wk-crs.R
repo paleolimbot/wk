@@ -202,15 +202,15 @@ wk_crs_longlat <- function(crs = NULL) {
   crs_proj <- wk_crs_proj_definition(crs)
   switch(
     crs_proj,
-    `OGC:CRS84` = ,
-    `EPSG:4326` = ,
-    WGS84 = "OGC:CRS84",
-    `OGC:CRS27` = ,
-    `EPSG:4267` = ,
-    NAD27 = "OGC:CRS27",
-    `OGC:CRS83` = ,
-    `EPSG:4269` = ,
-    NAD83 = "OGC:CRS83",
+    "OGC:CRS84" = ,
+    "EPSG:4326" = ,
+    "WGS84" = "OGC:CRS84",
+    "OGC:CRS27" = ,
+    "EPSG:4267" = ,
+    "NAD27" = "OGC:CRS27",
+    "OGC:CRS83" = ,
+    "EPSG:4269" = ,
+    "NAD83" = "OGC:CRS83",
     stop(
       sprintf(
         "Can't guess authority-compliant long/lat definition from CRS '%s'",
