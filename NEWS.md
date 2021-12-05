@@ -8,6 +8,8 @@
   (#103, #109).
 * Added a `wk_crs_proj_definition()` generic for foreign CRS objects
   (#110, #112).
+* Added `wk_crs_longlat()` helper to help promote authority-compliant
+  CRS choices (#112).
 
 # wk 0.5.0
 
