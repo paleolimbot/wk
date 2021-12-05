@@ -214,7 +214,7 @@ wk_crs_longlat <- function(crs = NULL) {
     stop(
       sprintf(
         "Can't guess authority-compliant long/lat definition from CRS '%s'",
-        format(crs)
+        format(crs_proj)
       )
     )
   )

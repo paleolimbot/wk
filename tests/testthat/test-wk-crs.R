@@ -79,6 +79,8 @@ test_that("wk_crs_longlat() works for common datums", {
   expect_identical(wk_crs_longlat(), "OGC:CRS84")
   expect_identical(wk_crs_longlat(), "OGC:CRS84")
   expect_identical(wk_crs_longlat(), "OGC:CRS84")
+
+  expect_error(wk_crs_longlat("not a crs"), "Can't guess authority-compliant")
 })
 
 test_that("wk_crs_inherit() prints as expected", {
