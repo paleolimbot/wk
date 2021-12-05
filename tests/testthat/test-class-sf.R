@@ -14,7 +14,11 @@ test_that("wk_crs_proj_definition() works for sf crs objects", {
   expect_identical(wk_crs_proj_definition(sf::NA_crs_), NA_character_)
   expect_identical(wk_crs_proj_definition(sf::st_crs(4326)), "EPSG:4326")
   expect_match(wk_crs_proj_definition(sf::st_crs(4326), verbose = TRUE), "^GEOGCS")
-  expect_identical(wk_crs_proj_definition(sf::st_crs("OGC:CRS84")), "OGC:CRS84")
+  expect_identical(wk_crs_proj_definition("OGC:CRS84"), "OGC:CRS84")
+  expect_identical(
+    wk_crs_proj_definition(sf::st_crs("+proj=merc +lat_ts=56.5 +type=crs")),
+    "+proj=merc +lat_ts=56.5 +type=crs"
+  )
 })
 
 test_that("wk_crs/set_crs works on sf/sfc", {

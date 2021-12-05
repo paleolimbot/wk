@@ -128,7 +128,7 @@ wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE
     wk_crs_proj_definition(NULL)
   } else if (verbose) {
     crs$Wkt %||% crs$wkt
-  } else if (isTRUE(is.na(crs$epsg))) {
+  } else if (isTRUE(is.na(crs$epsg)) || isTRUE(grepl("^[0-9A-Za-z]+:[0-9A-Za-z]+$", crs$input))) {
     wk_crs_proj_definition(crs$input)
   } else {
     paste0("EPSG:", crs$epsg)
