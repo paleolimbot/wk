@@ -6,6 +6,8 @@
   a chunk + apply workflow when working with large vectors (#101, #107).
 * C and R code was rewritten to avoid materializing ALTREP vectors
   (#103, #109).
+* Added a `wk_crs_proj_definition()` generic for foreign CRS objects
+  (#110, #112).
 
 # wk 0.5.0
 
