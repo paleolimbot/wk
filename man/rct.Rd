@@ -13,7 +13,8 @@ rct(
   ymin = double(),
   xmax = double(),
   ymax = double(),
-  crs = wk_crs_auto()
+  crs = wk_crs_auto(),
+  is_geodesic = FALSE
 )
 
 as_rct(x, ...)
@@ -28,6 +29,9 @@ as_rct(x, ...)
 \item{xmin, ymin, xmax, ymax}{Rectangle bounds.}
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
+
+\item{is_geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{x}{An object to be converted to a \code{\link[=rct]{rct()}}.}
 

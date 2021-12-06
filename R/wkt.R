@@ -11,10 +11,10 @@
 #' @examples
 #' wkt("POINT (20 10)")
 #'
-wkt <- function(x = character(), crs = wk_crs_auto()) {
+wkt <- function(x = character(), crs = wk_crs_auto(), is_geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-  wkt <- new_wk_wkt(x, crs = crs)
+  wkt <- new_wk_wkt(x, crs = crs, is_geodesic = if (isTRUE(is_geodesic)) TRUE else NULL)
   validate_wk_wkt(x)
   wkt
 }

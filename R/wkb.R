@@ -11,10 +11,10 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x = list(), crs = wk_crs_auto()) {
+wkb <- function(x = list(), crs = wk_crs_auto(), is_geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x, crs = crs)
+  wkb <- new_wk_wkb(x, crs = crs, is_geodesic = if (isTRUE(is_geodesic)) TRUE else NULL)
   validate_wk_wkb(x)
   wkb
 }

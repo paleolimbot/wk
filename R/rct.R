@@ -12,7 +12,8 @@
 #' @examples
 #' rct(1, 2, 3, 4)
 #'
-rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(), crs = wk_crs_auto()) {
+rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(),
+                crs = wk_crs_auto(), is_geodesic = FALSE) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
@@ -20,7 +21,8 @@ rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double
       xmax = as.double(xmax),
       ymax = as.double(ymax)
     ),
-    crs = wk_crs_auto_value(xmin, crs)
+    crs = wk_crs_auto_value(xmin, crs),
+    is_geodesic = if (isTRUE(is_geodesic)) TRUE else NULL
   )
 
   validate_wk_rct(vec)
