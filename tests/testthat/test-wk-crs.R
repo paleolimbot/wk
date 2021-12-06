@@ -21,6 +21,36 @@ test_that("crs setting and getting works on wk_rcrd",  {
   expect_identical(wk_crs(x), 26920)
 })
 
+test_that("is_geodesic getting and setting works for wkb", {
+  x <- new_wk_wkb()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "is_geodesic"))
+})
+
+test_that("is_geodesic getting and setting works for wkt", {
+  x <- new_wk_wkt()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "is_geodesic"))
+})
+
+test_that("is_geodesic getting and setting works for rct", {
+  x <- new_wk_rct()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "is_geodesic"))
+})
+
 test_that("crs comparison works", {
   expect_true(wk_crs_equal(NULL, NULL))
   expect_false(wk_crs_equal(NULL, "something"))

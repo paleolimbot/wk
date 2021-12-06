@@ -114,6 +114,71 @@ wk_crs_equal_generic.double <- function(x, y, ...) {
   isTRUE(x == y)
 }
 
+
+#' Set and get vector geodesic edge interpolation
+#'
+#' @param x An R object that contains edges
+#' @param is_geodesic,value `TRUE` if edges must be interpolated as geodesics when
+#'   coordinates are spherical, `FALSE` otherwise.
+#'
+#' @return `TRUE` if edges must be interpolated as geodesics when
+#'   coordinates are spherical, `FALSE` otherwise.
+#' @export
+#'
+wk_is_geodesic <- function(x) {
+  UseMethod("wk_is_geodesic")
+}
+
+#' @rdname wk_is_geodesic
+#' @export
+wk_set_geodesic <- function(x, is_geodesic) {
+  UseMethod("wk_set_geodesic")
+}
+
+#' @rdname wk_is_geodesic
+#' @export
+`wk_is_geodesic<-` <- function(x, value) {
+ wk_set_geodesic(x, value)
+}
+
+#' @export
+wk_is_geodesic.default <- function(x) {
+  FALSE
+}
+
+#' @export
+wk_is_geodesic.wk_wkb <- function(x) {
+  attr(x, "is_geodesic", exact = TRUE) %||% FALSE
+}
+
+#' @export
+wk_is_geodesic.wk_wkt <- function(x) {
+  attr(x, "is_geodesic", exact = TRUE) %||% FALSE
+}
+
+#' @export
+wk_is_geodesic.wk_rct <- function(x) {
+  attr(x, "is_geodesic", exact = TRUE) %||% FALSE
+}
+
+#' @export
+wk_set_geodesic.wk_wkb <- function(x, is_geodesic) {
+  attr(x, "is_geodesic") <- if (isTRUE(is_geodesic)) TRUE else NULL
+  x
+}
+
+#' @export
+wk_set_geodesic.wk_wkt <- function(x, is_geodesic) {
+  attr(x, "is_geodesic") <- if (isTRUE(is_geodesic)) TRUE else NULL
+  x
+}
+
+#' @export
+wk_set_geodesic.wk_rct <- function(x, is_geodesic) {
+  attr(x, "is_geodesic") <- if (isTRUE(is_geodesic)) TRUE else NULL
+  x
+}
+
 #' CRS object generic methods
 #'
 #' @param crs An arbitrary R object
