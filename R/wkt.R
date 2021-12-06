@@ -58,12 +58,12 @@ as_wkt.wk_wkt <- function(x, ...) {
 #'
 #' @export
 #'
-new_wk_wkt <- function(x = character(), crs = NULL) {
+new_wk_wkt <- function(x = character(), crs = NULL, is_geodesic = NULL) {
   if (typeof(x) != "character" || !is.null(attributes(x))) {
     stop("wkt input must be a character() without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkt", "wk_vctr"), crs = crs)
+  structure(x, class = c("wk_wkt", "wk_vctr"), crs = crs, is_geodesic = is_geodesic)
 }
 
 #' @rdname new_wk_wkt

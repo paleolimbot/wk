@@ -73,15 +73,16 @@ as_wkb.WKB <- function(x, ..., crs = NULL) {
 #'
 #' @param x A (possibly) [wkb()] vector
 #' @param crs A value to be propagated as the CRS for this vector.
+#' @inheritParams wk_is_geodesic
 #'
 #' @export
 #'
-new_wk_wkb <- function(x = list(), crs = NULL) {
+new_wk_wkb <- function(x = list(), crs = NULL, is_geodesic = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs)
+  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs, is_geodesic = is_geodesic)
 }
 
 #' @rdname new_wk_wkb

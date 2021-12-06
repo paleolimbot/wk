@@ -72,8 +72,8 @@ validate_wk_rct <- function(x) {
 #' @export
 #'
 new_wk_rct <- function(x = list(xmin = double(), ymin = double(), xmax = double(), ymax = double()),
-                       crs = NULL) {
-  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs)
+                       crs = NULL, is_geodesic = NULL) {
+  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs, is_geodesic = is_geodesic)
 }
 
 #' @export
