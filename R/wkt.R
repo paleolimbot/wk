@@ -89,6 +89,7 @@ validate_wk_wkt <- function(x) {
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
+  attr(x, "is_geodesic") <- NULL
   new_wk_wkt(x, crs = crs_out, is_geodesic = if (is_geodesic_out) TRUE else NULL)
 }
 

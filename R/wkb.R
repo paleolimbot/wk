@@ -114,6 +114,7 @@ is_wk_wkb <- function(x) {
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
+  attr(x, "is_geodesic") <- NULL
   new_wk_wkb(x, crs = crs_out, is_geodesic = if (is_geodesic_out) TRUE else NULL)
 }
 
