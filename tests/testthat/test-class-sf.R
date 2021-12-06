@@ -8,6 +8,23 @@ test_that("sf CRS objects can be compared", {
   expect_true(wk_crs_equal(NULL, sf::st_crs(NA)))
 })
 
+test_that("wk_crs_proj_definition() works for sf crs objects", {
+  skip_if_not_installed("sf")
+
+  expect_identical(wk_crs_proj_definition(sf::NA_crs_), NA_character_)
+
+  epsg4326 <- 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]'
+  expect_identical(wk_crs_proj_definition(sf::st_crs(epsg4326)), "EPSG:4326")
+
+  expect_identical(wk_crs_proj_definition(sf::st_crs(4326)), "EPSG:4326")
+  expect_match(wk_crs_proj_definition(sf::st_crs(4326), verbose = TRUE), "^GEOGCS")
+  expect_identical(wk_crs_proj_definition("OGC:CRS84"), "OGC:CRS84")
+  expect_identical(
+    wk_crs_proj_definition(sf::st_crs("+proj=merc +lat_ts=56.5 +type=crs")),
+    "+proj=merc +lat_ts=56.5 +type=crs"
+  )
+})
+
 test_that("wk_crs/set_crs works on sf/sfc", {
   skip_if_not_installed("sf")
 

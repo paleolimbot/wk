@@ -21,6 +21,36 @@ test_that("crs setting and getting works on wk_rcrd",  {
   expect_identical(wk_crs(x), 26920)
 })
 
+test_that("geodesic getting and setting works for wkb", {
+  x <- new_wk_wkb()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "geodesic"))
+})
+
+test_that("geodesic getting and setting works for wkt", {
+  x <- new_wk_wkt()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "geodesic"))
+})
+
+test_that("geodesic getting and setting works for rct", {
+  x <- new_wk_rct()
+  expect_false(wk_is_geodesic(x))
+  x <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+  wk_is_geodesic(x) <- FALSE
+  expect_false(wk_is_geodesic(x))
+  expect_null(attr(x, "geodesic"))
+})
+
 test_that("crs comparison works", {
   expect_true(wk_crs_equal(NULL, NULL))
   expect_false(wk_crs_equal(NULL, "something"))
@@ -48,6 +78,39 @@ test_that("crs output computing works", {
   expect_identical(wk_crs_output(wk_set_crs(x, 1), wkt()), 1)
   expect_identical(wk_crs_output(wkt(), wk_set_crs(x, 1)), 1)
   expect_error(wk_crs_output(wk_set_crs(x, 1), wk_set_crs(x, 2)), "are not equal")
+})
+
+test_that("crs_proj_definition() works", {
+  expect_identical(wk_crs_proj_definition(NULL), NA_character_)
+  expect_identical(wk_crs_proj_definition(1234), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_real_), NA_character_)
+  expect_identical(wk_crs_proj_definition(1234L), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_integer_), NA_character_)
+  expect_identical(wk_crs_proj_definition("EPSG:1234"), "EPSG:1234")
+  expect_identical(wk_crs_proj_definition(NA_character_), NA_character_)
+})
+
+test_that("wk_crs_longlat() works for common datums", {
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(wk_crs_inherit()), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("OGC:CRS84"), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("EPSG:4326"), "OGC:CRS84")
+  expect_identical(wk_crs_longlat("WGS84"), "OGC:CRS84")
+
+  expect_identical(wk_crs_longlat("OGC:CRS83"), "OGC:CRS83")
+  expect_identical(wk_crs_longlat("EPSG:4269"), "OGC:CRS83")
+  expect_identical(wk_crs_longlat("NAD83"), "OGC:CRS83")
+
+  expect_identical(wk_crs_longlat("OGC:CRS27"), "OGC:CRS27")
+  expect_identical(wk_crs_longlat("EPSG:4267"), "OGC:CRS27")
+  expect_identical(wk_crs_longlat("NAD27"), "OGC:CRS27")
+
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+  expect_identical(wk_crs_longlat(), "OGC:CRS84")
+
+  expect_error(wk_crs_longlat("not a crs"), "Can't guess authority-compliant")
 })
 
 test_that("wk_crs_inherit() prints as expected", {

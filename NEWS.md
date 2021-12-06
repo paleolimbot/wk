@@ -6,6 +6,13 @@
   a chunk + apply workflow when working with large vectors (#101, #107).
 * C and R code was rewritten to avoid materializing ALTREP vectors
   (#103, #109).
+* Added a `wk_crs_proj_definition()` generic for foreign CRS objects
+  (#110, #112).
+* Added `wk_crs_longlat()` helper to help promote authority-compliant
+  CRS choices (#112).
+* Added `wk_is_geodesic()`, `wk_set_geodesic()`, and argument `geodesic`
+  in `wkt()`, `wkb()`, and `rct()` as a flag for objects whose edges must
+  be interpolated along a spherical/ellipsoidal trajectory (#112).
 
 # wk 0.5.0
 

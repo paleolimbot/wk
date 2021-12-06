@@ -10,7 +10,7 @@ test_that("wk_vctr class works", {
   expect_output(print(x), "wk_vctr")
   expect_output(print(stats::setNames(x, as.character(1:5))), "wk_vctr")
   expect_output(print(x[0]), "wk_vctr")
-  expect_output(print(wk_set_crs(x, 1234)), "CRS=1234")
+  expect_output(print(wk_set_crs(x, 1234)), "CRS=EPSG:1234")
   expect_output(expect_identical(str(x), x), "wk_vctr")
   expect_output(expect_identical(str(x[0]), x[0]), "wk_vctr\\[0\\]")
 

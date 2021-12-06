@@ -19,7 +19,7 @@ test_that("wk_rcrd works", {
   expect_output(expect_identical(str(xy_rcrd), xy_rcrd), "wk_rcrd")
   expect_output(expect_identical(str(xy_rcrd[integer(0)]), xy_rcrd[integer(0)]), "wk_rcrd\\[0\\]")
 
-  expect_output(print(wk_set_crs(xy_rcrd, 1234)), "CRS=1234")
+  expect_output(print(wk_set_crs(xy_rcrd, 1234)), "CRS=EPSG:1234")
   expect_length(format(xy_rcrd), 2)
   expect_length(as.character(xy_rcrd), 2)
 

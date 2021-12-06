@@ -11,10 +11,10 @@
 #' @examples
 #' wkb(wkt_translate_wkb("POINT (20 10)"))
 #'
-wkb <- function(x = list(), crs = wk_crs_auto()) {
+wkb <- function(x = list(), crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x, crs = crs)
+  wkb <- new_wk_wkb(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
   validate_wk_wkb(x)
   wkb
 }
@@ -73,15 +73,16 @@ as_wkb.WKB <- function(x, ..., crs = NULL) {
 #'
 #' @param x A (possibly) [wkb()] vector
 #' @param crs A value to be propagated as the CRS for this vector.
+#' @inheritParams wk_is_geodesic
 #'
 #' @export
 #'
-new_wk_wkb <- function(x = list(), crs = NULL) {
+new_wk_wkb <- function(x = list(), crs = NULL, geodesic = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs)
+  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs, geodesic = geodesic)
 }
 
 #' @rdname new_wk_wkb
@@ -109,10 +110,12 @@ is_wk_wkb <- function(x) {
 `[<-.wk_wkb` <- function(x, i, value) {
   replacement <- as_wkb(value)
   crs_out <- wk_crs_output(x, replacement)
+  geodesic_out <- wk_is_geodesic_output(x, replacement)
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
-  new_wk_wkb(x, crs = crs_out)
+  attr(x, "geodesic") <- NULL
+  new_wk_wkb(x, crs = crs_out, geodesic = if (geodesic_out) TRUE else NULL)
 }
 
 #' @export
