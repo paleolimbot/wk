@@ -11,10 +11,10 @@
 #' @examples
 #' wkt("POINT (20 10)")
 #'
-wkt <- function(x = character(), crs = wk_crs_auto(), is_geodesic = FALSE) {
+wkt <- function(x = character(), crs = wk_crs_auto(), geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-  wkt <- new_wk_wkt(x, crs = crs, is_geodesic = if (isTRUE(is_geodesic)) TRUE else NULL)
+  wkt <- new_wk_wkt(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
   validate_wk_wkt(x)
   wkt
 }
@@ -58,12 +58,12 @@ as_wkt.wk_wkt <- function(x, ...) {
 #'
 #' @export
 #'
-new_wk_wkt <- function(x = character(), crs = NULL, is_geodesic = NULL) {
+new_wk_wkt <- function(x = character(), crs = NULL, geodesic = NULL) {
   if (typeof(x) != "character" || !is.null(attributes(x))) {
     stop("wkt input must be a character() without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkt", "wk_vctr"), crs = crs, is_geodesic = is_geodesic)
+  structure(x, class = c("wk_wkt", "wk_vctr"), crs = crs, geodesic = geodesic)
 }
 
 #' @rdname new_wk_wkt
@@ -85,12 +85,12 @@ validate_wk_wkt <- function(x) {
 `[<-.wk_wkt` <- function(x, i, value) {
   replacement <- as_wkt(value)
   crs_out <- wk_crs_output(x, replacement)
-  is_geodesic_out <- wk_geodesic_output(x, replacement)
+  geodesic_out <- wk_is_geodesic_output(x, replacement)
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
-  attr(x, "is_geodesic") <- NULL
-  new_wk_wkt(x, crs = crs_out, is_geodesic = if (is_geodesic_out) TRUE else NULL)
+  attr(x, "geodesic") <- NULL
+  new_wk_wkt(x, crs = crs_out, geodesic = if (geodesic_out) TRUE else NULL)
 }
 
 #' @export

@@ -78,8 +78,8 @@ c.wk_vctr <- function(...) {
 
   # compute output crs, geodesic
   attr(dots[[1]], "crs") <- wk_crs_output(...)
-  is_geodesic <- wk_geodesic_output(...)
-  attr(dots[[1]], "is_geodesic") <- if (is_geodesic) TRUE else NULL
+  geodesic <- wk_is_geodesic_output(...)
+  attr(dots[[1]], "geodesic") <- if (geodesic) TRUE else NULL
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }
@@ -110,7 +110,7 @@ new_wk_vctr <- function(x, template) {
     x,
     class = unique(class(template)),
     crs = attr(template, "crs", exact = TRUE),
-    is_geodesic = attr(template, "is_geodesic", exact = TRUE)
+    geodesic = attr(template, "geodesic", exact = TRUE)
   )
 }
 

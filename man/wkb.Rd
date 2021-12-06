@@ -12,7 +12,7 @@
 \alias{as_wkb.WKB}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x = list(), crs = wk_crs_auto(), is_geodesic = FALSE)
+wkb(x = list(), crs = wk_crs_auto(), geodesic = FALSE)
 
 parse_wkb(x, crs = wk_crs_auto())
 
@@ -35,7 +35,7 @@ as_wkb(x, ...)
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
 
-\item{is_geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{...}{Unused}

@@ -9,7 +9,7 @@
 \alias{as_wkt.wk_wkt}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x = character(), crs = wk_crs_auto(), is_geodesic = FALSE)
+wkt(x = character(), crs = wk_crs_auto(), geodesic = FALSE)
 
 parse_wkt(x, crs = wk_crs_auto())
 
@@ -26,7 +26,7 @@ as_wkt(x, ...)
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
 
-\item{is_geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{...}{Unused}

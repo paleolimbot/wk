@@ -8,14 +8,14 @@
 \usage{
 wk_is_geodesic(x)
 
-wk_set_geodesic(x, is_geodesic)
+wk_set_geodesic(x, geodesic)
 
 wk_is_geodesic(x) <- value
 }
 \arguments{
 \item{x}{An R object that contains edges}
 
-\item{is_geodesic, value}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic, value}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
 }
 \value{

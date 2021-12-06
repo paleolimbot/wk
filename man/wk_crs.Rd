@@ -7,7 +7,7 @@
 \alias{wk_crs<-}
 \alias{wk_set_crs}
 \alias{wk_crs_output}
-\alias{wk_geodesic_output}
+\alias{wk_is_geodesic_output}
 \title{Set and get vector CRS}
 \usage{
 wk_crs(x)
@@ -22,7 +22,7 @@ wk_set_crs(x, crs)
 
 wk_crs_output(...)
 
-wk_geodesic_output(...)
+wk_is_geodesic_output(...)
 }
 \arguments{
 \item{x, ...}{Objects whose "crs" attribute is used to carry a CRS.}

@@ -73,8 +73,8 @@ test_that("wkb() propagates CRS", {
   expect_identical(wk_crs(x), 1234)
 })
 
-test_that("wkb() propagates is_geodesic", {
-  x <- wkb(as_wkb("POINT (1 2)"), is_geodesic = TRUE)
+test_that("wkb() propagates geodesic", {
+  x <- wkb(as_wkb("POINT (1 2)"), geodesic = TRUE)
   expect_true(wk_is_geodesic(x))
   expect_true(wk_is_geodesic(x[1]))
   expect_true(wk_is_geodesic(c(x, x)))

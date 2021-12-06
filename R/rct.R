@@ -13,7 +13,7 @@
 #' rct(1, 2, 3, 4)
 #'
 rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(),
-                crs = wk_crs_auto(), is_geodesic = FALSE) {
+                crs = wk_crs_auto(), geodesic = FALSE) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
@@ -22,7 +22,7 @@ rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double
       ymax = as.double(ymax)
     ),
     crs = wk_crs_auto_value(xmin, crs),
-    is_geodesic = if (isTRUE(is_geodesic)) TRUE else NULL
+    geodesic = if (isTRUE(geodesic)) TRUE else NULL
   )
 
   validate_wk_rct(vec)
@@ -74,8 +74,8 @@ validate_wk_rct <- function(x) {
 #' @export
 #'
 new_wk_rct <- function(x = list(xmin = double(), ymin = double(), xmax = double(), ymax = double()),
-                       crs = NULL, is_geodesic = NULL) {
-  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs, is_geodesic = is_geodesic)
+                       crs = NULL, geodesic = NULL) {
+  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs, geodesic = geodesic)
 }
 
 #' @export
@@ -96,6 +96,6 @@ format.wk_rct <- function(x, ...) {
   new_wk_rct(
     result,
     crs = wk_crs_output(x, replacement),
-    is_geodesic = if (wk_geodesic_output(x, replacement)) TRUE else NULL
+    geodesic = if (wk_is_geodesic_output(x, replacement)) TRUE else NULL
   )
 }

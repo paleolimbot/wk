@@ -7,7 +7,7 @@
 new_wk_rct(
   x = list(xmin = double(), ymin = double(), xmax = double(), ymax = double()),
   crs = NULL,
-  is_geodesic = NULL
+  geodesic = NULL
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ new_wk_rct(
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
 
-\item{is_geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
 }
 \description{

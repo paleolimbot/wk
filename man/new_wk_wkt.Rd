@@ -6,7 +6,7 @@
 \alias{validate_wk_wkt}
 \title{S3 Details for wk_wkt}
 \usage{
-new_wk_wkt(x = character(), crs = NULL, is_geodesic = NULL)
+new_wk_wkt(x = character(), crs = NULL, geodesic = NULL)
 
 is_wk_wkt(x)
 
@@ -17,7 +17,7 @@ validate_wk_wkt(x)
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
 
-\item{is_geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
 }
 \description{
