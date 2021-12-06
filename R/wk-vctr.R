@@ -76,8 +76,10 @@ c.wk_vctr <- function(...) {
     stop("Can't combine 'wk_vctr' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # compute output crs
+  # compute output crs, geodesic
   attr(dots[[1]], "crs") <- wk_crs_output(...)
+  is_geodesic <- wk_geodesic_output(...)
+  attr(dots[[1]], "is_geodesic") <- if (is_geodesic) TRUE else NULL
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }
@@ -104,7 +106,12 @@ as.data.frame.wk_vctr <- function(x, ..., optional = FALSE) {
 }
 
 new_wk_vctr <- function(x, template) {
-  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
+  structure(
+    x,
+    class = unique(class(template)),
+    crs = attr(template, "crs", exact = TRUE),
+    is_geodesic = attr(template, "is_geodesic", exact = TRUE)
+  )
 }
 
 parse_base <- function(x, problems) {

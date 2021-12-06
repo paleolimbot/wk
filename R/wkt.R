@@ -85,10 +85,11 @@ validate_wk_wkt <- function(x) {
 `[<-.wk_wkt` <- function(x, i, value) {
   replacement <- as_wkt(value)
   crs_out <- wk_crs_output(x, replacement)
+  is_geodesic_out <- wk_geodesic_output(x, replacement)
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
-  new_wk_wkt(x, crs = crs_out)
+  new_wk_wkt(x, crs = crs_out, is_geodesic = if (is_geodesic_out) TRUE else NULL)
 }
 
 #' @export

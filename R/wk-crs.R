@@ -60,6 +60,14 @@ wk_crs_output <- function(...) {
   Reduce(wk_crs2, crs)
 }
 
+#' @rdname wk_crs
+#' @export
+wk_geodesic_output <- function(...) {
+  dots <- list(...)
+  is_geodesic <- lapply(dots, wk_is_geodesic)
+  Reduce(wk_geodesic2, is_geodesic)
+}
+
 wk_crs2 <- function(x, y) {
   if (inherits(y, "wk_crs_inherit")) {
     x
@@ -69,6 +77,14 @@ wk_crs2 <- function(x, y) {
     x
   } else {
     stop(sprintf("CRS objects '%s' and '%s' are not equal.", format(x), format(y)), call. = FALSE)
+  }
+}
+
+wk_geodesic2 <- function(x, y) {
+  if (identical(x, y)) {
+    x
+  } else {
+    stop("objects have differing values for is_geodesic", call. = FALSE)
   }
 }
 

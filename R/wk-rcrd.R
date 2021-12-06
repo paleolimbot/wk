@@ -7,7 +7,12 @@ new_wk_rcrd <- function(x, template) {
     all(names(x) != "")
   )
 
-  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
+  structure(
+    x,
+    class = unique(class(template)),
+    crs = attr(template, "crs", exact = TRUE),
+    is_geodesic = attr(template, "is_geodesic", exact = TRUE)
+  )
 }
 
 validate_wk_rcrd <- function(x) {
@@ -131,6 +136,8 @@ c.wk_rcrd <- function(...) {
 
   # compute output crs
   attr(dots[[1]], "crs") <- wk_crs_output(...)
+  is_geodesic <- wk_geodesic_output(...)
+  attr(dots[[1]], "is_geodesic") <- if (is_geodesic) TRUE else NULL
 
   new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }

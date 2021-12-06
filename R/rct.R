@@ -93,5 +93,9 @@ format.wk_rct <- function(x, ...) {
   replacement <- as_rct(value)
   result <- Map("[<-", unclass(x), i, unclass(replacement))
   names(result) <- c("xmin", "ymin", "xmax", "ymax")
-  new_wk_rct(result, crs = wk_crs_output(x, replacement))
+  new_wk_rct(
+    result,
+    crs = wk_crs_output(x, replacement),
+    is_geodesic = if (wk_geodesic_output(x, replacement)) TRUE else NULL
+  )
 }
