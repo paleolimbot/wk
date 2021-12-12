@@ -17,6 +17,7 @@
     s3_register("sf::st_as_sfc", cls)
     s3_register("sf::st_as_sf", cls)
     s3_register("sf::st_geometry", cls)
+    s3_register("sf::st_bbox", cls)
   }
 }
 

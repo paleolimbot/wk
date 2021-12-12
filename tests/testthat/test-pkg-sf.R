@@ -258,3 +258,16 @@ test_that("st_geometry() methods are defined for wk objects", {
   expect_identical(sf::st_geometry(rct()), sf::st_as_sfc(rct()))
   expect_identical(sf::st_geometry(crc()), sf::st_as_sfc(crc()))
 })
+
+test_that("st_bbox() methods are defined for wk objects", {
+  skip_if_not_installed("sf")
+
+  sf_obj <- sf::st_as_sfc("LINESTRING (0 1, 2 3)", crs = 32620)
+  bbox_obj <- sf::st_bbox(sf_obj)
+
+  expect_identical(sf::st_bbox(as_wkb(sf_obj)), bbox_obj)
+  expect_identical(sf::st_bbox(as_wkt(sf_obj)), bbox_obj)
+  expect_identical(sf::st_bbox(as_xy(wk_vertices(sf_obj))), bbox_obj)
+  expect_identical(sf::st_bbox(rct(0, 1, 2, 3, crs = 32620)), bbox_obj)
+  expect_identical(sf::st_bbox(crc(1, 2, 1, crs = 32620)), bbox_obj)
+})

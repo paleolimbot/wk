@@ -287,6 +287,8 @@ st_as_sf.wk_crc <- function(x, ...) {
   )
 }
 
+# st_geometry methods()
+
 st_geometry.wk_wkb <- function(x, ...) {
   st_as_sfc.wk_wkb(x, ...)
 }
@@ -305,4 +307,26 @@ st_geometry.wk_rct <- function(x, ...) {
 
 st_geometry.wk_crc <- function(x, ...) {
   st_as_sfc.wk_crc(x, ...)
+}
+
+# st_bbox() methods
+
+st_bbox.wk_wkb <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_wkt <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_xy <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_rct <- function(x, ...) {
+  sf::st_bbox(unlist(x), crs = wk_crs(x))
+}
+
+st_bbox.wk_crc <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
 }
