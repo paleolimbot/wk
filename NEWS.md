@@ -13,6 +13,8 @@
 * Added `wk_is_geodesic()`, `wk_set_geodesic()`, and argument `geodesic`
   in `wkt()`, `wkb()`, and `rct()` as a flag for objects whose edges must
   be interpolated along a spherical/ellipsoidal trajectory (#112).
+* Added `sf::st_geometry()` and `sf::st_sfc()` methods for wk geometry
+  vectors for better integration with sf (#113, #114).
 
 # wk 0.5.0
 

@@ -252,7 +252,7 @@ st_as_sfc.wk_xy <- function(x, ...) {
 }
 
 st_as_sf.wk_xy <- function(x, ...) {
-  if (all(!is.na(x))) {
+  if ((length(x) > 0) && all(!is.na(x))) {
     sf::st_as_sf(as.data.frame(x), coords = xy_dims(x), crs = sf_crs_from_wk(x))
   } else {
     sf::st_as_sf(
@@ -285,4 +285,48 @@ st_as_sf.wk_crc <- function(x, ...) {
       list(geometry = st_as_sfc.wk_crc(x, ...))
     )
   )
+}
+
+# st_geometry methods()
+
+st_geometry.wk_wkb <- function(x, ...) {
+  st_as_sfc.wk_wkb(x, ...)
+}
+
+st_geometry.wk_wkt <- function(x, ...) {
+  st_as_sfc.wk_wkt(x, ...)
+}
+
+st_geometry.wk_xy <- function(x, ...) {
+  st_as_sfc.wk_xy(x, ...)
+}
+
+st_geometry.wk_rct <- function(x, ...) {
+  st_as_sfc.wk_rct(x, ...)
+}
+
+st_geometry.wk_crc <- function(x, ...) {
+  st_as_sfc.wk_crc(x, ...)
+}
+
+# st_bbox() methods
+
+st_bbox.wk_wkb <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_wkt <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_xy <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_rct <- function(x, ...) {
+  sf::st_bbox(unlist(x), crs = wk_crs(x))
+}
+
+st_bbox.wk_crc <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
 }
