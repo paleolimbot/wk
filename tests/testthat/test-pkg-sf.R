@@ -248,3 +248,13 @@ test_that("wk_restore() works for sf", {
     "Can't assign"
   )
 })
+
+test_that("st_geometry() methods are defined for wk objects", {
+  skip_if_not_installed("sf")
+
+  expect_identical(sf::st_geometry(wkb()), sf::st_as_sfc(wkb()))
+  expect_identical(sf::st_geometry(wkt()), sf::st_as_sfc(wkt()))
+  expect_identical(sf::st_geometry(xy()), sf::st_as_sfc(xy()))
+  expect_identical(sf::st_geometry(rct()), sf::st_as_sfc(rct()))
+  expect_identical(sf::st_geometry(crc()), sf::st_as_sfc(crc()))
+})
