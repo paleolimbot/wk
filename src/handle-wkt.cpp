@@ -60,7 +60,7 @@ public:
   }
 
   bool finished() {
-    return !checkBuffer(0);
+    return !checkBuffer(1);
   }
 
   void advance() {
@@ -257,19 +257,22 @@ public:
   // Skips all of the characters in `chars`, returning the number of
   // characters skipped.
   int64_t skipChars(const char* chars) {
-    int64_t offset0 = this->offset;
-    
-    char c = this->str[this->offset];
-    while ((c != '\0') && strchr(chars, c)) {
-      this->offset++;
-      if (this->offset >= this->length) {
-        break;
+    int64_t n_skipped = 0;
+    bool found = false;
+
+    while (!found && !this->finished()) {
+      while (this->charsLeftInBuffer() > 0) {
+        if (strchr(chars, this->str[this->offset])) {
+          this->offset++;
+          n_skipped++;
+        } else {
+          found = true;
+          break;
+        }
       }
-
-      c = this->str[this->offset];
     }
-
-    return this->offset - offset0;
+    
+    return n_skipped;
   }
 
   // Returns the number of characters until one of `chars` is encountered,
