@@ -278,19 +278,33 @@ public:
   // Returns the number of characters until one of `chars` is encountered,
   // which may be 0.
   int64_t peekUntil(const char* chars) {
-    int64_t offset0 = this->offset;
-    int64_t offseti = this->offset;
-    char c = this->str[offseti];
-    while ((c != '\0') && !strchr(chars, c)) {
-      offseti++;
-      if (offseti >= this->length) {
-        break;
-      }
-
-      c = this->str[offseti];
+    if (this->finished()) {
+      return 0;
     }
 
-    return offseti - offset0;
+    int64_t n_chars = -1;
+    bool found = false;
+    
+    while (!found && !this->finished()) {
+      while ((this->length - n_chars) > 0) {
+        n_chars++;
+        if (strchr(chars, this->str[this->offset + n_chars])) {
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        int64_t remaining_buffer_chars = this->buffer_length - n_chars;
+        if (remaining_buffer_chars <= 0) {
+          this->error("An item with length <= buffer_length", "end of buffer");
+        }
+
+        this->checkBuffer(remaining_buffer_chars);
+      }
+    }
+
+    return n_chars;
   }
 
   [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
