@@ -31,7 +31,8 @@ public:
 class WKV1ParseableString {
 public:
   WKV1ParseableString(const char* str, const char* whitespace, const char* sep):
-  str(str), length(strlen(str)), offset(0), whitespace(whitespace), sep(sep) {}
+  str(str), length(strlen(str)), offset(0), buffer_length(4096), 
+  whitespace(whitespace), sep(sep) {}
 
   virtual int64_t fillBuffer(int64_t size, const char* buffer) {
     return 0;
@@ -47,7 +48,7 @@ public:
         return true;
     }
 
-    int64_t new_chars = this->fillBuffer(1024 - chars_to_keep, this->str + chars_to_keep);
+    int64_t new_chars = this->fillBuffer(this->buffer_length - chars_to_keep, this->str + chars_to_keep);
     if (new_chars == 0) {
       this->length = 0;
       return false;
@@ -305,6 +306,7 @@ private:
   const char* str;
   int64_t length;
   int64_t offset;
+  int64_t buffer_length;
   const char* whitespace;
   const char* sep;
 
