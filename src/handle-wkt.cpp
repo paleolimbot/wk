@@ -28,9 +28,9 @@ public:
   }
 };
 
-class SimpleBuffer {
+class SimpleBufferSource {
 public:
-  SimpleBuffer(): str(nullptr), size(0), offset(0) {}
+  SimpleBufferSource(): str(nullptr), size(0), offset(0) {}
 
   void set_buffer(const char* str, int64_t size) {
     this->str = str;
@@ -91,7 +91,7 @@ public:
     }
   }
 
-  void setSource(SimpleBuffer* source) {
+  void setSource(SimpleBufferSource* source) {
     this->source = source;
     this->offset = 0;
     this->length = 0;
@@ -402,7 +402,7 @@ private:
   int64_t buffer_length;
   const char* whitespace;
   const char* sep;
-  SimpleBuffer* source;
+  SimpleBufferSource* source;
   std::string saved_locale;
 
   static std::string expectedFromChars(const char* chars) {
@@ -440,9 +440,13 @@ private:
 };
 
 
-class WKTV1String: public BufferedParser {
+class BufferedWKTParser: public BufferedParser {
 public:
-  WKTV1String() {
+  BufferedWKTParser() {
+    this->setSeparators(" \r\n\t,();=");
+  }
+
+  BufferedWKTParser(int64_t buffer_size): BufferedParser(buffer_size) {
     this->setSeparators(" \r\n\t,();=");
   }
 
@@ -521,7 +525,7 @@ public:
 class WKTStreamer {
 public:
 
-  WKTStreamer(WKHandlerXPtr& handler): handler(handler) {}
+  WKTStreamer(WKHandlerXPtr& handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
   int streamFeature(wk_vector_meta_t* meta, cpp11::r_string item, R_xlen_t feat_id) {
     int result;
@@ -781,12 +785,12 @@ protected:
 
 private:
   WKHandlerXPtr& handler;
-  WKTV1String s;
-  SimpleBuffer buffer;
+  BufferedWKTParser s;
+  SimpleBufferSource buffer;
 };
 
 [[cpp11::register]]
-cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_size) {
+cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_size, bool reveal_size) {
   R_xlen_t n_features = wkt.size();
   wk_vector_meta_t globalMeta;
   WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);
@@ -800,7 +804,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandlerXPtr cppHandler(xptr);
-  WKTStreamer streamer(cppHandler);
+  WKTStreamer streamer(cppHandler, buffer_size);
 
   int result = cppHandler.vector_start(&globalMeta);
 

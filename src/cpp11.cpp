@@ -6,10 +6,10 @@
 #include <R_ext/Visibility.h>
 
 // handle-wkt.cpp
-cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_size);
-extern "C" SEXP _wk_wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, SEXP reveal_size) {
+cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_size, bool reveal_size);
+extern "C" SEXP _wk_wk_cpp_handle_wkt(SEXP wkt, SEXP xptr, SEXP buffer_size, SEXP reveal_size) {
   BEGIN_CPP11
-    return cpp11::as_sexp(wk_cpp_handle_wkt(cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(wkt), cpp11::as_cpp<cpp11::decay_t<cpp11::sexp>>(xptr), cpp11::as_cpp<cpp11::decay_t<bool>>(reveal_size)));
+    return cpp11::as_sexp(wk_cpp_handle_wkt(cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(wkt), cpp11::as_cpp<cpp11::decay_t<cpp11::sexp>>(xptr), cpp11::as_cpp<cpp11::decay_t<int>>(buffer_size), cpp11::as_cpp<cpp11::decay_t<bool>>(reveal_size)));
   END_CPP11
 }
 // wkt-writer.cpp
@@ -57,7 +57,7 @@ extern SEXP wk_c_wkb_writer_new(SEXP, SEXP);
 extern SEXP wk_c_xy_writer_new();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_wk_wk_cpp_handle_wkt",        (DL_FUNC) &_wk_wk_cpp_handle_wkt,        3},
+    {"_wk_wk_cpp_handle_wkt",        (DL_FUNC) &_wk_wk_cpp_handle_wkt,        4},
     {"_wk_wk_cpp_wkt_formatter",     (DL_FUNC) &_wk_wk_cpp_wkt_formatter,     3},
     {"_wk_wk_cpp_wkt_writer",        (DL_FUNC) &_wk_wk_cpp_wkt_writer,        2},
     {"wk_c_bbox_handler_new",        (DL_FUNC) &wk_c_bbox_handler_new,        0},
