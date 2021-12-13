@@ -33,39 +33,47 @@ public:
   WKV1ParseableString(const char* str, const char* whitespace, const char* sep):
   str(str), length(strlen(str)), offset(0), whitespace(whitespace), sep(sep) {}
 
+  virtual int64_t fillBuffer(int64_t size) {
+    return 0;
+  }
+
   const char* c_str() {
     return this->str;
   }
 
-  // Change the position of the cursor
-  size_t seek(size_t position) {
-    if (position > this->length) {
-      position = this->length;
-    } else if (position < 0) {
-      position = 0;
+  bool checkBuffer(int n_chars) {
+    int64_t chars_to_keep = this->length - this->offset;
+    if ((chars_to_keep - n_chars) >= 0) {
+        return true;
     }
 
-    size_t delta = position - this->offset;
-    this->offset = position;
-    return delta;
+    int64_t new_chars = this->fillBuffer(1024);
+    if (new_chars == 0) {
+      this->length = 0;
+      return false;
+    }
+
+    this->offset = 0;
+    this->length = n_chars + new_chars;
+    return true;
+  }
+
+  bool finished() {
+    return !checkBuffer(0);
   }
 
   void advance() {
-    if (this->offset < this->length) {
+    if (this->checkBuffer(1)) {
       this->offset++;
     }
   }
 
   void advance(int n) {
-    if ((this->offset + n) <= this->length) {
+    if (this->checkBuffer(n)) {
       this->offset += n;
     } else {
       this->offset = this->length;
     }
-  }
-
-  bool finished() {
-    return this->offset >= this->length;
   }
 
   // Returns the character at the cursor and advances the cursor
@@ -80,7 +88,7 @@ public:
   // without advancing the cursor (skips whitespace)
   char peekChar() {
     this->skipWhitespace();
-    if (this->offset < this->length) {
+    if (this->checkBuffer(1)) {
       return this->str[this->offset];
     } else {
       return '\0';
@@ -223,7 +231,7 @@ public:
     if (wordLen == 0 && !finished) {
       wordLen = 1;
     }
-    std::string out(&(this->str[this->offset]), wordLen);
+    std::string out(this->str + this->offset, wordLen);
     this->advance(wordLen);
     return out;
   }
@@ -236,7 +244,7 @@ public:
     if (wordLen == 0 && !this->finished()) {
       wordLen = 1;
     }
-    return std::string(&(this->str[this->offset]), wordLen);
+    return std::string(this->str + this->offset, wordLen);
   }
 
   // Advances the cursor past any whitespace, returning the
