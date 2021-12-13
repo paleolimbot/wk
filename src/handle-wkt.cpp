@@ -39,9 +39,9 @@ public:
   }
 
   int64_t fill_buffer(char* buffer, int64_t max_size) {
-    int64_t copy_size = this->size - this->offset;
+    int64_t copy_size = std::min<int64_t>(this->size - this->offset, max_size);
     if (copy_size > 0) {
-      memcpy(buffer, this->str + this->offset, max_size);
+      memcpy(buffer, this->str + this->offset, copy_size);
       this->offset += copy_size;
       return copy_size;
     } else {
@@ -131,17 +131,18 @@ public:
 
     int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
     if (new_chars == 0) {
+      this->offset = 0;
       this->length = 0;
       return false;
     }
 
     this->offset = 0;
-    this->length = n_chars + new_chars;
+    this->length = chars_to_keep + new_chars;
     return true;
   }
 
   bool finished() {
-    return !checkBuffer(1);
+    return (this->charsLeftInBuffer() <= 0) && !(this->checkBuffer(1));
   }
 
   void advance() {
