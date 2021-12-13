@@ -120,8 +120,13 @@ public:
     }
 
     if (this->source == nullptr) {
+      this->offset = 0;
       this->length = 0;
       return false;
+    }
+
+    if (chars_to_keep > 0) {
+      memmove(this->str, this->str + this->offset, chars_to_keep);
     }
 
     int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
@@ -253,7 +258,7 @@ public:
   // returns a std::string of whitespace characters, advancing the
   // cursor to the end of the whitespace.
   std::string assertWhitespace() {
-    if (this->finished()) {
+    if (!this->checkBuffer(1)) {
       this->error("whitespace", "end of input");
     }
 
