@@ -119,30 +119,24 @@ public:
         return true;
     }
 
-    if (this->source == nullptr) {
-      this->offset = 0;
-      this->length = 0;
-      return false;
-    }
-
     if (chars_to_keep > 0) {
       memmove(this->str, this->str + this->offset, chars_to_keep);
     }
 
-    int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
-    if (new_chars == 0) {
-      this->offset = 0;
-      this->length = 0;
-      return false;
+    int64_t new_chars;
+    if (this->source == nullptr) {
+      new_chars = 0;
+    } else {
+      new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
     }
 
     this->offset = 0;
     this->length = chars_to_keep + new_chars;
-    return true;
+    return n_chars <= this->length;
   }
 
   bool finished() {
-    return (this->charsLeftInBuffer() <= 0) && !(this->checkBuffer(1));
+    return !(this->checkBuffer(1));
   }
 
   void advance() {
@@ -321,10 +315,11 @@ public:
   std::string peekUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
-    if (wordLen == 0 && !this->finished()) {
-      wordLen = 1;
+    if (wordLen == 0) {
+      return std::string("");
+    } else {
+      return std::string(this->str + this->offset, wordLen);
     }
-    return std::string(this->str + this->offset, wordLen);
   }
 
   // Advances the cursor past any whitespace, returning the number of characters skipped.
@@ -362,8 +357,8 @@ public:
     int64_t n_chars = -1;
     bool found = false;
     
-    while (!found && !this->finished()) {
-      while ((this->length - n_chars) > 0) {
+    while (!found && ((this->offset + n_chars + 1) < this->length)) {
+      while ((this->offset + n_chars + 1) < this->length) {
         n_chars++;
         if (strchr(chars, this->str[this->offset + n_chars])) {
           found = true;
@@ -379,6 +374,10 @@ public:
 
         this->checkBuffer(remaining_buffer_chars);
       }
+    }
+
+    if (!found && (this->offset + n_chars + 1) == this->length) {
+      n_chars++;
     }
 
     return n_chars;
