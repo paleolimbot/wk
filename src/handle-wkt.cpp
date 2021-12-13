@@ -10,9 +10,9 @@
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
-class WKV1ParseableStringException: public WKParseException {
+class BufferedParserException: public WKParseException {
 public:
-  WKV1ParseableStringException(std::string expected, std::string found, const char* src, int64_t pos):
+  BufferedParserException(std::string expected, std::string found, const char* src, int64_t pos):
   WKParseException(makeError(expected, found, src, pos)),
   expected(expected), found(found), src(src), pos(pos) {}
 
@@ -28,9 +28,9 @@ public:
   }
 };
 
-class WKV1ParseableString {
+class BufferedParser {
 public:
-  WKV1ParseableString(const char* str, const char* whitespace, const char* sep):
+  BufferedParser(const char* str, const char* whitespace, const char* sep):
   str(str), length(strlen(str)), offset(0), buffer_length(4096), 
   whitespace(whitespace), sep(sep) {}
 
@@ -237,8 +237,7 @@ public:
     return out;
   }
 
-  // Returns the text between the cursor and the next separator
-  // (" \r\n\t,();=") without advancing the cursor.
+  // Returns the text between the cursor and the next separator without advancing the cursor.
   std::string peekUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
@@ -248,14 +247,12 @@ public:
     return std::string(this->str + this->offset, wordLen);
   }
 
-  // Advances the cursor past any whitespace, returning the
-  // number of characters skipped.
+  // Advances the cursor past any whitespace, returning the number of characters skipped.
   int64_t skipWhitespace() {
     return this->skipChars(this->whitespace);
   }
 
-  // Skips all of the characters in `chars`, returning the number of
-  // characters skipped.
+  // Skips all of the characters in `chars`, returning the number of characters skipped.
   int64_t skipChars(const char* chars) {
     int64_t n_skipped = 0;
     bool found = false;
@@ -308,15 +305,15 @@ public:
   }
 
   [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
-    throw WKV1ParseableStringException(expected, quote(found), this->str, this->offset - found.size());
+    throw BufferedParserException(expected, quote(found), this->str, this->offset - found.size());
   }
 
   [[noreturn]] void error(std::string expected, std::string found) {
-    throw WKV1ParseableStringException(expected, found, this->str, this->offset);
+    throw BufferedParserException(expected, found, this->str, this->offset);
   }
 
   [[noreturn]] void error(std::string expected) {
-    throw WKV1ParseableStringException(expected, quote(this->peekUntilSep()), this->str, this->offset);
+    throw BufferedParserException(expected, quote(this->peekUntilSep()), this->str, this->offset);
   }
 
 private:
@@ -362,9 +359,9 @@ private:
 };
 
 
-class WKTV1String: public WKV1ParseableString {
+class WKTV1String: public BufferedParser {
 public:
-  WKTV1String(const char* str): WKV1ParseableString(str, " \r\n\t", " \r\n\t,();=") {}
+  WKTV1String(const char* str): BufferedParser(str, " \r\n\t", " \r\n\t,();=") {}
 
   wk_meta_t assertGeometryMeta() {
     wk_meta_t meta;
