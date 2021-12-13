@@ -12,16 +12,16 @@
 
 class WKV1ParseableStringException: public WKParseException {
 public:
-  WKV1ParseableStringException(std::string expected, std::string found, const char* src, size_t pos):
+  WKV1ParseableStringException(std::string expected, std::string found, const char* src, int64_t pos):
   WKParseException(makeError(expected, found, src, pos)),
   expected(expected), found(found), src(src), pos(pos) {}
 
   std::string expected;
   std::string found;
   std::string src;
-  size_t pos;
+  int64_t pos;
 
-  static std::string makeError(std::string expected, std::string found, const char* src, size_t pos) {
+  static std::string makeError(std::string expected, std::string found, const char* src, int64_t pos) {
     std::stringstream stream;
     stream << "Expected " << expected << " but found " << found << " (:" << pos << ")";
     return stream.str().c_str();
@@ -33,21 +33,21 @@ public:
   WKV1ParseableString(const char* str, const char* whitespace, const char* sep):
   str(str), length(strlen(str)), offset(0), whitespace(whitespace), sep(sep) {}
 
-  virtual int64_t fillBuffer(int64_t size) {
+  virtual int64_t fillBuffer(int64_t size, const char* buffer) {
     return 0;
   }
 
-  const char* c_str() {
-    return this->str;
+  int64_t charsLeftInBuffer() {
+    return this->length - this->offset;
   }
 
   bool checkBuffer(int n_chars) {
-    int64_t chars_to_keep = this->length - this->offset;
+    int64_t chars_to_keep = this->charsLeftInBuffer();
     if ((chars_to_keep - n_chars) >= 0) {
         return true;
     }
 
-    int64_t new_chars = this->fillBuffer(1024);
+    int64_t new_chars = this->fillBuffer(1024 - chars_to_keep, this->str + chars_to_keep);
     if (new_chars == 0) {
       this->length = 0;
       return false;
@@ -187,8 +187,8 @@ public:
       this->error("whitespace", quote(this->peekUntilSep()));
     }
 
-    size_t offset0 = this->offset;
-    size_t nWhitespaceChars = this->skipWhitespace();
+    int64_t offset0 = this->offset;
+    int64_t nWhitespaceChars = this->skipWhitespace();
     return std::string(&(this->str[offset0]), nWhitespaceChars);
   }
 
@@ -226,7 +226,7 @@ public:
   // return std::string("")
   std::string readUntilSep() {
     this->skipWhitespace();
-    size_t wordLen = peekUntil(this->sep);
+    int64_t wordLen = peekUntil(this->sep);
     bool finished = this->finished();
     if (wordLen == 0 && !finished) {
       wordLen = 1;
@@ -240,7 +240,7 @@ public:
   // (" \r\n\t,();=") without advancing the cursor.
   std::string peekUntilSep() {
     this->skipWhitespace();
-    size_t wordLen = peekUntil(this->sep);
+    int64_t wordLen = peekUntil(this->sep);
     if (wordLen == 0 && !this->finished()) {
       wordLen = 1;
     }
@@ -249,14 +249,15 @@ public:
 
   // Advances the cursor past any whitespace, returning the
   // number of characters skipped.
-  size_t skipWhitespace() {
+  int64_t skipWhitespace() {
     return this->skipChars(this->whitespace);
   }
 
   // Skips all of the characters in `chars`, returning the number of
   // characters skipped.
-  size_t skipChars(const char* chars) {
-    size_t offset0 = this->offset;
+  int64_t skipChars(const char* chars) {
+    int64_t offset0 = this->offset;
+    
     char c = this->str[this->offset];
     while ((c != '\0') && strchr(chars, c)) {
       this->offset++;
@@ -272,9 +273,9 @@ public:
 
   // Returns the number of characters until one of `chars` is encountered,
   // which may be 0.
-  size_t peekUntil(const char* chars) {
-    size_t offset0 = this->offset;
-    size_t offseti = this->offset;
+  int64_t peekUntil(const char* chars) {
+    int64_t offset0 = this->offset;
+    int64_t offseti = this->offset;
     char c = this->str[offseti];
     while ((c != '\0') && !strchr(chars, c)) {
       offseti++;
@@ -302,15 +303,15 @@ public:
 
 private:
   const char* str;
-  size_t length;
-  size_t offset;
+  int64_t length;
+  int64_t offset;
   const char* whitespace;
   const char* sep;
 
   static std::string expectedFromChars(const char* chars) {
-    size_t nChars = strlen(chars);
+    int64_t nChars = strlen(chars);
     std::stringstream stream;
-    for (size_t i = 0; i < nChars; i++) {
+    for (int64_t i = 0; i < nChars; i++) {
       if (i > 0) {
         stream << " or ";
       }
