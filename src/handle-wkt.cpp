@@ -28,14 +28,85 @@ public:
   }
 };
 
+class SimpleBuffer {
+public:
+  SimpleBuffer(): str(nullptr), size(0), offset(0) {}
+
+  void set_buffer(const char* str, int64_t size) {
+    this->str = str;
+    this->size = size;
+    this->offset = 0;
+  }
+
+  int64_t fill_buffer(char* buffer, int64_t max_size) {
+    int64_t copy_size = this->size - this->offset;
+    if (copy_size > 0) {
+      memcpy(buffer, this->str + this->offset, max_size);
+      this->offset += copy_size;
+      return copy_size;
+    } else {
+      return 0;
+    }
+  }
+
+  std::string error_context(int64_t offset_from_offset) {
+    std::stringstream stream;
+    stream << " (:" << (this->offset + offset_from_offset) << ")";
+    return stream.str();
+  }
+
+private:
+  const char* str;
+  int64_t size;
+  int64_t offset;
+};
+
 class BufferedParser {
 public:
-  BufferedParser(const char* str, const char* whitespace, const char* sep):
-  str(str), length(strlen(str)), offset(0), buffer_length(4096), 
-  whitespace(whitespace), sep(sep) {}
+  BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0), 
+    buffer_length(buffer_length), whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {
+    this->str = (char*) malloc(this->buffer_length);
+    if (this->str == nullptr) {
+      throw std::runtime_error("Failed to allocate BufferedParser buffer");
+    }
 
-  virtual int64_t fillBuffer(int64_t size, const char* buffer) {
-    return 0;
+    // constructor and deleter set the thread locale while the object is in use
+    // for consistent parsing of numbers
+#ifdef _MSC_VER
+    _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
+#endif
+    char* p = std::setlocale(LC_NUMERIC, nullptr);
+    if(p != nullptr) {
+      this->saved_locale = p;
+    }
+    std::setlocale(LC_NUMERIC, "C");
+  }
+
+  BufferedParser(): BufferedParser(4096) {}
+
+  ~BufferedParser() {
+    std::setlocale(LC_NUMERIC, saved_locale.c_str());
+    if (this->str != nullptr) {
+      free(this->str);
+    }
+  }
+
+  void setSource(SimpleBuffer* source) {
+    this->source = source;
+    this->offset = 0;
+    this->length = 0;
+  }
+
+  const char* setWhitespace(const char* whitespace) {
+    const char* previous_whitespace = this->whitespace;
+    this->whitespace = whitespace;
+    return previous_whitespace;
+  }
+
+  const char* setSeparators(const char* separators) {
+    const char* previous_sep = this->sep;
+    this->sep = separators;
+    return previous_sep;
   }
 
   int64_t charsLeftInBuffer() {
@@ -48,7 +119,12 @@ public:
         return true;
     }
 
-    int64_t new_chars = this->fillBuffer(this->buffer_length - chars_to_keep, this->str + chars_to_keep);
+    if (this->source == nullptr) {
+      this->length = 0;
+      return false;
+    }
+
+    int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
     if (new_chars == 0) {
       this->length = 0;
       return false;
@@ -77,16 +153,14 @@ public:
     }
   }
 
-  // Returns the character at the cursor and advances the cursor
-  // by one
+  // Returns the character at the cursor and advances the cursor by one
   char readChar() {
     char out = this->peekChar();
     this->advance();
     return out;
   }
 
-  // Returns the character currently ahead of the cursor
-  // without advancing the cursor (skips whitespace)
+  // Returns the character currently ahead of the cursor without advancing the cursor (skips whitespace)
   char peekChar() {
     this->skipWhitespace();
     if (this->checkBuffer(1)) {
@@ -317,12 +391,14 @@ public:
   }
 
 private:
-  const char* str;
+  char* str;
   int64_t length;
   int64_t offset;
   int64_t buffer_length;
   const char* whitespace;
   const char* sep;
+  SimpleBuffer* source;
+  std::string saved_locale;
 
   static std::string expectedFromChars(const char* chars) {
     int64_t nChars = strlen(chars);
@@ -361,7 +437,9 @@ private:
 
 class WKTV1String: public BufferedParser {
 public:
-  WKTV1String(const char* str): BufferedParser(str, " \r\n\t", " \r\n\t,();=") {}
+  WKTV1String() {
+    this->setSeparators(" \r\n\t,();=");
+  }
 
   wk_meta_t assertGeometryMeta() {
     wk_meta_t meta;
@@ -435,34 +513,22 @@ public:
   }
 };
 
-class WKTStreamingHandler {
+class WKTStreamer {
 public:
 
-  WKTStreamingHandler(WKHandlerXPtr& handler): handler(handler) {
-    // constructor and deleter set the thread locale while the object is in use
-#ifdef _MSC_VER
-    _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
-#endif
-    char* p = std::setlocale(LC_NUMERIC, nullptr);
-    if(p != nullptr) {
-      this->saved_locale = p;
-    }
-    std::setlocale(LC_NUMERIC, "C");
-  }
+  WKTStreamer(WKHandlerXPtr& handler): handler(handler) {}
 
-  ~WKTStreamingHandler() {
-    std::setlocale(LC_NUMERIC, saved_locale.c_str());
-  }
-
-  int readFeature(wk_vector_meta_t* meta, cpp11::r_string item, R_xlen_t feat_id) {
+  int streamFeature(wk_vector_meta_t* meta, cpp11::r_string item, R_xlen_t feat_id) {
     int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
     if (item == NA_STRING) {
       HANDLE_OR_RETURN(this->handler.null_feature());
     } else {
-      WKTV1String s(CHAR(item));
-      HANDLE_OR_RETURN(this->readGeometryWithType(s, WK_PART_ID_NONE));
+      const char* chars = CHAR(item);
+      buffer.set_buffer(chars, strlen(chars));
+      s.setSource(&(this->buffer));
+      HANDLE_OR_RETURN(this->readGeometryWithType(WK_PART_ID_NONE));
       s.assertFinished();
     }
 
@@ -471,7 +537,7 @@ public:
 
 protected:
 
-  int readGeometryWithType(WKTV1String& s, uint32_t part_id) {
+  int readGeometryWithType(uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
     int result;
     HANDLE_OR_RETURN(this->handler.geometry_start(&meta, part_id));
@@ -479,31 +545,31 @@ protected:
     switch (meta.geometry_type) {
 
     case WK_POINT:
-      HANDLE_OR_RETURN(this->readPoint(s, &meta));
+      HANDLE_OR_RETURN(this->readPoint(&meta));
       break;
 
     case WK_LINESTRING:
-      HANDLE_OR_RETURN(this->readLineString(s, &meta));
+      HANDLE_OR_RETURN(this->readLineString(&meta));
       break;
 
     case WK_POLYGON:
-      HANDLE_OR_RETURN(this->readPolygon(s, &meta));
+      HANDLE_OR_RETURN(this->readPolygon(&meta));
       break;
 
     case WK_MULTIPOINT:
-      HANDLE_OR_RETURN(this->readMultiPoint(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiPoint(&meta));
       break;
 
     case WK_MULTILINESTRING:
-      HANDLE_OR_RETURN(this->readMultiLineString(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiLineString(&meta));
       break;
 
     case WK_MULTIPOLYGON:
-      HANDLE_OR_RETURN(this->readMultiPolygon(s, &meta));
+      HANDLE_OR_RETURN(this->readMultiPolygon(&meta));
       break;
 
     case WK_GEOMETRYCOLLECTION:
-      HANDLE_OR_RETURN(this->readGeometryCollection(s, &meta));
+      HANDLE_OR_RETURN(this->readGeometryCollection(&meta));
       break;
 
     default:
@@ -513,25 +579,25 @@ protected:
     return this->handler.geometry_end(&meta, part_id);
   }
 
-  int readPoint(WKTV1String& s, const wk_meta_t* meta) {
+  int readPoint(const wk_meta_t* meta) {
     if (!s.assertEMPTYOrOpen()) {
       int result;
-      HANDLE_OR_RETURN(this->readPointCoordinate(s, meta));
+      HANDLE_OR_RETURN(this->readPointCoordinate(meta));
       s.assert_(')');
     }
 
     return WK_CONTINUE;
   }
 
-  int readLineString(WKTV1String& s, const wk_meta_t* meta) {
-    return this->readCoordinates(s, meta);
+  int readLineString(const wk_meta_t* meta) {
+    return this->readCoordinates(meta);
   }
 
-  int readPolygon(WKTV1String& s, const wk_meta_t* meta)  {
-    return this->readLinearRings(s, meta);
+  int readPolygon(const wk_meta_t* meta)  {
+    return this->readLinearRings(meta);
   }
 
-  int readMultiPoint(WKTV1String& s, const wk_meta_t* meta) {
+  int readMultiPoint(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -542,14 +608,14 @@ protected:
 
     if (s.isNumber()) { // (0 0, 1 1)
       do {
-        childMeta = this->childMeta(s, meta, WK_POINT);
+        childMeta = this->childMeta(meta, WK_POINT);
 
         HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
-          HANDLE_OR_RETURN(this->readPointCoordinate(s, &childMeta));
+          HANDLE_OR_RETURN(this->readPointCoordinate(&childMeta));
         }
         HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
 
@@ -558,9 +624,9 @@ protected:
 
     } else { // ((0 0), (1 1))
       do {
-        childMeta = this->childMeta(s, meta, WK_POINT);
+        childMeta = this->childMeta(meta, WK_POINT);
         HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
-        HANDLE_OR_RETURN(this->readPoint(s, &childMeta));
+        HANDLE_OR_RETURN(this->readPoint(&childMeta));
         HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
         part_id++;
       } while (s.assertOneOf(",)") != ')');
@@ -569,7 +635,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  int readMultiLineString(WKTV1String& s, const wk_meta_t* meta) {
+  int readMultiLineString(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -579,9 +645,9 @@ protected:
     int result;
 
     do {
-      childMeta = this->childMeta(s, meta, WK_LINESTRING);
+      childMeta = this->childMeta(meta, WK_LINESTRING);
       HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
-      HANDLE_OR_RETURN(this->readLineString(s, &childMeta));
+      HANDLE_OR_RETURN(this->readLineString(&childMeta));
       HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
 
       part_id++;
@@ -590,7 +656,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  uint32_t readMultiPolygon(WKTV1String& s, const wk_meta_t* meta) {
+  uint32_t readMultiPolygon(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -600,9 +666,9 @@ protected:
     int result;
 
     do {
-      childMeta = this->childMeta(s, meta, WK_POLYGON);
+      childMeta = this->childMeta(meta, WK_POLYGON);
       HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
-      HANDLE_OR_RETURN(this->readPolygon(s, &childMeta));
+      HANDLE_OR_RETURN(this->readPolygon(&childMeta));
       HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -610,7 +676,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  int readGeometryCollection(WKTV1String& s, const wk_meta_t* meta) {
+  int readGeometryCollection(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -619,14 +685,14 @@ protected:
     int result;
 
     do {
-      HANDLE_OR_RETURN(this->readGeometryWithType(s, part_id));
+      HANDLE_OR_RETURN(this->readGeometryWithType(part_id));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
 
     return WK_CONTINUE;
   }
 
-  uint32_t readLinearRings(WKTV1String& s, const wk_meta_t* meta) {
+  uint32_t readLinearRings(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
       return WK_CONTINUE;
     }
@@ -636,7 +702,7 @@ protected:
 
     do {
       HANDLE_OR_RETURN(this->handler.ring_start(meta, WK_SIZE_UNKNOWN, ring_id));
-      HANDLE_OR_RETURN(this->readCoordinates(s, meta));
+      HANDLE_OR_RETURN(this->readCoordinates(meta));
       HANDLE_OR_RETURN(this->handler.ring_end(meta, WK_SIZE_UNKNOWN, ring_id));
       ring_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -649,19 +715,19 @@ protected:
   // writers are unlikely to expect a point geometry with many coordinates).
   // This assumes that `s` has already been checked for EMPTY or an opener
   // since this is different for POINT (...) and MULTIPOINT (.., ...)
-  int readPointCoordinate(WKTV1String& s, const wk_meta_t* meta) {
+  int readPointCoordinate(const wk_meta_t* meta) {
     double coord[4];
     int result;
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
-    this->readCoordinate(s, coord, coordSize);
+    this->readCoordinate(coord, coordSize);
     HANDLE_OR_RETURN(handler.coord(meta, coord, 0));
     return WK_CONTINUE;
   }
 
-  int readCoordinates(WKTV1String& s, const wk_meta_t* meta) {
+  int readCoordinates(const wk_meta_t* meta) {
     double coord[4];
     int coordSize = 2;
     if (meta->flags & WK_FLAG_HAS_Z) coordSize++;
@@ -675,7 +741,7 @@ protected:
     int result;
 
     do {
-      this->readCoordinate(s, coord, coordSize);
+      this->readCoordinate(coord, coordSize);
       HANDLE_OR_RETURN(handler.coord(meta, coord, coord_id));
 
       coord_id++;
@@ -684,7 +750,7 @@ protected:
     return WK_CONTINUE;
   }
 
-  void readCoordinate(WKTV1String& s, double* coord, int coordSize) {
+  void readCoordinate(double* coord, int coordSize) {
     coord[0] = s.assertNumber();
     for (int i = 1; i < coordSize; i++) {
       s.assertWhitespace();
@@ -692,7 +758,7 @@ protected:
     }
   }
 
-  wk_meta_t childMeta(WKTV1String& s, const wk_meta_t* parent, int geometry_type) {
+  wk_meta_t childMeta(const wk_meta_t* parent, int geometry_type) {
     wk_meta_t childMeta;
     WK_META_RESET(childMeta, geometry_type);
     childMeta.flags = parent->flags;
@@ -709,8 +775,9 @@ protected:
   }
 
 private:
-  std::string saved_locale;
   WKHandlerXPtr& handler;
+  WKTV1String s;
+  SimpleBuffer buffer;
 };
 
 [[cpp11::register]]
@@ -728,7 +795,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandlerXPtr cppHandler(xptr);
-  WKTStreamingHandler streamer(cppHandler);
+  WKTStreamer streamer(cppHandler);
 
   int result = cppHandler.vector_start(&globalMeta);
 
@@ -737,7 +804,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, bool reveal_
       if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
 
       try {
-        if (streamer.readFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
+        if (streamer.streamFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
           break;
         }
       } catch (WKParseException& e) {
