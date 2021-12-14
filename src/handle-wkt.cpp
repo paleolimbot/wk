@@ -536,10 +536,10 @@ public:
 };
 
 template <class SourceType>
-class WKTStreamer {
+class BufferedWKTReader {
 public:
 
-  WKTStreamer(WKHandlerXPtr& handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
+  BufferedWKTReader(WKHandlerXPtr& handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     int result;
@@ -800,7 +800,7 @@ private:
   BufferedWKTParser<SourceType> s;
 };
 
-int handle_wkt_r_sting(WKTStreamer<SimpleBufferSource>& streamer, SimpleBufferSource* source,
+int handle_wkt_r_sting(BufferedWKTReader<SimpleBufferSource>& streamer, SimpleBufferSource* source,
                        wk_vector_meta_t* meta, cpp11::r_string item,
                        R_xlen_t feat_id) {  
   if (item == NA_STRING) {
@@ -828,7 +828,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_s
 
   WKHandlerXPtr cppHandler(xptr);
   SimpleBufferSource source;
-  WKTStreamer<SimpleBufferSource> streamer(cppHandler, buffer_size);
+  BufferedWKTReader<SimpleBufferSource> streamer(cppHandler, buffer_size);
 
   int result = cppHandler.vector_start(&globalMeta);
 
