@@ -1,7 +1,7 @@
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_wkt <- function(handleable, handler, ..., wkt_parser_buffer_size = 32) {
+wk_handle.wk_wkt <- function(handleable, handler, ..., wkt_parser_buffer_size = 4096) {
   handler <- as_wk_handler(handler)
   wk_cpp_handle_wkt(handleable, handler, wkt_parser_buffer_size, reveal_size = TRUE)
 }

@@ -381,7 +381,7 @@ public:
           this->error("An item with length <= buffer_length", "end of buffer");
         }
 
-        this->checkBuffer(remaining_buffer_chars);
+        this->checkBuffer(n_chars + 2);
       }
     }
 
