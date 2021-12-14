@@ -12,18 +12,17 @@
 
 class BufferedParserException: public WKParseException {
 public:
-  BufferedParserException(std::string expected, std::string found, const char* src, int64_t pos):
-  WKParseException(makeError(expected, found, src, pos)),
-  expected(expected), found(found), src(src), pos(pos) {}
+  BufferedParserException(std::string expected, std::string found, std::string context):
+  WKParseException(makeError(expected, found, context)),
+  expected(expected), found(found), context(context) {}
 
   std::string expected;
   std::string found;
-  std::string src;
-  int64_t pos;
+  std::string context;
 
-  static std::string makeError(std::string expected, std::string found, const char* src, int64_t pos) {
+  static std::string makeError(std::string expected, std::string found, std::string context) {
     std::stringstream stream;
-    stream << "Expected " << expected << " but found " << found << " (:" << pos << ")";
+    stream << "Expected " << expected << " but found " << found << context;
     return stream.str().c_str();
   }
 };
@@ -259,7 +258,12 @@ public:
 
     char found = this->str[this->offset];
     if (strchr(this->whitespace, found) == nullptr) {
-      this->error("whitespace", quote(this->peekUntilSep()));
+      std::string untilSep = this->peekUntilSep();
+      if (untilSep.size() == 0) {
+        this->error("whitespace", quote(this->peekChar()));
+      } else {
+        this->error("whitespace", quote(this->peekUntilSep()));
+      }
     }
 
     int64_t offset0 = this->offset;
@@ -384,15 +388,15 @@ public:
   }
 
   [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
-    throw BufferedParserException(expected, quote(found), this->str, this->offset - found.size());
+    throw BufferedParserException(expected, quote(found), "");
   }
 
   [[noreturn]] void error(std::string expected, std::string found) {
-    throw BufferedParserException(expected, found, this->str, this->offset);
+    throw BufferedParserException(expected, found, "");
   }
 
   [[noreturn]] void error(std::string expected) {
-    throw BufferedParserException(expected, quote(this->peekUntilSep()), this->str, this->offset);
+    throw BufferedParserException(expected, quote(this->peekUntilSep()), "");
   }
 
 private:
