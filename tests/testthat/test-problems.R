@@ -61,6 +61,6 @@ test_that("validating handlers return a character vector of problems for WKT", {
   wkt_bad[1] <- "NOT WKT"
   expect_identical(
     wk_handle(new_wk_wkt(wkt_bad), wk_problems_handler()),
-    c("Expected geometry type or 'SRID=' but found 'NOT'", rep(NA_character_, length(wkt_good) - 1))
+    c("Expected geometry type or 'SRID=' but found 'NOT' at byte 1", rep(NA_character_, length(wkt_good) - 1))
   )
 })

@@ -63,7 +63,8 @@ private:
 class BufferedParser {
 public:
   BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0), 
-    buffer_length(buffer_length), whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {
+    buffer_length(buffer_length), source_offset(0),
+    whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {
     this->str = (char*) malloc(this->buffer_length);
     if (this->str == nullptr) {
       throw std::runtime_error("Failed to allocate BufferedParser buffer");
@@ -94,6 +95,7 @@ public:
     this->source = source;
     this->offset = 0;
     this->length = 0;
+    this->source_offset = 0;
   }
 
   const char* setWhitespace(const char* whitespace) {
@@ -131,6 +133,7 @@ public:
       this->source = nullptr;
     }
 
+    this->source_offset += new_chars;
     this->offset = 0;
     this->length = chars_to_keep + new_chars;
     return n_chars <= this->length;
@@ -390,15 +393,21 @@ public:
   }
 
   [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
-    throw BufferedParserException(expected, quote(found), "");
+    throw BufferedParserException(expected, quote(found), this->errorContext(this->offset - found.size()));
   }
 
   [[noreturn]] void error(std::string expected, std::string found) {
-    throw BufferedParserException(expected, found, "");
+    throw BufferedParserException(expected, found, this->errorContext(this->offset));
   }
 
   [[noreturn]] void error(std::string expected) {
-    throw BufferedParserException(expected, quote(this->peekUntilSep()), "");
+    throw BufferedParserException(expected, quote(this->peekUntilSep()), this->errorContext(this->offset));
+  }
+
+  std::string errorContext(int64_t pos) {
+    std::stringstream stream;
+    stream << " at byte " << (this->source_offset - this->length + pos);
+    return stream.str();
   }
 
 private:
@@ -406,6 +415,7 @@ private:
   int64_t length;
   int64_t offset;
   int64_t buffer_length;
+  int64_t source_offset;
   const char* whitespace;
   const char* sep;
   SimpleBufferSource* source;
