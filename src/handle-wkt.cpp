@@ -1,6 +1,7 @@
 
-#include "cpp11.hpp"
-#include "wk-v1-reader.hpp"
+#include "cpp11/protect.hpp"
+#include "cpp11/declarations.hpp"
+#include "wk-v1.h"
 #include <clocale>
 #include <cstring>
 #include <sstream>
@@ -9,6 +10,10 @@
 #define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
+
+#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
+  result = expr;                                               \
+  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
 
 class BufferedParserException: public std::runtime_error {
 public:
@@ -535,6 +540,13 @@ public:
   }
 };
 
+
+// The BufferedWKTReader is carefully designed to (1) avoid any virtual method calls
+// (via templating) and (2) to avoid using any C++ objects with non-trivial destructors.
+// The non-trivial destructors bit is important because handler methods can and do longjmp
+// when used in R. The object itself does not have a non-trivial destructor and it's expected
+// that the scope in which it is declared uses the proper unwind-protection such that the
+// object and its members are deleted.
 template <class SourceType>
 class BufferedWKTReader {
 public:
@@ -542,18 +554,22 @@ public:
   BufferedWKTReader(wk_handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
-    int result;
-    HANDLE_OR_RETURN(this->handler->feature_start(meta, feat_id, this->handler->handler_data));
+    try {
+      int result;
+      HANDLE_OR_RETURN(this->handler->feature_start(meta, feat_id, this->handler->handler_data));
 
-    if (source == nullptr) {
-      HANDLE_OR_RETURN(this->handler->null_feature(this->handler->handler_data));
-    } else {
-      s.setSource(source);
-      HANDLE_OR_RETURN(this->readGeometryWithType(WK_PART_ID_NONE));
-      s.assertFinished();
+      if (source == nullptr) {
+        HANDLE_OR_RETURN(this->handler->null_feature(this->handler->handler_data));
+      } else {
+        s.setSource(source);
+        HANDLE_OR_RETURN(this->readGeometryWithType(WK_PART_ID_NONE));
+        s.assertFinished();
+      }
+
+      return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
+    } catch (BufferedParserException& e) {
+      return this->handler->error(e.what(), this->handler->handler_data);
     }
-
-    return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
   }
 
 protected:
@@ -594,7 +610,7 @@ protected:
       break;
 
     default:
-      throw WKParseException("Unknown geometry type"); // # nocov
+      throw std::runtime_error("Unknown geometry type"); // # nocov
     }
 
     return this->handler->geometry_end(&meta, part_id, this->handler->handler_data);
@@ -812,44 +828,67 @@ int handle_wkt_r_sting(BufferedWKTReader<SimpleBufferSource>& streamer, SimpleBu
   }
 }
 
-[[cpp11::register]]
-cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_size, bool reveal_size) {
-  R_xlen_t n_features = wkt.size();
-  wk_vector_meta_t globalMeta;
-  WK_VECTOR_META_RESET(globalMeta, WK_GEOMETRY);
+void wkt_read_wkt_unsafe(SEXP wkt_sexp,
+                         BufferedWKTReader<SimpleBufferSource>* reader,
+                         SimpleBufferSource* source, wk_vector_meta_t* global_meta) {
+  
+  R_xlen_t n_features = Rf_xlength(wkt_sexp);
+  SEXP item;
+  int result;
 
-  // this is needed to test that handlers function properly when
-  // passed a vector of indeterminite length
-  if (reveal_size) {
-    globalMeta.size = n_features;
-  }
+  for (R_xlen_t i = 0; i < n_features; i++) {
+    if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
 
-  globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
+    item = STRING_ELT(wkt_sexp, i);
+    if (item == NA_STRING) {
+      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, nullptr));
+    } else {
+      const char* chars = CHAR(item);
+      source->set_buffer(chars, strlen(chars));
+      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, source));
+    }
 
-  // currently only using WKHandlerXPtr to manage the lifecycle
-  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
-  WKHandlerXPtr cppHandler(xptr);
-
-  SimpleBufferSource source;
-  BufferedWKTReader<SimpleBufferSource> streamer(handler, buffer_size);
-
-  int result = cppHandler.vector_start(&globalMeta);
-
-  if (result != WK_ABORT) {
-    for (R_xlen_t i = 0; i < n_features; i++) {
-      if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
-
-      try {
-        if (handle_wkt_r_sting(streamer, &source, &globalMeta, wkt[i], i) == WK_ABORT) {
-          break;
-        }
-      } catch (BufferedParserException& e) {
-        if (cppHandler.error(e.what()) == WK_ABORT) {
-          break;
-        }
-      }
+    if (result == WK_ABORT) {
+      break;
     }
   }
+}
 
-  return cppHandler.vector_end(&globalMeta);
+SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
+  BEGIN_CPP11
+
+  SEXP wkt_sexp = VECTOR_ELT(data, 0);
+  SEXP buffer_size_sexp = VECTOR_ELT(data, 1);
+  SEXP reveal_size_sexp = VECTOR_ELT(data, 2);
+  int buffer_size = INTEGER(buffer_size_sexp)[0];
+  int reveal_size = LOGICAL(reveal_size_sexp)[0];
+
+  if (TYPEOF(wkt_sexp) != STRSXP) {
+    cpp11::safe[Rf_error]("Input to wkt handler must be a character vector");
+  }
+
+  R_xlen_t n_features = Rf_xlength(wkt_sexp);
+
+  wk_vector_meta_t global_meta;
+  WK_VECTOR_META_RESET(global_meta, WK_GEOMETRY);
+  global_meta.flags |= WK_FLAG_DIMS_UNKNOWN;
+  if (reveal_size) {
+    global_meta.size = n_features;
+  }
+
+  SimpleBufferSource source;
+  BufferedWKTReader<SimpleBufferSource> reader(handler, buffer_size);
+
+  int result = cpp11::safe[handler->vector_start](&global_meta, handler->handler_data);
+  if (result != WK_ABORT) {
+    cpp11::safe[wkt_read_wkt_unsafe](wkt_sexp, &reader, &source, &global_meta);
+  }
+
+  return cpp11::safe[handler->vector_end](&global_meta, handler->handler_data);
+
+  END_CPP11
+}
+
+extern "C" SEXP wk_c_read_wkt(SEXP data, SEXP handler_xptr) {
+  return wk_handler_run_xptr(&wkt_read_wkt, data, handler_xptr);
 }
