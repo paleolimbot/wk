@@ -32,7 +32,7 @@
 
 \method{wk_handle}{wk_wkb}(handleable, handler, ...)
 
-\method{wk_handle}{wk_wkt}(handleable, handler, ..., wkt_parser_buffer_size = 4096)
+\method{wk_handle}{wk_wkt}(handleable, handler, ...)
 
 \method{wk_handle}{wk_xy}(handleable, handler, ...)
 

@@ -1,13 +1,13 @@
 
 #' @rdname wk_handle
 #' @export
-wk_handle.wk_wkt <- function(handleable, handler, ..., wkt_parser_buffer_size = 4096) {
+wk_handle.wk_wkt <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
   .Call(
     wk_c_read_wkt,
     list(
       handleable,
-      as.integer(wkt_parser_buffer_size)[1],
+      4096L,
       TRUE
     ),
     handler
