@@ -118,15 +118,17 @@ public:
         return true;
     }
 
+    if (this->source == nullptr) {
+      return false;
+    }
+
     if (chars_to_keep > 0) {
       memmove(this->str, this->str + this->offset, chars_to_keep);
     }
 
-    int64_t new_chars;
-    if (this->source == nullptr) {
-      new_chars = 0;
-    } else {
-      new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
+    int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
+    if (new_chars == 0) {
+      this->source = nullptr;
     }
 
     this->offset = 0;
@@ -260,7 +262,7 @@ public:
     if (strchr(this->whitespace, found) == nullptr) {
       std::string untilSep = this->peekUntilSep();
       if (untilSep.size() == 0) {
-        this->error("whitespace", quote(this->peekChar()));
+        this->error("whitespace", quote(found));
       } else {
         this->error("whitespace", quote(this->peekUntilSep()));
       }
