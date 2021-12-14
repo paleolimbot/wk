@@ -60,6 +60,7 @@ private:
   int64_t offset;
 };
 
+template <class SourceType>
 class BufferedParser {
 public:
   BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0), 
@@ -454,10 +455,11 @@ private:
 };
 
 
-class BufferedWKTParser: public BufferedParser {
+template <class SourceType>
+class BufferedWKTParser: public BufferedParser<SourceType> {
 public:
 
-  BufferedWKTParser(int64_t buffer_size): BufferedParser(buffer_size) {
+  BufferedWKTParser(int64_t buffer_size): BufferedParser<SourceType>(buffer_size) {
     this->setSeparators(" \r\n\t,();=");
   }
 
@@ -533,6 +535,7 @@ public:
   }
 };
 
+template <class SourceType>
 class WKTStreamer {
 public:
 
@@ -796,8 +799,8 @@ protected:
 
 private:
   WKHandlerXPtr& handler;
-  BufferedWKTParser s;
-  SimpleBufferSource buffer;
+  BufferedWKTParser<SourceType> s;
+  SourceType buffer;
 };
 
 [[cpp11::register]]
@@ -815,7 +818,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_s
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandlerXPtr cppHandler(xptr);
-  WKTStreamer streamer(cppHandler, buffer_size);
+  WKTStreamer<SimpleBufferSource> streamer(cppHandler, buffer_size);
 
   int result = cppHandler.vector_start(&globalMeta);
 
