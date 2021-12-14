@@ -10,11 +10,11 @@
   result = expr;                                               \
   if (result != WK_CONTINUE) return result
 
-class BufferedParserException: public WKParseException {
+class BufferedParserException: public std::runtime_error {
 public:
   BufferedParserException(std::string expected, std::string found, std::string context):
-  WKParseException(makeError(expected, found, context)),
-  expected(expected), found(found), context(context) {}
+  std::runtime_error(makeError(expected, found, context)),
+    expected(expected), found(found), context(context) {}
 
   std::string expected;
   std::string found;
@@ -539,21 +539,21 @@ template <class SourceType>
 class BufferedWKTReader {
 public:
 
-  BufferedWKTReader(WKHandlerXPtr& handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
+  BufferedWKTReader(wk_handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     int result;
-    HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
+    HANDLE_OR_RETURN(this->handler->feature_start(meta, feat_id, this->handler->handler_data));
 
     if (source == nullptr) {
-      HANDLE_OR_RETURN(this->handler.null_feature());
+      HANDLE_OR_RETURN(this->handler->null_feature(this->handler->handler_data));
     } else {
       s.setSource(source);
       HANDLE_OR_RETURN(this->readGeometryWithType(WK_PART_ID_NONE));
       s.assertFinished();
     }
 
-    return this->handler.feature_end(meta, feat_id);
+    return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
   }
 
 protected:
@@ -561,7 +561,7 @@ protected:
   int readGeometryWithType(uint32_t part_id) {
     wk_meta_t meta = s.assertGeometryMeta();
     int result;
-    HANDLE_OR_RETURN(this->handler.geometry_start(&meta, part_id));
+    HANDLE_OR_RETURN(this->handler->geometry_start(&meta, part_id, this->handler->handler_data));
 
     switch (meta.geometry_type) {
 
@@ -597,7 +597,7 @@ protected:
       throw WKParseException("Unknown geometry type"); // # nocov
     }
 
-    return this->handler.geometry_end(&meta, part_id);
+    return this->handler->geometry_end(&meta, part_id, this->handler->handler_data);
   }
 
   int readPoint(const wk_meta_t* meta) {
@@ -631,14 +631,14 @@ protected:
       do {
         childMeta = this->childMeta(meta, WK_POINT);
 
-        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(&childMeta));
         }
-        HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
 
         part_id++;
       } while (s.assertOneOf(",)") != ')');
@@ -646,9 +646,9 @@ protected:
     } else { // ((0 0), (1 1))
       do {
         childMeta = this->childMeta(meta, WK_POINT);
-        HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
         HANDLE_OR_RETURN(this->readPoint(&childMeta));
-        HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
         part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -667,9 +667,9 @@ protected:
 
     do {
       childMeta = this->childMeta(meta, WK_LINESTRING);
-      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
       HANDLE_OR_RETURN(this->readLineString(&childMeta));
-      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
 
       part_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -688,9 +688,9 @@ protected:
 
     do {
       childMeta = this->childMeta(meta, WK_POLYGON);
-      HANDLE_OR_RETURN(this->handler.geometry_start(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
       HANDLE_OR_RETURN(this->readPolygon(&childMeta));
-      HANDLE_OR_RETURN(this->handler.geometry_end(&childMeta, part_id));
+      HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -722,9 +722,9 @@ protected:
     int result;
 
     do {
-      HANDLE_OR_RETURN(this->handler.ring_start(meta, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler->ring_start(meta, WK_SIZE_UNKNOWN, ring_id, this->handler->handler_data));
       HANDLE_OR_RETURN(this->readCoordinates(meta));
-      HANDLE_OR_RETURN(this->handler.ring_end(meta, WK_SIZE_UNKNOWN, ring_id));
+      HANDLE_OR_RETURN(this->handler->ring_end(meta, WK_SIZE_UNKNOWN, ring_id, this->handler->handler_data));
       ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -744,7 +744,7 @@ protected:
     if (meta->flags & WK_FLAG_HAS_M) coordSize++;
 
     this->readCoordinate(coord, coordSize);
-    HANDLE_OR_RETURN(handler.coord(meta, coord, 0));
+    HANDLE_OR_RETURN(handler->coord(meta, coord, 0, this->handler->handler_data));
     return WK_CONTINUE;
   }
 
@@ -763,7 +763,7 @@ protected:
 
     do {
       this->readCoordinate(coord, coordSize);
-      HANDLE_OR_RETURN(handler.coord(meta, coord, coord_id));
+      HANDLE_OR_RETURN(handler->coord(meta, coord, coord_id, this->handler->handler_data));
 
       coord_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -796,7 +796,7 @@ protected:
   }
 
 private:
-  WKHandlerXPtr& handler;
+  wk_handler_t* handler;
   BufferedWKTParser<SourceType> s;
 };
 
@@ -826,9 +826,12 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_s
 
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
+  // currently only using WKHandlerXPtr to manage the lifecycle
+  wk_handler_t* handler = (wk_handler_t*) R_ExternalPtrAddr(xptr);
   WKHandlerXPtr cppHandler(xptr);
+
   SimpleBufferSource source;
-  BufferedWKTReader<SimpleBufferSource> streamer(cppHandler, buffer_size);
+  BufferedWKTReader<SimpleBufferSource> streamer(handler, buffer_size);
 
   int result = cppHandler.vector_start(&globalMeta);
 
