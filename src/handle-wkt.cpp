@@ -541,16 +541,14 @@ public:
 
   WKTStreamer(WKHandlerXPtr& handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
-  int streamFeature(wk_vector_meta_t* meta, cpp11::r_string item, R_xlen_t feat_id) {
+  int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     int result;
     HANDLE_OR_RETURN(this->handler.feature_start(meta, feat_id));
 
-    if (item == NA_STRING) {
+    if (source == nullptr) {
       HANDLE_OR_RETURN(this->handler.null_feature());
     } else {
-      const char* chars = CHAR(item);
-      buffer.set_buffer(chars, strlen(chars));
-      s.setSource(&(this->buffer));
+      s.setSource(source);
       HANDLE_OR_RETURN(this->readGeometryWithType(WK_PART_ID_NONE));
       s.assertFinished();
     }
@@ -800,8 +798,19 @@ protected:
 private:
   WKHandlerXPtr& handler;
   BufferedWKTParser<SourceType> s;
-  SourceType buffer;
 };
+
+int handle_wkt_r_sting(WKTStreamer<SimpleBufferSource>& streamer, SimpleBufferSource* source,
+                       wk_vector_meta_t* meta, cpp11::r_string item,
+                       R_xlen_t feat_id) {  
+  if (item == NA_STRING) {
+    return streamer.readFeature(meta, feat_id, nullptr);
+  } else {
+    const char* chars = CHAR(item);
+    source->set_buffer(chars, strlen(chars));
+    return streamer.readFeature(meta, feat_id, source);
+  }
+}
 
 [[cpp11::register]]
 cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_size, bool reveal_size) {
@@ -818,6 +827,7 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_s
   globalMeta.flags |= WK_FLAG_DIMS_UNKNOWN;
 
   WKHandlerXPtr cppHandler(xptr);
+  SimpleBufferSource source;
   WKTStreamer<SimpleBufferSource> streamer(cppHandler, buffer_size);
 
   int result = cppHandler.vector_start(&globalMeta);
@@ -827,10 +837,10 @@ cpp11::sexp wk_cpp_handle_wkt(cpp11::strings wkt, cpp11::sexp xptr, int buffer_s
       if (((i + 1) % 1000) == 0) cpp11::check_user_interrupt();
 
       try {
-        if (streamer.streamFeature(&globalMeta, wkt[i], i) == WK_ABORT) {
+        if (handle_wkt_r_sting(streamer, &source, &globalMeta, wkt[i], i) == WK_ABORT) {
           break;
         }
-      } catch (WKParseException& e) {
+      } catch (BufferedParserException& e) {
         if (cppHandler.error(e.what()) == WK_ABORT) {
           break;
         }
