@@ -82,8 +82,6 @@ public:
     std::setlocale(LC_NUMERIC, "C");
   }
 
-  BufferedParser(): BufferedParser(4096) {}
-
   ~BufferedParser() {
     std::setlocale(LC_NUMERIC, saved_locale.c_str());
     if (this->str != nullptr) {
@@ -458,9 +456,6 @@ private:
 
 class BufferedWKTParser: public BufferedParser {
 public:
-  BufferedWKTParser() {
-    this->setSeparators(" \r\n\t,();=");
-  }
 
   BufferedWKTParser(int64_t buffer_size): BufferedParser(buffer_size) {
     this->setSeparators(" \r\n\t,();=");
