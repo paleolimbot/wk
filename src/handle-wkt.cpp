@@ -55,12 +55,6 @@ public:
     }
   }
 
-  std::string error_context(int64_t offset_from_offset) {
-    std::stringstream stream;
-    stream << " (:" << (this->offset + offset_from_offset) << ")";
-    return stream.str();
-  }
-
 private:
   const char* str;
   int64_t size;
@@ -397,7 +391,6 @@ private:
   const char* whitespace;
   const char* sep;
   SimpleBufferSource* source;
-  std::string saved_locale;
 
   static std::string expectedFromChars(const char* chars) {
     int64_t nChars = strlen(chars);
