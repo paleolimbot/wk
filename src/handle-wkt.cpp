@@ -213,10 +213,6 @@ public:
   // cursor cannot be parsed into a double. This will
   // accept "inf", "-inf", and "nan".
   double assertNumber() {
-    if (this->finished()) {
-      this->error("a number", "end of input");
-    }
-
     std::string_view text = this->peekUntilSep();
     double out;
     auto result = fast_float::from_chars(text.begin(), text.end(), out);
@@ -367,6 +363,12 @@ public:
   }
 
   [[noreturn]] void error(std::string expected, std::string_view found) {
+    std::stringstream stream;
+    stream << found;
+    throw BufferedParserException(expected, stream.str(), this->errorContext(this->offset));
+  }
+
+  [[noreturn]] void error(const char* expected, std::string found) {
     std::stringstream stream;
     stream << found;
     throw BufferedParserException(expected, stream.str(), this->errorContext(this->offset));
