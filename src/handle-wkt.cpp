@@ -2,6 +2,7 @@
 #include "cpp11/protect.hpp"
 #include "cpp11/declarations.hpp"
 #include "wk-v1.h"
+#include "fastfloat.h"
 #include <clocale>
 #include <cstring>
 #include <sstream>
@@ -246,15 +247,16 @@ public:
     }
 
     std::string text = this->peekUntilSep();
-    const char* textPtr = text.c_str();
-    char* endPtr;
-    double out = std::strtod(textPtr, &endPtr);
-    if (endPtr != (textPtr + text.size())) {
-      this->error("a number", quote(text));
-    }
+    const char* textPtr = text.c_str();    
+    double out;
+    auto result = fast_float::from_chars(textPtr, textPtr + text.size(), out);
 
-    this->advance(text.size());
-    return out;
+    if (result.ec != std::errc()) {
+      this->error("a number", quote(text));
+    } else {
+      this->advance(text.size());
+      return out;
+    }
   }
 
   // Asserts that the character at the cursor is whitespace, and

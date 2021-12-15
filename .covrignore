@@ -1,2 +1,3 @@
 inst/include/wk
 src/cpp11.cpp
+src/fastfloat.h
