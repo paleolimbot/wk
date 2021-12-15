@@ -317,6 +317,10 @@ test_that("wkt_translate_* has reasonable error messages", {
   expect_error(wkt_translate_wkt("LINESTRING (30A"), "^Expected")
   expect_error(wkt_translate_wkt("SRID=30A"), "^Expected")
   expect_error(wkt_translate_wkt("SRID"), "^Expected")
+  expect_error(
+    wkt_translate_wkt(strrep("a", 4096)),
+    "Expected a value with fewer than 4096 character"
+  )
 })
 
 test_that("wkt_translate_* can handle non-finite values", {

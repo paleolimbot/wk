@@ -108,6 +108,12 @@ public:
         return true;
     }
 
+    if (n_chars >= this->buffer_length) {
+      std::stringstream stream;
+      stream << "a value with fewer than " << this->buffer_length << " characters";
+      throw BufferedParserException(stream.str(), "a longer value", "");
+    }
+
     if (this->source == nullptr) {
       return false;
     }
@@ -332,22 +338,13 @@ public:
     int64_t n_chars = -1;
     bool found = false;
 
-    while (!found && ((this->offset + n_chars + 1) < this->length)) {
+    while (!found && this->checkBuffer(n_chars + 2)) {
       while ((this->offset + n_chars + 1) < this->length) {
         n_chars++;
         if (strchr(chars, this->str[this->offset + n_chars])) {
           found = true;
           break;
         }
-      }
-
-      if (!found) {
-        int64_t remaining_buffer_chars = this->buffer_length - n_chars;
-        if (remaining_buffer_chars <= 0) {
-          this->error("An item with length <= buffer_length", "end of buffer");
-        }
-
-        this->checkBuffer(n_chars + 2);
       }
     }
 
@@ -779,18 +776,6 @@ private:
   wk_handler_t* handler;
   BufferedWKTParser<SourceType> s;
 };
-
-int handle_wkt_r_sting(BufferedWKTReader<SimpleBufferSource>& streamer, SimpleBufferSource* source,
-                       wk_vector_meta_t* meta, cpp11::r_string item,
-                       R_xlen_t feat_id) {
-  if (item == NA_STRING) {
-    return streamer.readFeature(meta, feat_id, nullptr);
-  } else {
-    const char* chars = CHAR(item);
-    source->set_buffer(chars, strlen(chars));
-    return streamer.readFeature(meta, feat_id, source);
-  }
-}
 
 void wkt_read_wkt_unsafe(SEXP wkt_sexp,
                          BufferedWKTReader<SimpleBufferSource>* reader,
