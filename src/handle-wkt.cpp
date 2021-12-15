@@ -194,12 +194,10 @@ public:
     // complicated by nan and inf
     if (this->isOneOf("-nNiI.")) {
       std::string text = this->peekUntilSep();
-      try {
-        std::stod(text);
-        return true;
-      } catch(std::exception& e) {
-        return false;
-      }
+      const char* textPtr = text.c_str();    
+      double out;
+      auto result = fast_float::from_chars(textPtr, textPtr + text.size(), out);
+      return result.ec == std::errc();
     } else {
       return this->isOneOf("-0123456789");
     }
