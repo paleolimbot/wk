@@ -27,7 +27,7 @@ public:
   std::string found;
   std::string context;
 
-  static std::string makeError(std::string expected, std::string found, std::string context) {
+  static std::string makeError(std::string expected, std::string found, std::string context = "") {
     std::stringstream stream;
     stream << "Expected " << expected << " but found " << found << context;
     return stream.str().c_str();
@@ -77,21 +77,9 @@ public:
     if (this->str == nullptr) {
       throw std::runtime_error("Failed to allocate BufferedParser buffer");
     }
-
-    // constructor and deleter set the thread locale while the object is in use
-    // for consistent parsing of numbers
-#ifdef _MSC_VER
-    _configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
-#endif
-    char* p = std::setlocale(LC_NUMERIC, nullptr);
-    if(p != nullptr) {
-      this->saved_locale = p;
-    }
-    std::setlocale(LC_NUMERIC, "C");
   }
 
   ~BufferedParser() {
-    std::setlocale(LC_NUMERIC, saved_locale.c_str());
     if (this->str != nullptr) {
       free(this->str);
     }
