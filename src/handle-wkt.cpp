@@ -3,7 +3,7 @@
 #include "cpp11/declarations.hpp"
 #include "wk-v1.h"
 #define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
-#include "fastfloat.h"
+#include "fast_float.h"
 #include <clocale>
 #include <cstring>
 #include <sstream>

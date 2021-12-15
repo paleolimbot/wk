@@ -10,4 +10,4 @@ header_text <- withr::with_dir(
   system("python3 script/amalgamate.py", intern = TRUE)
 )
 
-readr::write_lines(header_text, "src/fastfloat.h")
+readr::write_lines(header_text, "src/fast_float.h")
