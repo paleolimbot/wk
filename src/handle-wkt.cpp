@@ -64,7 +64,7 @@ private:
 template <class SourceType>
 class BufferedParser {
 public:
-  BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0), 
+  BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0),
     buffer_length(buffer_length), source_offset(0),
     whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {
     this->str = (char*) malloc(this->buffer_length);
@@ -168,9 +168,9 @@ public:
   bool isNumber() {
     // complicated by nan and inf
     if (this->isOneOf("-nNiI.")) {
-      std::string_view text = this->peekUntilSep();
+      std::string text = this->peekUntilSep();
       double out;
-      auto result = fast_float::from_chars(text.begin(), text.end(), out);
+      auto result = fast_float::from_chars(text.data(), text.data() + text.size(), out);
       return result.ec == std::errc();
     } else {
       return this->isOneOf("-0123456789");
@@ -183,8 +183,8 @@ public:
     return (found >= 'a' && found <= 'z') || (found >= 'A' && found <= 'Z');
   }
 
-  std::string_view assertWord() {
-    std::string_view text = this->peekUntilSep();
+  std::string assertWord() {
+    std::string text = this->peekUntilSep();
     if (!this->isLetter()) {
       this->error("a word", quote(text));
     }
@@ -197,15 +197,15 @@ public:
   // throwing an exception if whatever is ahead of the
   // cursor cannot be parsed into an integer
   long assertInteger() {
-    std::string_view text = this->peekUntilSep();
-    char* endPtr;
-    long out = std::strtol(text.begin(), &endPtr, 10);
-    if (endPtr != text.end()) {
+    std::string text = this->peekUntilSep();
+
+    try {
+      long out = std::stol(text);
+      this->offset += text.size();
+      return out;
+    } catch (std::invalid_argument& e) {
       this->error("an integer", quote(text));
     }
-
-    this->offset += text.size();
-    return out;
   }
 
   // Returns the double currently ahead of the cursor,
@@ -213,9 +213,9 @@ public:
   // cursor cannot be parsed into a double. This will
   // accept "inf", "-inf", and "nan".
   double assertNumber() {
-    std::string_view text = this->peekUntilSep();
+    std::string text = this->peekUntilSep();
     double out;
-    auto result = fast_float::from_chars(text.begin(), text.end(), out);
+    auto result = fast_float::from_chars(text.data(), text.data() + text.size(), out);
 
     if (result.ec != std::errc()) {
       this->error("a number", quote(text));
@@ -235,7 +235,7 @@ public:
 
     char found = this->str[this->offset];
     if (strchr(this->whitespace, found) == nullptr) {
-      std::string_view untilSep = this->peekUntilSep();
+      std::string untilSep = this->peekUntilSep();
       if (untilSep.size() == 0) {
         this->error("whitespace", quote(found));
       } else {
@@ -278,23 +278,23 @@ public:
   // which is defined to be whitespace or the following characters: =;,()
   // advancing the cursor. If we are at the end of the string, this will
   // return std::string("")
-  std::string_view readUntilSep() {
+  std::string readUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
     bool finished = this->finished();
     if (wordLen == 0 && !finished) {
       wordLen = 1;
     }
-    std::string_view out(this->str + this->offset, wordLen);
+    std::string out(this->str + this->offset, wordLen);
     this->offset += wordLen;
     return out;
   }
 
   // Returns the text between the cursor and the next separator without advancing the cursor.
-  std::string_view peekUntilSep() {
+  std::string peekUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
-    return std::string_view(this->str + this->offset, wordLen);
+    return std::string(this->str + this->offset, wordLen);
   }
 
   // Advances the cursor past any whitespace, returning the number of characters skipped.
@@ -318,7 +318,7 @@ public:
         }
       }
     }
-    
+
     return n_skipped;
   }
 
@@ -331,7 +331,7 @@ public:
 
     int64_t n_chars = -1;
     bool found = false;
-    
+
     while (!found && ((this->offset + n_chars + 1) < this->length)) {
       while ((this->offset + n_chars + 1) < this->length) {
         n_chars++;
@@ -358,17 +358,11 @@ public:
     return n_chars;
   }
 
-  [[ noreturn ]] void errorBefore(std::string expected, std::string_view found) {
+  [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
     throw BufferedParserException(expected, quote(found), this->errorContext(this->offset - found.size()));
   }
 
-  [[noreturn]] void error(std::string expected, std::string_view found) {
-    std::stringstream stream;
-    stream << found;
-    throw BufferedParserException(expected, stream.str(), this->errorContext(this->offset));
-  }
-
-  [[noreturn]] void error(const char* expected, std::string found) {
+  [[noreturn]] void error(std::string expected, std::string found) {
     std::stringstream stream;
     stream << found;
     throw BufferedParserException(expected, stream.str(), this->errorContext(this->offset));
@@ -407,7 +401,7 @@ private:
     return stream.str();
   }
 
-  static std::string quote(std::string_view input) {
+  static std::string quote(std::string input) {
     if (input.size() == 0) {
       return "end of input";
     } else {
@@ -441,7 +435,7 @@ public:
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
 
-    std::string_view geometry_type = this->assertWord();
+    std::string geometry_type = this->assertWord();
 
     if (geometry_type == "SRID") {
       this->assert_('=');
@@ -469,7 +463,7 @@ public:
     return meta;
   }
 
-  int geometry_typeFromString(std::string_view geometry_type) {
+  int geometry_typeFromString(std::string geometry_type) {
     if (geometry_type == "POINT") {
       return WK_POINT;
     } else if(geometry_type == "LINESTRING") {
@@ -495,7 +489,7 @@ public:
 
   bool assertEMPTYOrOpen() {
     if (this->isLetter()) {
-      std::string_view word = this->assertWord();
+      std::string word = this->assertWord();
       if (word != "EMPTY") {
         this->errorBefore("'(' or 'EMPTY'", word);
       }
@@ -788,7 +782,7 @@ private:
 
 int handle_wkt_r_sting(BufferedWKTReader<SimpleBufferSource>& streamer, SimpleBufferSource* source,
                        wk_vector_meta_t* meta, cpp11::r_string item,
-                       R_xlen_t feat_id) {  
+                       R_xlen_t feat_id) {
   if (item == NA_STRING) {
     return streamer.readFeature(meta, feat_id, nullptr);
   } else {
@@ -801,7 +795,7 @@ int handle_wkt_r_sting(BufferedWKTReader<SimpleBufferSource>& streamer, SimpleBu
 void wkt_read_wkt_unsafe(SEXP wkt_sexp,
                          BufferedWKTReader<SimpleBufferSource>* reader,
                          SimpleBufferSource* source, wk_vector_meta_t* global_meta) {
-  
+
   R_xlen_t n_features = Rf_xlength(wkt_sexp);
   SEXP item;
   int result;
