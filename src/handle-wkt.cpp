@@ -143,14 +143,6 @@ public:
     }
   }
 
-  void advance(int n) {
-    if (this->checkBuffer(n)) {
-      this->offset += n;
-    } else {
-      this->offset = this->length;
-    }
-  }
-
   // Returns the character at the cursor and advances the cursor by one
   char readChar() {
     char out = this->peekChar();
@@ -182,10 +174,9 @@ public:
   bool isNumber() {
     // complicated by nan and inf
     if (this->isOneOf("-nNiI.")) {
-      std::string text = this->peekUntilSep();
-      const char* textPtr = text.c_str();    
+      std::string_view text = this->peekUntilSep();
       double out;
-      auto result = fast_float::from_chars(textPtr, textPtr + text.size(), out);
+      auto result = fast_float::from_chars(text.begin(), text.end(), out);
       return result.ec == std::errc();
     } else {
       return this->isOneOf("-0123456789");
@@ -198,13 +189,13 @@ public:
     return (found >= 'a' && found <= 'z') || (found >= 'A' && found <= 'Z');
   }
 
-  std::string assertWord() {
-    std::string text = this->peekUntilSep();
+  std::string_view assertWord() {
+    std::string_view text = this->peekUntilSep();
     if (!this->isLetter()) {
       this->error("a word", quote(text));
     }
 
-    this->advance(text.size());
+    this->offset += text.size();
     return text;
   }
 
@@ -212,15 +203,14 @@ public:
   // throwing an exception if whatever is ahead of the
   // cursor cannot be parsed into an integer
   long assertInteger() {
-    std::string text = this->peekUntilSep();
-    const char* textPtr = text.c_str();
+    std::string_view text = this->peekUntilSep();
     char* endPtr;
-    long out = std::strtol(textPtr, &endPtr, 10);
-    if (endPtr != (textPtr + text.size())) {
+    long out = std::strtol(text.begin(), &endPtr, 10);
+    if (endPtr != text.end()) {
       this->error("an integer", quote(text));
     }
 
-    this->advance(text.size());
+    this->offset += text.size();
     return out;
   }
 
@@ -233,15 +223,14 @@ public:
       this->error("a number", "end of input");
     }
 
-    std::string text = this->peekUntilSep();
-    const char* textPtr = text.c_str();    
+    std::string_view text = this->peekUntilSep();
     double out;
-    auto result = fast_float::from_chars(textPtr, textPtr + text.size(), out);
+    auto result = fast_float::from_chars(text.begin(), text.end(), out);
 
     if (result.ec != std::errc()) {
       this->error("a number", quote(text));
     } else {
-      this->advance(text.size());
+      this->offset += text.size();
       return out;
     }
   }
@@ -249,14 +238,14 @@ public:
   // Asserts that the character at the cursor is whitespace, and
   // returns a std::string of whitespace characters, advancing the
   // cursor to the end of the whitespace.
-  std::string assertWhitespace() {
+  void assertWhitespace() {
     if (!this->checkBuffer(1)) {
       this->error("whitespace", "end of input");
     }
 
     char found = this->str[this->offset];
     if (strchr(this->whitespace, found) == nullptr) {
-      std::string untilSep = this->peekUntilSep();
+      std::string_view untilSep = this->peekUntilSep();
       if (untilSep.size() == 0) {
         this->error("whitespace", quote(found));
       } else {
@@ -264,9 +253,7 @@ public:
       }
     }
 
-    int64_t offset0 = this->offset;
-    int64_t nWhitespaceChars = this->skipWhitespace();
-    return std::string(&(this->str[offset0]), nWhitespaceChars);
+    this->skipWhitespace();
   }
 
   void assert_(char c) {
@@ -301,27 +288,23 @@ public:
   // which is defined to be whitespace or the following characters: =;,()
   // advancing the cursor. If we are at the end of the string, this will
   // return std::string("")
-  std::string readUntilSep() {
+  std::string_view readUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
     bool finished = this->finished();
     if (wordLen == 0 && !finished) {
       wordLen = 1;
     }
-    std::string out(this->str + this->offset, wordLen);
-    this->advance(wordLen);
+    std::string_view out(this->str + this->offset, wordLen);
+    this->offset += wordLen;
     return out;
   }
 
   // Returns the text between the cursor and the next separator without advancing the cursor.
-  std::string peekUntilSep() {
+  std::string_view peekUntilSep() {
     this->skipWhitespace();
     int64_t wordLen = peekUntil(this->sep);
-    if (wordLen == 0) {
-      return std::string("");
-    } else {
-      return std::string(this->str + this->offset, wordLen);
-    }
+    return std::string_view(this->str + this->offset, wordLen);
   }
 
   // Advances the cursor past any whitespace, returning the number of characters skipped.
@@ -385,12 +368,14 @@ public:
     return n_chars;
   }
 
-  [[ noreturn ]] void errorBefore(std::string expected, std::string found) {
+  [[ noreturn ]] void errorBefore(std::string expected, std::string_view found) {
     throw BufferedParserException(expected, quote(found), this->errorContext(this->offset - found.size()));
   }
 
-  [[noreturn]] void error(std::string expected, std::string found) {
-    throw BufferedParserException(expected, found, this->errorContext(this->offset));
+  [[noreturn]] void error(std::string expected, std::string_view found) {
+    std::stringstream stream;
+    stream << found;
+    throw BufferedParserException(expected, stream.str(), this->errorContext(this->offset));
   }
 
   [[noreturn]] void error(std::string expected) {
@@ -427,7 +412,7 @@ private:
     return stream.str();
   }
 
-  static std::string quote(std::string input) {
+  static std::string quote(std::string_view input) {
     if (input.size() == 0) {
       return "end of input";
     } else {
@@ -461,7 +446,7 @@ public:
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
 
-    std::string geometry_type = this->assertWord();
+    std::string_view geometry_type = this->assertWord();
 
     if (geometry_type == "SRID") {
       this->assert_('=');
@@ -469,6 +454,8 @@ public:
       this->assert_(';');
       geometry_type = this->assertWord();
     }
+
+    meta.geometry_type = this->geometry_typeFromString(geometry_type);
 
     if (this->is('Z')) {
       this->assert_('Z');
@@ -484,11 +471,10 @@ public:
       meta.size = 0;
     }
 
-    meta.geometry_type = this->geometry_typeFromString(geometry_type);
     return meta;
   }
 
-  int geometry_typeFromString(std::string geometry_type) {
+  int geometry_typeFromString(std::string_view geometry_type) {
     if (geometry_type == "POINT") {
       return WK_POINT;
     } else if(geometry_type == "LINESTRING") {
@@ -514,7 +500,7 @@ public:
 
   bool assertEMPTYOrOpen() {
     if (this->isLetter()) {
-      std::string word = this->assertWord();
+      std::string_view word = this->assertWord();
       if (word != "EMPTY") {
         this->errorBefore("'(' or 'EMPTY'", word);
       }
