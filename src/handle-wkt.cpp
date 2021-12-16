@@ -523,7 +523,7 @@ public:
       }
 
       return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
-    } catch (BufferedParserException& e) {
+    } catch (std::exception& e) {
       return this->handler->error(e.what(), this->handler->handler_data);
     }
   }
