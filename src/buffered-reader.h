@@ -61,23 +61,11 @@ private:
 // messages and has the important feature that it does not need the text
 // that it's parsing to be fully in-memory. The intended usage is to subclass
 // the BufferedParser for a particular format.
-template <class SourceType>
+template <class SourceType, int64_t buffer_length>
 class BufferedParser {
 public:
-  BufferedParser(int64_t buffer_length): str(nullptr), length(0), offset(0),
-    buffer_length(buffer_length), source_offset(0),
-    whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {
-    this->str = (char*) malloc(this->buffer_length);
-    if (this->str == nullptr) {
-      throw std::runtime_error("Failed to allocate BufferedParser buffer");
-    }
-  }
-
-  ~BufferedParser() {
-    if (this->str != nullptr) {
-      free(this->str);
-    }
-  }
+  BufferedParser(): length(0), offset(0), source_offset(0),
+    whitespace(" \r\n\t"), sep(" \r\n\t"), source(nullptr) {}
 
   void setSource(SimpleBufferSource* source) {
     this->source = source;
@@ -108,9 +96,9 @@ public:
         return true;
     }
 
-    if (n_chars >= this->buffer_length) {
+    if (n_chars >= buffer_length) {
       std::stringstream stream;
-      stream << "a value with fewer than " << this->buffer_length << " characters";
+      stream << "a value with fewer than " << buffer_length << " characters";
       throw BufferedParserException(stream.str(), "a longer value", "");
     }
 
@@ -122,7 +110,7 @@ public:
       memmove(this->str, this->str + this->offset, chars_to_keep);
     }
 
-    int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, this->buffer_length - chars_to_keep);
+    int64_t new_chars = this->source->fill_buffer(this->str + chars_to_keep, buffer_length - chars_to_keep);
     if (new_chars == 0) {
       this->source = nullptr;
     }
@@ -371,10 +359,9 @@ public:
   }
 
 private:
-  char* str;
+  char str[buffer_length];
   int64_t length;
   int64_t offset;
-  int64_t buffer_length;
   int64_t source_offset;
   const char* whitespace;
   const char* sep;

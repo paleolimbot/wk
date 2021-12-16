@@ -19,10 +19,10 @@
 // The BufferedWKTParser is the BufferedParser subclass with methods specific
 // to well-known text. It doesn't know about any particular output format.
 template <class SourceType>
-class BufferedWKTParser: public BufferedParser<SourceType> {
+class BufferedWKTParser: public BufferedParser<SourceType, 4096> {
 public:
 
-  BufferedWKTParser(int64_t buffer_size): BufferedParser<SourceType>(buffer_size) {
+  BufferedWKTParser() {
     this->setSeparators(" \r\n\t,();=");
   }
 
@@ -107,7 +107,7 @@ template <class SourceType, typename handler_t>
 class BufferedWKTReader {
 public:
 
-  BufferedWKTReader(handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {
+  BufferedWKTReader(handler_t* handler): handler(handler) {
     memset(this->error_message, 0, sizeof(this->error_message));
   }
 
@@ -391,9 +391,7 @@ void finalize_cpp_xptr(SEXP xptr) {
 
 SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
   SEXP wkt_sexp = VECTOR_ELT(data, 0);
-  SEXP buffer_size_sexp = VECTOR_ELT(data, 1);
-  SEXP reveal_size_sexp = VECTOR_ELT(data, 2);
-  int buffer_size = INTEGER(buffer_size_sexp)[0];
+  SEXP reveal_size_sexp = VECTOR_ELT(data, 1);
   int reveal_size = LOGICAL(reveal_size_sexp)[0];
 
   if (TYPEOF(wkt_sexp) != STRSXP) {
@@ -417,7 +415,7 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
   SEXP source_xptr = PROTECT(R_MakeExternalPtr(source, R_NilValue, R_NilValue));
   R_RegisterCFinalizer(source_xptr, &finalize_cpp_xptr<SimpleBufferSource>);
 
-  auto reader = new BufferedWKTReader<SimpleBufferSource, wk_handler_t>(handler, buffer_size);
+  auto reader = new BufferedWKTReader<SimpleBufferSource, wk_handler_t>(handler);
   SEXP reader_xptr = PROTECT(R_MakeExternalPtr(reader, R_NilValue, R_NilValue));
   R_RegisterCFinalizer(reader_xptr, &finalize_cpp_xptr<BufferedWKTReader<SimpleBufferSource, wk_handler_t>>);
 
