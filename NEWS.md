@@ -15,6 +15,8 @@
   be interpolated along a spherical/ellipsoidal trajectory (#112).
 * Added `sf::st_geometry()` and `sf::st_sfc()` methods for wk geometry
   vectors for better integration with sf (#113, #114).
+* Refactored well-known text parser to be more reusable and faster
+  (#115, #104).
 
 # wk 0.5.0
 

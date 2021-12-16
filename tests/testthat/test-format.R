@@ -41,7 +41,7 @@ test_that("format handlers return abbreviated WKT", {
       "<null feature>",
       "LINESTRING (0 1, 1 2)",
       "LINESTRING (0 1, 2 3, 4 5...",
-      "!!! Expected geometry type or 'SRID=' but found 'NOT' (:1)"
+      "!!! Expected geometry type or 'SRID=' but found 'NOT' at byte 0"
     )
   )
 })

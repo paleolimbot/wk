@@ -315,8 +315,14 @@ test_that("wkt_translate_* has reasonable error messages", {
   expect_error(wkt_translate_wkt("POINT (30 10)P"), "^Expected")
   expect_error(wkt_translate_wkt("LINESTRING (30 10, 0 0="), "^Expected")
   expect_error(wkt_translate_wkt("LINESTRING (30A"), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30,"), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30"), "^Expected")
   expect_error(wkt_translate_wkt("SRID=30A"), "^Expected")
   expect_error(wkt_translate_wkt("SRID"), "^Expected")
+  expect_error(
+    wkt_translate_wkt(strrep("a", 4096)),
+    "Expected a value with fewer than 4096 character"
+  )
 })
 
 test_that("wkt_translate_* can handle non-finite values", {
@@ -324,5 +330,5 @@ test_that("wkt_translate_* can handle non-finite values", {
 })
 
 test_that("wkt_translate_* doesn't segfault on other inputs", {
-  expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), "Invalid input type")
+  expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), "must be a character vector")
 })
