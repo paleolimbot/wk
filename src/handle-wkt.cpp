@@ -407,18 +407,11 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
     global_meta.size = n_features;
   }
 
-  // These are C++ objects that need deleting no matter what.
-  // Intead of unwind-protecting this frame, use external pointer finalizers to make
-  // sure they're deleted. This is harder than using cpp11 but easier than using
-  // something like unwindprotect, trycatch, or execwithcleanup.
-  SimpleBufferSource* source = new SimpleBufferSource();
-  SEXP source_xptr = PROTECT(R_MakeExternalPtr(source, R_NilValue, R_NilValue));
-  R_RegisterCFinalizer(source_xptr, &finalize_cpp_xptr<SimpleBufferSource>);
-
-  auto reader = new BufferedWKTReader<SimpleBufferSource, wk_handler_t>(handler);
-  SEXP reader_xptr = PROTECT(R_MakeExternalPtr(reader, R_NilValue, R_NilValue));
-  R_RegisterCFinalizer(reader_xptr, &finalize_cpp_xptr<BufferedWKTReader<SimpleBufferSource, wk_handler_t>>);
-
+  // These are C++ objects but they are trivially destructible
+  // (so longjmp in this stack is OK).
+  SimpleBufferSource source;
+  BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler);
+  
   int result = handler->vector_start(&global_meta, handler->handler_data);
   if (result != WK_ABORT) {
     R_xlen_t n_features = Rf_xlength(wkt_sexp);
@@ -430,11 +423,11 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
 
       item = STRING_ELT(wkt_sexp, i);
       if (item == NA_STRING) {
-        HANDLE_CONTINUE_OR_BREAK(reader->readFeature(&global_meta, i, nullptr));
+        HANDLE_CONTINUE_OR_BREAK(reader.readFeature(&global_meta, i, nullptr));
       } else {
         const char* chars = CHAR(item);
-        source->set_buffer(chars, strlen(chars));
-        HANDLE_CONTINUE_OR_BREAK(reader->readFeature(&global_meta, i, source));
+        source.set_buffer(chars, strlen(chars));
+        HANDLE_CONTINUE_OR_BREAK(reader.readFeature(&global_meta, i, &source));
       }
 
       if (result == WK_ABORT) {
@@ -443,7 +436,6 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
     }
   }
 
-  UNPROTECT(2);
   return handler->vector_end(&global_meta, handler->handler_data);
 }
 
