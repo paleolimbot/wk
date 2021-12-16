@@ -98,23 +98,23 @@
   <span class="fu"><a href="../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee25cfdb0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffee4a58e68&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (2): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee25cf9e0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee25cf9e0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (2): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee4a58d90&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee4a58d90&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (2): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (3): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffee25cf9e0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffee25cf950&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;         coord (1): &lt;0x7ffee25cf950&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_end (2): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (3): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffee4a58d90&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffee4a58d00&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;         coord (1): &lt;0x7ffee4a58d00&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (3): &lt;0x7ffee25cfdb0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee25cfdb0&gt;</span>
+<span class="co">#&gt;   feature_end (3): &lt;0x7ffee4a58e68&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee4a58e68&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org" class="external-link">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
@@ -125,24 +125,24 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee25cefe0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee25cefe0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee25cec10&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee25cec10&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee4a58098&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee4a58098&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffee4a57fc0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee4a57fc0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee25cefe0&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee25cefe0&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee4a58098&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee4a58098&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span>
 <span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee25d0858&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee25d0858&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffee25d07b0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee25d07b0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee4a5a858&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x7ffee4a5a858&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffee4a5a7b0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x7ffee4a5a7b0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_end (1): &lt;0x7ffee25d0858&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee25d0858&gt;</span>
+<span class="co">#&gt;   feature_end (1): &lt;0x7ffee4a5a858&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt; vector_end: &lt;0x7ffee4a5a858&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 </div>
@@ -154,7 +154,7 @@
 <span id="cb3-2"><a href="#cb3-2"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11;</span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="kw">namespace</span> writable = cpp11::writable;</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="pp">#include </span><span class="im">"wk-v1-handler.hpp"</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-handler-cpp11.hpp"</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a></span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="kw">class</span> BBoxHandler: <span class="kw">public</span> WKVoidHandler {</span>
@@ -191,7 +191,7 @@
 <span class="op">}</span>
 
 <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; &lt;bbox_wk_handler at 0x7fd9b40e0e90&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;bbox_wk_handler at 0x7ff4da69a660&gt;</span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span>
@@ -316,7 +316,7 @@
 <p>The wk API was optimized for the simplicity of writing handlers much more than readers (after all, there are many more things one can <em>do</em> with geometry than there are ways to store it). This means that writing readers can be finicky! As an example, I’ll demonstrate a reader that iterates over a data frame of coordinates (e.g., <code>data.frame(x = c(1, 2, 3), y = c(4, 5, 6))</code>) as points.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11;</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="pp">#include </span><span class="im">"wk-v1-reader.hpp"</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-reader-cpp11.hpp"</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
 <span id="cb10-5"><a href="#cb10-5"></a></span>
 <span id="cb10-6"><a href="#cb10-6"></a><span class="pp">#define HANDLE_CONTINUE_OR_BREAK</span>(expr)<span class="pp">                         </span>\</span>
@@ -443,7 +443,7 @@
 <p>There is no reason that an object can’t be both a reader and a handler. This idea was one of the motivating ideas behind developing wk: the ability to write composable transformations that allocate as little memory as possible. For many transformations, this is as little as one coordinate! As an example, we’ll create a filter that bumps coordinates by a fixed offset. I’ll demonstrate this in C++ because it is considerably easier to get the details right (if you want to write one of these in C you can copy/paste the identity handler source code from this package’s src directory as a starting point).</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11;</span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="pp">#include </span><span class="im">"wk-v1-filter.hpp"</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-filter-cpp11.hpp"</span></span>
 <span id="cb15-4"><a href="#cb15-4"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
 <span id="cb15-5"><a href="#cb15-5"></a></span>
 <span id="cb15-6"><a href="#cb15-6"></a><span class="kw">class</span> BumpFilter: <span class="kw">public</span> WKIdentityFilter {</span>
@@ -622,10 +622,10 @@
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span>
 <span class="co">#&gt;   expression                                                     min   median</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                                                <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler())                       57.15µs   60.9µs</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handler())                     576.83µs  587.3µs</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   91.42µs   94.9µs</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   3.09ms    3.2ms</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler())                       56.37µs  59.88µs</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handler())                     561.09µs 575.21µs</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))   88.66µs  93.18µs</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))   2.96ms   3.06ms</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: itr/sec &lt;dbl&gt;, mem_alloc &lt;bch:byt&gt;, gc/sec &lt;dbl&gt;</span></span></code></pre></div>
 </div>
   </div>
