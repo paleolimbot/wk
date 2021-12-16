@@ -197,12 +197,13 @@ protected:
     }
 
     wk_meta_t childMeta;
+    WK_META_RESET(childMeta, WK_POINT);
     uint32_t part_id = 0;
     int result;
 
     if (s.isNumber()) { // (0 0, 1 1)
       do {
-        childMeta = this->childMeta(meta, WK_POINT);
+        this->readChildMeta(meta, &childMeta);
 
         HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
 
@@ -218,7 +219,7 @@ protected:
 
     } else { // ((0 0), (1 1))
       do {
-        childMeta = this->childMeta(meta, WK_POINT);
+        this->readChildMeta(meta, &childMeta);
         HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
         HANDLE_OR_RETURN(this->readPoint(&childMeta));
         HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
@@ -235,11 +236,12 @@ protected:
     }
 
     wk_meta_t childMeta;
+    WK_META_RESET(childMeta, WK_LINESTRING);
     uint32_t part_id = 0;
     int result;
 
     do {
-      childMeta = this->childMeta(meta, WK_LINESTRING);
+      this->readChildMeta(meta, &childMeta);
       HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
       HANDLE_OR_RETURN(this->readLineString(&childMeta));
       HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
@@ -256,11 +258,12 @@ protected:
     }
 
     wk_meta_t childMeta;
+    WK_META_RESET(childMeta, WK_POLYGON);
     uint32_t part_id = 0;
     int result;
 
     do {
-      childMeta = this->childMeta(meta, WK_POLYGON);
+      this->readChildMeta(meta, &childMeta);
       HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
       HANDLE_OR_RETURN(this->readPolygon(&childMeta));
       HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
@@ -352,20 +355,15 @@ protected:
     }
   }
 
-  wk_meta_t childMeta(const wk_meta_t* parent, int geometry_type) {
-    wk_meta_t childMeta;
-    WK_META_RESET(childMeta, geometry_type);
-    childMeta.flags = parent->flags;
-    childMeta.srid = parent->srid;
+  void readChildMeta(const wk_meta_t* parent, wk_meta_t* childMeta) {
+    childMeta->flags = parent->flags;
+    childMeta->srid = parent->srid;
 
-    childMeta.geometry_type = geometry_type;
     if (s.isEMPTY()) {
-      childMeta.size = 0;
+      childMeta->size = 0;
     } else {
-      childMeta.size = WK_SIZE_UNKNOWN;
+      childMeta->size = WK_SIZE_UNKNOWN;
     }
-
-    return childMeta;
   }
 
 private:
