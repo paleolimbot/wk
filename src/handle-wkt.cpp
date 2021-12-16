@@ -3,7 +3,7 @@
 #include "cpp11/declarations.hpp"
 #include "wk-v1.h"
 #define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
-#include "fast_float.h"
+#include "fast_float/fast_float.h"
 #include <clocale>
 #include <cstring>
 #include <sstream>
@@ -542,7 +542,7 @@ protected:
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
     s.assertGeometryMeta(&meta);
-    
+
     int result;
     HANDLE_OR_RETURN(this->handler->geometry_start(&meta, part_id, this->handler->handler_data));
 
