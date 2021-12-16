@@ -4,7 +4,7 @@
 
 #include "cpp11/external_pointer.hpp"
 #include "wk-v1.h"
-#include "wk-v1-handler.hpp"
+#include "wk-v1-handler-cpp11.hpp"
 
 class WKIdentityFilter: public WKVoidHandler {
 public:

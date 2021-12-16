@@ -1,9 +1,11 @@
 
-#include "cpp11/protect.hpp"
-#include "cpp11/declarations.hpp"
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
+
 #define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
-#include "buffered-reader.h"
+#include "internal/buffered-reader.hpp"
 
 #define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \
@@ -17,10 +19,10 @@
 // The BufferedWKTParser is the BufferedParser subclass with methods specific
 // to well-known text. It doesn't know about any particular output format.
 template <class SourceType>
-class BufferedWKTParser: public BufferedParser<SourceType> {
+class BufferedWKTParser: public BufferedParser<SourceType, 4096> {
 public:
 
-  BufferedWKTParser(int64_t buffer_size): BufferedParser<SourceType>(buffer_size) {
+  BufferedWKTParser() {
     this->setSeparators(" \r\n\t,();=");
   }
 
@@ -105,7 +107,9 @@ template <class SourceType, typename handler_t>
 class BufferedWKTReader {
 public:
 
-  BufferedWKTReader(handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
+  BufferedWKTReader(handler_t* handler): handler(handler) {
+    memset(this->error_message, 0, sizeof(this->error_message));
+  }
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     try {
@@ -122,8 +126,12 @@ public:
 
       return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
     } catch (std::exception& e) {
-      return this->handler->error(e.what(), this->handler->handler_data);
+      // can't call a handler method that longjmps here because `e` must be deleted
+      memset(this->error_message, 0, sizeof(this->error_message));
+      strncpy(this->error_message, e.what(), sizeof(this->error_message) - 1);
     }
+
+    return this->handler->error(this->error_message, this->handler->handler_data);
   }
 
 protected:
@@ -369,45 +377,25 @@ protected:
 private:
   handler_t* handler;
   BufferedWKTParser<SourceType> s;
+  char error_message[8096];
 };
 
-void wkt_read_wkt_unsafe(SEXP wkt_sexp,
-                         BufferedWKTReader<SimpleBufferSource, wk_handler_t>* reader,
-                         SimpleBufferSource* source, wk_vector_meta_t* global_meta) {
 
-  R_xlen_t n_features = Rf_xlength(wkt_sexp);
-  SEXP item;
-  int result;
-
-  for (R_xlen_t i = 0; i < n_features; i++) {
-    if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-
-    item = STRING_ELT(wkt_sexp, i);
-    if (item == NA_STRING) {
-      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, nullptr));
-    } else {
-      const char* chars = CHAR(item);
-      source->set_buffer(chars, strlen(chars));
-      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, source));
-    }
-
-    if (result == WK_ABORT) {
-      break;
-    }
+template <class T>
+void finalize_cpp_xptr(SEXP xptr) {
+  T* ptr = (T*) R_ExternalPtrAddr(xptr);
+  if (ptr != nullptr) {
+    delete ptr;
   }
 }
 
 SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
-  BEGIN_CPP11
-
   SEXP wkt_sexp = VECTOR_ELT(data, 0);
-  SEXP buffer_size_sexp = VECTOR_ELT(data, 1);
-  SEXP reveal_size_sexp = VECTOR_ELT(data, 2);
-  int buffer_size = INTEGER(buffer_size_sexp)[0];
+  SEXP reveal_size_sexp = VECTOR_ELT(data, 1);
   int reveal_size = LOGICAL(reveal_size_sexp)[0];
 
   if (TYPEOF(wkt_sexp) != STRSXP) {
-    cpp11::safe[Rf_error]("Input to wkt handler must be a character vector");
+    Rf_error("Input to wkt handler must be a character vector");
   }
 
   R_xlen_t n_features = Rf_xlength(wkt_sexp);
@@ -419,17 +407,36 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
     global_meta.size = n_features;
   }
 
+  // These are C++ objects but they are trivially destructible
+  // (so longjmp in this stack is OK).
   SimpleBufferSource source;
-  BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler, buffer_size);
-
-  int result = cpp11::safe[handler->vector_start](&global_meta, handler->handler_data);
+  BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler);
+  
+  int result = handler->vector_start(&global_meta, handler->handler_data);
   if (result != WK_ABORT) {
-    cpp11::safe[wkt_read_wkt_unsafe](wkt_sexp, &reader, &source, &global_meta);
+    R_xlen_t n_features = Rf_xlength(wkt_sexp);
+    SEXP item;
+    int result;
+
+    for (R_xlen_t i = 0; i < n_features; i++) {
+      if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
+
+      item = STRING_ELT(wkt_sexp, i);
+      if (item == NA_STRING) {
+        HANDLE_CONTINUE_OR_BREAK(reader.readFeature(&global_meta, i, nullptr));
+      } else {
+        const char* chars = CHAR(item);
+        source.set_buffer(chars, strlen(chars));
+        HANDLE_CONTINUE_OR_BREAK(reader.readFeature(&global_meta, i, &source));
+      }
+
+      if (result == WK_ABORT) {
+        break;
+      }
+    }
   }
 
-  return cpp11::safe[handler->vector_end](&global_meta, handler->handler_data);
-
-  END_CPP11
+  return handler->vector_end(&global_meta, handler->handler_data);
 }
 
 extern "C" SEXP wk_c_read_wkt(SEXP data, SEXP handler_xptr) {

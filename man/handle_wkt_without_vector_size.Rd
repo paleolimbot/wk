@@ -4,20 +4,13 @@
 \alias{handle_wkt_without_vector_size}
 \title{Test handlers for handling of unknown size vectors}
 \usage{
-handle_wkt_without_vector_size(
-  handleable,
-  handler,
-  wkt_parser_buffer_size = 4096
-)
+handle_wkt_without_vector_size(handleable, handler)
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
-
-\item{wkt_parser_buffer_size}{Buffer size to use for the parser. Useful
-for testing the parser.}
 }
 \description{
 Test handlers for handling of unknown size vectors
