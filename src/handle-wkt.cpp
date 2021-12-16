@@ -34,6 +34,9 @@ public:
   }
 };
 
+// The SimpleBufferSource is a wrapper around an in-memory buffer of characters.
+// The BufferedParser classes below template along an object with a fill_buffer()
+// method with the same signature as this one.
 class SimpleBufferSource {
 public:
   SimpleBufferSource(): str(nullptr), size(0), offset(0) {}
@@ -61,6 +64,13 @@ private:
   int64_t offset;
 };
 
+
+// The BufferedParser class provides the basic helpers needed to parse simple
+// text formats like well-known text. It is not intended to be the pinnacle
+// of speed or elegance, but does a good job at providing reasonable error
+// messages and has the important feature that it does not need the text
+// that it's parsing to be fully in-memory. The intended usage is to subclass
+// the BufferedParser for a particular format.
 template <class SourceType>
 class BufferedParser {
 public:
@@ -414,7 +424,8 @@ private:
   }
 };
 
-
+// The BufferedWKTParser is the BufferedParser subclass with methods specific
+// to well-known text. It doesn't know about any particular output format.
 template <class SourceType>
 class BufferedWKTParser: public BufferedParser<SourceType> {
 public:
@@ -423,36 +434,31 @@ public:
     this->setSeparators(" \r\n\t,();=");
   }
 
-  wk_meta_t assertGeometryMeta() {
-    wk_meta_t meta;
-    WK_META_RESET(meta, WK_GEOMETRY);
-
+  void assertGeometryMeta(wk_meta_t* meta) {
     std::string geometry_type = this->assertWord();
 
     if (geometry_type == "SRID") {
       this->assert_('=');
-      meta.srid = this->assertInteger();
+      meta->srid = this->assertInteger();
       this->assert_(';');
       geometry_type = this->assertWord();
     }
 
-    meta.geometry_type = this->geometry_typeFromString(geometry_type);
+    meta->geometry_type = this->geometry_typeFromString(geometry_type);
 
     if (this->is('Z')) {
       this->assert_('Z');
-      meta.flags |= WK_FLAG_HAS_Z;
+      meta->flags |= WK_FLAG_HAS_Z;
     }
 
     if (this->is('M')) {
       this->assert_('M');
-      meta.flags |= WK_FLAG_HAS_M;
+      meta->flags |= WK_FLAG_HAS_M;
     }
 
     if (this->isEMPTY()) {
-      meta.size = 0;
+      meta->size = 0;
     }
-
-    return meta;
   }
 
   int geometry_typeFromString(std::string geometry_type) {
@@ -497,6 +503,8 @@ public:
 };
 
 
+// The BufferedWKTReader knows about wk_handler_t and does all the "driving". The
+// entry point is readFeature(), which does not throw (but may longjmp).
 // The BufferedWKTReader is carefully designed to (1) avoid any virtual method calls
 // (via templating) and (2) to avoid using any C++ objects with non-trivial destructors.
 // The non-trivial destructors bit is important because handler methods can and do longjmp
@@ -531,7 +539,10 @@ public:
 protected:
 
   int readGeometryWithType(uint32_t part_id) {
-    wk_meta_t meta = s.assertGeometryMeta();
+    wk_meta_t meta;
+    WK_META_RESET(meta, WK_GEOMETRY);
+    s.assertGeometryMeta(&meta);
+    
     int result;
     HANDLE_OR_RETURN(this->handler->geometry_start(&meta, part_id, this->handler->handler_data));
 
