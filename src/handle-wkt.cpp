@@ -105,7 +105,9 @@ template <class SourceType, typename handler_t>
 class BufferedWKTReader {
 public:
 
-  BufferedWKTReader(handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
+  BufferedWKTReader(handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {
+    memset(this->error_message, 0, sizeof(this->error_message));
+  }
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     try {
@@ -122,8 +124,12 @@ public:
 
       return this->handler->feature_end(meta, feat_id, this->handler->handler_data);
     } catch (std::exception& e) {
-      return this->handler->error(e.what(), this->handler->handler_data);
+      // can't call a handler method that longjmps here because `e` must be deleted
+      memset(this->error_message, 0, sizeof(this->error_message));
+      strncpy(this->error_message, e.what(), sizeof(this->error_message) - 1);
     }
+
+    return this->handler->error(this->error_message, this->handler->handler_data);
   }
 
 protected:
@@ -369,6 +375,7 @@ protected:
 private:
   handler_t* handler;
   BufferedWKTParser<SourceType> s;
+  char error_message[8096];
 };
 
 void wkt_read_wkt_unsafe(SEXP wkt_sexp,
