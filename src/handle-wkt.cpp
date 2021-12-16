@@ -1,7 +1,9 @@
 
-#include "cpp11/protect.hpp"
-#include "cpp11/declarations.hpp"
+#define R_NO_REMAP
+#include <R.h>
+#include <Rinternals.h>
 #include "wk-v1.h"
+
 #define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
 #include "buffered-reader.h"
 
@@ -378,35 +380,16 @@ private:
   char error_message[8096];
 };
 
-void wkt_read_wkt_unsafe(SEXP wkt_sexp,
-                         BufferedWKTReader<SimpleBufferSource, wk_handler_t>* reader,
-                         SimpleBufferSource* source, wk_vector_meta_t* global_meta) {
 
-  R_xlen_t n_features = Rf_xlength(wkt_sexp);
-  SEXP item;
-  int result;
-
-  for (R_xlen_t i = 0; i < n_features; i++) {
-    if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-
-    item = STRING_ELT(wkt_sexp, i);
-    if (item == NA_STRING) {
-      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, nullptr));
-    } else {
-      const char* chars = CHAR(item);
-      source->set_buffer(chars, strlen(chars));
-      HANDLE_CONTINUE_OR_BREAK(reader->readFeature(global_meta, i, source));
-    }
-
-    if (result == WK_ABORT) {
-      break;
-    }
+template <class T>
+void finalize_cpp_xptr(SEXP xptr) {
+  T* ptr = (T*) R_ExternalPtrAddr(xptr);
+  if (ptr != nullptr) {
+    delete ptr;
   }
 }
 
 SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
-  BEGIN_CPP11
-
   SEXP wkt_sexp = VECTOR_ELT(data, 0);
   SEXP buffer_size_sexp = VECTOR_ELT(data, 1);
   SEXP reveal_size_sexp = VECTOR_ELT(data, 2);
@@ -414,7 +397,7 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
   int reveal_size = LOGICAL(reveal_size_sexp)[0];
 
   if (TYPEOF(wkt_sexp) != STRSXP) {
-    cpp11::safe[Rf_error]("Input to wkt handler must be a character vector");
+    Rf_error("Input to wkt handler must be a character vector");
   }
 
   R_xlen_t n_features = Rf_xlength(wkt_sexp);
@@ -426,17 +409,44 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
     global_meta.size = n_features;
   }
 
-  SimpleBufferSource source;
-  BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler, buffer_size);
+  // These are C++ objects that need deleting no matter what.
+  // Intead of unwind-protecting this frame, use external pointer finalizers to make
+  // sure they're deleted. This is harder than using cpp11 but easier than using
+  // something like unwindprotect, trycatch, or execwithcleanup.
+  SimpleBufferSource* source = new SimpleBufferSource();
+  SEXP source_xptr = PROTECT(R_MakeExternalPtr(source, R_NilValue, R_NilValue));
+  R_RegisterCFinalizer(source_xptr, &finalize_cpp_xptr<SimpleBufferSource>);
 
-  int result = cpp11::safe[handler->vector_start](&global_meta, handler->handler_data);
+  auto reader = new BufferedWKTReader<SimpleBufferSource, wk_handler_t>(handler, buffer_size);
+  SEXP reader_xptr = PROTECT(R_MakeExternalPtr(reader, R_NilValue, R_NilValue));
+  R_RegisterCFinalizer(reader_xptr, &finalize_cpp_xptr<BufferedWKTReader<SimpleBufferSource, wk_handler_t>>);
+
+  int result = handler->vector_start(&global_meta, handler->handler_data);
   if (result != WK_ABORT) {
-    cpp11::safe[wkt_read_wkt_unsafe](wkt_sexp, &reader, &source, &global_meta);
+    R_xlen_t n_features = Rf_xlength(wkt_sexp);
+    SEXP item;
+    int result;
+
+    for (R_xlen_t i = 0; i < n_features; i++) {
+      if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
+
+      item = STRING_ELT(wkt_sexp, i);
+      if (item == NA_STRING) {
+        HANDLE_CONTINUE_OR_BREAK(reader->readFeature(&global_meta, i, nullptr));
+      } else {
+        const char* chars = CHAR(item);
+        source->set_buffer(chars, strlen(chars));
+        HANDLE_CONTINUE_OR_BREAK(reader->readFeature(&global_meta, i, source));
+      }
+
+      if (result == WK_ABORT) {
+        break;
+      }
+    }
   }
 
-  return cpp11::safe[handler->vector_end](&global_meta, handler->handler_data);
-
-  END_CPP11
+  UNPROTECT(2);
+  return handler->vector_end(&global_meta, handler->handler_data);
 }
 
 extern "C" SEXP wk_c_read_wkt(SEXP data, SEXP handler_xptr) {
