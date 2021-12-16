@@ -315,6 +315,8 @@ test_that("wkt_translate_* has reasonable error messages", {
   expect_error(wkt_translate_wkt("POINT (30 10)P"), "^Expected")
   expect_error(wkt_translate_wkt("LINESTRING (30 10, 0 0="), "^Expected")
   expect_error(wkt_translate_wkt("LINESTRING (30A"), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30,"), "^Expected")
+  expect_error(wkt_translate_wkt("LINESTRING (30"), "^Expected")
   expect_error(wkt_translate_wkt("SRID=30A"), "^Expected")
   expect_error(wkt_translate_wkt("SRID"), "^Expected")
   expect_error(

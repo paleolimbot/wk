@@ -241,12 +241,7 @@ public:
 
     char found = this->str[this->offset];
     if (strchr(this->whitespace, found) == nullptr) {
-      std::string untilSep = this->peekUntilSep();
-      if (untilSep.size() == 0) {
-        this->error("whitespace", quote(found));
-      } else {
-        this->error("whitespace", quote(this->peekUntilSep()));
-      }
+      this->error("whitespace", quote(found));
     }
 
     this->skipWhitespace();
