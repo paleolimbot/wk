@@ -5,7 +5,7 @@
 #include "wk-v1.h"
 
 #define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
-#include "buffered-reader.h"
+#include "internal/buffered-reader.hpp"
 
 #define HANDLE_OR_RETURN(expr)                                 \
   result = expr;                                               \

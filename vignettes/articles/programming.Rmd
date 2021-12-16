@@ -45,7 +45,7 @@ As an example, I'll write a handler that computes the 2D bounding box of its inp
 #include "cpp11.hpp"
 using namespace cpp11;
 namespace writable = cpp11::writable;
-#include "wk-v1-handler.hpp"
+#include "wk/experimental/wk-v1-handler-cpp11.hpp"
 #include "wk-v1-impl.c"
 
 class BBoxHandler: public WKVoidHandler {
@@ -213,7 +213,7 @@ The wk API was optimized for the simplicity of writing handlers much more than r
 ```{cpp11}
 #include "cpp11.hpp"
 using namespace cpp11;
-#include "wk-v1-reader.hpp"
+#include "wk/experimental/wk-v1-reader-cpp11.hpp"
 #include "wk-v1-impl.c"
 
 #define HANDLE_CONTINUE_OR_BREAK(expr)                         \
@@ -354,7 +354,7 @@ There is no reason that an object can't be both a reader and a handler. This ide
 ```{cpp11}
 #include "cpp11.hpp"
 using namespace cpp11;
-#include "wk-v1-filter.hpp"
+#include "wk/experimental/wk-v1-filter-cpp11.hpp"
 #include "wk-v1-impl.c"
 
 class BumpFilter: public WKIdentityFilter {
@@ -506,7 +506,7 @@ The main issue with performance in wk handlers is that there are a *lot* of func
 ```{cpp11, echo = FALSE}
 #include "cpp11.hpp"
 using namespace cpp11;
-#include "wk-v1-filter.hpp"
+#include "wk/experimental/wk-v1-filter-cpp11.hpp"
 #include "wk-v1-impl.c"
 
 [[cpp11::linking_to(wk)]]
