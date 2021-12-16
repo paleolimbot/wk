@@ -104,7 +104,7 @@ in the output.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_format</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span>
 <span class="r-in"><span class="fu">wk_format</span><span class="op">(</span><span class="fu"><a href="new_wk_wkt.html">new_wk_wkt</a></span><span class="op">(</span><span class="st">"POINT ENTPY"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "POINT (!!! Expected '(' or 'EMPTY' but found 'ENTPY' (:6)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "POINT (!!! Expected '(' or 'EMPTY' but found 'ENTPY' at byte 6"</span>
 <span class="r-in"><span class="fu"><a href="wk_handle.html">wk_handle</a></span><span class="op">(</span></span>
 <span class="r-in">  <span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON (((0 0, 10 0, 0 10, 0 0)))"</span><span class="op">)</span>,</span>
 <span class="r-in">  <span class="fu">wkt_format_handler</span><span class="op">(</span><span class="op">)</span></span>
