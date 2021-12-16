@@ -101,11 +101,11 @@ public:
 // when used in R. The object itself does not have a non-trivial destructor and it's expected
 // that the scope in which it is declared uses the proper unwind-protection such that the
 // object and its members are deleted.
-template <class SourceType>
+template <class SourceType, typename handler_t>
 class BufferedWKTReader {
 public:
 
-  BufferedWKTReader(wk_handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
+  BufferedWKTReader(handler_t* handler, int64_t buffer_size): handler(handler), s(buffer_size) {}
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     try {
@@ -367,12 +367,12 @@ protected:
   }
 
 private:
-  wk_handler_t* handler;
+  handler_t* handler;
   BufferedWKTParser<SourceType> s;
 };
 
 void wkt_read_wkt_unsafe(SEXP wkt_sexp,
-                         BufferedWKTReader<SimpleBufferSource>* reader,
+                         BufferedWKTReader<SimpleBufferSource, wk_handler_t>* reader,
                          SimpleBufferSource* source, wk_vector_meta_t* global_meta) {
 
   R_xlen_t n_features = Rf_xlength(wkt_sexp);
@@ -420,7 +420,7 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
   }
 
   SimpleBufferSource source;
-  BufferedWKTReader<SimpleBufferSource> reader(handler, buffer_size);
+  BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler, buffer_size);
 
   int result = cpp11::safe[handler->vector_start](&global_meta, handler->handler_data);
   if (result != WK_ABORT) {
