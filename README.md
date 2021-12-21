@@ -9,8 +9,6 @@
 status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The goal of wk is to provide lightweight R, C, and C++ infrastructure
@@ -97,12 +95,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x7ffee3f8f590> => WK_CONTINUE
-#>   feature_start (1): <0x7ffee3f8f590>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x7ffee3f8f418> => WK_CONTINUE
-#>       coord (1): <0x7ffee3f8f418> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffee3f8f418> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffee3f8f590>
+#> vector_start: <Unknown type / 0>[1] <0x16d1d1e18> => WK_CONTINUE
+#>   feature_start (1): <0x16d1d1e18>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x16d1d1d20> => WK_CONTINUE
+#>       coord (1): <0x16d1d1d20> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16d1d1d20> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16d1d1e18>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -119,19 +117,16 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: LINESTRING B[1] <0x7ffee3f92188> => WK_CONTINUE
-#>   feature_start (1): <0x7ffee3f92188>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x7ffee3f920f0> => WK_CONTINUE
-#>       coord (1): <0x7ffee3f920f0> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x7ffee3f920f0> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x7ffee3f92188>
+#> vector_start: LINESTRING B[1] <0x16d1d4df0> => WK_CONTINUE
+#>   feature_start (1): <0x16d1d4df0>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x16d1d4d50> => WK_CONTINUE
+#>       coord (1): <0x16d1d4d50> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16d1d4d50> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16d1d4df0>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
 
 ## Lightweight
 
-The wk package has one recursive dependency
-([cpp11](https://cpp11.r-lib.org)) and compiles in \~10 seconds. The
-package was designed to be easy to take on as a dependency (although you
-can vendor in the headers if an additional dependency is a concern).
+The wk package has zero dependencies and compiles in \~10 seconds.
