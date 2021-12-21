@@ -88,9 +88,8 @@ new_wk_wkb <- function(x = list(), crs = NULL, geodesic = NULL) {
 #' @rdname new_wk_wkb
 #' @export
 validate_wk_wkb <- function(x) {
-  types <- vapply(unclass(x), typeof, character(1))
-  good_types <- types %in% c("raw", "NULL")
-  if (any(!good_types)) {
+  good_types <- .Call(wk_c_wkb_is_raw_or_null, x)
+  if (!all(good_types)) {
     stop("items in wkb input must be raw() or NULL", call. = FALSE)
   }
 
@@ -120,7 +119,7 @@ is_wk_wkb <- function(x) {
 
 #' @export
 is.na.wk_wkb <- function(x) {
-  vapply(unclass(x), is.null, logical(1))
+  .Call(wk_c_wkb_is_na, x)
 }
 
 #' @export

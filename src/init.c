@@ -28,6 +28,8 @@ extern SEXP wk_c_trans_affine_new(SEXP trans_matrix);
 extern SEXP wk_c_trans_affine_as_matrix(SEXP trans_xptr);
 extern SEXP wk_c_trans_set_new(SEXP xy, SEXP use_z, SEXP use_m);
 extern SEXP wk_c_trans_filter_new(SEXP handler_xptr, SEXP trans_xptr);
+extern SEXP wk_c_wkb_is_na(SEXP geom);
+extern SEXP wk_c_wkb_is_raw_or_null(SEXP geom);
 extern SEXP wk_c_vertex_filter_new(SEXP handler_xptr, SEXP add_details);
 extern SEXP wk_c_handler_void_new();
 extern SEXP wk_c_handler_addr(SEXP xptr);
@@ -60,6 +62,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"wk_c_trans_affine_as_matrix", (DL_FUNC) &wk_c_trans_affine_as_matrix, 1},
   {"wk_c_trans_set_new", (DL_FUNC) &wk_c_trans_set_new, 3},
   {"wk_c_trans_filter_new", (DL_FUNC) &wk_c_trans_filter_new, 2},
+  {"wk_c_wkb_is_na", (DL_FUNC) &wk_c_wkb_is_na, 1},
+  {"wk_c_wkb_is_raw_or_null", (DL_FUNC) &wk_c_wkb_is_raw_or_null, 1},
   {"wk_c_vertex_filter_new", (DL_FUNC) &wk_c_vertex_filter_new, 2},
   {"wk_c_handler_void_new", (DL_FUNC) &wk_c_handler_void_new, 0},
   {"wk_c_handler_addr", (DL_FUNC) &wk_c_handler_addr, 1},
