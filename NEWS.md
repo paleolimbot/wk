@@ -17,6 +17,8 @@
   vectors for better integration with sf (#113, #114).
 * Refactored well-known text parser to be more reusable and faster
   (#115, #104).
+* Minor performance enhancement for `is.na()` and `validate_wk_wkb()`
+  when called on a very long `wkb()` vector (#117).
 
 # wk 0.5.0
 
