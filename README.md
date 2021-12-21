@@ -8,7 +8,7 @@
 [![R build
 status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
+coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://app.codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
 The goal of wk is to provide lightweight R, C, and C++ infrastructure
@@ -87,7 +87,7 @@ describing the types of information that parsers typically encounter
 when reading geometries and the order in which that information is
 typically organized. Detailed information is available in the [C and C++
 API
-article](https://paleolimbot.github.io/wk/dev/articles/articles/philosophy.html).
+article](https://paleolimbot.github.io/wk/articles/articles/programming.html).
 
 ``` r
 wk_debug(
@@ -95,12 +95,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x16d1d1e18> => WK_CONTINUE
-#>   feature_start (1): <0x16d1d1e18>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x16d1d1d20> => WK_CONTINUE
-#>       coord (1): <0x16d1d1d20> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x16d1d1d20> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x16d1d1e18>
+#> vector_start: <Unknown type / 0>[1] <0x16dd25e18> => WK_CONTINUE
+#>   feature_start (1): <0x16dd25e18>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x16dd25d20> => WK_CONTINUE
+#>       coord (1): <0x16dd25d20> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16dd25d20> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16dd25e18>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -117,12 +117,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: LINESTRING B[1] <0x16d1d4df0> => WK_CONTINUE
-#>   feature_start (1): <0x16d1d4df0>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x16d1d4d50> => WK_CONTINUE
-#>       coord (1): <0x16d1d4d50> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x16d1d4d50> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x16d1d4df0>
+#> vector_start: LINESTRING B[1] <0x16dd28df0> => WK_CONTINUE
+#>   feature_start (1): <0x16dd28df0>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x16dd28d50> => WK_CONTINUE
+#>       coord (1): <0x16dd28d50> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16dd28d50> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16dd28df0>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R build status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
-[![Codecov test coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://app.codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
 The goal of wk is to provide lightweight R, C, and C++ infrastructure for a distributed ecosystem of packages that operate on collections of coordinates. First, wk provides vector classes for points, circles, rectangles, well-known text (WKT), and well-known binary (WKB). Second, wk provides a C API and set of S3 generics for event-based iteration over vectors of geometries.
@@ -61,7 +61,7 @@ The wk package is made up of readers, handlers, and filters. Readers parse the v
 
 ## C API
 
-The distributed nature of the wk framework is powered by a [~100-line header](https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h) describing the types of information that parsers typically encounter when reading geometries and the order in which that information is typically organized. Detailed information is available in the [C and C++ API article](https://paleolimbot.github.io/wk/dev/articles/articles/philosophy.html).
+The distributed nature of the wk framework is powered by a [~100-line header](https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h) describing the types of information that parsers typically encounter when reading geometries and the order in which that information is typically organized. Detailed information is available in the [C and C++ API article](https://paleolimbot.github.io/wk/articles/articles/programming.html).
 
 ```{r}
 wk_debug(
