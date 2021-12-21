@@ -142,12 +142,12 @@
   <span class="fu"><a href="reference/wk_format.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffee3f8f590&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee3f8f590&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[UNKNOWN] &lt;0x7ffee3f8f418&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee3f8f418&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (2): &lt;0x7ffee3f8f418&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee3f8f590&gt;</span>
+<span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x16d1d1e18&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x16d1d1e18&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[UNKNOWN] &lt;0x16d1d1d20&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x16d1d1d20&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x16d1d1d20&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x16d1d1e18&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
 </div>
@@ -161,19 +161,19 @@
   <span class="fu"><a href="reference/wk_format.html">wkt_format_handler</a></span><span class="op">(</span>max_coords <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span>
-<span class="co">#&gt; vector_start: LINESTRING B[1] &lt;0x7ffee3f92188&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;   feature_start (1): &lt;0x7ffee3f92188&gt;  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[3] &lt;0x7ffee3f920f0&gt; =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (1): &lt;0x7ffee3f920f0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
-<span class="co">#&gt;       coord (2): &lt;0x7ffee3f920f0&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
-<span class="co">#&gt; vector_end: &lt;0x7ffee3f92188&gt;</span>
+<span class="co">#&gt; vector_start: LINESTRING B[1] &lt;0x16d1d4df0&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;   feature_start (1): &lt;0x16d1d4df0&gt;  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;     geometry_start (&lt;none&gt;): LINESTRING[3] &lt;0x16d1d4d50&gt; =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (1): &lt;0x16d1d4d50&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="co">#&gt;       coord (2): &lt;0x16d1d4d50&gt; (2.000000 2.000000)  =&gt; WK_ABORT_FEATURE</span>
+<span class="co">#&gt; vector_end: &lt;0x16d1d4df0&gt;</span>
 <span class="co">#&gt; deinitialize</span>
 <span class="co">#&gt; [1] "LINESTRING (1 1, 2 2..."</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="lightweight">Lightweight<a class="anchor" aria-label="anchor" href="#lightweight"></a>
 </h2>
-<p>The wk package has one recursive dependency (<a href="https://cpp11.r-lib.org" class="external-link">cpp11</a>) and compiles in ~10 seconds. The package was designed to be easy to take on as a dependency (although you can vendor in the headers if an additional dependency is a concern).</p>
+<p>The wk package has zero dependencies and compiles in ~10 seconds.</p>
 </div>
 </div>
   </div>
@@ -217,7 +217,6 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/paleolimbot/wk/actions" class="external-link"><img src="https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://codecov.io/gh/paleolimbot/wk?branch=master" class="external-link"><img src="https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
 </div>
 
