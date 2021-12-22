@@ -19,6 +19,8 @@
   (#115, #104).
 * Minor performance enhancement for `is.na()` and `validate_wk_wkb()`
   when called on a very long `wkb()` vector (#117).
+* Fixed issue with `validate_wk_wkb()` and `validate_wk_wkt()`, which failed
+  for most valid objects (#119).
 
 # wk 0.5.0
 
