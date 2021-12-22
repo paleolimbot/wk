@@ -15,16 +15,17 @@ wkt <- function(x = character(), crs = wk_crs_auto(), geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
   wkt <- new_wk_wkt(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
-  validate_wk_wkt(x)
+  validate_wk_wkt(wkt)
   wkt
 }
 
 #' @rdname wkt
 #' @export
-parse_wkt <- function(x, crs = wk_crs_auto()) {
+parse_wkt <- function(x, crs = wk_crs_auto(), geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-  parse_base(new_wk_wkt(x, crs = crs), wkt_problems(x))
+  wkt <- new_wk_wkt(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
+  parse_base(wkt, wk_problems(wkt))
 }
 
 #' @rdname wkt
@@ -75,7 +76,15 @@ is_wk_wkt <- function(x) {
 #' @rdname new_wk_wkt
 #' @export
 validate_wk_wkt <- function(x) {
-  problems <- wkt_problems(x)
+  if (typeof(x) != "character") {
+    stop("wkt() must be of type character()", call. = FALSE)
+  }
+
+  if (!inherits(x, "wk_wkt") || !inherits(x, "wk_vctr")) {
+    stop('wkt() must inherit from c("wk_wkt", "wk_vctr")', call. = FALSE)
+  }
+
+  problems <- wk_problems(x)
   stop_for_problems(problems)
 
   invisible(x)

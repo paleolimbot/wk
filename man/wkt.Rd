@@ -11,7 +11,7 @@
 \usage{
 wkt(x = character(), crs = wk_crs_auto(), geodesic = FALSE)
 
-parse_wkt(x, crs = wk_crs_auto())
+parse_wkt(x, crs = wk_crs_auto(), geodesic = FALSE)
 
 as_wkt(x, ...)
 

@@ -14,7 +14,7 @@
 \usage{
 wkb(x = list(), crs = wk_crs_auto(), geodesic = FALSE)
 
-parse_wkb(x, crs = wk_crs_auto())
+parse_wkb(x, crs = wk_crs_auto(), geodesic = FALSE)
 
 wk_platform_endian()
 
@@ -47,6 +47,6 @@ A \code{\link[=new_wk_wkb]{new_wk_wkb()}}
 Mark lists of raw vectors as well-known binary
 }
 \examples{
-wkb(wkt_translate_wkb("POINT (20 10)"))
+as_wkb("POINT (20 10)")
 
 }
