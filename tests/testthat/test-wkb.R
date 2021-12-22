@@ -14,7 +14,9 @@ test_that("wkb class works", {
   expect_error(new_wk_wkb("char!"), "must be a list")
   expect_error(wkb(list("not raw()")), "must be raw")
   expect_error(wkb(list(raw())), "Encountered 1 parse problem")
-  expect_error(wkb(rep(list(raw()), 10)), "Encountered 10 parse problem")
+  expect_error(wkb(rep(list(raw()), 10)), "Encountered 10 parse problems")
+  expect_error(validate_wk_wkb("char!"), "must be of type list")
+  expect_error(validate_wk_wkb(list()), "must inherit from")
 
   expect_s3_class(x[1], "wk_wkb")
   expect_identical(x[[1]], x[1])
