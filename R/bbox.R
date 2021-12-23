@@ -22,6 +22,10 @@ wk_envelope <- function(handleable, ...) {
 #' @rdname wk_bbox
 #' @export
 wk_bbox.default <- function(handleable, ...) {
+  if (wk_is_geodesic(handleable)) {
+    stop("Can't compute bbox for geodesic object", call. = FALSE)
+  }
+
   result <- wk_handle(handleable, wk_bbox_handler(), ...)
   wk_crs(result) <- wk_crs(handleable)
   result
@@ -30,6 +34,10 @@ wk_bbox.default <- function(handleable, ...) {
 #' @rdname wk_bbox
 #' @export
 wk_envelope.default <- function(handleable, ...) {
+  if (wk_is_geodesic(handleable)) {
+    stop("Can't compute envelope for geodesic object", call. = FALSE)
+  }
+
   result <- wk_handle(handleable, wk_envelope_handler(), ...)
   wk_crs(result) <- wk_crs(handleable)
   result
@@ -38,6 +46,10 @@ wk_envelope.default <- function(handleable, ...) {
 #' @rdname wk_bbox
 #' @export
 wk_envelope.wk_rct <- function(handleable, ...) {
+  if (wk_is_geodesic(handleable)) {
+    stop("Can't compute envelope for geodesic object", call. = FALSE)
+  }
+
   handleable
 }
 
