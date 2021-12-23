@@ -21,11 +21,11 @@ wkt_problems(wkt)
 
 wkb_translate_wkt(wkb, ..., precision = 16, trim = TRUE)
 
-wkb_translate_wkb(wkb, ...)
+wkb_translate_wkb(wkb, ..., endian = NA_integer_)
 
 wkt_translate_wkt(wkt, ..., precision = 16, trim = TRUE)
 
-wkt_translate_wkb(wkt, ...)
+wkt_translate_wkb(wkt, ..., endian = NA_integer_)
 }
 \arguments{
 \item{wkb}{A \code{list()} of \code{\link[=raw]{raw()}} vectors, such as that
@@ -43,6 +43,8 @@ in the output.}
 
 \item{...}{Used to keep backward compatibility with previous
 versions of these functions.}
+
+\item{endian}{Force the endian of the resulting WKB.}
 }
 \description{
 These functions are deprecated and will be removed in a future version.
