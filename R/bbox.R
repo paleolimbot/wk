@@ -15,8 +15,22 @@ wk_bbox <- function(handleable, ...) {
 
 #' @rdname wk_bbox
 #' @export
+wk_envelope <- function(handleable, ...) {
+  UseMethod("wk_envelope")
+}
+
+#' @rdname wk_bbox
+#' @export
 wk_bbox.default <- function(handleable, ...) {
   result <- wk_handle(handleable, wk_bbox_handler(), ...)
+  wk_crs(result) <- wk_crs(handleable)
+  result
+}
+
+#' @rdname wk_bbox
+#' @export
+wk_envelope.default <- function(handleable, ...) {
+  result <- wk_handle(handleable, wk_envelope_handler(), ...)
   wk_crs(result) <- wk_crs(handleable)
   result
 }
@@ -28,4 +42,10 @@ wk_bbox.default <- function(handleable, ...) {
 #' @export
 wk_bbox_handler <- function() {
   new_wk_handler(.Call(wk_c_bbox_handler_new), "wk_bbox_handler")
+}
+
+#' @rdname wk_bbox
+#' @export
+wk_envelope_handler <- function() {
+  new_wk_handler(.Call(wk_c_envelope_handler_new), "wk_envelope_handler")
 }
