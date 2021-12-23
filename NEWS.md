@@ -23,6 +23,7 @@
   for most valid objects (#119).
 * Added `wk_envelope()` and `wk_envelope_handler()` to compute feature-wise
   bounding boxes (#120, #122).
+* Fixed headers and tests to pass on big endian systems (#105, #122).
 
 # wk 0.5.0
 
