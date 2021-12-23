@@ -15,7 +15,7 @@ test_that("wkb_writer() works", {
   )
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2] <- as.raw(0xff)
+  wkb_bad[[1]][2:3] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
 })
 

@@ -41,7 +41,7 @@ test_that("debug handlers print messages from the wkb handler", {
   )
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2] <- as.raw(0xff)
+  wkb_bad[[1]][2:3] <- as.raw(0xff)
   expect_error(
     expect_output(
       wk_handle(new_wk_wkb(wkb_bad), wk_debug_filter()),

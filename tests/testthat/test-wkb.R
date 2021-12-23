@@ -55,7 +55,7 @@ test_that("parse_wkb() works", {
   expect_false(is.na(parsed))
   expect_null(attr(parsed, "problems"))
 
-  x[[1]][2] <- as.raw(0xff)
+  x[[1]][2:3] <- as.raw(0xff)
   expect_warning(parsed <- parse_wkb(x), "Encountered 1 parse problem")
   expect_true(is.na(parsed))
   expect_s3_class(attr(parsed, "problems"), "data.frame")

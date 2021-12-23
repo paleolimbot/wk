@@ -21,7 +21,7 @@ test_that("void handlers do nothing", {
   expect_null(wk_handle(wkb_good, wk_void_handler()))
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2] <- as.raw(0xff)
+  wkb_bad[[1]][2:3] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wk_void_handler()), "Unrecognized geometry type code")
 })
 
