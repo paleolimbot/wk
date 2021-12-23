@@ -1,12 +1,15 @@
 
 test_that("wkb_writer() works", {
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
+  wkb_good <- wk_handle(
+    new_wk_wkt(
+      c(
+        "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+        "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+        "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+        "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+      )
+    ),
+    wkb_writer(endian = 1L)
   )
 
   expect_identical(
@@ -15,7 +18,7 @@ test_that("wkb_writer() works", {
   )
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2:3] <- as.raw(0xff)
+  wkb_bad[[1]][3:4] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
 })
 

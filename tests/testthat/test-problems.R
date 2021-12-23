@@ -19,13 +19,16 @@ test_that("wk_problems() reports parsing errors for wkt", {
 
 
 test_that("validating handlers return a character vector of problems", {
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
+  wkb_good <- wk_handle(
+    new_wk_wkt(
+      c(
+        "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+        "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+        "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+        "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+      )
+    ),
+    wkb_writer(endian = 1L)
   )
 
   expect_identical(
@@ -34,7 +37,7 @@ test_that("validating handlers return a character vector of problems", {
   )
 
   wkb_bad <- unclass(wkb_good)
-  wkb_bad[[1]][2:3] <- as.raw(0xff)
+  wkb_bad[[1]][3:4] <- as.raw(0xff)
   problems <- wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler())
   expect_match(problems[1], "^Unrecognized geometry type code")
   expect_identical(problems[-1], c(rep(NA_character_, length(wkb_good) - 1)))
