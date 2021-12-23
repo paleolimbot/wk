@@ -58,3 +58,22 @@ test_that("wk_envelope() works when geometry has cached bbox", {
   expect_identical(wk_envelope(crc(2, 3, r = 1)), rct(1, 2, 3, 4))
   expect_identical(wk_envelope(rct(1, 2, 3, 4)), rct(1, 2, 3, 4))
 })
+
+test_that("wk_envelope() works when vector size is unknown", {
+  expect_identical(
+    handle_wkt_without_vector_size(
+      wkt("POINT (0 1)"),
+      wk_envelope_handler()
+    ),
+    rct(0, 1, 0, 1)
+  )
+
+  expect_identical(
+    handle_wkt_without_vector_size(
+      wkt(rep("POINT (0 1)", 1025)),
+      wk_envelope_handler()
+    ),
+    rep(rct(0, 1, 0, 1), 1025)
+  )
+})
+
