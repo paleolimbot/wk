@@ -64,6 +64,11 @@ test_that("wk_rcrd works", {
   )
 })
 
+test_that("geodesic gets printed for geodesic rcrd objects", {
+  x_geod <- rct(0, 0, 1, 1, geodesic = TRUE)
+  expect_output(print(x_geod), "geodesic wk_rct")
+})
+
 test_that("rep_len() works for wk_rcrd", {
   skip_if_not(packageVersion("base") >= "3.6")
 

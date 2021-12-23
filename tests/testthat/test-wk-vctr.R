@@ -31,6 +31,11 @@ test_that("wk_vctr class works", {
   expect_error(as.data.frame(x), "cannot coerce")
 })
 
+test_that("geodesic gets printed for geodesic objects", {
+  x_geod <- wkt("POINT EMPTY", geodesic = TRUE)
+  expect_output(print(x_geod), "geodesic wk_wkt")
+})
+
 test_that("rep() works for list wk_vctrs", {
   expect_identical(
     rep(structure(list(NULL), class = "wk_vctr"), 3),
