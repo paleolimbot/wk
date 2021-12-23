@@ -13,7 +13,7 @@ test_that("wkb_writer() works", {
   )
 
   expect_identical(
-    wk_handle(wkb_good, wkb_writer()),
+    wk_handle(wkb_good, wkb_writer(endian = 1L)),
     wkb_good
   )
 
