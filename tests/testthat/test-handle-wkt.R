@@ -207,7 +207,7 @@ test_that("wkt_translate_wkb() works simple geometries", {
                       0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40))
 
-  expect_identical(wkt_translate_wkb("POINT (30 10)"), list(point))
+  expect_identical(wkt_translate_wkb("POINT (30 10)", endian = 1L), list(point))
   expect_identical(
     wkt_translate_wkb("LINESTRING (30 10, 12 42)", endian = 1L),
     list(linestring)

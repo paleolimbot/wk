@@ -34,13 +34,11 @@ test_that("validating handlers return a character vector of problems", {
   )
 
   wkb_bad <- unclass(wkb_good)
-  wkb_bad[[1]][2] <- as.raw(0xff)
-  expect_identical(
-    wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler()),
-    c("Unrecognized geometry type code '255'", rep(NA_character_, length(wkb_good) - 1))
-  )
+  wkb_bad[[1]][3] <- as.raw(0xff)
+  problems <- wk_handle(new_wk_wkb(wkb_bad), wk_problems_handler())
+  expect_match(problems[1], "^Unrecognized geometry type code")
+  expect_identical(problems[-1], c(rep(NA_character_, length(wkb_good) - 1)))
 })
-
 
 test_that("validating handlers return a character vector of problems for WKT", {
   wkt_good <- as_wkt(

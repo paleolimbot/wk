@@ -25,7 +25,7 @@ test_that("format() works for wkb", {
 
 test_that("format() handles errors", {
   bad_wkb <- wkt_translate_wkb("POINT (30 10)", endian = 1L)
-  bad_wkb[[1]][2] <- as.raw(0xff)
+  bad_wkb[[1]][3] <- as.raw(0xff)
   expect_match(wkb_format(bad_wkb), "!!!")
   expect_match(wkt_format("POINT ENTPY"), "!!!")
 })
