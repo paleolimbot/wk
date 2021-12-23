@@ -20,8 +20,6 @@ test_that("wkb_writer() works", {
 })
 
 test_that("wkb_writer() can generate swapped endian", {
-  skip_if_not(wk_platform_endian() == 1)
-
   wkb_system <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = NA))
   wkb_le <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = 1))
   wkb_be <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = 0))
@@ -30,7 +28,6 @@ test_that("wkb_writer() can generate swapped endian", {
   expect_identical(as_wkt(wkb_le), wkt("LINESTRING (1 2, 3 4)"))
   expect_identical(as_wkt(wkb_be), wkt("LINESTRING (1 2, 3 4)"))
 
-  expect_identical(wkb_system, wkb_le)
   expect_false(identical(wkb_be, wkb_le))
 
   expect_identical(
@@ -46,6 +43,26 @@ test_that("wkb_writer() can generate swapped endian", {
             0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x40, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          )
+        )
+      ),
+      class = c("wk_wkb", "wk_vctr")
+    )
+  )
+
+  expect_identical(
+    wkb_le,
+    # dput(geos::geos_write_wkb("LINESTRING (1 2, 3 4)", endian = 1))
+    structure(
+      list(
+        as.raw(
+          c(0x01,
+            0x02, 0x00, 0x00, 0x00,
+            0x02, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x40
           )
         )
       ),
