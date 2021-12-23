@@ -35,6 +35,36 @@ wk_envelope.default <- function(handleable, ...) {
   result
 }
 
+#' @rdname wk_bbox
+#' @export
+wk_envelope.wk_rct <- function(handleable, ...) {
+  handleable
+}
+
+#' @rdname wk_bbox
+#' @export
+wk_envelope.wk_crc <- function(handleable, ...) {
+  unclassed <- unclass(handleable)
+
+  rct_data <- list(
+    xmin = unclassed$x - unclassed$r,
+    ymin = unclassed$y - unclassed$r,
+    xmax = unclassed$x + unclassed$r,
+    ymax = unclassed$y + unclassed$r
+  )
+
+  new_wk_rct(rct_data, crs = attr(handleable, "crs", exact = TRUE))
+}
+
+#' @rdname wk_bbox
+#' @export
+wk_envelope.wk_xy <- function(handleable, ...) {
+  unclassed <- unclass(handleable)
+  rct_data <- c(unclassed[1:2], unclassed[1:2])
+  names(rct_data) <- c("xmin", "ymin", "xmax", "ymax")
+  new_wk_rct(rct_data, crs = attr(handleable, "crs", exact = TRUE))
+}
+
 # Note to future self: re-implementing wk_bbox() using range()
 # for record-style vectors is not faster than the default method
 
