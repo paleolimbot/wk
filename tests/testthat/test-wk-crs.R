@@ -51,6 +51,10 @@ test_that("geodesic getting and setting works for rct", {
   expect_null(attr(x, "geodesic"))
 })
 
+test_that("geodesic setting gives a warning when this isn't supported", {
+  expect_warning(wk_set_geodesic(xy(), TRUE), "for object of class 'wk_xy'")
+})
+
 test_that("crs comparison works", {
   expect_true(wk_crs_equal(NULL, NULL))
   expect_false(wk_crs_equal(NULL, "something"))

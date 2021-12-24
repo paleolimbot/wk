@@ -17,7 +17,7 @@ as_wkt(x, ...)
 
 \method{as_wkt}{default}(x, ...)
 
-\method{as_wkt}{character}(x, ..., crs = NULL)
+\method{as_wkt}{character}(x, ..., crs = NULL, geodesic = FALSE)
 
 \method{as_wkt}{wk_wkt}(x, ...)
 }

@@ -42,8 +42,8 @@ as_wkt.default <- function(x, ...) {
 
 #' @rdname wkt
 #' @export
-as_wkt.character <- function(x, ..., crs = NULL) {
-  wkt(x, crs = crs)
+as_wkt.character <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  wkt(x, crs = crs, geodesic = geodesic)
 }
 
 #' @rdname wkt
