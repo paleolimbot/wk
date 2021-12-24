@@ -19,6 +19,9 @@
     s3_register("sf::st_geometry", cls)
     s3_register("sf::st_bbox", cls)
   }
+
+  s3_register("readr::output_column", "wk_vctr")
+  s3_register("readr::output_column", "wk_rcrd")
 }
 
 .onUnload <- function (libpath) {
