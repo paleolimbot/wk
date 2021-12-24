@@ -33,7 +33,8 @@ Suggests:
     testthat (>= 3.0.0),
     vctrs (>= 0.3.0),
     sf,
-    tibble
+    tibble,
+    readr
 URL: https://paleolimbot.github.io/wk/, https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
 Config/testthat/edition: 3

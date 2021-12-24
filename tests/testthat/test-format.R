@@ -24,9 +24,8 @@ test_that("format() works for wkb", {
 })
 
 test_that("format() handles errors", {
-  skip_if_not(wk_platform_endian() == 1)
-  bad_wkb <- unclass(as_wkb("POINT (30 10)"))
-  bad_wkb[[1]][2] <- as.raw(0xff)
+  bad_wkb <- unclass(wk_handle(new_wk_wkt("POINT (30 10)"), wkb_writer(endian = 1L)))
+  bad_wkb[[1]][3:4] <- as.raw(0xff)
   expect_match(wk_format(new_wk_wkb(bad_wkb)), "!!!")
   expect_match(wk_format(new_wk_wkt("POINT ENTPY")), "!!!")
 })

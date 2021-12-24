@@ -9,19 +9,22 @@ test_that("wk_void() does nothing", {
 })
 
 test_that("void handlers do nothing", {
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
+  wkb_good <- wk_handle(
+    new_wk_wkt(
+      c(
+        "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+        "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+        "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+        "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+      )
+    ),
+    wkb_writer(endian = 1L)
   )
 
   expect_null(wk_handle(wkb_good, wk_void_handler()))
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2] <- as.raw(0xff)
+  wkb_bad[[1]][3:4] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wk_void_handler()), "Unrecognized geometry type code")
 })
 

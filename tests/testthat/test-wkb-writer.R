@@ -1,27 +1,28 @@
 
 test_that("wkb_writer() works", {
-  wkb_good <- as_wkb(
-    c(
-      "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
-      "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
-      "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
-      "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
-    )
+  wkb_good <- wk_handle(
+    new_wk_wkt(
+      c(
+        "POINT (1 1)", "LINESTRING (1 1, 2 2)", "POLYGON ((0 0, 0 1, 1 0, 0 0))",
+        "MULTIPOINT ((1 1))", "MULTILINESTRING ((1 1, 2 2), (2 2, 3 3))",
+        "MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -1, -1 0, 0 0)))",
+        "GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"
+      )
+    ),
+    wkb_writer(endian = 1L)
   )
 
   expect_identical(
-    wk_handle(wkb_good, wkb_writer()),
+    wk_handle(wkb_good, wkb_writer(endian = 1L)),
     wkb_good
   )
 
   wkb_bad <- unclass(wkb_good[1])
-  wkb_bad[[1]][2] <- as.raw(0xff)
+  wkb_bad[[1]][3:4] <- as.raw(0xff)
   expect_error(wk_handle(new_wk_wkb(wkb_bad), wkb_writer()), "Unrecognized geometry type code")
 })
 
 test_that("wkb_writer() can generate swapped endian", {
-  skip_if_not(wk_platform_endian() == 1)
-
   wkb_system <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = NA))
   wkb_le <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = 1))
   wkb_be <- wk_handle(wkt("LINESTRING (1 2, 3 4)"), wkb_writer(endian = 0))
@@ -30,7 +31,6 @@ test_that("wkb_writer() can generate swapped endian", {
   expect_identical(as_wkt(wkb_le), wkt("LINESTRING (1 2, 3 4)"))
   expect_identical(as_wkt(wkb_be), wkt("LINESTRING (1 2, 3 4)"))
 
-  expect_identical(wkb_system, wkb_le)
   expect_false(identical(wkb_be, wkb_le))
 
   expect_identical(
@@ -46,6 +46,26 @@ test_that("wkb_writer() can generate swapped endian", {
             0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x40, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x40, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          )
+        )
+      ),
+      class = c("wk_wkb", "wk_vctr")
+    )
+  )
+
+  expect_identical(
+    wkb_le,
+    # dput(geos::geos_write_wkb("LINESTRING (1 2, 3 4)", endian = 1))
+    structure(
+      list(
+        as.raw(
+          c(0x01,
+            0x02, 0x00, 0x00, 0x00,
+            0x02, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x3f,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x40,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x40
           )
         )
       ),

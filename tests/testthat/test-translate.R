@@ -17,7 +17,7 @@ test_that("wkt writing is vectorized", {
 
 test_that("wkb writing is vectorized", {
   expect_identical(
-    wkt_translate_wkb(c("POINT (20 20)", "POINT (30 30)")),
+    wkt_translate_wkb(c("POINT (20 20)", "POINT (30 30)"), endian = 1L),
     list(
       as.raw(
         c(0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

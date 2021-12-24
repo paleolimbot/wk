@@ -53,7 +53,7 @@ test_that("chunk map feature works with vectorized and non-vectorized args", {
       expect_identical(l, letters[1:5])
       expect_identical(y, "zippity")
     },
-    vector_args = data.frame(l = letters[1:5]),
+    vector_args = data.frame(l = letters[1:5], stringsAsFactors = FALSE),
     args = list(y = "zippity"),
     strategy = wk_chunk_strategy_single()
   )
@@ -64,7 +64,7 @@ test_that("chunk map feature works with vectorized and non-vectorized args", {
       expect_identical(l, letters[1])
       expect_identical(y, "zippity")
     },
-    vector_args = data.frame(l = letters[1]),
+    vector_args = data.frame(l = letters[1], stringsAsFactors = FALSE),
     args = list(y = "zippity"),
     strategy = wk_chunk_strategy_single()
   )

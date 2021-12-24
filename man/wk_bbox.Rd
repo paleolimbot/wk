@@ -2,15 +2,33 @@
 % Please edit documentation in R/bbox.R
 \name{wk_bbox}
 \alias{wk_bbox}
+\alias{wk_envelope}
 \alias{wk_bbox.default}
+\alias{wk_envelope.default}
+\alias{wk_envelope.wk_rct}
+\alias{wk_envelope.wk_crc}
+\alias{wk_envelope.wk_xy}
 \alias{wk_bbox_handler}
+\alias{wk_envelope_handler}
 \title{2D bounding rectangles}
 \usage{
 wk_bbox(handleable, ...)
 
+wk_envelope(handleable, ...)
+
 \method{wk_bbox}{default}(handleable, ...)
 
+\method{wk_envelope}{default}(handleable, ...)
+
+\method{wk_envelope}{wk_rct}(handleable, ...)
+
+\method{wk_envelope}{wk_crc}(handleable, ...)
+
+\method{wk_envelope}{wk_xy}(handleable, ...)
+
 wk_bbox_handler()
+
+wk_envelope_handler()
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},

@@ -178,6 +178,20 @@ wk_is_geodesic.wk_rct <- function(x) {
 }
 
 #' @export
+wk_set_geodesic.default <- function(x, geodesic) {
+  if (geodesic) {
+    warning(
+      sprintf(
+        "Ignoring wk_set_geodesic(x, TRUE) for object of class '%s'",
+        class(x)[1]
+      )
+    )
+  }
+
+  x
+}
+
+#' @export
 wk_set_geodesic.wk_wkb <- function(x, geodesic) {
   attr(x, "geodesic") <- if (isTRUE(geodesic)) TRUE else NULL
   x

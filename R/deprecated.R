@@ -11,6 +11,7 @@
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
+#' @param endian Force the endian of the resulting WKB.
 #' @param ... Used to keep backward compatibility with previous
 #'   versions of these functions.
 #'
@@ -46,8 +47,8 @@ wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
 
 #' @rdname deprecated
 #' @export
-wkb_translate_wkb <- function(wkb, ...) {
-  unclass(wk_handle.wk_wkb(wkb, wkb_writer()))
+wkb_translate_wkb <- function(wkb, ..., endian = NA_integer_) {
+  unclass(wk_handle.wk_wkb(wkb, wkb_writer(endian = endian)))
 }
 
 #' @rdname deprecated
@@ -58,6 +59,6 @@ wkt_translate_wkt <- function(wkt, ..., precision = 16, trim = TRUE) {
 
 #' @rdname deprecated
 #' @export
-wkt_translate_wkb <- function(wkt, ...) {
-  unclass(wk_handle.wk_wkt(wkt, wkb_writer()))
+wkt_translate_wkb <- function(wkt, ..., endian = NA_integer_) {
+  unclass(wk_handle.wk_wkt(wkt, wkb_writer(endian = endian)))
 }

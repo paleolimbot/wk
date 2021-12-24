@@ -35,11 +35,18 @@ format.wk_rcrd <- function(x, ...) {
 #' @export
 print.wk_rcrd <- function(x, ...) {
   crs <- wk_crs(x)
-  if (is.null(crs)) {
-    cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
-  } else {
-    cat(sprintf("<%s[%s] with CRS=%s>\n", class(x)[1], length(x), wk_crs_format(crs)))
+  is_geodesic <- wk_is_geodesic(x)
+  header <- sprintf("%s[%s]", class(x)[1], length(x))
+
+  if (!is.null(crs)) {
+    header <- paste0(header, " with CRS=", wk_crs_format(crs))
   }
+
+  if (isTRUE(is_geodesic)) {
+    header <- paste0("geodesic ", header)
+  }
+
+  cat(sprintf("<%s>\n", header))
 
   if (length(x) == 0) {
     return(invisible(x))

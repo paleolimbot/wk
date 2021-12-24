@@ -21,9 +21,9 @@ as_rct(x, ...)
 
 \method{as_rct}{wk_rct}(x, ...)
 
-\method{as_rct}{matrix}(x, ..., crs = NULL)
+\method{as_rct}{matrix}(x, ..., crs = NULL, geodesic = FALSE)
 
-\method{as_rct}{data.frame}(x, ..., crs = NULL)
+\method{as_rct}{data.frame}(x, ..., crs = NULL, geodesic = FALSE)
 }
 \arguments{
 \item{xmin, ymin, xmax, ymax}{Rectangle bounds.}

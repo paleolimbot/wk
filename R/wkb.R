@@ -48,8 +48,8 @@ as_wkb.default <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.character <- function(x, ..., crs = NULL) {
-  as_wkb(wkt(x, crs = crs), ...)
+as_wkb.character <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkt(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' @rdname wkb
@@ -60,14 +60,14 @@ as_wkb.wk_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.blob <- function(x, ..., crs = NULL) {
-  as_wkb(wkb(x, crs = crs), ...)
+as_wkb.blob <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkb(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.WKB <- function(x, ..., crs = NULL) {
-  as_wkb(wkb(x, crs = crs), ...)
+as_wkb.WKB <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkb(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' S3 Details for wk_wkb

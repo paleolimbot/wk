@@ -15,5 +15,5 @@ wk_translate <- function(handleable, to, ...) {
 wk_translate.default <- function(handleable, to, ...) {
   result <- wk_handle(handleable, wk_writer(to), ...)
   attr(result, "crs") <- wk_crs_output(handleable, to)
-  result
+  wk_set_geodesic(result, wk_is_geodesic(handleable))
 }

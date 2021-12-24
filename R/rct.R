@@ -43,19 +43,23 @@ as_rct.wk_rct <- function(x, ...) {
 
 #' @rdname rct
 #' @export
-as_rct.matrix <- function(x, ..., crs = NULL) {
+as_rct.matrix <- function(x, ..., crs = NULL, geodesic = FALSE) {
   if (ncol(x) == 4) {
     colnames(x) <- c("xmin", "ymin", "xmax", "ymax")
   }
 
-  as_rct(as.data.frame(x), ..., crs = crs)
+  as_rct(as.data.frame(x), ..., crs = crs, geodesic = geodesic)
 }
 
 #' @rdname rct
 #' @export
-as_rct.data.frame <- function(x, ..., crs = NULL) {
+as_rct.data.frame <- function(x, ..., crs = NULL, geodesic = FALSE) {
   stopifnot(all(c("xmin", "ymin", "xmax", "ymax") %in% names(x)))
-  new_wk_rct(lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double), crs = crs)
+  new_wk_rct(
+    lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double),
+    crs = crs,
+    geodesic = if (isTRUE(geodesic)) TRUE else NULL
+  )
 }
 
 validate_wk_rct <- function(x) {

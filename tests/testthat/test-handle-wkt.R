@@ -207,13 +207,16 @@ test_that("wkt_translate_wkb() works simple geometries", {
                       0x00, 0x00, 0x00, 0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x34, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3e, 0x40))
 
-  expect_identical(wkt_translate_wkb("POINT (30 10)"), list(point))
+  expect_identical(wkt_translate_wkb("POINT (30 10)", endian = 1L), list(point))
   expect_identical(
-    wkt_translate_wkb("LINESTRING (30 10, 12 42)"),
+    wkt_translate_wkb("LINESTRING (30 10, 12 42)", endian = 1L),
     list(linestring)
   )
   expect_identical(
-    wkt_translate_wkb("POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))"),
+    wkt_translate_wkb(
+      "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))",
+      endian = 1L
+    ),
     list(polygon)
   )
 })
@@ -231,7 +234,7 @@ test_that("wkt_translate_wkb() works with multi geometries", {
                          0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
 
   expect_identical(
-    wkt_translate_wkb("MULTIPOINT ((10 40), (40 30), (20 20), (30 10))"),
+    wkt_translate_wkb("MULTIPOINT ((10 40), (40 30), (20 20), (30 10))", endian = 1L),
     list(multipoint)
   )
 })
@@ -286,7 +289,7 @@ test_that("wkt_translate_wkb() works with nested collections", {
                          0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x3e, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x40))
 
-  expect_identical(wkt_translate_wkb(wkt), list(collection))
+  expect_identical(wkt_translate_wkb(wkt, endian = 1L), list(collection))
 })
 
 test_that("wkt_translate_* has reasonable error messages", {
