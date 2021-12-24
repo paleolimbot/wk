@@ -73,11 +73,11 @@
 
 <span class="fu">wkb_translate_wkt</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="fu">wkb_translate_wkb</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">wkb_translate_wkb</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span>
 
 <span class="fu">wkt_translate_wkt</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="fu">wkt_translate_wkb</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+<span class="fu">wkt_translate_wkb</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,6 +98,8 @@ in the output.</p></dd>
 <dt>...</dt>
 <dd><p>Used to keep backward compatibility with previous
 versions of these functions.</p></dd>
+<dt>endian</dt>
+<dd><p>Force the endian of the resulting WKB.</p></dd>
 </dl></div>
 
   </div>
