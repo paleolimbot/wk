@@ -80,11 +80,15 @@ validate_wk_wkt <- function(x) {
     stop("wkt() must be of type character()", call. = FALSE)
   }
 
+  # See #123...validate_wk_wkt() is used in CRAN s2 on a raw character vector
   if (!inherits(x, "wk_wkt") || !inherits(x, "wk_vctr")) {
-    stop('wkt() must inherit from c("wk_wkt", "wk_vctr")', call. = FALSE)
+    # stop('wkt() must inherit from c("wk_wkt", "wk_vctr")', call. = FALSE)
+    attributes(x) <- NULL
+    problems <- wk_problems(new_wk_wkt(x))
+  } else {
+    problems <- wk_problems(x)
   }
 
-  problems <- wk_problems(x)
   stop_for_problems(problems)
 
   invisible(x)
