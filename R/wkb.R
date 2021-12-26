@@ -93,16 +93,18 @@ validate_wk_wkb <- function(x) {
     stop("wkb() must be of type list()", call. = FALSE)
   }
 
-  if (!inherits(x, "wk_wkb") || !inherits(x, "wk_vctr")) {
-    stop('wkb() must inherit from c("wk_wkb", "wk_vctr")', call. = FALSE)
-  }
-
   good_types <- .Call(wk_c_wkb_is_raw_or_null, x)
   if (!all(good_types)) {
     stop("items in wkb input must be raw() or NULL", call. = FALSE)
   }
 
-  problems <- wk_problems(x)
+  if (!inherits(x, "wk_wkb") || !inherits(x, "wk_vctr")) {
+    attributes(x) <- NULL
+    problems <- wk_problems(new_wk_wkb(x))
+  } else {
+    problems <- wk_problems(x)
+  }
+
   stop_for_problems(problems)
 
   invisible(x)
