@@ -13,25 +13,21 @@ rct(
   ymin = double(),
   xmax = double(),
   ymax = double(),
-  crs = wk_crs_auto(),
-  geodesic = FALSE
+  crs = wk_crs_auto()
 )
 
 as_rct(x, ...)
 
 \method{as_rct}{wk_rct}(x, ...)
 
-\method{as_rct}{matrix}(x, ..., crs = NULL, geodesic = FALSE)
+\method{as_rct}{matrix}(x, ..., crs = NULL)
 
-\method{as_rct}{data.frame}(x, ..., crs = NULL, geodesic = FALSE)
+\method{as_rct}{data.frame}(x, ..., crs = NULL)
 }
 \arguments{
 \item{xmin, ymin, xmax, ymax}{Rectangle bounds.}
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
-
-\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
-coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{x}{An object to be converted to a \code{\link[=rct]{rct()}}.}
 

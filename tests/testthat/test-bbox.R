@@ -114,9 +114,4 @@ test_that("wk_bbox() and wk_envelope() fail for geodesic objects", {
     wk_envelope(wkt("LINESTRING (0 1)", geodesic = TRUE)),
     "Can't compute envelope for geodesic object"
   )
-
-  expect_error(
-    wk_envelope(rct(geodesic = TRUE)),
-    "Can't compute envelope for geodesic object"
-  )
 })

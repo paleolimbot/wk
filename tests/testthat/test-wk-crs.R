@@ -41,16 +41,6 @@ test_that("geodesic getting and setting works for wkt", {
   expect_null(attr(x, "geodesic"))
 })
 
-test_that("geodesic getting and setting works for rct", {
-  x <- new_wk_rct()
-  expect_false(wk_is_geodesic(x))
-  x <- wk_set_geodesic(x, TRUE)
-  expect_true(wk_is_geodesic(x))
-  wk_is_geodesic(x) <- FALSE
-  expect_false(wk_is_geodesic(x))
-  expect_null(attr(x, "geodesic"))
-})
-
 test_that("geodesic setting gives a warning when this isn't supported", {
   expect_warning(wk_set_geodesic(xy(), TRUE), "for object of class 'wk_xy'")
 })
