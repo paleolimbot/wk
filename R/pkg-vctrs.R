@@ -15,8 +15,10 @@ vec_proxy.wk_wkb <- function(x, ...) {
 
 vec_restore.wk_wkb <- function(x, to, ...) {
   crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  geodesic_out <- attr(to, "geodesic", exact = TRUE) %||% attr(x, "geodesic", exact = TRUE)
   attr(x, "crs") <- NULL
-  new_wk_wkb(x, crs = crs_out)
+  attr(x, "geodesic") <- NULL
+  new_wk_wkb(x, crs = crs_out, geodesic = geodesic_out)
 }
 
 #' @rdname vctrs-methods
@@ -111,7 +113,7 @@ vec_ptype2.wk_wkb.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkb wk_xy
 #' @export
 vec_ptype2.wk_wkb.wk_xy <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkb(crs = wk_crs_output(x, y))
+  new_wk_wkb(crs = wk_crs_output(x, y), geodesic = attr(x, "geodesic", exact = TRUE))
 }
 
 #' @method vec_ptype2.wk_wkb wk_xyz
@@ -152,8 +154,10 @@ vec_proxy.wk_wkt <- function(x, ...) {
 
 vec_restore.wk_wkt <- function(x, to, ...) {
   crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
+  geodesic_out <- attr(to, "geodesic", exact = TRUE) %||% attr(x, "geodesic", exact = TRUE)
   attr(x, "crs") <- NULL
-  new_wk_wkt(x, crs = crs_out)
+  attr(x, "geodesic") <- NULL
+  new_wk_wkt(x, crs = crs_out, geodesic = geodesic_out)
 }
 
 #' @rdname vctrs-methods

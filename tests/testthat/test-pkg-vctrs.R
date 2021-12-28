@@ -201,7 +201,7 @@ test_that("vctrs crc implementation works", {
 })
 
 test_that("vec_c() propagates the crs attribute", {
-  for (constructor in list(wkb, wkt, xy, xyz, xyzm, rct, crc)) {
+  for (constructor in list(wkb, wkt, xy, xyz, xym, xyzm, rct, crc)) {
     expect_identical(
       vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = 1234)),
       !!constructor(crs = 1234)
@@ -214,5 +214,37 @@ test_that("vec_c() propagates the crs attribute", {
       vctrs::vec_c(!!constructor(crs = 1234), !!constructor(crs = NULL)),
       "are not equal"
     )
+  }
+})
+
+test_that("vec_c() propagates the geodesic attribute", {
+  for (constructor in list(wkb, wkt)) {
+    expect_identical(
+      vctrs::vec_c(!!constructor(geodesic = TRUE), !!constructor(geodesic = TRUE)),
+      !!constructor(geodesic = TRUE)
+    )
+    expect_identical(
+      vctrs::vec_c(!!constructor(), !!constructor()),
+      !!constructor()
+    )
+    expect_error(
+      vctrs::vec_c(!!constructor(geodesic = TRUE), !!constructor(crs = NULL)),
+      "have differing"
+    )
+  }
+})
+
+test_that("vec_c() propagates the geodesic attribute through points", {
+  for (constructor in list(wkb, wkt)) {
+    for (constructor2 in list(xy, xyz, xym, xyzm)) {
+      expect_identical(
+        vctrs::vec_c(!!constructor(geodesic = TRUE), !!constructor2()),
+        !!constructor(geodesic = TRUE)
+      )
+      expect_identical(
+        vctrs::vec_c(!!constructor2(), !!constructor(geodesic = TRUE)),
+        !!constructor(geodesic = TRUE)
+      )
+    }
   }
 })
