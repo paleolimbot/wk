@@ -171,6 +171,8 @@ vec_cast.wk_wkt.default <- function(x, to, ...) {
 #' @method vec_cast.wk_wkt wk_wkt
 #' @export
 vec_cast.wk_wkt.wk_wkt <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
   x
 }
 
@@ -178,49 +180,44 @@ vec_cast.wk_wkt.wk_wkt <- function(x, to, ...) {
 #' @export
 vec_cast.wk_wkt.wk_wkb <- function(x, to, ...) {
   wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
   as_wkt(x)
 }
 
 #' @method vec_cast.wk_wkt wk_xy
 #' @export
 vec_cast.wk_wkt.wk_xy <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @method vec_cast.wk_wkt wk_xyz
 #' @export
 vec_cast.wk_wkt.wk_xyz <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @method vec_cast.wk_wkt wk_xym
 #' @export
 vec_cast.wk_wkt.wk_xym <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @method vec_cast.wk_wkt wk_xyzm
 #' @export
 vec_cast.wk_wkt.wk_xyzm <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @method vec_cast.wk_wkt wk_rct
 #' @export
 vec_cast.wk_wkt.wk_rct <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @method vec_cast.wk_wkt wk_crc
 #' @export
 vec_cast.wk_wkt.wk_crc <- function(x, to, ...) {
-  wk_crs_output(x, to)
-  as_wkt(x)
+  wk_translate(x, to)
 }
 
 #' @rdname vctrs-methods
