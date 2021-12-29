@@ -46,10 +46,6 @@ wk_envelope.default <- function(handleable, ...) {
 #' @rdname wk_bbox
 #' @export
 wk_envelope.wk_rct <- function(handleable, ...) {
-  if (wk_is_geodesic(handleable)) {
-    stop("Can't compute envelope for geodesic object", call. = FALSE)
-  }
-
   handleable
 }
 
