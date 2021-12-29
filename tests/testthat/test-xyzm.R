@@ -137,6 +137,23 @@ test_that("wk_xy* vectors can be constructed from matrices/data.frames", {
   expect_identical(as_xy(weird_matrix), xy(1:3, 4:6))
 })
 
+test_that("wk_xy* vectors can be created from data.frames with handleable columns", {
+  expect_identical(
+    as_xy(data.frame(geom = xy(1, 2, crs = 1234))),
+    xy(1, 2, crs = 1234)
+  )
+
+  expect_error(
+    as_xy(data.frame(geom = xy(1, 2)), crs = 1234),
+    "missing\\(crs\\) is not TRUE"
+  )
+
+  expect_identical(
+    as_xy(data.frame(geom = xy(1, 2, crs = 1234)), dims = c("x", "y", "z")),
+    xyz(1, 2, NA, crs = 1234)
+  )
+})
+
 test_that("coercion to wk* vectors works", {
   expect_identical(as_wkt(xy(1, 2)), wkt("POINT (1 2)"))
   expect_identical(as_wkb(xy(1, 2)), as_wkb("POINT (1 2)"))

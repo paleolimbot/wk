@@ -173,6 +173,14 @@ as_xy.matrix <- function(x, ..., crs = NULL) {
 #' @rdname xy
 #' @export
 as_xy.data.frame <- function(x, ..., dims = NULL, crs = NULL) {
+  col_handleable <- vapply(x, is_handleable, logical(1))
+  if (any(col_handleable)) {
+    xy <- wk_handle(x[[which(col_handleable)[1]]], xy_writer())
+    stopifnot(missing(crs))
+    wk_crs(xy) <- wk_crs(x)
+    return(as_xy(xy, dims = dims))
+  }
+
   if (is.null(dims)) {
     dims <- intersect(c("x", "y", "z", "m"), names(x))
   }
