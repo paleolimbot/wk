@@ -27,6 +27,38 @@ test_that("wk_linestring() works", {
   expect_error(wk_linestring(new_wk_wkt("POINT ENTPY")), "EMPTY")
 })
 
+test_that("wk_linestring() propagates geodesic", {
+  expect_identical(
+    wk_linestring(xy(1:4, 1), geodesic = TRUE),
+    as_wkb(wkt("LINESTRING (1 1, 2 1, 3 1, 4 1)", geodesic = TRUE))
+  )
+
+  expect_identical(
+    wk_linestring(xy(1:4, 1), geodesic = FALSE),
+    as_wkb(wkt("LINESTRING (1 1, 2 1, 3 1, 4 1)", geodesic = FALSE))
+  )
+
+  expect_identical(
+    wk_linestring(wkt(c("POINT (1 1)", "POINT (2 1)"), geodesic = FALSE), geodesic = NULL),
+    wkt("LINESTRING (1 1, 2 1)", geodesic = FALSE)
+  )
+
+  expect_identical(
+    wk_linestring(wkt(c("POINT (1 1)", "POINT (2 1)"), geodesic = TRUE), geodesic = NULL),
+    wkt("LINESTRING (1 1, 2 1)", geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_linestring(wkt(c("POINT (1 1)", "POINT (2 1)")), geodesic = TRUE),
+    wkt("LINESTRING (1 1, 2 1)", geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_linestring(wkt(c("POINT (1 1)", "POINT (2 1)")), geodesic = FALSE),
+    wkt("LINESTRING (1 1, 2 1)", geodesic = FALSE)
+  )
+})
+
 test_that("wk_linestring() errors for inconsistent dimensions/srid", {
   expect_error(
     wk_linestring(wkt(c("POINT (0 1)", "POINT Z (1 2 3)"))),
@@ -108,6 +140,38 @@ test_that("wk_polygon() works", {
         "POLYGON ((40 40, 20 45, 45 30, 40 40))"
       )
     )
+  )
+})
+
+test_that("wk_polygon() propagates geodesic", {
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))"), geodesic = TRUE),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))"), geodesic = FALSE),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = FALSE)
+  )
+
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = FALSE), geodesic = NULL),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = FALSE)
+  )
+
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = TRUE), geodesic = NULL),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = FALSE), geodesic = TRUE),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = TRUE), geodesic = FALSE),
+    wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))", geodesic = FALSE)
   )
 })
 

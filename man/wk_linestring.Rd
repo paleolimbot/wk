@@ -9,9 +9,9 @@
 \alias{wk_collection_filter}
 \title{Create lines, polygons, and collections}
 \usage{
-wk_linestring(handleable, feature_id = 1L, ...)
+wk_linestring(handleable, feature_id = 1L, ..., geodesic = NULL)
 
-wk_polygon(handleable, feature_id = 1L, ring_id = 1L, ...)
+wk_polygon(handleable, feature_id = 1L, ring_id = 1L, ..., geodesic = NULL)
 
 wk_collection(
   handleable,
@@ -39,6 +39,9 @@ values indicate a new feature. This is recycled silently
 as needed.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{geodesic}{Use \code{TRUE} or \code{FALSE} to explicitly force
+the geodesic-ness of the output.}
 
 \item{ring_id}{An identifier where changes in sequential
 values indicate a new ring. Rings are automatically

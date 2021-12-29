@@ -37,7 +37,10 @@ as_wkt <- function(x, ...) {
 #' @rdname wkt
 #' @export
 as_wkt.default <- function(x, ...) {
-  wk_translate(x, new_wk_wkt(crs = wk_crs_inherit()))
+  wk_translate(
+    x,
+    new_wk_wkt(crs = wk_crs_inherit(), geodesic = if (wk_is_geodesic(x)) TRUE)
+  )
 }
 
 #' @rdname wkt

@@ -5,6 +5,8 @@
 \alias{wk_writer.data.frame}
 \alias{wk_crs.data.frame}
 \alias{wk_set_crs.data.frame}
+\alias{wk_is_geodesic.data.frame}
+\alias{wk_set_geodesic.data.frame}
 \alias{wk_restore.data.frame}
 \alias{wk_restore.tbl_df}
 \alias{wk_translate.data.frame}
@@ -20,6 +22,10 @@
 \method{wk_crs}{data.frame}(x)
 
 \method{wk_set_crs}{data.frame}(x, crs)
+
+\method{wk_is_geodesic}{data.frame}(x)
+
+\method{wk_set_geodesic}{data.frame}(x, geodesic)
 
 \method{wk_restore}{data.frame}(handleable, result, ...)
 
@@ -44,6 +50,9 @@
 \item{x}{Objects whose "crs" attribute is used to carry a CRS.}
 
 \item{crs}{An object that can be interpreted as a CRS}
+
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{result}{The result of a filter operation intended to be a
 transformation.}

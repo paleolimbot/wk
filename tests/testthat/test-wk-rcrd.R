@@ -65,8 +65,14 @@ test_that("wk_rcrd works", {
 })
 
 test_that("geodesic gets printed for geodesic rcrd objects", {
-  x_geod <- rct(0, 0, 1, 1, geodesic = TRUE)
-  expect_output(print(x_geod), "geodesic wk_rct")
+  x_geod <- new_wk_rcrd(
+    list(x = double()),
+    template = structure(list(), class = c("some_wk_rcrd", "wk_rcrd"))
+  )
+
+  s3_register("wk::wk_is_geodesic", "some_wk_rcrd", function(x) TRUE)
+
+  expect_output(print(x_geod), "geodesic some_wk_rcrd")
 })
 
 test_that("rep_len() works for wk_rcrd", {

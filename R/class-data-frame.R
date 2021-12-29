@@ -5,6 +5,7 @@
 #' @inheritParams wk_translate
 #' @inheritParams wk_crs
 #' @inheritParams wk_identity
+#' @inheritParams wk_is_geodesic
 #'
 #' @export
 #'
@@ -37,6 +38,21 @@ wk_crs.data.frame <- function(x) {
 wk_set_crs.data.frame <- function(x, crs) {
   col <- handleable_column_name(x)
   x[[col]] <- wk_set_crs(x[[col]], crs)
+  x
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_is_geodesic.data.frame <- function(x) {
+  col <- handleable_column_name(x)
+  wk_is_geodesic(x[[col]])
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_set_geodesic.data.frame <- function(x, geodesic) {
+  col <- handleable_column_name(x)
+  x[[col]] <- wk_set_geodesic(x[[col]], geodesic)
   x
 }
 

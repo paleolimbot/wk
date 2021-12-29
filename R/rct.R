@@ -13,7 +13,7 @@
 #' rct(1, 2, 3, 4)
 #'
 rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(),
-                crs = wk_crs_auto(), geodesic = FALSE) {
+                crs = wk_crs_auto()) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
@@ -21,8 +21,7 @@ rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double
       xmax = as.double(xmax),
       ymax = as.double(ymax)
     ),
-    crs = wk_crs_auto_value(xmin, crs),
-    geodesic = if (isTRUE(geodesic)) TRUE else NULL
+    crs = wk_crs_auto_value(xmin, crs)
   )
 
   validate_wk_rct(vec)
@@ -43,22 +42,21 @@ as_rct.wk_rct <- function(x, ...) {
 
 #' @rdname rct
 #' @export
-as_rct.matrix <- function(x, ..., crs = NULL, geodesic = FALSE) {
+as_rct.matrix <- function(x, ..., crs = NULL) {
   if (ncol(x) == 4) {
     colnames(x) <- c("xmin", "ymin", "xmax", "ymax")
   }
 
-  as_rct(as.data.frame(x), ..., crs = crs, geodesic = geodesic)
+  as_rct(as.data.frame(x), ..., crs = crs)
 }
 
 #' @rdname rct
 #' @export
-as_rct.data.frame <- function(x, ..., crs = NULL, geodesic = FALSE) {
+as_rct.data.frame <- function(x, ..., crs = NULL) {
   stopifnot(all(c("xmin", "ymin", "xmax", "ymax") %in% names(x)))
   new_wk_rct(
     lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double),
-    crs = crs,
-    geodesic = if (isTRUE(geodesic)) TRUE else NULL
+    crs = crs
   )
 }
 
@@ -78,8 +76,8 @@ validate_wk_rct <- function(x) {
 #' @export
 #'
 new_wk_rct <- function(x = list(xmin = double(), ymin = double(), xmax = double(), ymax = double()),
-                       crs = NULL, geodesic = NULL) {
-  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs, geodesic = geodesic)
+                       crs = NULL) {
+  structure(x, class = c("wk_rct", "wk_rcrd"), crs = crs)
 }
 
 #' @export
@@ -99,7 +97,6 @@ format.wk_rct <- function(x, ...) {
   names(result) <- c("xmin", "ymin", "xmax", "ymax")
   new_wk_rct(
     result,
-    crs = wk_crs_output(x, replacement),
-    geodesic = if (wk_is_geodesic_output(x, replacement)) TRUE else NULL
+    crs = wk_crs_output(x, replacement)
   )
 }

@@ -11,7 +11,7 @@
 * Added `wk_crs_longlat()` helper to help promote authority-compliant
   CRS choices (#112).
 * Added `wk_is_geodesic()`, `wk_set_geodesic()`, and argument `geodesic`
-  in `wkt()`, `wkb()`, and `rct()` as a flag for objects whose edges must
+  in `wkt()` and `wkb()` as a flag for objects whose edges must
   be interpolated along a spherical/ellipsoidal trajectory (#112).
 * Added `sf::st_geometry()` and `sf::st_sfc()` methods for wk geometry
   vectors for better integration with sf (#113, #114).
@@ -24,6 +24,8 @@
 * Added `wk_envelope()` and `wk_envelope_handler()` to compute feature-wise
   bounding boxes (#120, #122).
 * Fixed headers and tests to pass on big endian systems (#105, #122).
+* Incorporated the geodesic attribute into vctrs methods, data frame
+  columns, and bbox/envelope calculation (#124, #125).
 
 # wk 0.5.0
 
