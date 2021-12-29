@@ -5,6 +5,7 @@
 #' @inheritParams wk_translate
 #' @inheritParams wk_crs
 #' @inheritParams wk_identity
+#' @inheritParams wk_is_geodesic
 #'
 #' @export
 #'

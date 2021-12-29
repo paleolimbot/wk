@@ -51,6 +51,9 @@
 
 \item{crs}{An object that can be interpreted as a CRS}
 
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+coordinates are spherical, \code{FALSE} otherwise.}
+
 \item{result}{The result of a filter operation intended to be a
 transformation.}
 
