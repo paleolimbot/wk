@@ -68,7 +68,8 @@ as_xy <- function(x, ...) {
 #' @rdname xy
 #' @export
 as_xy.default <- function(x, ..., dims = NULL) {
-  result <- wk_translate(x, new_wk_xy(crs = wk_crs_inherit()))
+  result <- wk_handle(x, xy_writer())
+  wk_crs(result) <- wk_crs(x)
 
   if (is.null(dims)) {
     result
@@ -175,10 +176,8 @@ as_xy.matrix <- function(x, ..., crs = NULL) {
 as_xy.data.frame <- function(x, ..., dims = NULL, crs = NULL) {
   col_handleable <- vapply(x, is_handleable, logical(1))
   if (any(col_handleable)) {
-    xy <- wk_handle(x[[which(col_handleable)[1]]], xy_writer())
     stopifnot(missing(crs))
-    wk_crs(xy) <- wk_crs(x)
-    return(as_xy(xy, dims = dims))
+    return(as_xy.default(x[[which(col_handleable)[1]]], dims = dims))
   }
 
   if (is.null(dims)) {

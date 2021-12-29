@@ -194,3 +194,8 @@ test_that("xy() propagates CRS", {
   x[1] <- wk_set_crs(x, 1234L)
   expect_identical(wk_crs(x), 1234)
 })
+
+test_that("as_xy() works for geodesic objects", {
+  expect_identical(as_xy(wkt("POINT (0 1)", geodesic = TRUE)), xy(0, 1))
+  expect_identical(as_xy(as_wkb(wkt("POINT (0 1)", geodesic = TRUE))), xy(0, 1))
+})
