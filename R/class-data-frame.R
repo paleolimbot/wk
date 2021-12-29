@@ -42,6 +42,21 @@ wk_set_crs.data.frame <- function(x, crs) {
 
 #' @rdname wk_handle.data.frame
 #' @export
+wk_is_geodesic.data.frame <- function(x) {
+  col <- handleable_column_name(x)
+  wk_is_geodesic(x[[col]])
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
+wk_set_geodesic.data.frame <- function(x, geodesic) {
+  col <- handleable_column_name(x)
+  x[[col]] <- wk_set_geodesic(x[[col]], geodesic)
+  x
+}
+
+#' @rdname wk_handle.data.frame
+#' @export
 wk_restore.data.frame <- function(handleable, result, ...) {
   col <- handleable_column_name(handleable)
   if(nrow(handleable) == length(result)) {

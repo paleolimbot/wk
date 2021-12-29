@@ -106,3 +106,15 @@ test_that("wk_handle_slice() works for data.frame", {
     xy(crs = NULL)
   )
 })
+
+test_that("wk_crs() and wk_set_crs() work for data.frame", {
+  df <- data.frame(a = wkt("POINT (1 2)", crs = 1234))
+  expect_identical(wk_crs(df), 1234)
+  expect_identical(wk_crs(wk_set_crs(df, 5678)), 5678)
+})
+
+test_that("wk_is_geodesic() and wk_set_geodesic() work for data.frame", {
+  df <- data.frame(a = wkt("POINT (1 2)", geodesic = FALSE))
+  expect_false(wk_is_geodesic(df))
+  expect_true(wk_is_geodesic(wk_set_geodesic(df, TRUE)))
+})
