@@ -76,6 +76,12 @@
 <span class="fu"><a href="wk_crs.html">wk_set_crs</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">crs</span><span class="op">)</span>
 
 <span class="co"># S3 method for data.frame</span>
+<span class="fu"><a href="wk_is_geodesic.html">wk_is_geodesic</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+
+<span class="co"># S3 method for data.frame</span>
+<span class="fu"><a href="wk_is_geodesic.html">wk_set_geodesic</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">geodesic</span><span class="op">)</span>
+
+<span class="co"># S3 method for data.frame</span>
 <span class="fu"><a href="wk_identity.html">wk_restore</a></span><span class="op">(</span><span class="va">handleable</span>, <span class="va">result</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for tbl_df</span>
@@ -107,6 +113,9 @@
 <dd><p>Objects whose "crs" attribute is used to carry a CRS.</p></dd>
 <dt>crs</dt>
 <dd><p>An object that can be interpreted as a CRS</p></dd>
+<dt>geodesic</dt>
+<dd><p><code>TRUE</code> if edges must be interpolated as geodesics when
+coordinates are spherical, <code>FALSE</code> otherwise.</p></dd>
 <dt>result</dt>
 <dd><p>The result of a filter operation intended to be a
 transformation.</p></dd>

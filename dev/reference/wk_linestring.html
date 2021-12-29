@@ -63,9 +63,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_linestring</span><span class="op">(</span><span class="va">handleable</span>, feature_id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_linestring</span><span class="op">(</span><span class="va">handleable</span>, feature_id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">...</span>, geodesic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
-<span class="fu">wk_polygon</span><span class="op">(</span><span class="va">handleable</span>, feature_id <span class="op">=</span> <span class="fl">1L</span>, ring_id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">wk_polygon</span><span class="op">(</span><span class="va">handleable</span>, feature_id <span class="op">=</span> <span class="fl">1L</span>, ring_id <span class="op">=</span> <span class="fl">1L</span>, <span class="va">...</span>, geodesic <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
 <span class="fu">wk_collection</span><span class="op">(</span>
   <span class="va">handleable</span>,
@@ -96,6 +96,9 @@ values indicate a new feature. This is recycled silently
 as needed.</p></dd>
 <dt>...</dt>
 <dd><p>Passed to the <code><a href="wk_handle.html">wk_handle()</a></code> method.</p></dd>
+<dt>geodesic</dt>
+<dd><p>Use <code>TRUE</code> or <code>FALSE</code> to explicitly force
+the geodesic-ness of the output.</p></dd>
 <dt>ring_id</dt>
 <dd><p>An identifier where changes in sequential
 values indicate a new ring. Rings are automatically

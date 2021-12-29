@@ -68,8 +68,7 @@
   ymin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
   xmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
   ymax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
-  crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>,
-  geodesic <span class="op">=</span> <span class="cn">FALSE</span>
+  crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
 
 <span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
@@ -78,10 +77,10 @@
 <span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for matrix</span>
-<span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S3 method for data.frame</span>
-<span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">as_rct</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,9 +89,6 @@
 <dd><p>Rectangle bounds.</p></dd>
 <dt>crs</dt>
 <dd><p>A value to be propagated as the CRS for this vector.</p></dd>
-<dt>geodesic</dt>
-<dd><p><code>TRUE</code> if edges must be interpolated as geodesics when
-coordinates are spherical, <code>FALSE</code> otherwise.</p></dd>
 <dt>x</dt>
 <dd><p>An object to be converted to a <code>rct()</code>.</p></dd>
 <dt>...</dt>
