@@ -39,7 +39,7 @@ as_wkt <- function(x, ...) {
 as_wkt.default <- function(x, ...) {
   wk_translate(
     x,
-    new_wk_wkt(crs = wk_crs_inherit(), geodesic = geodesic_attr(wk_is_geodesic(x)))
+    new_wk_wkt(crs = wk_crs_inherit(), geodesic = wk_geodesic_inherit())
   )
 }
 
