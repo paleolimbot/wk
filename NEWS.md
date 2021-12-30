@@ -27,6 +27,8 @@
 * Incorporated the geodesic attribute into vctrs methods, data frame
   columns, and bbox/envelope calculation (#124, #125).
 * Fix `as_xy()` for nested data frames and geodesic objects (#126, #128).
+* Remove deprecated `wkb_problems()`, `wkt_problems()`, `wkb_format()`,
+  and `wkt_format()` (#129).
 
 # wk 0.5.0
 
