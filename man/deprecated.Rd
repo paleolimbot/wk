@@ -30,9 +30,6 @@ versions of these functions.}
 \item{endian}{Force the endian of the resulting WKB.}
 
 \item{wkt}{A character vector containing well-known text.}
-
-\item{max_coords}{The maximum number of coordinates to include
-in the output.}
 }
 \description{
 These functions are deprecated and will be removed in a future version.

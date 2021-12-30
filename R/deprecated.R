@@ -6,8 +6,6 @@
 #' @param wkb A `list()` of [raw()] vectors, such as that
 #'   returned by `sf::st_as_binary()`.
 #' @param wkt A character vector containing well-known text.
-#' @param max_coords The maximum number of coordinates to include
-#'   in the output.
 #' @param trim Trim unnecessary zeroes in the output?
 #' @param precision The rounding precision to use when writing
 #'   (number of decimal places).
