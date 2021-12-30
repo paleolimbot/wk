@@ -101,13 +101,13 @@ vec_ptype2.wk_wkb.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkb wk_wkb
 #' @export
 vec_ptype2.wk_wkb.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkb(crs = wk_crs_output(x, y), geodesic = if (wk_is_geodesic_output(x, y)) TRUE)
+  new_wk_wkb(crs = wk_crs_output(x, y), geodesic = geodesic_attr(wk_is_geodesic_output(x, y)))
 }
 
 #' @method vec_ptype2.wk_wkb wk_wkt
 #' @export
 vec_ptype2.wk_wkb.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = if (wk_is_geodesic_output(x, y)) TRUE)
+  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = geodesic_attr(wk_is_geodesic_output(x, y)))
 }
 
 #' @method vec_ptype2.wk_wkb wk_xy
@@ -137,7 +137,7 @@ vec_ptype2.wk_wkb.wk_xyzm <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkb wk_rct
 #' @export
 vec_ptype2.wk_wkb.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkb(crs = wk_crs_output(x, y), geodesic = if (wk_is_geodesic_output(x, y)) TRUE)
+  new_wk_wkb(crs = wk_crs_output(x, y), geodesic = geodesic_attr(wk_is_geodesic_output(x, y)))
 }
 
 #' @method vec_ptype2.wk_wkb wk_crc
@@ -239,13 +239,13 @@ vec_ptype2.wk_wkt.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @method vec_ptype2.wk_wkt wk_wkt
 #' @export
 vec_ptype2.wk_wkt.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = if (wk_is_geodesic_output(x, y)) TRUE)
+  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = geodesic_attr(wk_is_geodesic_output(x, y)))
 }
 
 #' @method vec_ptype2.wk_wkt wk_wkb
 #' @export
 vec_ptype2.wk_wkt.wk_wkb <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = if (wk_is_geodesic_output(x, y)) TRUE)
+  new_wk_wkt(crs = wk_crs_output(x, y), geodesic = geodesic_attr(wk_is_geodesic_output(x, y)))
 }
 
 #' @method vec_ptype2.wk_wkt wk_xy
