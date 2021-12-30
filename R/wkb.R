@@ -25,7 +25,7 @@ parse_wkb <- function(x, crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
   wkb <- new_wk_wkb(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
-  parse_base(wkb, wkb_problems(wkb))
+  parse_base(wkb, wk_problems(wkb))
 }
 
 #' @rdname wkb
