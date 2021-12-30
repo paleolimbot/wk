@@ -17,30 +17,6 @@
 #'
 #' @rdname deprecated
 #'
-wkb_format <- function(wkb, max_coords = 3, precision = 6, trim = TRUE) {
-  wk_handle.wk_wkb(wkb, wkt_format_handler(precision, trim, max_coords))
-}
-
-#' @rdname deprecated
-#' @export
-wkt_format <- function(wkt, max_coords = 3, precision = 6, trim = TRUE) {
-  wk_handle.wk_wkt(wkt, wkt_format_handler(precision, trim, max_coords))
-}
-
-#' @rdname deprecated
-#' @export
-wkb_problems <- function(wkb) {
-  wk_handle(new_wk_wkb(unclass(wkb)), wk_problems_handler())
-}
-
-#' @rdname deprecated
-#' @export
-wkt_problems <- function(wkt) {
-  wk_handle(new_wk_wkt(unclass(wkt)), wk_problems_handler())
-}
-
-#' @rdname deprecated
-#' @export
 wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
   unclass(wk_handle.wk_wkb(wkb, wkt_writer(precision, trim)))
 }
