@@ -83,6 +83,10 @@ wk_crs2 <- function(x, y) {
 wk_is_geodesic2 <- function(x, y) {
   if (identical(x, y)) {
     x
+  } else if (identical(x, NA)) {
+    y
+  } else if (identical(y, NA)) {
+    x
   } else {
     stop("objects have differing values for geodesic", call. = FALSE)
   }

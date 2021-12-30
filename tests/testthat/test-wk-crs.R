@@ -55,6 +55,38 @@ test_that("geodesic setting gives a warning when this isn't supported", {
   expect_warning(wk_set_geodesic(xy(), TRUE), "for object of class 'wk_xy'")
 })
 
+test_that("wk_geodesic_output() works", {
+  expect_identical(
+    wk_is_geodesic_output(wkt(geodesic = FALSE), wkt(geodesic = FALSE)),
+    FALSE
+  )
+
+  expect_identical(
+    wk_is_geodesic_output(wkt(geodesic = TRUE), wkt(geodesic = TRUE)),
+    TRUE
+  )
+
+  expect_identical(
+    wk_is_geodesic_output(wkt(geodesic = wk_geodesic_inherit()), wkt(geodesic = FALSE)),
+    FALSE
+  )
+
+  expect_identical(
+    wk_is_geodesic_output(wkt(geodesic = FALSE), wkt(geodesic = wk_geodesic_inherit())),
+    FALSE
+  )
+
+  expect_error(
+    wk_is_geodesic_output(wkt(geodesic = TRUE), wkt(geodesic = FALSE)),
+    "differing values"
+  )
+
+  expect_error(
+    wk_is_geodesic_output(wkt(geodesic = FALSE), wkt(geodesic = TRUE)),
+    "differing values"
+  )
+})
+
 test_that("crs comparison works", {
   expect_true(wk_crs_equal(NULL, NULL))
   expect_false(wk_crs_equal(NULL, "something"))

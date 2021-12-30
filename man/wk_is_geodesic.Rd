@@ -4,6 +4,7 @@
 \alias{wk_is_geodesic}
 \alias{wk_set_geodesic}
 \alias{wk_is_geodesic<-}
+\alias{wk_geodesic_inherit}
 \title{Set and get vector geodesic edge interpolation}
 \usage{
 wk_is_geodesic(x)
@@ -11,6 +12,8 @@ wk_is_geodesic(x)
 wk_set_geodesic(x, geodesic)
 
 wk_is_geodesic(x) <- value
+
+wk_geodesic_inherit()
 }
 \arguments{
 \item{x}{An R object that contains edges}
