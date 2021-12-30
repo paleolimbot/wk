@@ -14,7 +14,7 @@
 wkb <- function(x = list(), crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
+  wkb <- new_wk_wkb(x, crs = crs, geodesic = geodesic_attr(geodesic))
   validate_wk_wkb(wkb)
   wkb
 }
@@ -24,7 +24,7 @@ wkb <- function(x = list(), crs = wk_crs_auto(), geodesic = FALSE) {
 parse_wkb <- function(x, crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
+  wkb <- new_wk_wkb(x, crs = crs, geodesic = geodesic_attr(geodesic))
   parse_base(wkb, wk_problems(wkb))
 }
 
@@ -45,7 +45,7 @@ as_wkb <- function(x, ...) {
 as_wkb.default <- function(x, ...) {
   wk_translate(
     x,
-    new_wk_wkb(crs = wk_crs_inherit(), geodesic = if (wk_is_geodesic(x)) TRUE),
+    new_wk_wkb(crs = wk_crs_inherit(), geodesic = wk_geodesic_inherit()),
     ...
   )
 }
@@ -129,7 +129,7 @@ is_wk_wkb <- function(x) {
   x[i] <- replacement
   attr(x, "crs") <- NULL
   attr(x, "geodesic") <- NULL
-  new_wk_wkb(x, crs = crs_out, geodesic = if (geodesic_out) TRUE else NULL)
+  new_wk_wkb(x, crs = crs_out, geodesic = geodesic_attr(geodesic_out))
 }
 
 #' @export

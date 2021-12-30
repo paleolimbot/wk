@@ -83,6 +83,10 @@ wk_crs2 <- function(x, y) {
 wk_is_geodesic2 <- function(x, y) {
   if (identical(x, y)) {
     x
+  } else if (identical(x, NA)) {
+    y
+  } else if (identical(y, NA)) {
+    x
   } else {
     stop("objects have differing values for geodesic", call. = FALSE)
   }
@@ -157,6 +161,12 @@ wk_set_geodesic <- function(x, geodesic) {
  wk_set_geodesic(x, value)
 }
 
+#' @rdname wk_is_geodesic
+#' @export
+wk_geodesic_inherit <- function() {
+  NA
+}
+
 #' @export
 wk_is_geodesic.default <- function(x) {
   FALSE
@@ -188,14 +198,26 @@ wk_set_geodesic.default <- function(x, geodesic) {
 
 #' @export
 wk_set_geodesic.wk_wkb <- function(x, geodesic) {
-  attr(x, "geodesic") <- if (isTRUE(geodesic)) TRUE else NULL
+  attr(x, "geodesic") <- geodesic_attr(geodesic)
   x
 }
 
 #' @export
 wk_set_geodesic.wk_wkt <- function(x, geodesic) {
-  attr(x, "geodesic") <- if (isTRUE(geodesic)) TRUE else NULL
+  attr(x, "geodesic") <- geodesic_attr(geodesic)
   x
+}
+
+geodesic_attr <- function(geodesic) {
+  if (!is.logical(geodesic) || (length(geodesic) != 1L)) {
+    stop("`geodesic` must be TRUE, FALSE, or NA", call. = FALSE)
+  }
+
+  if (identical(geodesic, FALSE)) {
+    NULL
+  } else {
+    geodesic
+  }
 }
 
 #' CRS object generic methods

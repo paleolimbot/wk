@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{wk_plot}
 \alias{wk_plot}
+\alias{wk_plot.default}
 \alias{plot.wk_wkt}
 \alias{plot.wk_wkb}
 \alias{plot.wk_xy}
@@ -10,6 +11,17 @@
 \title{Plot well-known geometry vectors}
 \usage{
 wk_plot(
+  handleable,
+  ...,
+  asp = 1,
+  bbox = NULL,
+  xlab = "",
+  ylab = "",
+  rule = "evenodd",
+  add = FALSE
+)
+
+\method{wk_plot}{default}(
   handleable,
   ...,
   asp = 1,

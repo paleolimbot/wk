@@ -14,7 +14,7 @@
 wkt <- function(x = character(), crs = wk_crs_auto(), geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-  wkt <- new_wk_wkt(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
+  wkt <- new_wk_wkt(x, crs = crs, geodesic = geodesic_attr(geodesic))
   validate_wk_wkt(wkt)
   wkt
 }
@@ -24,7 +24,7 @@ wkt <- function(x = character(), crs = wk_crs_auto(), geodesic = FALSE) {
 parse_wkt <- function(x, crs = wk_crs_auto(), geodesic = FALSE) {
   x <- as.character(x)
   crs <- wk_crs_auto_value(x, crs)
-  wkt <- new_wk_wkt(x, crs = crs, geodesic = if (isTRUE(geodesic)) TRUE else NULL)
+  wkt <- new_wk_wkt(x, crs = crs, geodesic = geodesic_attr(geodesic))
   parse_base(wkt, wk_problems(wkt))
 }
 
@@ -39,7 +39,7 @@ as_wkt <- function(x, ...) {
 as_wkt.default <- function(x, ...) {
   wk_translate(
     x,
-    new_wk_wkt(crs = wk_crs_inherit(), geodesic = if (wk_is_geodesic(x)) TRUE)
+    new_wk_wkt(crs = wk_crs_inherit(), geodesic = wk_geodesic_inherit())
   )
 }
 
@@ -106,7 +106,7 @@ validate_wk_wkt <- function(x) {
   x[i] <- replacement
   attr(x, "crs") <- NULL
   attr(x, "geodesic") <- NULL
-  new_wk_wkt(x, crs = crs_out, geodesic = if (geodesic_out) TRUE else NULL)
+  new_wk_wkt(x, crs = crs_out, geodesic = geodesic_attr(geodesic_out))
 }
 
 #' @export

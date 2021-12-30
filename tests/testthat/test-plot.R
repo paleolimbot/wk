@@ -42,6 +42,10 @@ test_that("wk_plot() recycles args for each feature", {
   expect_identical(wk_plot(x, col = c("blue", "red"), pch = 16), x)
 })
 
+test_that("wk_plot() errors for geodesic objects", {
+  expect_error(wk_plot(wkt(geodesic = TRUE)), "can't plot geodesic objects")
+})
+
 test_that("plot methods work", {
   x <- "LINESTRING (0 0, 1 1)"
   expect_identical(plot(as_wkt(x)), as_wkt(x))
