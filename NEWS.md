@@ -26,6 +26,7 @@
 * Fixed headers and tests to pass on big endian systems (#105, #122).
 * Incorporated the geodesic attribute into vctrs methods, data frame
   columns, and bbox/envelope calculation (#124, #125).
+* Fix `as_xy()` for nested data frames and geodesic objects (#126, #128).
 
 # wk 0.5.0
 
