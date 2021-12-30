@@ -24,9 +24,27 @@
 wk_plot <- function(handleable, ...,
                     asp = 1, bbox = NULL, xlab = "", ylab = "",
                     rule = "evenodd", add = FALSE) {
+  UseMethod("wk_plot")
+}
+
+#' @rdname wk_plot
+#' @export
+wk_plot.default <- function(handleable, ...,
+                            asp = 1, bbox = NULL, xlab = "", ylab = "",
+                            rule = "evenodd", add = FALSE) {
   # this is too hard without vctrs (already in Suggests)
   if (!requireNamespace("vctrs", quietly = TRUE)) {
     stop("Package 'vctrs' is required for wk_plot()", call. = FALSE) # nocov
+  }
+
+  if (isTRUE(wk_is_geodesic(handleable))) {
+    stop(
+      paste0(
+        "wk_plot.default() can't plot geodesic objects.\n",
+        "Use `wk_set_geodesic(x, FALSE)` to ignore geodesic edge specification"
+      ),
+      call. = FALSE
+    )
   }
 
   # should be refactored
