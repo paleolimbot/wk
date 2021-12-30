@@ -29,6 +29,11 @@ test_that("geodesic getting and setting works for wkb", {
   wk_is_geodesic(x) <- FALSE
   expect_false(wk_is_geodesic(x))
   expect_null(attr(x, "geodesic"))
+
+  wk_is_geodesic(x) <- wk_geodesic_inherit()
+  expect_identical(wk_is_geodesic(x), NA)
+
+  expect_error(wk_set_geodesic(x, "fish"), "must be TRUE, FALSE, or NA")
 })
 
 test_that("geodesic getting and setting works for wkt", {
@@ -39,6 +44,11 @@ test_that("geodesic getting and setting works for wkt", {
   wk_is_geodesic(x) <- FALSE
   expect_false(wk_is_geodesic(x))
   expect_null(attr(x, "geodesic"))
+
+  wk_is_geodesic(x) <- wk_geodesic_inherit()
+  expect_identical(wk_is_geodesic(x), NA)
+
+  expect_error(wk_set_geodesic(x, "fish"), "must be TRUE, FALSE, or NA")
 })
 
 test_that("geodesic setting gives a warning when this isn't supported", {
