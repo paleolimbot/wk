@@ -194,30 +194,26 @@ wk_set_geodesic.default <- function(x, geodesic) {
 
 #' @export
 wk_set_geodesic.wk_wkb <- function(x, geodesic) {
-  if (!is.logical(geodesic) || (length(geodesic) != 1L)) {
-    stop("`geodesic` must be TRUE, FALSE, or NA", call. = FALSE)
-  }
-
-  if (identical(geodesic, FALSE)) {
-    geodesic <- NULL
-  }
-
-  attr(x, "geodesic") <- geodesic
+  attr(x, "geodesic") <- geodesic_attr(geodesic)
   x
 }
 
 #' @export
 wk_set_geodesic.wk_wkt <- function(x, geodesic) {
+  attr(x, "geodesic") <- geodesic_attr(geodesic)
+  x
+}
+
+geodesic_attr <- function(geodesic) {
   if (!is.logical(geodesic) || (length(geodesic) != 1L)) {
     stop("`geodesic` must be TRUE, FALSE, or NA", call. = FALSE)
   }
 
   if (identical(geodesic, FALSE)) {
-    geodesic <- NULL
+    NULL
+  } else {
+    geodesic
   }
-
-  attr(x, "geodesic") <- geodesic
-  x
 }
 
 #' CRS object generic methods
