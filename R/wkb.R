@@ -139,7 +139,7 @@ is.na.wk_wkb <- function(x) {
 
 #' @export
 format.wk_wkb <- function(x, ...) {
-  paste0("<", wkb_format(x), ">")
+  paste0("<", wk_format(x), ">")
 }
 
 # as far as I can tell, this is the only way to change

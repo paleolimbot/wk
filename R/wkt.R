@@ -110,10 +110,8 @@ validate_wk_wkt <- function(x) {
 }
 
 #' @export
-format.wk_wkt <- function(x, ..., max_coords = 3) {
-  formatted <- wkt_format(x, max_coords = max_coords)
-  formatted[is.na(formatted)] <- "<NA>"
-  formatted
+format.wk_wkt <- function(x, ..., max_coords = 6) {
+  wk_format(x, max_coords = max_coords)
 }
 
 #' @export
