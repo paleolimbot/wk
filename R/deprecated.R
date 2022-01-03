@@ -13,6 +13,7 @@
 #' @param ... Used to keep backward compatibility with previous
 #'   versions of these functions.
 #'
+#' @export
 #' @rdname deprecated
 #'
 wkb_translate_wkt <- function(wkb, ..., precision = 16, trim = TRUE) {
