@@ -1,5 +1,5 @@
 
-Fixes a number of bugs including a check failure on MacOS where sf was not installed.
+Fixes several bugs and adds several features (see NEWS).
 
 ## Test environments
 
