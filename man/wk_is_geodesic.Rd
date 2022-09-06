@@ -18,8 +18,10 @@ wk_geodesic_inherit()
 \arguments{
 \item{x}{An R object that contains edges}
 
-\item{geodesic, value}{\code{TRUE} if edges must be interpolated as geodesics when
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
 coordinates are spherical, \code{FALSE} otherwise.}
+
+\item{value}{See \code{geodesic}.}
 }
 \value{
 \code{TRUE} if edges must be interpolated as geodesics when

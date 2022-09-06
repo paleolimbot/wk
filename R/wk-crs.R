@@ -8,7 +8,8 @@
 #' on objects that do not use this system of CRS propagation.
 #'
 #' @param x,... Objects whose "crs" attribute is used to carry a CRS.
-#' @param crs,value An object that can be interpreted as a CRS
+#' @param crs An object that can be interpreted as a CRS
+#' @param value See `crs`.
 #'
 #' @export
 #'
@@ -138,8 +139,9 @@ wk_crs_equal_generic.double <- function(x, y, ...) {
 #' Set and get vector geodesic edge interpolation
 #'
 #' @param x An R object that contains edges
-#' @param geodesic,value `TRUE` if edges must be interpolated as geodesics when
+#' @param geodesic `TRUE` if edges must be interpolated as geodesics when
 #'   coordinates are spherical, `FALSE` otherwise.
+#' @param value See `geodesic`.
 #'
 #' @return `TRUE` if edges must be interpolated as geodesics when
 #'   coordinates are spherical, `FALSE` otherwise.
