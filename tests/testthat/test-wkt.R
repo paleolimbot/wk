@@ -13,8 +13,7 @@ test_that("wkt class works", {
   expect_error(wkt("NOPE"), "Encountered 1 parse problem")
   expect_error(wkt(rep("NOPE", 10)), "Encountered 10 parse problems")
   expect_error(validate_wk_wkt(list()), "must be of type character")
-  # See #123...validate_wk_wkt() is used in CRAN s2 on a raw character vector
-  # expect_error(validate_wk_wkt(""), "must inherit from")
+  expect_error(validate_wk_wkt(""), "must inherit from")
 
   expect_s3_class(x[1], "wk_wkt")
   expect_identical(x[[1]], x[1])
