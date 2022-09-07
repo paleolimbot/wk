@@ -2,8 +2,8 @@
 #' Use data.frame with wk
 #'
 #' @inheritParams wk_handle
-#' @inheritParams wk_translate
 #' @inheritParams wk_crs
+#' @inheritParams wk_translate
 #' @inheritParams wk_identity
 #' @inheritParams wk_is_geodesic
 #'
@@ -19,21 +19,18 @@ wk_handle.data.frame <- function(handleable, handler, ...) {
   wk_handle(handleable[[col]], handler, ...)
 }
 
-#' @rdname wk_handle.data.frame
 #' @export
 wk_writer.data.frame <- function(handleable, ...) {
   col <- handleable_column_name(handleable)
   wk_writer(handleable[[col]], ...)
 }
 
-#' @rdname wk_handle.data.frame
 #' @export
 wk_crs.data.frame <- function(x) {
   col <- handleable_column_name(x)
   wk_crs(x[[col]])
 }
 
-#' @rdname wk_handle.data.frame
 #' @export
 wk_set_crs.data.frame <- function(x, crs) {
   col <- handleable_column_name(x)
@@ -41,14 +38,12 @@ wk_set_crs.data.frame <- function(x, crs) {
   x
 }
 
-#' @rdname wk_handle.data.frame
 #' @export
 wk_is_geodesic.data.frame <- function(x) {
   col <- handleable_column_name(x)
   wk_is_geodesic(x[[col]])
 }
 
-#' @rdname wk_handle.data.frame
 #' @export
 wk_set_geodesic.data.frame <- function(x, geodesic) {
   col <- handleable_column_name(x)

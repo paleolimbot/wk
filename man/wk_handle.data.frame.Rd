@@ -2,11 +2,6 @@
 % Please edit documentation in R/class-data-frame.R, R/pkg-sf.R
 \name{wk_handle.data.frame}
 \alias{wk_handle.data.frame}
-\alias{wk_writer.data.frame}
-\alias{wk_crs.data.frame}
-\alias{wk_set_crs.data.frame}
-\alias{wk_is_geodesic.data.frame}
-\alias{wk_set_geodesic.data.frame}
 \alias{wk_restore.data.frame}
 \alias{wk_restore.tbl_df}
 \alias{wk_translate.data.frame}
@@ -16,16 +11,6 @@
 \title{Use data.frame with wk}
 \usage{
 \method{wk_handle}{data.frame}(handleable, handler, ...)
-
-\method{wk_writer}{data.frame}(handleable, ...)
-
-\method{wk_crs}{data.frame}(x)
-
-\method{wk_set_crs}{data.frame}(x, crs)
-
-\method{wk_is_geodesic}{data.frame}(x)
-
-\method{wk_set_geodesic}{data.frame}(x, geodesic)
 
 \method{wk_restore}{data.frame}(handleable, result, ...)
 
@@ -46,13 +31,6 @@
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
-
-\item{x}{Objects whose "crs" attribute is used to carry a CRS.}
-
-\item{crs}{An object that can be interpreted as a CRS}
-
-\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
-coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{result}{The result of a filter operation intended to be a
 transformation.}

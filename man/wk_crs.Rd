@@ -27,7 +27,9 @@ wk_is_geodesic_output(...)
 \arguments{
 \item{x, ...}{Objects whose "crs" attribute is used to carry a CRS.}
 
-\item{crs, value}{An object that can be interpreted as a CRS}
+\item{value}{See \code{crs}.}
+
+\item{crs}{An object that can be interpreted as a CRS}
 }
 \description{
 The wk package doesn't operate on CRS objects, but does propagate them
