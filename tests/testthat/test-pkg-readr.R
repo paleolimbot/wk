@@ -17,7 +17,10 @@ test_that("readr support for writing columns works", {
   readr::write_csv(data.frame(x_vctr = x_vctr), tf)
   expect_identical(
     as.data.frame(readr::read_csv(tf, show_col_types = FALSE)),
-    data.frame(x_vctr = c("POINT (1 2)", "POINT Z (3 4 5)", NA))
+    data.frame(
+      x_vctr = c("POINT (1 2)", "POINT Z (3 4 5)", NA),
+      stringsAsFactors = FALSE
+    )
   )
   unlink(tf)
 })
