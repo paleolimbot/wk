@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,68 +63,77 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">xy</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">xyz</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">xym</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">xyzm</span><span class="op">(</span>
-  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
-  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
-  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
-  m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,
-  crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">xy_dims</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_xy</span>
-<span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S3 method for matrix</span>
-<span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">xy</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">xyz</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">xym</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">xyzm</span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html" class="external-link">double</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">xy_dims</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_xy</span></span>
+<span><span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for matrix</span></span>
+<span><span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">as_xy</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, dims <span class="op">=</span> <span class="cn">NULL</span>, crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x, y, z, m</dt>
 <dd><p>Coordinate values.</p></dd>
+
+
 <dt>crs</dt>
 <dd><p>A value to be propagated as the CRS for this vector.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to methods.</p></dd>
+
+
 <dt>dims</dt>
 <dd><p>A set containing one or more of <code>c("x", "y", "z", "m")</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector of coordinate values.</p>
+    
+
+<p>A vector of coordinate values.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">xy</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">xy</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xy[5]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] (1 1) (2 2) (3 3) (4 4) (5 5)</span>
-<span class="r-in"><span class="fu">xyz</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">xyz</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xyz[5]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] Z (1 1 10) Z (2 2 10) Z (3 3 10) Z (4 4 10) Z (5 5 10)</span>
-<span class="r-in"><span class="fu">xym</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">xym</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xym[5]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] M (1 1 10) M (2 2 10) M (3 3 10) M (4 4 10) M (5 5 10)</span>
-<span class="r-in"><span class="fu">xyzm</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">xyzm</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xyzm[5]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ZM (1 1 10 12) ZM (2 2 10 12) ZM (3 3 10 12) ZM (4 4 10 12) ZM (5 5 10 12)</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -139,7 +148,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

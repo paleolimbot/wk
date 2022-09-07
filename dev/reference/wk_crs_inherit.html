@@ -31,7 +31,7 @@ geometries are assigned a CRS of wk_crs_inherit() by default."><meta name="robot
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,13 +73,13 @@ geometries are assigned a CRS of <code>wk_crs_inherit()</code> by default.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_crs_inherit</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">wk_crs_longlat</span><span class="op">(</span>crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="va">x</span>, <span class="va">crs</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_crs_inherit</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_crs_longlat</span><span class="op">(</span>crs <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="va">x</span>, <span class="va">crs</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,20 +87,23 @@ geometries are assigned a CRS of <code>wk_crs_inherit()</code> by default.</p>
     <dl><dt>crs</dt>
 <dd><p>A value for the coordinate reference system supplied by
 the user.</p></dd>
+
+
 <dt>x</dt>
 <dd><p>A raw input to a construuctor whose length and crs attributte
 is used to determine the default CRS returned by <code>wk_crs_auto()</code>.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_crs_inherit&gt;</span>
-<span class="r-in"><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1234</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1234</span>
-<span class="r-in"><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>, <span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_crs_auto_value</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>, <span class="fu">wk_crs_auto</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -115,7 +118,7 @@ is used to determine the default CRS returned by <code>wk_crs_auto()</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

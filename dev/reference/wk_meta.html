@@ -28,7 +28,7 @@ intended to be very fast even for large vectors."><meta name="robots" content="n
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -67,23 +67,23 @@ intended to be very fast even for large vectors.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">wk_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_vector_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">wk_vector_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_meta_handler</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">wk_vector_meta_handler</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">wk_geometry_type_label</span><span class="op">(</span><span class="va">geometry_type</span><span class="op">)</span>
-
-<span class="fu">wk_geometry_type</span><span class="op">(</span><span class="va">geometry_type_label</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">wk_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_vector_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">wk_vector_meta</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_meta_handler</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_vector_meta_handler</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_geometry_type_label</span><span class="op">(</span><span class="va">geometry_type</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_geometry_type</span><span class="op">(</span><span class="va">geometry_type_label</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,20 +91,29 @@ intended to be very fast even for large vectors.</p>
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code><a href="wk_handle.html">wk_handle()</a></code> is defined.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to the <code><a href="wk_handle.html">wk_handle()</a></code> method.</p></dd>
+
+
 <dt>geometry_type</dt>
 <dd><p>An integer code for the geometry type. These
 integers follow the WKB specification (e.g., 1 for point,
 7 for geometrycollection).</p></dd>
+
+
 <dt>geometry_type_label</dt>
 <dd><p>A character vector of (lowercase)
 geometry type labels as would be found in WKT (e.g., point,
 geometrycollection).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data.frame with columns:</p><ul><li><p><code>geometry_type</code>: An integer identifying the geometry type.
+    
+
+<p>A data.frame with columns:</p><ul><li><p><code>geometry_type</code>: An integer identifying the geometry type.
 A value of 0 indicates that the types of geometry in the vector
 are not known without parsing the entire vector.</p></li>
 <li><p><code>size</code>: For points and linestrings, the number of coordinates; for
@@ -126,23 +135,23 @@ be interpreted.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_vector_meta</span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_vector_meta</span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geometry_type size has_z has_m</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1             0    1    NA    NA</span>
-<span class="r-in"><span class="fu">wk_meta</span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_meta</span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geometry_type size has_z has_m srid precision</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1             2   NA FALSE FALSE   NA         0</span>
-<span class="r-in"><span class="fu">wk_meta</span><span class="op">(</span><span class="fu"><a href="wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_meta</span><span class="op">(</span><span class="fu"><a href="wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   geometry_type size has_z has_m srid precision</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1             2    2 FALSE FALSE   NA         0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">wk_geometry_type_label</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">wk_geometry_type_label</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "point"              "linestring"         "polygon"           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4] "multipoint"         "multilinestring"    "multipolygon"      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [7] "geometrycollection"</span>
-<span class="r-in"><span class="fu">wk_geometry_type</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point"</span>, <span class="st">"geometrycollection"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_geometry_type</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"point"</span>, <span class="st">"geometrycollection"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 7</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -157,7 +166,7 @@ be interpreted.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -32,7 +32,7 @@ vectors.'><meta name="robots" content="noindex"><!-- mathjax --><script src="htt
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -75,48 +75,48 @@ vectors.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for wk_crc</span>
-<span class="fu">wk_handle</span><span class="op">(</span>
-  <span class="va">handleable</span>,
-  <span class="va">handler</span>,
-  <span class="va">...</span>,
-  n_segments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"wk.crc_n_segments"</span>, <span class="cn">NULL</span><span class="op">)</span>,
-  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"wk.crc_resolution"</span>, <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for wk_rct</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for sfc</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkb</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkt</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_xy</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">is_handleable</span><span class="op">(</span><span class="va">handleable</span><span class="op">)</span>
-
-<span class="fu">new_wk_handler</span><span class="op">(</span><span class="va">handler_ptr</span>, subclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">is_wk_handler</span><span class="op">(</span><span class="va">handler</span><span class="op">)</span>
-
-<span class="fu">as_wk_handler</span><span class="op">(</span><span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for sfg</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for sf</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for bbox</span>
-<span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for wk_crc</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span></span>
+<span>  <span class="va">handleable</span>,</span>
+<span>  <span class="va">handler</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  n_segments <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"wk.crc_n_segments"</span>, <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"wk.crc_resolution"</span>, <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_rct</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sfc</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkb</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkt</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_xy</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">is_handleable</span><span class="op">(</span><span class="va">handleable</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">new_wk_handler</span><span class="op">(</span><span class="va">handler_ptr</span>, subclass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">is_wk_handler</span><span class="op">(</span><span class="va">handler</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_wk_handler</span><span class="op">(</span><span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sfg</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sf</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for bbox</span></span>
+<span><span class="fu">wk_handle</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">handler</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -124,10 +124,16 @@ vectors.</p>
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code>wk_handle()</code> is defined.</p></dd>
+
+
 <dt>handler</dt>
 <dd><p>A wk_handler object.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to the <code>wk_handle()</code> method.</p></dd>
+
+
 <dt>n_segments, resolution</dt>
 <dd><p>The number of segments to use when approximating
 a circle. The default uses <code>getOption("wk.crc_n_segments")</code> so that
@@ -135,14 +141,21 @@ this value can be set for implicit conversions (e.g., <code><a href="wkb.html">a
 Alternatively, set the minimum distance between points on the circle
 (used to estimate <code>n_segments</code>). The default is obtained
 using <code>getOption("wk.crc_resolution")</code>.</p></dd>
+
+
 <dt>handler_ptr</dt>
 <dd><p>An external pointer to a newly created WK handler</p></dd>
+
+
 <dt>subclass</dt>
 <dd><p>The handler subclass</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A WK handler.</p>
+    
+
+<p>A WK handler.</p>
     </div>
 
   </div>
@@ -157,7 +170,7 @@ using <code>getOption("wk.crc_resolution")</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

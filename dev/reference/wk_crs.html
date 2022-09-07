@@ -30,7 +30,7 @@ on objects that do not use this system of CRS propagation."><meta name="robots" 
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -71,29 +71,36 @@ on objects that do not use this system of CRS propagation.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_vctr</span>
-<span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_rcrd</span>
-<span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span>
-
-<span class="fu">wk_set_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">crs</span><span class="op">)</span>
-
-<span class="fu">wk_crs_output</span><span class="op">(</span><span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_is_geodesic_output</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_vctr</span></span>
+<span><span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_rcrd</span></span>
+<span><span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_crs</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="fu">wk_set_crs</span><span class="op">(</span><span class="va">x</span>, <span class="va">crs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_crs_output</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_is_geodesic_output</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x, ...</dt>
 <dd><p>Objects whose "crs" attribute is used to carry a CRS.</p></dd>
-<dt>crs, value</dt>
+
+
+<dt>value</dt>
+<dd><p>See <code>crs</code>.</p></dd>
+
+
+<dt>crs</dt>
 <dd><p>An object that can be interpreted as a CRS</p></dd>
+
 </dl></div>
 
   </div>
@@ -108,7 +115,7 @@ on objects that do not use this system of CRS propagation.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

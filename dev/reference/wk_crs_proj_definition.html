@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,28 +63,32 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for `NULL`</span>
-<span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for character</span>
-<span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for double</span>
-<span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for integer</span>
-<span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for `NULL`</span></span>
+<span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for character</span></span>
+<span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for double</span></span>
+<span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for integer</span></span>
+<span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>crs</dt>
 <dd><p>An arbitrary R object</p></dd>
+
+
 <dt>proj_version</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">package_version()</a></code> of the PROJ version, or
 <code>NULL</code> if the PROJ version is unknown.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Use <code>TRUE</code> to request a more verbose version of the
 PROJ definition (e.g., WKT2). The default of <code>FALSE</code> should return
@@ -92,10 +96,13 @@ the most compact version that completely describes the CRS. An
 authority:code string (e.g., "OGC:CRS84") is the recommended way
 to represent a CRS when <code>verbose</code> is <code>FALSE</code>, if possible, falling
 back to the most recent version of WKT2.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <ul><li><p><code>wk_crs_proj_definition()</code> Returns a string used to represent the
+    
+
+<ul><li><p><code>wk_crs_proj_definition()</code> Returns a string used to represent the
 CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
 you should check <code>proj_version</code> if you want this to work with older
 versions of PROJ.</p></li>
@@ -103,9 +110,9 @@ versions of PROJ.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="st">"EPSG:4326"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="st">"EPSG:4326"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "EPSG:4326"</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -120,7 +127,7 @@ versions of PROJ.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

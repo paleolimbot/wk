@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,15 +63,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_set_z</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">z</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_set_m</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">m</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_drop_z</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_drop_m</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_trans_set</span><span class="op">(</span><span class="va">value</span>, use_z <span class="op">=</span> <span class="cn">NA</span>, use_m <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_set_z</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">z</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_set_m</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">m</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_drop_z</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_drop_m</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_trans_set</span><span class="op">(</span><span class="va">value</span>, use_z <span class="op">=</span> <span class="cn">NA</span>, use_m <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,37 +79,46 @@
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code><a href="wk_handle.html">wk_handle()</a></code> is defined.</p></dd>
+
+
 <dt>z, m</dt>
 <dd><p>A vector of Z or M values applied feature-wise and recycled
 along <code>handleable</code>. Use <code>NA</code> to keep the existing value of a given
 feature.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to the <code><a href="wk_handle.html">wk_handle()</a></code> method.</p></dd>
+
+
 <dt>value</dt>
 <dd><p>An <code><a href="xy.html">xy()</a></code>, <code><a href="xy.html">xyz()</a></code>, <code><a href="xy.html">xym()</a></code>, or <code><a href="xy.html">xyzm()</a></code> of coordinates
 used to replace values in the input. Use <code>NA</code> to keep the existing
 value.</p></dd>
+
+
 <dt>use_z, use_m</dt>
 <dd><p>Used to declare the output type. Use <code>TRUE</code> to
 ensure the output has that dimension, <code>FALSE</code> to ensure it does not,
 and <code>NA</code> to leave the dimension unchanged.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_set_z</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_set_z</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT Z (0 1 2)</span>
-<span class="r-in"><span class="fu">wk_set_m</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_set_m</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT M (0 1 2)</span>
-<span class="r-in"><span class="fu">wk_drop_z</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT ZM (0 1 2 3)"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_drop_z</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT ZM (0 1 2 3)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT M (0 1 3)</span>
-<span class="r-in"><span class="fu">wk_drop_m</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT ZM (0 1 2 3)"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_drop_m</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT ZM (0 1 2 3)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT Z (0 1 2)</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +133,7 @@ and <code>NA</code> to leave the dimension unchanged.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
