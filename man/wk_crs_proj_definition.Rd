@@ -28,18 +28,19 @@ wk_crs_proj_definition(crs, proj_version = NULL, verbose = FALSE)
 \code{NULL} if the PROJ version is unknown.}
 
 \item{verbose}{Use \code{TRUE} to request a more verbose version of the
-PROJ definition (e.g., WKT2). The default of \code{FALSE} should return
+PROJ definition (e.g., PROJJSON). The default of \code{FALSE} should return
 the most compact version that completely describes the CRS. An
 authority:code string (e.g., "OGC:CRS84") is the recommended way
 to represent a CRS when \code{verbose} is \code{FALSE}, if possible, falling
-back to the most recent version of WKT2.}
+back to the most recent version of PROJJSON. When this value is "PROJJSON",
+implementations must return a valid PROJJSON string.}
 }
 \value{
 \itemize{
 \item \code{wk_crs_proj_definition()} Returns a string used to represent the
-CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
-you should check \code{proj_version} if you want this to work with older
-versions of PROJ.
+CRS in PROJ. For recent PROJ version you'll want to return PROJJSON;
+however you should check \code{proj_version} if you want this to work with
+older versions of PROJ.
 }
 }
 \description{
