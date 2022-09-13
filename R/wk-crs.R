@@ -256,6 +256,13 @@ wk_crs_proj_definition.NULL <- function(crs, proj_version = NULL, verbose = FALS
 
 #' @rdname wk_crs_proj_definition
 #' @export
+wk_crs_proj_definition.wk_crs_inherit <- function(crs, proj_version = NULL,
+                                                  verbose = FALSE) {
+  NA_character_
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
 wk_crs_proj_definition.character <- function(crs, proj_version = NULL, verbose = FALSE) {
   stopifnot(length(crs) == 1)
   crs

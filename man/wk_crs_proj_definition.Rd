@@ -3,6 +3,7 @@
 \name{wk_crs_proj_definition}
 \alias{wk_crs_proj_definition}
 \alias{wk_crs_proj_definition.NULL}
+\alias{wk_crs_proj_definition.wk_crs_inherit}
 \alias{wk_crs_proj_definition.character}
 \alias{wk_crs_proj_definition.double}
 \alias{wk_crs_proj_definition.integer}
@@ -11,6 +12,8 @@
 wk_crs_proj_definition(crs, proj_version = NULL, verbose = FALSE)
 
 \method{wk_crs_proj_definition}{`NULL`}(crs, proj_version = NULL, verbose = FALSE)
+
+\method{wk_crs_proj_definition}{wk_crs_inherit}(crs, proj_version = NULL, verbose = FALSE)
 
 \method{wk_crs_proj_definition}{character}(crs, proj_version = NULL, verbose = FALSE)
 

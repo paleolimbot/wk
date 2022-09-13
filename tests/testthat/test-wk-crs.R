@@ -118,6 +118,7 @@ test_that("crs output computing works", {
 
 test_that("crs_proj_definition() works", {
   expect_identical(wk_crs_proj_definition(NULL), NA_character_)
+  expect_identical(wk_crs_proj_definition(wk_crs_inherit()), NA_character_)
   expect_identical(wk_crs_proj_definition(1234), "EPSG:1234")
   expect_identical(wk_crs_proj_definition(NA_real_), NA_character_)
   expect_identical(wk_crs_proj_definition(1234L), "EPSG:1234")
