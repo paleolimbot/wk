@@ -54,38 +54,31 @@ defs <- crs_view %>%
 pb <- dplyr::progress_estimated(length(defs))
 results_json <- map(defs, ~{
   pb$tick()$print()
-  processx::run("projinfo", args = c("-o", "PROJJSON", .x))
+  processx::run("projinfo", args = c("-o", "PROJJSON", "--single-line", "-q", .x))
 })
 
 pb <- dplyr::progress_estimated(length(defs))
 results_wkt2 <- map(defs, ~{
   pb$tick()$print()
-  processx::run("projinfo", args = c("-o", "WKT2:2019", .x))
+  processx::run("projinfo", args = c("-o", "WKT2:2019", "--single-line", "-q", .x))
 })
 
-# try to minify for disk size
+# try to minify for disk size + validation
 json <- map_chr(results_json, "stdout") %>%
-  str_replace_all("\n", "") %>%
-  str_replace("^.*?\\{", "{") %>%
-  str_replace_all('([\\[{])\\s+', "\\1") %>%
-  str_replace_all('([:,])\\s+', "\\1") %>%
-  str_replace_all('\\s+([\\]}])', "\\1") %>%
-  str_remove(fixed('"$schema":"https://proj.org/schemas/v0.5/projjson.schema.json",'))
-json[nchar(json) == 0] <- NA_character_
+  str_remove(fixed('"$schema":"https://proj.org/schemas/v0.5/projjson.schema.json",')) %>%
+  map_chr(jsonlite::minify)
 
 wkt2 <- map_chr(results_wkt2, "stdout") %>%
-  str_replace(regex("^.*?([A-Z_]+)\\[", dotall = TRUE, multiline = TRUE), "\\1[") %>%
-  str_replace_all("\\s+", " ") %>%
   str_trim()
 
-# make sure we've got valid JSON
-json_lst <- map(json[!is.na(json)], jsonlite::fromJSON)
+# just to make sure we've got valid JSON
+json_lst <- map(json, jsonlite::fromJSON)
 
 crs_codes <- tibble(auth_name = crs_view$auth_name, code = crs_view$code)
 
-wk_proj_crs_view <- crs_view
-wk_proj_crs_json <- bind_cols(crs_codes, tibble(projjson = json))
-wk_proj_crs_wkt2 <- bind_cols(crs_codes, tibble(wkt2 = wkt2))
+wk_proj_crs_view <- as.data.frame(crs_view)
+wk_proj_crs_json <- as.data.frame(bind_cols(crs_codes, tibble(projjson = json)))
+wk_proj_crs_wkt2 <- as.data.frame(bind_cols(crs_codes, tibble(wkt2 = wkt2)))
 
 usethis::use_data(wk_proj_crs_view, overwrite = TRUE)
 usethis::use_data(wk_proj_crs_json, overwrite = TRUE)
