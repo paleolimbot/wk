@@ -8,12 +8,8 @@
 #' @examples
 #' head(wk_proj_crs_view)
 #' colnames(wk_proj_crs_json)
-#' colnames(wk_proj_crs_wkt2)
 #'
 "wk_proj_crs_view"
 
 #' @rdname wk_proj_crs_view
 "wk_proj_crs_json"
-
-#' @rdname wk_proj_crs_view
-"wk_proj_crs_wkt2"

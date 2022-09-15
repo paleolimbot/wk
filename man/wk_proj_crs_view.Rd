@@ -4,12 +4,9 @@
 \name{wk_proj_crs_view}
 \alias{wk_proj_crs_view}
 \alias{wk_proj_crs_json}
-\alias{wk_proj_crs_wkt2}
 \title{Common CRS Representations}
 \format{
 An object of class \code{data.frame} with 13096 rows and 7 columns.
-
-An object of class \code{data.frame} with 13096 rows and 3 columns.
 
 An object of class \code{data.frame} with 13096 rows and 3 columns.
 }
@@ -17,8 +14,6 @@ An object of class \code{data.frame} with 13096 rows and 3 columns.
 wk_proj_crs_view
 
 wk_proj_crs_json
-
-wk_proj_crs_wkt2
 }
 \description{
 These fixtures are calculated from PROJ version 9.1.0 and the database
@@ -28,7 +23,6 @@ coordinate reference systems.
 \examples{
 head(wk_proj_crs_view)
 colnames(wk_proj_crs_json)
-colnames(wk_proj_crs_wkt2)
 
 }
 \keyword{datasets}
