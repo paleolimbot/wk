@@ -126,8 +126,6 @@ wk_crs_equal_generic.crs <- function(x, y, ...) {
 wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE) {
   if (is.na(crs)) {
     wk_crs_proj_definition(NULL)
-  } else if (identical(verbose, "PROJJSON")) {
-    crs$ProjJson
   } else if (isTRUE(verbose)) {
     crs$Wkt %||% crs$wkt
   } else if (isTRUE(is.na(crs$epsg)) || isTRUE(grepl("^[0-9A-Za-z]+:[0-9A-Za-z]+$", crs$input))) {
