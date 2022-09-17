@@ -226,19 +226,21 @@ geodesic_attr <- function(geodesic) {
 #'
 #' @param crs An arbitrary R object
 #' @param verbose Use `TRUE` to request a more verbose version of the
-#'   PROJ definition (e.g., WKT2). The default of `FALSE` should return
+#'   PROJ definition (e.g., PROJJSON). The default of `FALSE` should return
 #'   the most compact version that completely describes the CRS. An
 #'   authority:code string (e.g., "OGC:CRS84") is the recommended way
 #'   to represent a CRS when `verbose` is `FALSE`, if possible, falling
-#'   back to the most recent version of WKT2.
+#'   back to the most recent version of WKT2 or PROJJSON.
 #' @param proj_version A [package_version()] of the PROJ version, or
 #'   `NULL` if the PROJ version is unknown.
 #'
 #' @return
 #'   - `wk_crs_proj_definition()` Returns a string used to represent the
-#'     CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
-#'     you should check `proj_version` if you want this to work with older
-#'     versions of PROJ.
+#'     CRS in PROJ. For recent PROJ version you'll want to return PROJJSON;
+#'     however you should check `proj_version` if you want this to work with
+#'     older versions of PROJ.
+#'   - `wk_crs_projjson()` Returns a PROJJSON string or NA_character_ if this
+#'     representation is unknown or can't be calculated.
 #' @export
 #'
 #' @examples
@@ -250,7 +252,35 @@ wk_crs_proj_definition <- function(crs, proj_version = NULL, verbose = FALSE) {
 
 #' @rdname wk_crs_proj_definition
 #' @export
+wk_crs_projjson <- function(crs) {
+  UseMethod("wk_crs_projjson")
+}
+
+#' @export
+wk_crs_projjson.default <- function(crs) {
+  maybe_auth_code_or_json <- wk_crs_proj_definition(crs, verbose = FALSE)
+
+  # check for most probably JSON
+  if (isTRUE(grepl("^\\{.*?\\}$", maybe_auth_code_or_json))) {
+    return(maybe_auth_code_or_json)
+  }
+
+  # look up by auth_name / code
+  split <- strsplit(maybe_auth_code_or_json, ":", fixed = TRUE)[[1]]
+  query <- new_data_frame(list(auth_name = split[1], code = split[2]))
+  merge(query, wk::wk_proj_crs_json, all.x = TRUE)$projjson
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
 wk_crs_proj_definition.NULL <- function(crs, proj_version = NULL, verbose = FALSE) {
+  NA_character_
+}
+
+#' @rdname wk_crs_proj_definition
+#' @export
+wk_crs_proj_definition.wk_crs_inherit <- function(crs, proj_version = NULL,
+                                                  verbose = FALSE) {
   NA_character_
 }
 

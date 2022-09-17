@@ -2,7 +2,9 @@
 % Please edit documentation in R/wk-crs.R
 \name{wk_crs_proj_definition}
 \alias{wk_crs_proj_definition}
+\alias{wk_crs_projjson}
 \alias{wk_crs_proj_definition.NULL}
+\alias{wk_crs_proj_definition.wk_crs_inherit}
 \alias{wk_crs_proj_definition.character}
 \alias{wk_crs_proj_definition.double}
 \alias{wk_crs_proj_definition.integer}
@@ -10,7 +12,11 @@
 \usage{
 wk_crs_proj_definition(crs, proj_version = NULL, verbose = FALSE)
 
+wk_crs_projjson(crs)
+
 \method{wk_crs_proj_definition}{`NULL`}(crs, proj_version = NULL, verbose = FALSE)
+
+\method{wk_crs_proj_definition}{wk_crs_inherit}(crs, proj_version = NULL, verbose = FALSE)
 
 \method{wk_crs_proj_definition}{character}(crs, proj_version = NULL, verbose = FALSE)
 
@@ -25,18 +31,20 @@ wk_crs_proj_definition(crs, proj_version = NULL, verbose = FALSE)
 \code{NULL} if the PROJ version is unknown.}
 
 \item{verbose}{Use \code{TRUE} to request a more verbose version of the
-PROJ definition (e.g., WKT2). The default of \code{FALSE} should return
+PROJ definition (e.g., PROJJSON). The default of \code{FALSE} should return
 the most compact version that completely describes the CRS. An
 authority:code string (e.g., "OGC:CRS84") is the recommended way
 to represent a CRS when \code{verbose} is \code{FALSE}, if possible, falling
-back to the most recent version of WKT2.}
+back to the most recent version of WKT2 or PROJJSON.}
 }
 \value{
 \itemize{
 \item \code{wk_crs_proj_definition()} Returns a string used to represent the
-CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
-you should check \code{proj_version} if you want this to work with older
-versions of PROJ.
+CRS in PROJ. For recent PROJ version you'll want to return PROJJSON;
+however you should check \code{proj_version} if you want this to work with
+older versions of PROJ.
+\item \code{wk_crs_projjson()} Returns a PROJJSON string or NA_character_ if this
+representation is unknown or can't be calculated.
 }
 }
 \description{

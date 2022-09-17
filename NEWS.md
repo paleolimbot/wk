@@ -1,5 +1,17 @@
 # wk (development version)
 
+* Remove legacy headers that are no longer used by any downstream package
+  (#146).
+* `validate_wk_wkt()` now errors for an object that does not inheirt from
+  'wk_wkt' (#123, #146).
+* Added `wk_crs_projjson()` to get a JSON representation of a CRS object.
+  To make lookup possible based on shortcut-style CRS objects (e.g.,
+  `"EPSG:4326"` or `4326`), added data objects `wk_proj_crs_view` and
+  `wk_proj_crs_json` that contain cached versions of rendered PROJJSON
+  based on the latest PROJ version (#147).
+* Added a `wk_crs_proj_definition()` method for `wk_crs_inherit()` (#136,
+  #147).
+
 # wk 0.6.0
 
 * Fixed `wk_affine_rescale()` to apply the translate and scale

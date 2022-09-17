@@ -118,12 +118,22 @@ test_that("crs output computing works", {
 
 test_that("crs_proj_definition() works", {
   expect_identical(wk_crs_proj_definition(NULL), NA_character_)
+  expect_identical(wk_crs_proj_definition(wk_crs_inherit()), NA_character_)
   expect_identical(wk_crs_proj_definition(1234), "EPSG:1234")
   expect_identical(wk_crs_proj_definition(NA_real_), NA_character_)
   expect_identical(wk_crs_proj_definition(1234L), "EPSG:1234")
   expect_identical(wk_crs_proj_definition(NA_integer_), NA_character_)
   expect_identical(wk_crs_proj_definition("EPSG:1234"), "EPSG:1234")
   expect_identical(wk_crs_proj_definition(NA_character_), NA_character_)
+})
+
+test_that("wk_crs_projjson() works", {
+  expect_identical(wk_crs_projjson(NULL), NA_character_)
+  expect_identical(wk_crs_projjson("{probably json}"), "{probably json}")
+  expect_identical(wk_crs_projjson("probably not json"), NA_character_)
+  expect_identical(wk_crs_projjson("EPSG:1234"), NA_character_)
+  expect_match(wk_crs_projjson("EPSG:4326"), "GeographicCRS")
+  expect_match(wk_crs_projjson(4326), "GeographicCRS")
 })
 
 test_that("wk_crs_longlat() works for common datums", {
