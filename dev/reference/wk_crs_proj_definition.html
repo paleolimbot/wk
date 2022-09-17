@@ -65,7 +65,12 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">wk_crs_projjson</span><span class="op">(</span><span class="va">crs</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for `NULL`</span></span>
+<span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_crs_inherit</span></span>
 <span><span class="fu">wk_crs_proj_definition</span><span class="op">(</span><span class="va">crs</span>, proj_version <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for character</span></span>
@@ -91,11 +96,11 @@
 
 <dt>verbose</dt>
 <dd><p>Use <code>TRUE</code> to request a more verbose version of the
-PROJ definition (e.g., WKT2). The default of <code>FALSE</code> should return
+PROJ definition (e.g., PROJJSON). The default of <code>FALSE</code> should return
 the most compact version that completely describes the CRS. An
 authority:code string (e.g., "OGC:CRS84") is the recommended way
 to represent a CRS when <code>verbose</code> is <code>FALSE</code>, if possible, falling
-back to the most recent version of WKT2.</p></dd>
+back to the most recent version of WKT2 or PROJJSON.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -103,9 +108,11 @@ back to the most recent version of WKT2.</p></dd>
     
 
 <ul><li><p><code>wk_crs_proj_definition()</code> Returns a string used to represent the
-CRS in PROJ. For recent PROJ version you'll want to return WKT2; however
-you should check <code>proj_version</code> if you want this to work with older
-versions of PROJ.</p></li>
+CRS in PROJ. For recent PROJ version you'll want to return PROJJSON;
+however you should check <code>proj_version</code> if you want this to work with
+older versions of PROJ.</p></li>
+<li><p><code>wk_crs_projjson()</code> Returns a PROJJSON string or NA_character_ if this
+representation is unknown or can't be calculated.</p></li>
 </ul></div>
 
     <div id="ref-examples">

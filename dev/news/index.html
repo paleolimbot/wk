@@ -57,7 +57,14 @@
       <small>Source: <a href="https://github.com/paleolimbot/wk/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="section level2"><h2 class="page-header" data-toc-text="development version" id="wk-development-version">wk (development version)<a class="anchor" aria-label="anchor" href="#wk-development-version"></a></h2></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="development version" id="wk-development-version">wk (development version)<a class="anchor" aria-label="anchor" href="#wk-development-version"></a></h2>
+<ul><li>Remove legacy headers that are no longer used by any downstream package (<a href="https://github.com/paleolimbot/wk/issues/146" class="external-link">#146</a>).</li>
+<li>
+<code><a href="../reference/new_wk_wkt.html">validate_wk_wkt()</a></code> now errors for an object that does not inheirt from ‘wk_wkt’ (<a href="https://github.com/paleolimbot/wk/issues/123" class="external-link">#123</a>, <a href="https://github.com/paleolimbot/wk/issues/146" class="external-link">#146</a>).</li>
+<li>Added <code><a href="../reference/wk_crs_proj_definition.html">wk_crs_projjson()</a></code> to get a JSON representation of a CRS object. To make lookup possible based on shortcut-style CRS objects (e.g., <code>"EPSG:4326"</code> or <code>4326</code>), added data objects <code>wk_proj_crs_view</code> and <code>wk_proj_crs_json</code> that contain cached versions of rendered PROJJSON based on the latest PROJ version (<a href="https://github.com/paleolimbot/wk/issues/147" class="external-link">#147</a>).</li>
+<li>Added a <code><a href="../reference/wk_crs_proj_definition.html">wk_crs_proj_definition()</a></code> method for <code><a href="../reference/wk_crs_inherit.html">wk_crs_inherit()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/136" class="external-link">#136</a>, <a href="https://github.com/paleolimbot/wk/issues/147" class="external-link">#147</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="wk-060">wk 0.6.0<small>2022-01-03</small><a class="anchor" aria-label="anchor" href="#wk-060"></a></h2>
 <ul><li>Fixed <code><a href="../reference/wk_trans_affine.html">wk_affine_rescale()</a></code> to apply the translate and scale operations in the correct order (<a href="https://github.com/paleolimbot/wk/issues/94" class="external-link">#94</a>).</li>
