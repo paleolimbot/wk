@@ -117,10 +117,10 @@ test_that("conversion from bbox to rct works", {
 test_that("conversion to sf works", {
   skip_if_not_installed("sf")
 
-  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), crs = 4326)
+  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), NULL, crs = 4326)
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
-  wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
-  wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
+  wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
+  wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
 
   expect_equal(sf::st_as_sf(wkb), sf)
   expect_equal(sf::st_as_sfc(wkb), sfc)
@@ -128,12 +128,12 @@ test_that("conversion to sf works", {
   expect_equal(sf::st_as_sfc(wkt), sfc)
 
   # xy
-  expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1), crs = 4326)), sf)
-  expect_equal(sf::st_as_sfc(xy(c(NA, 0), c(NA, 1), crs = 4326)), sfc)
+  expect_equal(sf::st_as_sf(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)), sf)
+  expect_equal(sf::st_as_sfc(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)), sfc)
 
   # xy with all !is.na() uses faster sf conversion with coords
-  expect_equal(sf::st_as_sf(xy(0, 1, crs = 4326)), sf[-1, , drop = FALSE])
-  expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[-1])
+  expect_equal(sf::st_as_sf(xy(0, 1, crs = 4326)), sf[2,, , drop = FALSE])
+  expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[2])
 
   # rct can only generate rectangles
   expect_equal(
