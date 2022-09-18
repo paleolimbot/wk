@@ -11,6 +11,9 @@
   based on the latest PROJ version (#147).
 * Added a `wk_crs_proj_definition()` method for `wk_crs_inherit()` (#136,
   #147).
+* Conversion to sf now uses the `sfc_writer()` for all wk classes, making
+  conversions faster and fixing at least one issue with conversion of NA
+  geometries to sf (#135).
 
 # wk 0.6.0
 
