@@ -14,6 +14,8 @@
 * Conversion to sf now uses the `sfc_writer()` for all wk classes, making
   conversions faster and fixing at least one issue with conversion of NA
   geometries to sf (#135).
+* `wk_plot()` now plots `NULL`/`NA` geometries and mixed geometry types
+  more reliably (#142, #143, #149).
 
 # wk 0.6.0
 
