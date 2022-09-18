@@ -25,6 +25,12 @@ test_that("readr methods work for all vector types", {
     readr::output_column(vctr_rct),
     c("POLYGON ((1 2, 3 2, 3 4, 1 4, 1 2))", NA)
   )
+
+  vctr_crc <- crc(0, 0, 1)
+  expect_match(
+    readr::output_column(vctr_crc),
+    "^POLYGON"
+  )
 })
 
 test_that("readr can write files from data frames with wk vectors", {
