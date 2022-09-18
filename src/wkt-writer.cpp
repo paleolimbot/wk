@@ -142,11 +142,11 @@ public:
             return this->error(err.str().c_str());
         }
 
-        if ((meta->size != 0) &&(meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
             out << "ZM ";
-        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_Z)) {
+        } else if ((meta->flags & WK_FLAG_HAS_Z)) {
             out << "Z ";
-        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_M)) {
+        } else if ((meta->flags & WK_FLAG_HAS_M)) {
             out << "M ";
         }
     }
@@ -165,7 +165,7 @@ public:
     if (ring_id > 0) {
       out << ", ";
     }
-    
+
     out << "(";
     return WK_CONTINUE;
   }
@@ -229,9 +229,9 @@ public:
 
 class WKTFormatHandler: public WKTWriterHandler {
 public:
-  WKTFormatHandler(int precision, bool trim, int max_coords): 
-    WKTWriterHandler(precision, trim), 
-    current_coords(0), 
+  WKTFormatHandler(int precision, bool trim, int max_coords):
+    WKTWriterHandler(precision, trim),
+    current_coords(0),
     max_coords(max_coords) {}
 
   int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {

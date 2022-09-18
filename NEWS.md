@@ -16,6 +16,8 @@
   geometries to sf (#135).
 * `wk_plot()` now plots `NULL`/`NA` geometries and mixed geometry types
   more reliably (#142, #143, #149).
+* Exported EMPTY geometries to well-known text now include dimension
+  (e.g., `POINT Z EMPTY`) (#141, #150).
 
 # wk 0.6.0
 
