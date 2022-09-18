@@ -78,7 +78,7 @@ wk_plot.default <- function(handleable, ...,
   meta <- wk_meta(x)
 
   # points can be handled by as_xy()
-  if (all(meta$geometry_type == 1L)) {
+  if (all(meta$geometry_type == 1L, na.rm = TRUE)) {
     coords <- unclass(as_xy(x))
     graphics::points(coords, ...)
     return(invisible(x))
@@ -93,7 +93,7 @@ wk_plot.default <- function(handleable, ...,
   is_rule <- length(dots)
 
   # point + multipoint is probably faster with a single coord vector
-  if (all(meta$geometry_type %in% c(1, 4))) {
+  if (all(meta$geometry_type %in% c(1, 4), na.rm = TRUE)) {
     coords <- wk_coords(x)
     if (dots_constant) {
       graphics::points(coords[c("x", "y")], ...)
@@ -127,8 +127,9 @@ wk_plot.default <- function(handleable, ...,
 }
 
 wk_plot_point_or_multipoint <- function(x, dots) {
+  dots_without_border <- dots[setdiff(names(dots), "border")]
   coords <- wk_coords(x)
-  do.call(graphics::points, c(coords[c("x", "y")], dots))
+  do.call(graphics::points, c(coords[c("x", "y")], dots_without_border))
 }
 
 wk_plot_line_or_multiline <- function(x, dots) {
