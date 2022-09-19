@@ -18,6 +18,8 @@
   more reliably (#142, #143, #149).
 * Exported EMPTY geometries to well-known text now include dimension
   (e.g., `POINT Z EMPTY`) (#141, #150).
+* Fixed bug where `wk_polygon()` doubled some points when the input contained
+  closed rings (#134, #151).
 
 # wk 0.6.0
 
