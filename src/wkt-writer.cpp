@@ -9,7 +9,7 @@ public:
   SEXP result;
   std::stringstream out;
   std::string current_item;
-  std::vector<const wk_meta_t*> stack;
+  std::vector<wk_meta_t> stack;
   R_xlen_t feat_id;
 
   WKTWriterHandler(int precision, bool trim) {
@@ -78,8 +78,8 @@ public:
   }
 
   bool isNestingCollection() {
-    return this->stack.size() > 0 &&
-      (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
+    return !this->stack.empty() &&
+      (this->stack.back().geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
   int vector_start(const wk_vector_meta_t* meta) {
@@ -157,7 +157,7 @@ public:
       out << "(";
     }
 
-    this->stack.push_back(meta);
+    this->stack.push_back(*meta);
     return WK_CONTINUE;
   }
 
