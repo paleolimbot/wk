@@ -69,6 +69,7 @@
 <code><a href="../reference/wk_plot.html">wk_plot()</a></code> now plots <code>NULL</code>/<code>NA</code> geometries and mixed geometry types more reliably (<a href="https://github.com/paleolimbot/wk/issues/142" class="external-link">#142</a>, <a href="https://github.com/paleolimbot/wk/issues/143" class="external-link">#143</a>, <a href="https://github.com/paleolimbot/wk/issues/149" class="external-link">#149</a>).</li>
 <li>Exported EMPTY geometries to well-known text now include dimension (e.g., <code>POINT Z EMPTY</code>) (<a href="https://github.com/paleolimbot/wk/issues/141" class="external-link">#141</a>, <a href="https://github.com/paleolimbot/wk/issues/150" class="external-link">#150</a>).</li>
 <li>Fixed bug where <code><a href="../reference/wk_linestring.html">wk_polygon()</a></code> doubled some points when the input contained closed rings (<a href="https://github.com/paleolimbot/wk/issues/134" class="external-link">#134</a>, <a href="https://github.com/paleolimbot/wk/issues/151" class="external-link">#151</a>).</li>
+<li>Fixed bug where <code><a href="../reference/wk_count.html">wk_count()</a></code> exposed uninitialized values for empty input (<a href="https://github.com/paleolimbot/wk/issues/139" class="external-link">#139</a>, <a href="https://github.com/paleolimbot/wk/issues/153" class="external-link">#153</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="wk-060">wk 0.6.0<small>2022-01-03</small><a class="anchor" aria-label="anchor" href="#wk-060"></a></h2>
