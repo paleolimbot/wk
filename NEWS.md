@@ -20,6 +20,8 @@
   (e.g., `POINT Z EMPTY`) (#141, #150).
 * Fixed bug where `wk_polygon()` doubled some points when the input contained
   closed rings (#134, #151).
+* Fixed bug where `wk_count()` exposed uninitialized values for empty input
+  (#139, #153).
 
 # wk 0.6.0
 

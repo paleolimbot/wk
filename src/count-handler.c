@@ -61,15 +61,17 @@ int count_handler_vector_start(const wk_vector_meta_t* meta, void* handler_data)
     R_PreserveObject(data->result);
     UNPROTECT(1);
 
+    data->feat_id = -1;
+
     return WK_CONTINUE;
 }
 
 int count_handler_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
     count_handler_t* data = (count_handler_t*) handler_data;
-    data->feat_id = feat_id;
     data->n_coord = 0;
     data->n_geom = 0;
     data->n_ring = 0;
+    data->feat_id++;
     return WK_CONTINUE;
 }
 
@@ -158,7 +160,7 @@ SEXP wk_c_count_handler_new() {
         wk_handler_destroy(handler); // # nocov
         Rf_error("Failed to alloc handler data"); // # nocov
     }
-    data->feat_id = 0;
+    data->feat_id = -1;
     data->result = R_NilValue;
     handler->handler_data = data;
 
