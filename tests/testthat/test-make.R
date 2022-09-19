@@ -143,6 +143,52 @@ test_that("wk_polygon() works", {
   )
 })
 
+test_that("wk_polygon() closes rings where appropriate", {
+  rings_closed <- wkt(
+    c(
+      "LINESTRING (0 0, 1 0, 1 1, 0 1, 0 0)",
+      "LINESTRING (0 0, 0 -1, -1 -1, -1 0, 0 0)",
+      "LINESTRING (1 1, 2 1, 2 2, 1 2, 1 1)",
+      "LINESTRING (2 2, 3 2, 3 3, 2 3, 2 2)"
+    )
+  )
+
+  vertices_closed <- wk_vertices(rings_closed)
+  expect_identical(
+    wk_polygon(vertices_closed, rep(1:4, each = 5)),
+    wkt(
+      c(
+        "POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))",
+        "POLYGON ((0 0, 0 -1, -1 -1, -1 0, 0 0))",
+        "POLYGON ((1 1, 2 1, 2 2, 1 2, 1 1))",
+        "POLYGON ((2 2, 3 2, 3 3, 2 3, 2 2))"
+      )
+    )
+  )
+
+  rings_open <- wkt(
+    c(
+      "LINESTRING (0 0, 1 0, 1 1, 0 1)",
+      "LINESTRING (0 0, 0 -1, -1 -1, -1 0)",
+      "LINESTRING (1 1, 2 1, 2 2, 1 2)",
+      "LINESTRING (2 2, 3 2, 3 3, 2 3)"
+    )
+  )
+
+  vertices_open <- wk_vertices(rings_open)
+  expect_identical(
+    wk_polygon(vertices_open, rep(1:4, each = 4)),
+    wkt(
+      c(
+        "POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))",
+        "POLYGON ((0 0, 0 -1, -1 -1, -1 0, 0 0))",
+        "POLYGON ((1 1, 2 1, 2 2, 1 2, 1 1))",
+        "POLYGON ((2 2, 3 2, 3 3, 2 3, 2 2))"
+      )
+    )
+  )
+})
+
 test_that("wk_polygon() propagates geodesic", {
   expect_identical(
     wk_polygon(wkt("POLYGON ((40 40, 20 45, 45 30, 40 40))"), geodesic = TRUE),

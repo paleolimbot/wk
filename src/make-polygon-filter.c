@@ -130,6 +130,11 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
   int result;
 
+  // maybe need to close the ring before starting a new feature/ring
+  if (polygon_filter->is_new_ring && polygon_filter->feature_id > 0) {
+    HANDLE_OR_RETURN(wk_ring_end(polygon_filter));
+  }
+
   // We always need to keep a copy of the last coordinate because we
   // need to check for closed rings and the ring end method gets called
   // at the *next* coordinate where there's a new feature.
@@ -138,11 +143,6 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
     ((meta->flags & WK_FLAG_HAS_M) != 0);
   memset(polygon_filter->last_coord, 0, 4 * sizeof(double));
   memcpy(polygon_filter->last_coord, coord, polygon_filter->last_coord_size * sizeof(double));
-
-  // maybe need to close the ring before starting a new feature/ring
-  if (polygon_filter->is_new_ring && polygon_filter->feature_id > 0) {
-    HANDLE_OR_RETURN(wk_ring_end(polygon_filter));
-  }
 
   if (polygon_filter->is_new_feature) {
     if (polygon_filter->feature_id > 0) {
