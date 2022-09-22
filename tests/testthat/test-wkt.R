@@ -91,3 +91,12 @@ test_that("as_wkt() propagates geodesic", {
   expect_true(wk_is_geodesic(x))
   expect_true(wk_is_geodesic(as_wkt(as_wkb(wkt("POINT (1 2)", geodesic = TRUE)))))
 })
+
+test_that("examples as wkt roundtrip", {
+  for (which in names(wk_example_wkt)) {
+    expect_identical(
+      wk_handle(wk_example(!!which, crs = NULL), wkt_writer()),
+      wk_example(!!which, crs = NULL)
+    )
+  }
+})
