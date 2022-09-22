@@ -434,3 +434,14 @@ test_that("sfc_writer() propagates precision", {
   sf::st_precision(sfc_prec) <- 0.01
   expect_identical(sf::st_precision(wk_handle(sfc_prec, sfc_writer())), 0.01)
 })
+
+test_that("sfc_writer() can roundtrip examples", {
+  skip_if_not_installed("sf")
+
+  for (which in names(wk_example_wkt)) {
+    expect_identical(
+      wk_handle(sf::st_as_sfc(wk_example(!!which, crs = NULL)), sfc_writer()),
+      sf::st_as_sfc(wk_example(!!which, crs = NULL))
+    )
+  }
+})
