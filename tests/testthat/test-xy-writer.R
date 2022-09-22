@@ -45,3 +45,29 @@ test_that("xy_writer() works for a vector of indeterminate length", {
     wk_handle(long_xy, xy_writer())
   )
 })
+
+test_that("xy_writer() works with zm dimensions", {
+  points_xyzm <- xyzm(1:10, 11:20, 21:30, 31:40)
+  expect_identical(
+    wk_handle(points_xyzm, xy_writer()),
+    points_xyzm
+  )
+
+  long_xyzm <- as_wkt(xyzm(runif(2048), runif(2048), runif(2048), runif(2048)))
+  expect_identical(
+    handle_wkt_without_vector_size(long_xyzm, xy_writer()),
+    wk_handle(long_xyzm, xy_writer())
+  )
+})
+
+test_that("xy_writer() fills unused dimensions with NA", {
+  points_xy <- xy(1:10, 11:20)
+  points_xyzm <- xyzm(1:10, 11:20, 21:30, 31:40)
+  expect_identical(
+    wk_handle(c(as_wkb(points_xy), as_wkb(points_xyzm)), xy_writer()),
+    c(
+      xyzm(1:10, 11:20, NA, NA),
+      points_xyzm
+    )
+  )
+})

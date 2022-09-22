@@ -22,6 +22,8 @@
   closed rings (#134, #151).
 * Fixed bug where `wk_count()` exposed uninitialized values for empty input
   (#139, #153).
+* The `xy_writer()` now opportunistically avoids allocating vectors for Z
+  or M values unless they are actually needed (#131, #154).
 
 # wk 0.6.0
 
