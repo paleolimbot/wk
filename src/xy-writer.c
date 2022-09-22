@@ -16,20 +16,30 @@ typedef struct {
     uint32_t flags;
 } xy_writer_t;
 
-static inline SEXP xy_writer_alloc_result(R_xlen_t size) {
+static inline SEXP xy_writer_alloc_result(R_xlen_t size, int32_t flags) {
     const char* names[] = {"x", "y", "z", "m", ""};
     SEXP result = PROTECT(Rf_mkNamed(VECSXP, names));
     SET_VECTOR_ELT(result, 0, Rf_allocVector(REALSXP, size));
     SET_VECTOR_ELT(result, 1, Rf_allocVector(REALSXP, size));
-    SET_VECTOR_ELT(result, 2, Rf_allocVector(REALSXP, size));
-    SET_VECTOR_ELT(result, 3, Rf_allocVector(REALSXP, size));
+
+    if (flags & WK_FLAG_HAS_Z) {
+        SET_VECTOR_ELT(result, 2, Rf_allocVector(REALSXP, size));
+    } else {
+        SET_VECTOR_ELT(result, 2, R_NilValue);
+    }
+
+    if (flags & WK_FLAG_HAS_M) {
+        SET_VECTOR_ELT(result, 3, Rf_allocVector(REALSXP, size));
+    } else {
+        SET_VECTOR_ELT(result, 3, R_NilValue);
+    }
 
     UNPROTECT(1);
     return result;
 }
 
-static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size) {
-    SEXP new_result = PROTECT(xy_writer_alloc_result(new_size));
+static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size, int32_t flags) {
+    SEXP new_result = PROTECT(xy_writer_alloc_result(new_size, flags));
 
     R_xlen_t size_cpy;
     if (Rf_xlength(VECTOR_ELT(result, 0)) < new_size) {
@@ -39,9 +49,13 @@ static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size) {
     }
 
     for (int i = 0; i < 4; i ++) {
+        if (VECTOR_ELT(result, i) == R_NilValue) {
+            continue;
+        }
+
         memcpy(
-            REAL(VECTOR_ELT(new_result, i)), 
-            REAL(VECTOR_ELT(result, i)), 
+            REAL(VECTOR_ELT(new_result, i)),
+            REAL(VECTOR_ELT(result, i)),
             sizeof(double) * size_cpy
         );
     }
@@ -52,19 +66,25 @@ static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size) {
 
 static inline void xy_writer_append_empty(xy_writer_t* writer) {
     if (writer->feat_id >= writer->result_size) {
-        SEXP new_result = PROTECT(xy_writer_realloc_result(writer->result, writer->result_size * 2 + 1));
+        SEXP new_result = PROTECT(xy_writer_realloc_result(writer->result, writer->result_size * 2 + 1, writer->flags));
         R_ReleaseObject(writer->result);
         writer->result = new_result;
         R_PreserveObject(writer->result);
         UNPROTECT(1);
         writer->result_size = writer->result_size * 2 + 1;
         for (int i = 0; i < 4; i++) {
-            writer->result_ptr[i] = REAL(VECTOR_ELT(writer->result, i));
+            if (VECTOR_ELT(writer->result, i) == R_NilValue) {
+                writer->result_ptr[i] = NULL;
+            } else {
+                writer->result_ptr[i] = REAL(VECTOR_ELT(writer->result, i));
+            }
         }
     }
 
     for (int i = 0; i < 4; i++) {
-        writer->result_ptr[i][writer->feat_id] = NA_REAL;
+        if (writer->result_ptr[i]) {
+            writer->result_ptr[i][writer->feat_id] = NA_REAL;
+        }
     }
     writer->feat_id++;
 }
@@ -76,11 +96,19 @@ int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
         Rf_error("Destination vector was already allocated"); // # nocov
     }
 
+    if (meta->flags & WK_FLAG_HAS_Z) {
+        data->flags |= WK_FLAG_HAS_Z;
+    }
+
+    if (meta->flags & WK_FLAG_HAS_M) {
+        data->flags |= WK_FLAG_HAS_M;
+    }
+
     if (meta->size == WK_VECTOR_SIZE_UNKNOWN) {
-        data->result = PROTECT(xy_writer_alloc_result(1024));
+        data->result = PROTECT(xy_writer_alloc_result(1024, data->flags));
         data->result_size = 1024;
     } else {
-        data->result = PROTECT(xy_writer_alloc_result(meta->size));
+        data->result = PROTECT(xy_writer_alloc_result(meta->size, data->flags));
         data->result_size = meta->size;
     }
 
@@ -88,7 +116,11 @@ int xy_writer_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
     UNPROTECT(1);
 
     for (int i = 0; i < 4; i++) {
-        data->result_ptr[i] = REAL(VECTOR_ELT(data->result, i));
+        if (VECTOR_ELT(data->result, i) == R_NilValue) {
+            data->result_ptr[i] = NULL;
+        } else {
+            data->result_ptr[i] = REAL(VECTOR_ELT(data->result, i));
+        }
     }
 
     data->feat_id = 0;
@@ -122,6 +154,23 @@ int xy_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* hand
     // keep track of zm flags to possibly trim output
     data->flags |= meta->flags;
 
+    // make sure we've allocated the output for ZM dimensions if they were just added
+    if(meta->flags & WK_FLAG_HAS_Z && data->result_ptr[2] == NULL) {
+        SET_VECTOR_ELT(data->result, 2, Rf_allocVector(REALSXP, data->result_size));
+        data->result_ptr[2] = REAL(VECTOR_ELT(data->result, 2));
+        for (R_xlen_t i = 0; i < data->feat_id; i++) {
+            data->result_ptr[2][i] = NA_REAL;
+        }
+    }
+
+    if(meta->flags & WK_FLAG_HAS_M && data->result_ptr[3] == NULL) {
+         SET_VECTOR_ELT(data->result, 3, Rf_allocVector(REALSXP, data->result_size));
+         data->result_ptr[3] = REAL(VECTOR_ELT(data->result, 3));
+         for (R_xlen_t i = 0; i < data->feat_id; i++) {
+            data->result_ptr[3][i] = NA_REAL;
+        }
+    }
+
     return WK_CONTINUE;
 }
 
@@ -154,7 +203,7 @@ SEXP xy_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
 
     R_xlen_t final_size = data->feat_id;
     if (final_size != data->result_size) {
-        SEXP new_result = PROTECT(xy_writer_realloc_result(data->result, final_size));
+        SEXP new_result = PROTECT(xy_writer_realloc_result(data->result, final_size, data->flags));
         R_ReleaseObject(data->result);
         data->result = new_result;
         R_PreserveObject(data->result);
@@ -188,7 +237,7 @@ SEXP xy_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
         Rf_setAttrib(xyz, R_ClassSymbol, xy_class);
         UNPROTECT(2);
         return xyz;
-        
+
     } else if(data->flags & WK_FLAG_HAS_M) {
         const char* xym_names[] = {"x", "y", "m", ""};
         SEXP xym = PROTECT(Rf_mkNamed(VECSXP, xym_names));
