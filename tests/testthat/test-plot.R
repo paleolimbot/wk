@@ -60,3 +60,9 @@ test_that("xy and rect plot methods work", {
 test_that("crc plot method works", {
   expect_identical(plot(crc(1, 2, 3)), crc(1, 2, 3))
 })
+
+test_that("plot can plot all examples", {
+  for (which in names(wk_example_wkt)) {
+    expect_silent(wk_plot(wk_example_wkt[[!!which]], xlab = which))
+  }
+})

@@ -134,6 +134,10 @@ wk_plot_point_or_multipoint <- function(x, dots) {
 
 wk_plot_line_or_multiline <- function(x, dots) {
   coords <- wk_coords(x)
+  if (nrow(coords) == 0) {
+    return()
+  }
+
   geom_id <- coords$part_id
   geom_id_lag <- c(-1L, geom_id[-length(geom_id)])
   new_geom <- geom_id != geom_id_lag
@@ -152,6 +156,9 @@ wk_plot_line_or_multiline <- function(x, dots) {
 
 wk_plot_poly_or_multi_poly <- function(x, dots) {
   coords <- wk_coords(x)
+  if (nrow(coords) == 0) {
+    return()
+  }
 
   # for polygons we can use the coord vectors directly
   # because the graphics device expects open loops
