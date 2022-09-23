@@ -24,6 +24,8 @@
   (#139, #153).
 * The `xy_writer()` now opportunistically avoids allocating vectors for Z
   or M values unless they are actually needed (#131, #154).
+* Added example WKT for all geometry types and dimensions plus helper
+  `wk_example()` to access them and set various properties (#155).
 
 # wk 0.6.0
 
