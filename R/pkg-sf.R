@@ -231,7 +231,7 @@ as_xy.sf <- function(x, ..., dims = NULL) {
 
 # dynamically exported
 st_as_sfc.wk_wkb <- function(x, ...) {
-  sf::st_set_crs(wk::wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_wkb <- function(x, ...) {
@@ -243,7 +243,7 @@ st_as_sf.wk_wkb <- function(x, ...) {
 }
 
 st_as_sfc.wk_wkt <- function(x, ...) {
-  sf::st_set_crs(wk::wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_wkt <- function(x, ...) {
@@ -275,11 +275,11 @@ st_as_sf.wk_xy <- function(x, ...) {
 }
 
 st_as_sfc.wk_rct <- function(x, ...) {
-  sf::st_set_crs(wk::wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sfc.wk_crc <- function(x, ...) {
-  sf::st_set_crs(wk::wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_rct <- function(x, ...) {
