@@ -122,13 +122,8 @@ grd_calculate_plot_step <- function(grid, oversample = c(2, 2),
   usr_x <- usr[1:2]
   usr_y <- usr[3:4]
 
-  if (is.null(device)) {
-    device_x <- graphics::grconvertX(usr_x, to = "device")
-    device_y <- graphics::grconvertY(usr_y, to = "device")
-  } else {
-    device_x <- device[1:2]
-    device_y <- device[3:4]
-  }
+  device_x <- graphics::grconvertX(usr_x, to = "device")
+  device_y <- graphics::grconvertY(usr_y, to = "device")
 
   # Use resolution of 1 at the device level, scale to usr coords.
   # this is sort of like pixels but not always; an oversample of

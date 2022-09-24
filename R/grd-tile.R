@@ -7,7 +7,6 @@
 #'   `2`, a level of `2` indicates a step of `4`, etc.).
 #' @param levels A vector of `level` values or `NULL` to use a sequence from
 #'   0 to the level that would result in a 1 x 1 grid.
-#' @param ... Passed to S3 methods
 #'
 #' @return A [grd()]
 #' @export
@@ -15,15 +14,21 @@
 #' @examples
 #' grid <- grd_rct(volcano)
 #' grd_overview_summary(grid)
-#' grd_overview(grid, 1)
 #'
-grd_overview <- function(grid, level, ...) {
-  UseMethod("grd_overview")
+grd_overview_summary <- function(grid, levels = NULL) {
+  if (is.null(levels)) {
+    s <- grd_summary(grid)
+    level0 <- max(floor(log2(c(s$nx, s$ny)))) + 1L
+    levels <- 0:level0
+  }
+
+  overviews <- lapply(levels, function(level) grd_overview_template(grid, level))
+  summaries <- lapply(overviews, grd_summary)
+  summary_df <- lapply(summaries, new_data_frame)
+  cbind(level = levels, do.call(rbind, summary_df))
 }
 
-#' @rdname grd_overview
-#' @export
-grd_overview.grd_rct <- function(grid, level, ...) {
+grd_overview_template <- function(grid, level) {
   if (length(level) == 1L) {
     level <- c(level, level)
   }
@@ -53,24 +58,9 @@ grd_overview.grd_rct <- function(grid, level, ...) {
   )
 }
 
-#' @rdname grd_overview
-#' @export
-grd_overview_summary <- function(grid, levels = NULL) {
-  if (is.null(levels)) {
-    s <- grd_summary(grid)
-    level0 <- max(floor(log2(c(s$nx, s$ny)))) + 1L
-    levels <- 0:level0
-  }
-
-  overviews <- lapply(levels, function(level) grd_overview(grid, level, resample = "none"))
-  summaries <- lapply(overviews, grd_summary)
-  summary_df <- lapply(summaries, new_data_frame)
-  cbind(level = levels, do.call(rbind, summary_df))
-}
-
 #' Extract normalized grid tiles
 #'
-#' @inheritParams grd_overview
+#' @inheritParams grd_overview_summary
 #' @inheritParams grd_subset
 #'
 #' @return A [grd_subset()]ed version
@@ -79,7 +69,18 @@ grd_overview_summary <- function(grid, levels = NULL) {
 #' @examples
 #' grid <- grd_rct(volcano)
 #' plot(grd_tile(grid, 4, 1, 1))
+#'
 #' plot(grd_tile(grid, 3, 1, 1), add = TRUE)
+#' plot(grd_tile(grid, 3, 1, 2), add = TRUE)
+#' plot(grd_tile(grid, 3, 2, 1), add = TRUE)
+#' plot(grd_tile(grid, 3, 2, 2), add = TRUE)
+#'
+#' grid <- as_grd_xy(grd_tile(grid, 4, 1, 1))
+#' plot(grid, add = T, pch = ".")
+#' plot(grd_tile(grid, 3, 1, 1), add = TRUE, col = "green", pch = ".")
+#' plot(grd_tile(grid, 3, 1, 2), add = TRUE, col = "red", pch = ".")
+#' plot(grd_tile(grid, 3, 2, 1), add = TRUE, col = "blue", pch = ".")
+#' plot(grd_tile(grid, 3, 2, 2), add = TRUE, col = "magenta", pch = ".")
 #'
 grd_tile <- function(grid, level, i, j = NULL) {
   UseMethod("grd_tile")
@@ -88,7 +89,17 @@ grd_tile <- function(grid, level, i, j = NULL) {
 #' @rdname grd_tile
 #' @export
 grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
-  overview <- grd_overview(grid, level)
+  overview <- grd_overview_template(grid, level)
+  bbox <- grd_cell_rct(overview, i, j)
+  ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
+  grd_subset(grid, ranges)
+}
+
+#' @rdname grd_tile
+#' @export
+grd_tile.grd_xy <- function(grid, level, i, j = NULL) {
+  grid_rct <- as_grd_rct(grid)
+  overview <- grd_overview_template(grid_rct, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
   grd_subset(grid, ranges)
