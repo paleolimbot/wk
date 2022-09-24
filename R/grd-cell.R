@@ -2,7 +2,7 @@
 #' Grid cell operators
 #'
 #' @inheritParams grd_summary
-#' @inheritParams grd_data
+#' @inheritParams grd_subset
 #' @param bbox An [rct()] object.
 #' @param out_of_bounds One of 'keep', 'censor', 'discard', or 'squish'
 #' @param step The difference between adjascent indices in the output

@@ -5,9 +5,9 @@
 \alias{grd_tile.grd_rct}
 \title{Extract normalized grid tiles}
 \usage{
-grd_tile(grid, level, i, j = NULL, ..., ptype = grd_data_ptype(grd_data(grid)))
+grd_tile(grid, level, i, j = NULL)
 
-\method{grd_tile}{grd_rct}(grid, level, i, j = NULL, ..., ptype = grd_data_ptype(grd_data(grid)))
+\method{grd_tile}{grd_rct}(grid, level, i, j = NULL)
 }
 \arguments{
 \item{grid}{A \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}}, or other object
@@ -21,14 +21,9 @@ the \code{step} value by a power of 2 (i.e., a level of \code{1} indicates a ste
 \code{y} values; \code{j} indices correspond to increasing \code{x} values.
 Values outside the range \code{1:nrow|ncol(data)} will be censored to
 \code{NA} including 0 and negative values.}
-
-\item{...}{Passed to S3 methods}
-
-\item{ptype}{The R object type that should be used to represent
-the data.}
 }
 \value{
-A \code{\link[=grd_collect]{grd_collect()}}ed version
+A \code{\link[=grd_subset]{grd_subset()}}ed version
 }
 \description{
 Extract normalized grid tiles

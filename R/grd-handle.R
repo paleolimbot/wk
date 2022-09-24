@@ -2,6 +2,11 @@
 #' Handler interface for grid objects
 #'
 #' @inheritParams wk_handle
+#' @param data_order A vector of length 2 describing the order in which
+#'   values should appear. The default, `c("y", "x")`, will output values
+#'   in the same order as the default matrix storage in R (column-major).
+#'   You can prefix a dimension with `-` to reverse the order of a
+#'   dimension (e.g., `c("-y", "x")`).
 #'
 #' @return The result of the `handler`.
 #' @export
@@ -10,20 +15,20 @@
 #' wk_handle(grd(nx = 3, ny = 3), wkt_writer())
 #' wk_handle(grd(nx = 3, ny = 3, type = "centers"), wkt_writer())
 #'
-wk_handle.grd_xy <- function(handleable, handler, ...) {
+wk_handle.grd_xy <- function(handleable, handler, ..., data_order = c("y", "x")) {
   # eventually these will be more efficient and not resolve every cell
-  wk_handle(as_xy(handleable), handler, ...)
+  wk_handle(as_xy(handleable, data_order = data_order), handler, ...)
 }
 
 #' @rdname wk_handle.grd_xy
 #' @export
-wk_handle.grd_rct <- function(handleable, handler, ...) {
+wk_handle.grd_rct <- function(handleable, handler, ..., data_order = c("y", "x")) {
   # eventually these will be more efficient and not resolve every cell
-  wk_handle(as_rct(handleable), handler, ...)
+  wk_handle(as_rct(handleable, data_order = data_order), handler, ...)
 }
 
 #' @export
-as_xy.grd_xy <- function(x, ...) {
+as_xy.grd_xy <- function(x, ..., data_order = c("y", "x")) {
   rct <- unclass(x$bbox)
   nx <- dim(x$data)[2]
   ny <- dim(x$data)[1]
@@ -46,19 +51,15 @@ as_xy.grd_xy <- function(x, ...) {
     ys <- seq(rct$ymax, rct$ymin, by = -height / (ny - 1))
   }
 
-  # ordering such that values match up to internal data ordering
-  # remove NAs because we only care about the relationship of x and y
-  # to each other and not other dimensions
-  x_data_order <- grd_data_order(x$data)
-  x_data_order <- x_data_order[!is.na(x_data_order)]
-  data_order <- gsub("^[+-]", "", x_data_order)
+  # Custom ordering such that coordinates can match up to data
+  dim_order <- gsub("^[+-]", "", data_order)
 
-  if (identical(data_order, c("y", "x"))) {
-    if (startsWith(x_data_order[1], "-")) {
+  if (identical(dim_order, c("y", "x"))) {
+    if (startsWith(data_order[1], "-")) {
       ys <- rev(ys)
     }
 
-    if (startsWith(x_data_order[2], "-")) {
+    if (startsWith(data_order[2], "-")) {
       xs <- rev(xs)
     }
 
@@ -68,11 +69,11 @@ as_xy.grd_xy <- function(x, ...) {
       crs = wk_crs(x$bbox)
     )
   } else {
-    if (startsWith(x_data_order[2], "-")) {
+    if (startsWith(data_order[2], "-")) {
       ys <- rev(ys)
     }
 
-    if (startsWith(x_data_order[1], "-")) {
+    if (startsWith(data_order[1], "-")) {
       xs <- rev(xs)
     }
 
@@ -85,7 +86,7 @@ as_xy.grd_xy <- function(x, ...) {
 }
 
 #' @export
-as_rct.grd_rct <- function(x, ...) {
+as_rct.grd_rct <- function(x, ..., data_order = c("y", "x")) {
   rct <- unclass(x$bbox)
   nx <- dim(x$data)[2]
   ny <- dim(x$data)[1]
@@ -96,16 +97,14 @@ as_rct.grd_rct <- function(x, ...) {
     return(rct(crs = wk_crs(x)))
   }
 
-  # ordering such that values match up to internal data ordering
+  # Custom ordering such that coordinates can match up to data
   xs <- seq(rct$xmin, rct$xmax, by = width / nx)
   ys <- seq(rct$ymax, rct$ymin, by = -height / ny)
 
-  x_data_order <- grd_data_order(x$data)
-  x_data_order <- x_data_order[!is.na(x_data_order)]
-  data_order <- gsub("^[+-]", "", x_data_order)
+  dim_order <- gsub("^[+-]", "", data_order)
 
-  if (identical(data_order, c("y", "x"))) {
-    if (startsWith(x_data_order[1], "-")) {
+  if (identical(dim_order, c("y", "x"))) {
+    if (startsWith(data_order[1], "-")) {
       ys <- rev(ys)
       ymax <- rep(ys[-1], nx)
       ymin <- rep(ys[-length(ys)], nx)
@@ -114,7 +113,7 @@ as_rct.grd_rct <- function(x, ...) {
       ymax <- rep(ys[-length(ys)], nx)
     }
 
-    if (startsWith(x_data_order[2], "-")) {
+    if (startsWith(data_order[2], "-")) {
       xs <- rev(xs)
       xmax <- rep(xs[-length(xs)], each = ny)
       xmin <- rep(xs[-1], each = ny)
@@ -125,7 +124,7 @@ as_rct.grd_rct <- function(x, ...) {
 
     rct(xmin, ymin, xmax, ymax, crs = wk_crs(x$bbox))
   } else {
-    if (startsWith(x_data_order[2], "-")) {
+    if (startsWith(data_order[2], "-")) {
       ys <- rev(ys)
       ymax <- rep(ys[-1], each = nx)
       ymin <- rep(ys[-length(ys)], each = nx)
@@ -134,7 +133,7 @@ as_rct.grd_rct <- function(x, ...) {
       ymax <- rep(ys[-length(ys)], each = nx)
     }
 
-    if (startsWith(x_data_order[1], "-")) {
+    if (startsWith(data_order[1], "-")) {
       xs <- rev(xs)
       xmax <- rep(xs[-length(xs)], ny)
       xmin <- rep(xs[-1], ny)

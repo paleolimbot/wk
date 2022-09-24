@@ -172,11 +172,12 @@ as.raster.grd_rct <- function(x, ..., i = NULL, j = NULL, native = NA) {
   } else if (length(dim(x)) == 2L || all(dim(x)[c(-1L, -2L)]) == 1L) {
     # try to interpret character() as hex colours, else
     # try to resolve x$data as a double() array
-    if (is.character(grd_data_ptype(x$data))) {
-      return(as.raster(grd_data_collect(x$data, i = i, j = j, ptype = character())))
+    if (is.character(x$data)) {
+      return(as.raster(grd_data_subset(x$data, i = i, j = j)))
     }
 
-    data <- grd_data_collect(x$data, i = i, j = j, ptype = double())
+    data <- grd_data_subset(x$data, i = i, j = j)
+    storage.mode(data) <- "double"
 
     # we've checked that it's safe to drop the non-xy dimensions and
     # collected the data so that we know the axis order is R-native

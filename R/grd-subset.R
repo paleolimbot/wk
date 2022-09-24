@@ -8,7 +8,15 @@
 #' relationship to x-y space has not changed.
 #'
 #' @inheritParams grd_cell
-#' @inheritParams grd_data
+#' @inheritParams grd_summary
+#' @param grid_data The `data` member of a [grd()]. This is typically an
+#'   array but can also be an S3 object with an array-like subset method.
+#'   The [native raster][grDevices::as.raster] is special-cased as its
+#'   subset method requires non-standard handling.
+#' @param i,j 1-based index values. `i` indices correspond to decreasing
+#'   `y` values; `j` indices correspond to increasing `x` values.
+#'   Values outside the range `1:nrow|ncol(data)` will be censored to
+#'   `NA` including 0 and negative values.
 #' @param ... Passed to subset methods
 #'
 #' @return A modified `grid` whose cell centres have not changed location
@@ -127,4 +135,30 @@ grd_extend.grd_rct <- function(grid, bbox, ..., step = 1L, snap = NULL) {
 grd_extend.grd_xy <- function(grid, bbox, ...,  step = 1L, snap = NULL) {
   snap <- snap %||% list(ceiling, floor)
   grd_subset(grid, grd_cell_range(grid, bbox, step = step, snap = snap))
+}
+
+#' @rdname grd_subset
+#' @export
+grd_data_subset <- function(grid_data, i = NULL, j = NULL) {
+  ij <- ij_from_args(i, j)
+  ij$i <- ij_expand_one(ij$i, dim(grid_data)[1], out_of_bounds = "censor")
+  ij$j <- ij_expand_one(ij$j, dim(grid_data)[2], out_of_bounds = "censor")
+
+  if (inherits(grid_data, "nativeRaster")) {
+    # special case the nativeRaster, whose dims are lying about
+    # the ordering needed to index it
+    attrs <- attributes(grid_data)
+    dim(grid_data) <- rev(dim(grid_data))
+    grid_data <- grid_data[ij$j, ij$i, drop = FALSE]
+    attrs$dim <- rev(dim(grid_data))
+    attributes(grid_data) <- attrs
+    grid_data
+  } else {
+    # we want to keep everything for existing dimensions
+    # this means generating a list of missings to fill
+    # the correct number of additional dimensions
+    n_more_dims <- length(dim(grid_data)) - 2L
+    more_dims <- alist(1, )[rep(2, n_more_dims)]
+    do.call("[", c(list(grid_data, ij$i, ij$j), more_dims, list(drop = FALSE)))
+  }
 }

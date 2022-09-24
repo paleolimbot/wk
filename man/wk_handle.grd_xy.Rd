@@ -5,9 +5,9 @@
 \alias{wk_handle.grd_rct}
 \title{Handler interface for grid objects}
 \usage{
-\method{wk_handle}{grd_xy}(handleable, handler, ...)
+\method{wk_handle}{grd_xy}(handleable, handler, ..., data_order = c("y", "x"))
 
-\method{wk_handle}{grd_rct}(handleable, handler, ...)
+\method{wk_handle}{grd_rct}(handleable, handler, ..., data_order = c("y", "x"))
 }
 \arguments{
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
@@ -16,6 +16,12 @@
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{data_order}{A vector of length 2 describing the order in which
+values should appear. The default, \code{c("y", "x")}, will output values
+in the same order as the default matrix storage in R (column-major).
+You can prefix a dimension with \code{-} to reverse the order of a
+dimension (e.g., \code{c("-y", "x")}).}
 }
 \value{
 The result of the \code{handler}.

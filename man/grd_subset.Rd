@@ -8,6 +8,7 @@
 \alias{grd_crop.grd_xy}
 \alias{grd_extend.grd_rct}
 \alias{grd_extend.grd_xy}
+\alias{grd_data_subset}
 \title{Subset grid objects}
 \usage{
 grd_subset(grid, i = NULL, j = NULL, ...)
@@ -23,6 +24,8 @@ grd_extend(grid, bbox, ..., step = 1L, snap = NULL)
 \method{grd_extend}{grd_rct}(grid, bbox, ..., step = 1L, snap = NULL)
 
 \method{grd_extend}{grd_xy}(grid, bbox, ..., step = 1L, snap = NULL)
+
+grd_data_subset(grid_data, i = NULL, j = NULL)
 }
 \arguments{
 \item{grid}{A \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}}, or other object
@@ -43,6 +46,11 @@ Values outside the range \code{1:nrow|ncol(data)} will be censored to
 indices (e.g., \code{\link[=floor]{floor()}}, \code{\link[=ceiling]{ceiling()}}, or \code{\link[=round]{round()}}).
 For \code{\link[=grd_cell_range]{grd_cell_range()}}, a \code{list()} with exactly two elements to be called
 for the minimum and maximum index values, respectively.}
+
+\item{grid_data}{The \code{data} member of a \code{\link[=grd]{grd()}}. This is typically an
+array but can also be an S3 object with an array-like subset method.
+The \link[grDevices:as.raster]{native raster} is special-cased as its
+subset method requires non-standard handling.}
 }
 \value{
 A modified \code{grid} whose cell centres have not changed location
