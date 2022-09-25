@@ -56,11 +56,6 @@ test_that("grd_tile() works for perfectly tileable rct data", {
   grid <- grd(nx = 8, ny = 8)
   grid$data <- matrix(1:64, nrow = 8, ncol = 8, byrow = TRUE)
 
-  plot(as_rct(grid))
-  text(unclass(as_xy(grid)), label = as.character(grid$data))
-
-  plot(as_rct(grd_tile_template(grid, 2)), border = "red", add = T)
-
   # top-left
   tile11 <- grd_tile(grid, 1, 1, 1)
   expect_identical(tile11$bbox, rct(0, 6, 2, 8))
@@ -75,9 +70,6 @@ test_that("grd_tile() works for perfectly tileable rct data", {
 test_that("grd_tile() works for imperfectly tileable rct data", {
   grid <- grd(nx = 9, ny = 9)
   grid$data <- matrix(1:81, nrow = 9, ncol = 9, byrow = TRUE)
-
-  plot(as_rct(grid))
-  text(unclass(as_xy(grid)), label = as.character(grid$data))
 
   # top-left
   tile11 <- grd_tile(grid, 1, 1, 1)
@@ -98,10 +90,6 @@ test_that("grd_tile() works for imperfectly tileable rct data", {
 test_that("grd_tile() works for perfectly tileable rct data", {
   grid <- grd(nx = 8, ny = 8, type = "centers")
   grid$data <- matrix(1:64, nrow = 8, ncol = 8, byrow = TRUE)
-
-  plot(as_rct(grid))
-  plot(grid, add = T)
-  text(unclass(as_xy(grid)), label = as.character(grid$data))
 
   # top-left
   tile11 <- grd_tile(grid, 1, 1, 1)

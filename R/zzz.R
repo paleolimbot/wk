@@ -18,8 +18,18 @@
     s3_register("sf::st_as_sf", cls)
     s3_register("sf::st_geometry", cls)
     s3_register("sf::st_bbox", cls)
+    s3_register("sf::st_crs", cls)
+    s3_register("sf::st_crs<-", cls)
     s3_register("readr::output_column", cls)
   }
+
+  # grd is not a vector class, but does have sf methods
+  s3_register("sf::st_as_sfc", "grd")
+  s3_register("sf::st_as_sf", "grd")
+  s3_register("sf::st_geometry", "grd")
+  s3_register("sf::st_bbox", "grd")
+  s3_register("sf::st_crs", "grd")
+  s3_register("sf::st_crs<-", "grd")
 }
 
 .onUnload <- function (libpath) {

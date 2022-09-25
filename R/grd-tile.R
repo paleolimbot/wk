@@ -20,12 +20,14 @@ grd_tile_template <- function(grid, level) {
   level <- normalize_level(grid, level)
   grid <- as_grd_rct(grid)
 
+  # clamp the step to a reasonable bound
   s <- grd_summary(grid)
   step <- 2 ^ level
   step_clamp <- pmax(1L, pmin(c(s$ny, s$nx), step))
   level_clamp <- ceiling(log2(step_clamp))
   step_final <- 2 ^ level_clamp
 
+  # calculate the new grid parameters
   final_dy <- s$dy * step_final[1]
   final_dx <- s$dx * step_final[2]
   final_ny <- ceiling(s$ny / step_final[1])
