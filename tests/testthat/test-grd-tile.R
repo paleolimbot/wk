@@ -1,7 +1,7 @@
 
-test_that("grd_overview_summary() works", {
+test_that("grd_tile_summary() works", {
   grid <- grd_rct(volcano)
-  summary <- grd_overview_summary(grid)
+  summary <- grd_tile_summary(grid)
 
   # 0th overview is the same as the data
   expect_identical(summary$nx[1], ncol(grid))
@@ -12,42 +12,42 @@ test_that("grd_overview_summary() works", {
   expect_identical(summary$ny[8], 1L)
 })
 
-test_that("grd_tiles() works for perfectly tileable rct data", {
+test_that("grd_tile_template() works for perfectly tileable rct data", {
   grid <- grd(nx = 8, ny = 8)
   grid$data <- matrix(1:64, nrow = 8, ncol = 8, byrow = TRUE)
 
   expect_identical(
-    grd_tiles(grid, 1),
+    grd_tile_template(grid, 1),
     grd(grid$bbox, nx = 4, ny = 4)
   )
 })
 
-test_that("grd_tiles() works for imperfectly tileable rct data", {
+test_that("grd_tile_template() works for imperfectly tileable rct data", {
   grid <- grd(nx = 9, ny = 9)
   grid$data <- matrix(1:81, nrow = 9, ncol = 9, byrow = TRUE)
 
   expect_identical(
-    grd_tiles(grid, 1),
+    grd_tile_template(grid, 1),
     grd(rct(0, -1, 10, 9), nx = 5, ny = 5)
   )
 })
 
-test_that("grd_tiles() works for perfectly tileable xy data", {
+test_that("grd_tile_template() works for perfectly tileable xy data", {
   grid <- grd(nx = 8, ny = 8, type = "centers")
   grid$data <- matrix(1:64, nrow = 8, ncol = 8, byrow = TRUE)
 
   expect_identical(
-    grd_tiles(grid, 1),
+    grd_tile_template(grid, 1),
     grd(rct(0, 0, 8, 8), nx = 4, ny = 4)
   )
 })
 
-test_that("grd_tiles() works for imperfectly tileable xy data", {
+test_that("grd_tile_template() works for imperfectly tileable xy data", {
   grid <- grd(nx = 9, ny = 9, type = "centers")
   grid$data <- matrix(1:81, nrow = 9, ncol = 9, byrow = TRUE)
 
   expect_identical(
-    grd_tiles(grid, 1),
+    grd_tile_template(grid, 1),
     grd(rct(0, -1, 10, 9), nx = 5, ny = 5)
   )
 })
@@ -59,7 +59,7 @@ test_that("grd_tile() works for perfectly tileable rct data", {
   plot(as_rct(grid))
   text(unclass(as_xy(grid)), label = as.character(grid$data))
 
-  plot(as_rct(grd_tiles(grid, 2)), border = "red", add = T)
+  plot(as_rct(grd_tile_template(grid, 2)), border = "red", add = T)
 
   # top-left
   tile11 <- grd_tile(grid, 1, 1, 1)

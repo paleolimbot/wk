@@ -13,14 +13,11 @@
 #'
 #' @examples
 #' grid <- grd_rct(volcano)
-#' grd_overview_summary(grid)
-#' grd_tiles(grid, 3)
+#' grd_tile_summary(grid)
+#' grd_tile_template(grid, 3)
 #'
-grd_tiles <- function(grid, level) {
-  if (length(level) == 1L) {
-    level <- c(level, level)
-  }
-
+grd_tile_template <- function(grid, level) {
+  level <- normalize_level(grid, level)
   grid <- as_grd_rct(grid)
 
   s <- grd_summary(grid)
@@ -48,16 +45,16 @@ grd_tiles <- function(grid, level) {
   )
 }
 
-#' @rdname grd_tiles
+#' @rdname grd_tile_template
 #' @export
-grd_overview_summary <- function(grid, levels = NULL) {
+grd_tile_summary <- function(grid, levels = NULL) {
   if (is.null(levels)) {
     s <- grd_summary(grid)
     level0 <- max(floor(log2(c(s$nx, s$ny)))) + 1L
     levels <- 0:level0
   }
 
-  overviews <- lapply(levels, function(level) grd_tiles(grid, level))
+  overviews <- lapply(levels, function(level) grd_tile_template(grid, level))
   summaries <- lapply(overviews, grd_summary)
   summary_df <- lapply(summaries, new_data_frame)
   cbind(level = levels, do.call(rbind, summary_df))
@@ -65,7 +62,7 @@ grd_overview_summary <- function(grid, levels = NULL) {
 
 #' Extract normalized grid tiles
 #'
-#' @inheritParams grd_overview_summary
+#' @inheritParams grd_tile_summary
 #' @inheritParams grd_subset
 #'
 #' @return A [grd_subset()]ed version
@@ -94,7 +91,7 @@ grd_tile <- function(grid, level, i, j = NULL) {
 #' @rdname grd_tile
 #' @export
 grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
-  overview <- grd_tiles(grid, level)
+  overview <- grd_tile_template(grid, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
   grd_subset(grid, ranges)
@@ -104,8 +101,16 @@ grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
 #' @export
 grd_tile.grd_xy <- function(grid, level, i, j = NULL) {
   grid_rct <- as_grd_rct(grid)
-  overview <- grd_tiles(grid_rct, level)
+  overview <- grd_tile_template(grid_rct, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
   grd_subset(grid, ranges)
+}
+
+normalize_level <- function(grid, level, s = grd_summary(grid)) {
+  if (length(level) == 1L) {
+    level <- c(level, level)
+  }
+
+  level
 }
