@@ -269,7 +269,7 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
 #' @export
 #'
 new_grd <- function(x, subclass = character()) {
-  structure(x, class = union(subclass, "grd"))
+  structure(x, class = union(subclass, "wk_grd"))
 }
 
 
@@ -341,17 +341,17 @@ grd_summary.wk_grd_xy <- function(grid) {
 # interface for wk methods
 
 #' @export
-wk_bbox.grd <- function(handleable, ...) {
+wk_bbox.wk_grd <- function(handleable, ...) {
   handleable$bbox
 }
 
 #' @export
-wk_crs.grd <- function(x) {
+wk_crs.wk_grd <- function(x) {
   attr(x$bbox, "crs", exact = TRUE)
 }
 
 #' @export
-wk_set_crs.grd <- function(x, crs) {
+wk_set_crs.wk_grd <- function(x, crs) {
   x$bbox <- wk_set_crs(x$bbox, crs)
   x
 }
@@ -359,7 +359,7 @@ wk_set_crs.grd <- function(x, crs) {
 # interface for setting data and bbox
 
 #' @export
-`[[<-.grd` <- function(x, i, value) {
+`[[<-.wk_grd` <- function(x, i, value) {
   x_bare <- unclass(x)
   if (identical(i, "data")) {
     stopifnot(length(dim(value)) >= 2)
@@ -396,19 +396,19 @@ wk_set_crs.grd <- function(x, crs) {
 }
 
 #' @export
-`$<-.grd` <- function(x, i, value) {
+`$<-.wk_grd` <- function(x, i, value) {
   x[[i]] <- value
   x
 }
 
 # interface for matrix-like extraction and subsetting
 #' @export
-dim.grd <- function(x) {
+dim.wk_grd <- function(x) {
   dim(x$data)
 }
 
 #' @export
-`[.grd` <- function(x, i, j, ..., drop = FALSE) {
+`[.wk_grd` <- function(x, i, j, ..., drop = FALSE) {
   # for this method we never drop dimensions (can use $data[] to do this)
   stopifnot(identical(drop, FALSE))
 
@@ -442,7 +442,7 @@ dim.grd <- function(x) {
 }
 
 #' @export
-format.grd <- function(x, ...) {
+format.wk_grd <- function(x, ...) {
   crs <- wk_crs(x)
   sprintf(
     "<%s [%s] => %s%s>",
@@ -454,7 +454,7 @@ format.grd <- function(x, ...) {
 }
 
 #' @export
-print.grd <- function(x, ...) {
+print.wk_grd <- function(x, ...) {
   cat(paste0(format(x), "\n"))
   utils::str(x)
   invisible(x)

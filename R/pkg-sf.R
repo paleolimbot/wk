@@ -298,14 +298,14 @@ st_as_sf.wk_crc <- function(x, ...) {
   )
 }
 
-st_as_sfc.grd <- function(x, ...) {
+st_as_sfc.wk_grd <- function(x, ...) {
   result <- wk_handle(x, sfc_writer())
   sf::st_crs(result) <- sf::st_crs(wk_crs(x))
   result
 }
 
-st_as_sf.grd <- function(x, ...) {
-  sf::st_as_sf(data.frame(geometry = st_as_sfc.grd(x)))
+st_as_sf.wk_grd <- function(x, ...) {
+  sf::st_as_sf(data.frame(geometry = st_as_sfc.wk_grd(x)))
 }
 
 # st_geometry methods()
@@ -330,8 +330,8 @@ st_geometry.wk_crc <- function(x, ...) {
   st_as_sfc.wk_crc(x, ...)
 }
 
-st_geometry.grd <- function(x, ...) {
-  st_as_sfc.grd(x)
+st_geometry.wk_grd <- function(x, ...) {
+  st_as_sfc.wk_grd(x)
 }
 
 # st_bbox() methods
@@ -356,7 +356,7 @@ st_bbox.wk_crc <- function(x, ...) {
   sf::st_bbox(wk_bbox(x))
 }
 
-st_bbox.grd <- function(x, ...) {
+st_bbox.wk_grd <- function(x, ...) {
   sf::st_bbox(wk_bbox(x))
 }
 
@@ -382,7 +382,7 @@ st_crs.wk_crc <- function(x, ...) {
   sf::st_crs(wk_crs(x))
 }
 
-st_crs.grd <- function(x, ...) {
+st_crs.wk_grd <- function(x, ...) {
   sf::st_crs(wk_crs(x$bbox))
 }
 
@@ -408,6 +408,6 @@ st_crs.grd <- function(x, ...) {
   wk_set_crs(x, sf::st_crs(value))
 }
 
-`st_crs<-.grd` <- function(x, value) {
+`st_crs<-.wk_grd` <- function(x, value) {
   wk_set_crs(x, sf::st_crs(value))
 }

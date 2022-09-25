@@ -2,7 +2,7 @@
 test_that("grd_rct() works", {
   grid <- grd_rct(volcano)
   expect_s3_class(grid, "wk_grd_rct")
-  expect_s3_class(grid, "grd")
+  expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_rct(grid), grid)
   expect_null(wk_crs(grid))
   expect_identical(wk_bbox(grid), rct(0, 0, 61, 87))
@@ -35,7 +35,7 @@ test_that("grd_xy() works for h/v lines", {
 test_that("grd_xy() works", {
   grid <- grd_xy(volcano)
   expect_s3_class(grid, "wk_grd_xy")
-  expect_s3_class(grid, "grd")
+  expect_s3_class(grid, "wk_grd")
   expect_identical(as_grd_xy(grid), grid)
   expect_null(wk_crs(grid))
   expect_identical(wk_bbox(grid), rct(0, 0, 60, 86))
