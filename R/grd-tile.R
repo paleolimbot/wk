@@ -1,5 +1,10 @@
 
-#' Compute overview grid specifications
+#' Compute overview grid tile
+#'
+#' A useful workflow for raster data in a memory bounded environment is to
+#' chunk a grid into sections or tiles. These functions compute tiles
+#' suitable for such processing. Use [grd_tile_summary()] to generate
+#' statistics for `level` values to choose for your application.
 #'
 #' @inheritParams grd_summary
 #' @param level An integer describing the overview level. This is related to
@@ -64,6 +69,10 @@ grd_tile_summary <- function(grid, levels = NULL) {
 
 #' Extract normalized grid tiles
 #'
+#' Unlike [grd_tile_template()], which returns a [grd()] whose elements are
+#' the boundaries of the specified tiles with no data attached, [grd_tile()]
+#' returns the actual tile with the data.
+#'
 #' @inheritParams grd_tile_summary
 #' @inheritParams grd_subset
 #'
@@ -109,6 +118,8 @@ grd_tile.grd_xy <- function(grid, level, i, j = NULL) {
   grd_subset(grid, ranges)
 }
 
+# This could maybe in the future deal with negative levels based on the
+# grd_tile_summary() so that one could work down from coarse->fine
 normalize_level <- function(grid, level, s = grd_summary(grid)) {
   if (length(level) == 1L) {
     level <- c(level, level)

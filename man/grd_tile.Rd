@@ -29,7 +29,9 @@ Values outside the range \code{1:nrow|ncol(data)} will be censored to
 A \code{\link[=grd_subset]{grd_subset()}}ed version
 }
 \description{
-Extract normalized grid tiles
+Unlike \code{\link[=grd_tile_template]{grd_tile_template()}}, which returns a \code{\link[=grd]{grd()}} whose elements are
+the boundaries of the specified tiles with no data attached, \code{\link[=grd_tile]{grd_tile()}}
+returns the actual tile with the data.
 }
 \examples{
 grid <- grd_rct(volcano)

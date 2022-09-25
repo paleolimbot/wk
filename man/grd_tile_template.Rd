@@ -3,7 +3,7 @@
 \name{grd_tile_template}
 \alias{grd_tile_template}
 \alias{grd_tile_summary}
-\title{Compute overview grid specifications}
+\title{Compute overview grid tile}
 \usage{
 grd_tile_template(grid, level)
 
@@ -24,7 +24,10 @@ the \code{step} value by a power of 2 (i.e., a level of \code{1} indicates a ste
 A \code{\link[=grd]{grd()}}
 }
 \description{
-Compute overview grid specifications
+A useful workflow for raster data in a memory bounded environment is to
+chunk a grid into sections or tiles. These functions compute tiles
+suitable for such processing. Use \code{\link[=grd_tile_summary]{grd_tile_summary()}} to generate
+statistics for \code{level} values to choose for your application.
 }
 \examples{
 grid <- grd_rct(volcano)
