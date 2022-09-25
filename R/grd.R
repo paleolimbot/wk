@@ -157,7 +157,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
 
   bbox <- new_wk_rct(rct, crs = wk_crs(bbox))
 
-  new_grd(list(data = data, bbox = bbox), "wk_grd_rct")
+  new_wk_grd(list(data = data, bbox = bbox), "wk_grd_rct")
 }
 
 #' @rdname grd
@@ -198,7 +198,7 @@ grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1)) {
     )
   }
 
-  new_grd(list(data = data, bbox = bbox), "wk_grd_xy")
+  new_wk_grd(list(data = data, bbox = bbox), "wk_grd_xy")
 }
 
 #' @rdname grd
@@ -268,7 +268,7 @@ as_grd_xy.wk_grd_rct <- function(x, ...) {
 #'
 #' @export
 #'
-new_grd <- function(x, subclass = character()) {
+new_wk_grd <- function(x, subclass = character()) {
   structure(x, class = union(subclass, "wk_grd"))
 }
 
