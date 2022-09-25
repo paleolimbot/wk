@@ -93,13 +93,13 @@ test_that("grd_tile() works for perfectly tileable rct data", {
 
   # top-left
   tile11 <- grd_tile(grid, 1, 1, 1)
-  expect_s3_class(tile11, "grd_xy")
+  expect_s3_class(tile11, "wk_grd_xy")
   expect_identical(tile11$bbox, rct(0.5, 6.5, 1.5, 7.5))
   expect_identical(tile11$data, matrix(c(1L, 9L, 2L, 10L), nrow = 2, ncol = 2))
 
   # bottom right
   tile44 <- grd_tile(grid, 1, 4, 4)
-  expect_s3_class(tile11, "grd_xy")
+  expect_s3_class(tile11, "wk_grd_xy")
   expect_identical(tile44$bbox, rct(6.5, 0.5, 7.5, 1.5))
   expect_identical(tile44$data, matrix(c(55L, 63L, 56L, 64L), nrow = 2, ncol = 2))
 })

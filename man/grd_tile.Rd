@@ -2,15 +2,15 @@
 % Please edit documentation in R/grd-tile.R
 \name{grd_tile}
 \alias{grd_tile}
-\alias{grd_tile.grd_rct}
-\alias{grd_tile.grd_xy}
+\alias{grd_tile.wk_grd_rct}
+\alias{grd_tile.wk_grd_xy}
 \title{Extract normalized grid tiles}
 \usage{
 grd_tile(grid, level, i, j = NULL)
 
-\method{grd_tile}{grd_rct}(grid, level, i, j = NULL)
+\method{grd_tile}{wk_grd_rct}(grid, level, i, j = NULL)
 
-\method{grd_tile}{grd_xy}(grid, level, i, j = NULL)
+\method{grd_tile}{wk_grd_xy}(grid, level, i, j = NULL)
 }
 \arguments{
 \item{grid}{A \code{\link[=grd_xy]{grd_xy()}}, \code{\link[=grd_rct]{grd_rct()}}, or other object

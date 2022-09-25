@@ -4,10 +4,10 @@
 \alias{grd_subset}
 \alias{grd_crop}
 \alias{grd_extend}
-\alias{grd_crop.grd_rct}
-\alias{grd_crop.grd_xy}
-\alias{grd_extend.grd_rct}
-\alias{grd_extend.grd_xy}
+\alias{grd_crop.wk_grd_rct}
+\alias{grd_crop.wk_grd_xy}
+\alias{grd_extend.wk_grd_rct}
+\alias{grd_extend.wk_grd_xy}
 \alias{grd_data_subset}
 \title{Subset grid objects}
 \usage{
@@ -17,13 +17,13 @@ grd_crop(grid, bbox, ..., step = 1L, snap = NULL)
 
 grd_extend(grid, bbox, ..., step = 1L, snap = NULL)
 
-\method{grd_crop}{grd_rct}(grid, bbox, ..., step = 1L, snap = NULL)
+\method{grd_crop}{wk_grd_rct}(grid, bbox, ..., step = 1L, snap = NULL)
 
-\method{grd_crop}{grd_xy}(grid, bbox, ..., step = 1L, snap = NULL)
+\method{grd_crop}{wk_grd_xy}(grid, bbox, ..., step = 1L, snap = NULL)
 
-\method{grd_extend}{grd_rct}(grid, bbox, ..., step = 1L, snap = NULL)
+\method{grd_extend}{wk_grd_rct}(grid, bbox, ..., step = 1L, snap = NULL)
 
-\method{grd_extend}{grd_xy}(grid, bbox, ..., step = 1L, snap = NULL)
+\method{grd_extend}{wk_grd_xy}(grid, bbox, ..., step = 1L, snap = NULL)
 
 grd_data_subset(grid_data, i = NULL, j = NULL)
 }

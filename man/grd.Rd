@@ -5,11 +5,11 @@
 \alias{grd_rct}
 \alias{grd_xy}
 \alias{as_grd_rct}
-\alias{as_grd_rct.grd_rct}
-\alias{as_grd_rct.grd_xy}
+\alias{as_grd_rct.wk_grd_rct}
+\alias{as_grd_rct.wk_grd_xy}
 \alias{as_grd_xy}
-\alias{as_grd_xy.grd_xy}
-\alias{as_grd_xy.grd_rct}
+\alias{as_grd_xy.wk_grd_xy}
+\alias{as_grd_xy.wk_grd_rct}
 \title{Raster-like objects}
 \usage{
 grd(
@@ -27,15 +27,15 @@ grd_xy(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1))
 
 as_grd_rct(x, ...)
 
-\method{as_grd_rct}{grd_rct}(x, ...)
+\method{as_grd_rct}{wk_grd_rct}(x, ...)
 
-\method{as_grd_rct}{grd_xy}(x, ...)
+\method{as_grd_rct}{wk_grd_xy}(x, ...)
 
 as_grd_xy(x, ...)
 
-\method{as_grd_xy}{grd_xy}(x, ...)
+\method{as_grd_xy}{wk_grd_xy}(x, ...)
 
-\method{as_grd_xy}{grd_rct}(x, ...)
+\method{as_grd_xy}{wk_grd_rct}(x, ...)
 }
 \arguments{
 \item{bbox}{A \code{\link[=rct]{rct()}} containing the bounds and CRS of the object. You can
@@ -62,8 +62,8 @@ a grid along the corners of \code{bbox}.}
 \itemize{
 \item \code{grd()} returns a \code{grd_rct()} for \verb{type == "polygons} or
 a \code{grd_xy()} otherwise.
-\item \code{grd_rct()} returns an object of class "grd_rct".
-\item \code{grd_xy()} returns an object of class "grd_xy".
+\item \code{grd_rct()} returns an object of class "wk_grd_rct".
+\item \code{grd_xy()} returns an object of class "wk_grd_xy".
 }
 }
 \description{

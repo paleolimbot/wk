@@ -19,14 +19,14 @@
 #' plot(grd_rct(volcano))
 #' plot(grd_xy(volcano))
 #'
-plot.grd_xy <- function(x, ...) {
+plot.wk_grd_xy <- function(x, ...) {
   plot(as_xy(x), ...)
   invisible(x)
 }
 
-#' @rdname plot.grd_xy
+#' @rdname plot.wk_grd_xy
 #' @export
-plot.grd_rct <- function(x, ...,
+plot.wk_grd_rct <- function(x, ...,
                          image = NULL,
                          interpolate = FALSE,
                          oversample = 4,
@@ -156,7 +156,7 @@ grd_calculate_plot_step <- function(grid, oversample = c(2, 2),
 
 #' @export
 #' @importFrom grDevices as.raster
-as.raster.grd_rct <- function(x, ..., i = NULL, j = NULL, native = NA) {
+as.raster.wk_grd_rct <- function(x, ..., i = NULL, j = NULL, native = NA) {
   # as.raster() works when values are [0..1]. We can emulate
   # this default by rescaling the image data if it's not already
   # a raster or nativeRaster.

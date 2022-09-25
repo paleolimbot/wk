@@ -101,7 +101,7 @@ grd_tile <- function(grid, level, i, j = NULL) {
 
 #' @rdname grd_tile
 #' @export
-grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
+grd_tile.wk_grd_rct <- function(grid, level, i, j = NULL) {
   overview <- grd_tile_template(grid, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
@@ -110,7 +110,7 @@ grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
 
 #' @rdname grd_tile
 #' @export
-grd_tile.grd_xy <- function(grid, level, i, j = NULL) {
+grd_tile.wk_grd_xy <- function(grid, level, i, j = NULL) {
   grid_rct <- as_grd_rct(grid)
   overview <- grd_tile_template(grid_rct, level)
   bbox <- grd_cell_rct(overview, i, j)

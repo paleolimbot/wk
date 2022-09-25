@@ -1,18 +1,18 @@
 
 test_that("grd_rct() works", {
   grid <- grd_rct(volcano)
-  expect_s3_class(grid, "grd_rct")
+  expect_s3_class(grid, "wk_grd_rct")
   expect_s3_class(grid, "grd")
   expect_identical(as_grd_rct(grid), grid)
   expect_null(wk_crs(grid))
   expect_identical(wk_bbox(grid), rct(0, 0, 61, 87))
 
-  expect_match(format(grid), "grd_rct")
-  expect_output(print(grid), "grd_rct")
+  expect_match(format(grid), "wk_grd_rct")
+  expect_output(print(grid), "wk_grd_rct")
 
   grid_crs <- wk_set_crs(grid, 1234)
-  expect_match(format(grid_crs), "grd_rct")
-  expect_output(print(grid_crs), "grd_rct")
+  expect_match(format(grid_crs), "wk_grd_rct")
+  expect_output(print(grid_crs), "wk_grd_rct")
 })
 
 test_that("grd_rct() works for an empty grid", {
@@ -34,18 +34,18 @@ test_that("grd_xy() works for h/v lines", {
 
 test_that("grd_xy() works", {
   grid <- grd_xy(volcano)
-  expect_s3_class(grid, "grd_xy")
+  expect_s3_class(grid, "wk_grd_xy")
   expect_s3_class(grid, "grd")
   expect_identical(as_grd_xy(grid), grid)
   expect_null(wk_crs(grid))
   expect_identical(wk_bbox(grid), rct(0, 0, 60, 86))
 
-  expect_match(format(grid), "grd_xy")
-  expect_output(print(grid), "grd_xy")
+  expect_match(format(grid), "wk_grd_xy")
+  expect_output(print(grid), "wk_grd_xy")
 
   grid_crs <- wk_set_crs(grid, 1234)
-  expect_match(format(grid_crs), "grd_xy")
-  expect_output(print(grid_crs), "grd_xy")
+  expect_match(format(grid_crs), "wk_grd_xy")
+  expect_output(print(grid_crs), "wk_grd_xy")
 })
 
 test_that("grd_xy <-> grd_rct converters work", {

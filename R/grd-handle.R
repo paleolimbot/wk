@@ -15,20 +15,20 @@
 #' wk_handle(grd(nx = 3, ny = 3), wkt_writer())
 #' wk_handle(grd(nx = 3, ny = 3, type = "centers"), wkt_writer())
 #'
-wk_handle.grd_xy <- function(handleable, handler, ..., data_order = c("y", "x")) {
+wk_handle.wk_grd_xy <- function(handleable, handler, ..., data_order = c("y", "x")) {
   # eventually these will be more efficient and not resolve every cell
   wk_handle(as_xy(handleable, data_order = data_order), handler, ...)
 }
 
-#' @rdname wk_handle.grd_xy
+#' @rdname wk_handle.wk_grd_xy
 #' @export
-wk_handle.grd_rct <- function(handleable, handler, ..., data_order = c("y", "x")) {
+wk_handle.wk_grd_rct <- function(handleable, handler, ..., data_order = c("y", "x")) {
   # eventually these will be more efficient and not resolve every cell
   wk_handle(as_rct(handleable, data_order = data_order), handler, ...)
 }
 
 #' @export
-as_xy.grd_xy <- function(x, ..., data_order = c("y", "x")) {
+as_xy.wk_grd_xy <- function(x, ..., data_order = c("y", "x")) {
   rct <- unclass(x$bbox)
   nx <- dim(x$data)[2]
   ny <- dim(x$data)[1]
@@ -86,7 +86,7 @@ as_xy.grd_xy <- function(x, ..., data_order = c("y", "x")) {
 }
 
 #' @export
-as_rct.grd_rct <- function(x, ..., data_order = c("y", "x")) {
+as_rct.wk_grd_rct <- function(x, ..., data_order = c("y", "x")) {
   rct <- unclass(x$bbox)
   nx <- dim(x$data)[2]
   ny <- dim(x$data)[1]
@@ -147,11 +147,11 @@ as_rct.grd_rct <- function(x, ..., data_order = c("y", "x")) {
 }
 
 #' @export
-as_xy.grd_rct <- function(x, ...) {
+as_xy.wk_grd_rct <- function(x, ...) {
   as_xy(as_grd_xy(x))
 }
 
 #' @export
-as_rct.grd_xy <- function(x, ...) {
+as_rct.wk_grd_xy <- function(x, ...) {
   as_rct(as_grd_rct(x))
 }

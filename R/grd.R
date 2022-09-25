@@ -26,8 +26,8 @@
 #' @return
 #'   - `grd()` returns a `grd_rct()` for `type == "polygons` or
 #'     a `grd_xy()` otherwise.
-#'   - `grd_rct()` returns an object of class "grd_rct".
-#'   - `grd_xy()` returns an object of class "grd_xy".
+#'   - `grd_rct()` returns an object of class "wk_grd_rct".
+#'   - `grd_xy()` returns an object of class "wk_grd_xy".
 #' @export
 #'
 #' @examples
@@ -157,7 +157,7 @@ grd_rct <- function(data, bbox = rct(0, 0, dim(data)[2], dim(data)[1])) {
 
   bbox <- new_wk_rct(rct, crs = wk_crs(bbox))
 
-  new_grd(list(data = data, bbox = bbox), "grd_rct")
+  new_grd(list(data = data, bbox = bbox), "wk_grd_rct")
 }
 
 #' @rdname grd
@@ -198,7 +198,7 @@ grd_xy <- function(data, bbox = rct(0, 0, dim(data)[2] - 1, dim(data)[1] - 1)) {
     )
   }
 
-  new_grd(list(data = data, bbox = bbox), "grd_xy")
+  new_grd(list(data = data, bbox = bbox), "wk_grd_xy")
 }
 
 #' @rdname grd
@@ -209,13 +209,13 @@ as_grd_rct <- function(x, ...) {
 
 #' @rdname grd
 #' @export
-as_grd_rct.grd_rct <- function(x, ...) {
+as_grd_rct.wk_grd_rct <- function(x, ...) {
   x
 }
 
 #' @rdname grd
 #' @export
-as_grd_rct.grd_xy <- function(x, ...) {
+as_grd_rct.wk_grd_xy <- function(x, ...) {
   # from a grd_xy, we assume these were the centres
   s <- grd_summary(x)
 
@@ -238,13 +238,13 @@ as_grd_xy <- function(x, ...) {
 
 #' @rdname grd
 #' @export
-as_grd_xy.grd_xy <- function(x, ...) {
+as_grd_xy.wk_grd_xy <- function(x, ...) {
   x
 }
 
 #' @rdname grd
 #' @export
-as_grd_xy.grd_rct <- function(x, ...) {
+as_grd_xy.wk_grd_rct <- function(x, ...) {
   # from a grid_rct() we take the centers
   s <- grd_summary(x)
 
@@ -291,7 +291,7 @@ grd_summary <- function(grid) {
 }
 
 #' @export
-grd_summary.grd_rct <- function(grid) {
+grd_summary.wk_grd_rct <- function(grid) {
   nx <- dim(grid$data)[2]
   ny <- dim(grid$data)[1]
   rct <- unclass(grid$bbox)
@@ -315,7 +315,7 @@ grd_summary.grd_rct <- function(grid) {
 }
 
 #' @export
-grd_summary.grd_xy <- function(grid) {
+grd_summary.wk_grd_xy <- function(grid) {
   nx <- dim(grid$data)[2]
   ny <- dim(grid$data)[1]
   rct <- unclass(grid$bbox)
