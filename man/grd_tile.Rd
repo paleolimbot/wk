@@ -40,4 +40,11 @@ plot(grd_tile(grid, 3, 1, 2), add = TRUE)
 plot(grd_tile(grid, 3, 2, 1), add = TRUE)
 plot(grd_tile(grid, 3, 2, 2), add = TRUE)
 
+grid <- as_grd_xy(grd_tile(grid, 4, 1, 1))
+plot(grid, add = TRUE, pch = ".")
+plot(grd_tile(grid, 3, 1, 1), add = TRUE, col = "green", pch = ".")
+plot(grd_tile(grid, 3, 1, 2), add = TRUE, col = "red", pch = ".")
+plot(grd_tile(grid, 3, 2, 1), add = TRUE, col = "blue", pch = ".")
+plot(grd_tile(grid, 3, 2, 2), add = TRUE, col = "magenta", pch = ".")
+
 }

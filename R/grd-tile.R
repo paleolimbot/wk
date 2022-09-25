@@ -14,24 +14,14 @@
 #' @examples
 #' grid <- grd_rct(volcano)
 #' grd_overview_summary(grid)
+#' grd_tiles(grid, 3)
 #'
-grd_overview_summary <- function(grid, levels = NULL) {
-  if (is.null(levels)) {
-    s <- grd_summary(grid)
-    level0 <- max(floor(log2(c(s$nx, s$ny)))) + 1L
-    levels <- 0:level0
-  }
-
-  overviews <- lapply(levels, function(level) grd_overview_template(grid, level))
-  summaries <- lapply(overviews, grd_summary)
-  summary_df <- lapply(summaries, new_data_frame)
-  cbind(level = levels, do.call(rbind, summary_df))
-}
-
-grd_overview_template <- function(grid, level) {
+grd_tiles <- function(grid, level) {
   if (length(level) == 1L) {
     level <- c(level, level)
   }
+
+  grid <- as_grd_rct(grid)
 
   s <- grd_summary(grid)
   step <- 2 ^ level
@@ -58,6 +48,21 @@ grd_overview_template <- function(grid, level) {
   )
 }
 
+#' @rdname grd_tiles
+#' @export
+grd_overview_summary <- function(grid, levels = NULL) {
+  if (is.null(levels)) {
+    s <- grd_summary(grid)
+    level0 <- max(floor(log2(c(s$nx, s$ny)))) + 1L
+    levels <- 0:level0
+  }
+
+  overviews <- lapply(levels, function(level) grd_tiles(grid, level))
+  summaries <- lapply(overviews, grd_summary)
+  summary_df <- lapply(summaries, new_data_frame)
+  cbind(level = levels, do.call(rbind, summary_df))
+}
+
 #' Extract normalized grid tiles
 #'
 #' @inheritParams grd_overview_summary
@@ -76,7 +81,7 @@ grd_overview_template <- function(grid, level) {
 #' plot(grd_tile(grid, 3, 2, 2), add = TRUE)
 #'
 #' grid <- as_grd_xy(grd_tile(grid, 4, 1, 1))
-#' plot(grid, add = T, pch = ".")
+#' plot(grid, add = TRUE, pch = ".")
 #' plot(grd_tile(grid, 3, 1, 1), add = TRUE, col = "green", pch = ".")
 #' plot(grd_tile(grid, 3, 1, 2), add = TRUE, col = "red", pch = ".")
 #' plot(grd_tile(grid, 3, 2, 1), add = TRUE, col = "blue", pch = ".")
@@ -89,7 +94,7 @@ grd_tile <- function(grid, level, i, j = NULL) {
 #' @rdname grd_tile
 #' @export
 grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
-  overview <- grd_overview_template(grid, level)
+  overview <- grd_tiles(grid, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
   grd_subset(grid, ranges)
@@ -99,7 +104,7 @@ grd_tile.grd_rct <- function(grid, level, i, j = NULL) {
 #' @export
 grd_tile.grd_xy <- function(grid, level, i, j = NULL) {
   grid_rct <- as_grd_rct(grid)
-  overview <- grd_overview_template(grid_rct, level)
+  overview <- grd_tiles(grid_rct, level)
   bbox <- grd_cell_rct(overview, i, j)
   ranges <- grd_cell_range(grid, bbox, snap = list(grd_snap_next, grd_snap_previous))
   grd_subset(grid, ranges)
