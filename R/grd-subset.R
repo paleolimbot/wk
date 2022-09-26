@@ -163,7 +163,6 @@ grd_data_subset <- function(grid_data, i = NULL, j = NULL) {
   }
 }
 
-
 #' Grid cell operators
 #'
 #' @inheritParams grd_summary

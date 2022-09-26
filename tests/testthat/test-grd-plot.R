@@ -68,7 +68,6 @@ test_that("grd_rct() plot method skips plotting when not relevant", {
   expect_identical(plot(grid_numeric, add = T), grid_numeric)
 })
 
-
 test_that("as.raster() works for grd_rct() objects", {
   grid_num <- grd_rct(matrix(1:6, nrow = 2, ncol = 3))
   expect_identical(

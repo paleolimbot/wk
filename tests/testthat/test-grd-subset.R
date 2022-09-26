@@ -154,7 +154,6 @@ test_that("crop/extend works for grd_xy", {
   expect_identical(grd_crop(grid, grid$bbox), grid)
 })
 
-
 test_that("grd_cell() works for grd_rct()", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
   expect_identical(grd_cell(empty, xy(0, 0)), data.frame(i = NA_integer_, j = NA_integer_))
