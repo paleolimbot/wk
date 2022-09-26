@@ -56,6 +56,18 @@ test_that("grd_rct() plot method works", {
   expect_identical(plot(grid_native_rev_x), grid_native_rev_x)
 })
 
+test_that("grd_rct() plot method skips plotting when not relevant", {
+  grid_numeric <- grd_rct(matrix(0:5, nrow = 2, ncol = 3))
+
+  # so zoomed out that no pixels would be shown
+  plot(rct(0, 0, 1e6, 1e6))
+  expect_identical(plot(grid_numeric, add = T), grid_numeric)
+
+  # viewport area does not intersect grid
+  plot(rct(10, 10, 11, 11))
+  expect_identical(plot(grid_numeric, add = T), grid_numeric)
+})
+
 
 test_that("as.raster() works for grd_rct() objects", {
   grid_num <- grd_rct(matrix(1:6, nrow = 2, ncol = 3))
@@ -86,5 +98,13 @@ test_that("as.raster() works for grd_rct() objects", {
   expect_identical(
     as.raster(grid_cols),
     as.raster(matrix("#1a1a1a", nrow = 2, ncol = 3))
+  )
+})
+
+test_that("as.raster() errors for grd_rct() with unsupported type", {
+  grid_wut <- grd_rct(array(NA_real_, dim = c(2, 3, 4)))
+  expect_error(
+    as.raster(grid_wut),
+    "Can't convert non-numeric or non-matrix grid to raster image"
   )
 })

@@ -170,6 +170,15 @@ test_that("conversion to sf works", {
     sf::st_as_sfc(grid),
     sf::st_sfc(sf::st_point(c(0.5, 0.5)), crs = sf::st_crs("OGC:CRS84"))
   )
+
+  expect_identical(
+    sf::st_as_sf(grid),
+    sf::st_as_sf(
+      data.frame(
+        geometry = sf::st_sfc(sf::st_point(c(0.5, 0.5)), crs = sf::st_crs("OGC:CRS84"))
+      )
+    )
+  )
 })
 
 test_that("wk_handle.sfg works", {

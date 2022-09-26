@@ -164,7 +164,7 @@ as.raster.wk_grd_rct <- function(x, ..., i = NULL, j = NULL, native = NA) {
     grd_data_subset(x$data, i = i, j = j)
   } else if (prod(dim(x)) == 0) {
     as.raster(matrix(nrow = dim(x)[1], ncol = dim(x)[2]))
-  } else if (length(dim(x)) == 2L || all(dim(x)[c(-1L, -2L)]) == 1L) {
+  } else if (length(dim(x)) == 2L || all(dim(x)[c(-1L, -2L)] == 1L)) {
     # try to interpret character() as hex colours, else
     # try to resolve x$data as a double() array
     if (is.character(x$data)) {
