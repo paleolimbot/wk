@@ -8,7 +8,7 @@
 \usage{
 grd_extract(grid, i = NULL, j = NULL)
 
-grd_extract_nearest(grid, point)
+grd_extract_nearest(grid, point, out_of_bounds = c("censor", "squish"))
 
 grd_data_extract(grid_data, i = NULL, j = NULL)
 }
@@ -20,6 +20,8 @@ implementing \verb{grd_*()} methods.}
 size.}
 
 \item{point}{A \link[=wk_handle]{handleable} of points.}
+
+\item{out_of_bounds}{One of 'keep', 'censor', 'discard', or 'squish'}
 
 \item{grid_data}{The \code{data} member of a \code{\link[=grd]{grd()}}. This is typically an
 array but can also be an S3 object with an array-like subset method.

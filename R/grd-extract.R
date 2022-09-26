@@ -19,8 +19,12 @@ grd_extract <- function(grid, i = NULL, j = NULL) {
 
 #' @rdname grd_extract
 #' @export
-grd_extract_nearest <- function(grid, point) {
-  grd_data_extract(grid$data, grd_cell(grid, point))
+grd_extract_nearest <- function(grid, point, out_of_bounds = c("censor", "squish")) {
+  out_of_bounds <- match.arg(out_of_bounds)
+  s <- grd_summary(grid)
+  ij <- grd_cell(grid, point)
+  ij <- ij_handle_out_of_bounds2(ij, list(s$ny, s$nx), out_of_bounds)
+  grd_data_extract(grid$data, ij)
 }
 
 #' @rdname grd_extract
