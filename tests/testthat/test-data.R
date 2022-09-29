@@ -7,12 +7,12 @@ test_that("all examples can be created with default arguments", {
 
 test_that("requested example crs is respected", {
   expect_identical(
-    wk::wk_crs(wk_example(crs = "EPSG:1234")),
+    wk_crs(wk_example(crs = "EPSG:1234")),
     "EPSG:1234"
   )
 })
 
 test_that("requested example edges field is respected", {
   spherical <- wk_example(geodesic = TRUE)
-  expect_true(wk::wk_is_geodesic(spherical))
+  expect_true(wk_is_geodesic(spherical))
 })
