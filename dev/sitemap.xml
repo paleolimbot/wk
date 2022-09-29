@@ -28,6 +28,30 @@
     <loc>https://paleolimbot.github.io/wk/reference/deprecated.html</loc>
   </url>
   <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_cell.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_extract.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_snap_next.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_subset.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_summary.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_tile.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/grd_tile_template.html</loc>
+  </url>
+  <url>
     <loc>https://paleolimbot.github.io/wk/reference/handle_wkt_without_vector_size.html</loc>
   </url>
   <url>
@@ -35,6 +59,9 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/new_wk_crc.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/new_wk_grd.html</loc>
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/new_wk_rct.html</loc>
@@ -47,6 +74,9 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/new_wk_xy.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/plot.wk_grd_xy.html</loc>
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/rct.html</loc>
@@ -98,6 +128,9 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/wk_handle.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/wk_handle.wk_grd_xy.html</loc>
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/wk_handle_slice.html</loc>

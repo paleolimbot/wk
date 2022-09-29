@@ -69,6 +69,38 @@
         </td>
         <td><p>Deprecated functions</p></td>
       </tr><tr><td>
+          <p><code><a href="grd.html">grd()</a></code> <code><a href="grd.html">grd_rct()</a></code> <code><a href="grd.html">grd_xy()</a></code> <code><a href="grd.html">as_grd_rct()</a></code> <code><a href="grd.html">as_grd_xy()</a></code> </p>
+        </td>
+        <td><p>Raster-like objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_cell.html">grd_cell()</a></code> <code><a href="grd_cell.html">grd_cell_range()</a></code> <code><a href="grd_cell.html">grd_cell_rct()</a></code> <code><a href="grd_cell.html">grd_cell_xy()</a></code> </p>
+        </td>
+        <td><p>Grid cell operators</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_extract.html">grd_extract()</a></code> <code><a href="grd_extract.html">grd_extract_nearest()</a></code> <code><a href="grd_extract.html">grd_data_extract()</a></code> </p>
+        </td>
+        <td><p>Extract values from a grid</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_snap_next.html">grd_snap_next()</a></code> <code><a href="grd_snap_next.html">grd_snap_previous()</a></code> </p>
+        </td>
+        <td><p>Index snap functions</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_subset.html">grd_subset()</a></code> <code><a href="grd_subset.html">grd_crop()</a></code> <code><a href="grd_subset.html">grd_extend()</a></code> <code><a href="grd_subset.html">grd_data_subset()</a></code> </p>
+        </td>
+        <td><p>Subset grid objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_summary.html">grd_summary()</a></code> </p>
+        </td>
+        <td><p>Grid information</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_tile.html">grd_tile()</a></code> </p>
+        </td>
+        <td><p>Extract normalized grid tiles</p></td>
+      </tr><tr><td>
+          <p><code><a href="grd_tile_template.html">grd_tile_template()</a></code> <code><a href="grd_tile_template.html">grd_tile_summary()</a></code> </p>
+        </td>
+        <td><p>Compute overview grid tile</p></td>
+      </tr><tr><td>
           <p><code><a href="handle_wkt_without_vector_size.html">handle_wkt_without_vector_size()</a></code> </p>
         </td>
         <td><p>Test handlers for handling of unknown size vectors</p></td>
@@ -76,6 +108,10 @@
           <p><code><a href="new_wk_crc.html">new_wk_crc()</a></code> </p>
         </td>
         <td><p>S3 details for crc objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="new_wk_grd.html">new_wk_grd()</a></code> </p>
+        </td>
+        <td><p>S3 details for grid objects</p></td>
       </tr><tr><td>
           <p><code><a href="new_wk_rct.html">new_wk_rct()</a></code> </p>
         </td>
@@ -92,6 +128,10 @@
           <p><code><a href="new_wk_xy.html">new_wk_xy()</a></code> <code><a href="new_wk_xy.html">new_wk_xyz()</a></code> <code><a href="new_wk_xy.html">new_wk_xym()</a></code> <code><a href="new_wk_xy.html">new_wk_xyzm()</a></code> <code><a href="new_wk_xy.html">validate_wk_xy()</a></code> <code><a href="new_wk_xy.html">validate_wk_xyz()</a></code> <code><a href="new_wk_xy.html">validate_wk_xym()</a></code> <code><a href="new_wk_xy.html">validate_wk_xyzm()</a></code> </p>
         </td>
         <td><p>S3 details for xy objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot.wk_grd_xy.html">plot(<i>&lt;wk_grd_xy&gt;</i>)</a></code> <code><a href="plot.wk_grd_xy.html">plot(<i>&lt;wk_grd_rct&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot grid objects</p></td>
       </tr><tr><td>
           <p><code><a href="rct.html">rct()</a></code> <code><a href="rct.html">as_rct()</a></code> </p>
         </td>
@@ -156,6 +196,10 @@
           <p><code><a href="wk_handle.data.frame.html">wk_handle(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;data.frame&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;tbl_df&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_translate(<i>&lt;sf&gt;</i>)</a></code> <code><a href="wk_handle.data.frame.html">wk_restore(<i>&lt;sf&gt;</i>)</a></code> </p>
         </td>
         <td><p>Use data.frame with wk</p></td>
+      </tr><tr><td>
+          <p><code><a href="wk_handle.wk_grd_xy.html">wk_handle(<i>&lt;wk_grd_xy&gt;</i>)</a></code> <code><a href="wk_handle.wk_grd_xy.html">wk_handle(<i>&lt;wk_grd_rct&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Handler interface for grid objects</p></td>
       </tr><tr><td>
           <p><code><a href="wk_handle_slice.html">wk_handle_slice()</a></code> </p>
         </td>
