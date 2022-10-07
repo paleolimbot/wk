@@ -17,12 +17,12 @@ defs <- tibble(
     str_remove("SEXP wk_c_[^\\(]+\\(") %>%
     str_remove("\\)$") %>%
     str_split("\\s*,\\s*") %>%
-    map(~{if(identical(.x, "")) character(0) else .x}),
+    map(~{if(identical(.x, "") || identical(.x, "void")) character(0) else .x}),
   n_args = map(args, length)
 )
 
 call_headers <- paste0(
-  "extern ", defs$def, ";",
+  defs$def, ";",
   collapse = "\n"
 )
 call_entries <- paste0(

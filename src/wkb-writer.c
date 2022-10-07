@@ -28,7 +28,7 @@ typedef struct {
     R_xlen_t feat_id;
 } wkb_writer_t;
 
-static inline unsigned char wkb_writer_platform_endian() {
+static inline unsigned char wkb_writer_platform_endian(void) {
 #ifdef IS_LITTLE_ENDIAN
     return 1;
 #else
@@ -310,7 +310,7 @@ SEXP wkb_writer_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
     SET_STRING_ELT(wkb_class, 1, Rf_mkChar("wk_vctr"));
     Rf_setAttrib(writer->result, R_ClassSymbol, wkb_class);
     UNPROTECT(1);
-    
+
     return writer->result;
 }
 

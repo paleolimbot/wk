@@ -47,7 +47,7 @@ void wk_default_handler_finalizer(void* handler_data) {
 
 }
 
-wk_handler_t* wk_handler_create() {
+wk_handler_t* wk_handler_create(void) {
   wk_handler_t* handler = (wk_handler_t*) malloc(sizeof(wk_handler_t));
   if (handler == NULL) {
     Rf_error("Failed to alloc handler"); // # nocov
@@ -145,7 +145,7 @@ void wk_default_trans_vector(void* trans_data) {
 
 }
 
-wk_trans_t* wk_trans_create() {
+wk_trans_t* wk_trans_create(void) {
   wk_trans_t* trans = (wk_trans_t*) malloc(sizeof(wk_trans_t));
   if (trans == NULL) {
     Rf_error("Failed to alloc wk_trans_t*"); // # nocov

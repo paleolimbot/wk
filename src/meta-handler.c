@@ -47,7 +47,7 @@ SEXP meta_handler_realloc_result(SEXP result, R_xlen_t new_size) {
     return new_result;
 }
 
-static inline void meta_handler_result_append(meta_handler_t* data, int geometry_type, int size, 
+static inline void meta_handler_result_append(meta_handler_t* data, int geometry_type, int size,
                                               int has_z, int has_m, int srid, double precision) {
     if (data->feat_id >= data->result_size) {
         SEXP new_result = PROTECT(meta_handler_realloc_result(data->result, data->feat_id * 2 + 1));
@@ -113,11 +113,11 @@ int meta_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* h
 
     meta_handler_result_append(
         data,
-        meta->geometry_type, 
-        result_size, 
-        (meta->flags & WK_FLAG_HAS_Z) != 0, 
+        meta->geometry_type,
+        result_size,
+        (meta->flags & WK_FLAG_HAS_Z) != 0,
         (meta->flags & WK_FLAG_HAS_M) != 0,
-        result_srid, 
+        result_srid,
         meta->precision
     );
 
@@ -128,7 +128,7 @@ int meta_handler_null_feature(void* handler_data) {
     meta_handler_t* data = (meta_handler_t*) handler_data;
     meta_handler_result_append(
         data,
-        NA_INTEGER, 
+        NA_INTEGER,
         NA_INTEGER,
         NA_LOGICAL,
         NA_LOGICAL,
@@ -150,7 +150,7 @@ SEXP meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
         return new_result;
     } else {
         return data->result;
-    }    
+    }
 }
 
 void meta_handler_deinitialize(void* handler_data) {
@@ -168,7 +168,7 @@ void meta_handler_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_meta_handler_new() {
+SEXP wk_c_meta_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &meta_handler_vector_start;
@@ -220,7 +220,7 @@ SEXP vector_meta_handler_vector_end(const wk_vector_meta_t* meta, void* handler_
     return result;
 }
 
-SEXP wk_c_vector_meta_handler_new() {
+SEXP wk_c_vector_meta_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
     handler->vector_start = &vector_meta_handler_vector_start;
     handler->vector_end = &vector_meta_handler_vector_end;

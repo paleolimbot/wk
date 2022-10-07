@@ -26,6 +26,8 @@ test_that("wk_crs_proj_definition() works for sf crs objects", {
 })
 
 test_that("wk_crs_projjson() works for sf crs objects", {
+  skip_if_not_installed("sf")
+
   expect_match(wk_crs_projjson(sf::st_crs(4326)), "GeographicCRS")
   expect_identical(wk_crs_projjson(sf::NA_crs_), NA_character_)
 })

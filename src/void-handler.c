@@ -4,7 +4,7 @@
 #include <Rinternals.h>
 #include "wk-v1.h"
 
-SEXP wk_c_handler_void_new() {
+SEXP wk_c_handler_void_new(void) {
   return wk_handler_create_xptr(wk_handler_create(), R_NilValue, R_NilValue);
 }
 

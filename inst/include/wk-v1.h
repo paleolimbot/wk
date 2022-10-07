@@ -5,6 +5,10 @@
 #include <stdint.h> // for uint_32_t
 #include <Rinternals.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define WK_CONTINUE 0
 #define WK_ABORT 1
 #define WK_ABORT_FEATURE 2
@@ -93,17 +97,13 @@ typedef struct {
     void (*finalizer)(void* trans_data);
 } wk_trans_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // implementations in wk-v1-impl.c, which must be included exactly once in an R package
-wk_handler_t* wk_handler_create();
+wk_handler_t* wk_handler_create(void);
 SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(wk_handler_t* handler);
 SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler), SEXP read_data, SEXP xptr);
 
-wk_trans_t* wk_trans_create();
+wk_trans_t* wk_trans_create(void);
 SEXP wk_trans_create_xptr(wk_trans_t* trans, SEXP tag, SEXP prot);
 void wk_trans_destroy(wk_trans_t* trans);
 
