@@ -89,7 +89,7 @@ void wk_problems_handler_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_problems_handler_new() {
+SEXP wk_c_problems_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wk_problems_handler_vector_start;

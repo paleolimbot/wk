@@ -142,7 +142,7 @@ void count_handler_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_count_handler_new() {
+SEXP wk_c_count_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &count_handler_vector_start;

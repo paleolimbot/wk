@@ -5,7 +5,7 @@
 #include "wk-v1.h"
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b)) 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct {
     // used for bbox and envelope handlers
@@ -43,8 +43,8 @@ static inline SEXP wk_bbox_handler_realloc_result(SEXP result, R_xlen_t new_size
 
     for (int i = 0; i < 4; i ++) {
         memcpy(
-            REAL(VECTOR_ELT(new_result, i)), 
-            REAL(VECTOR_ELT(result, i)), 
+            REAL(VECTOR_ELT(new_result, i)),
+            REAL(VECTOR_ELT(result, i)),
             sizeof(double) * size_cpy
         );
     }
@@ -110,7 +110,7 @@ int wk_bbox_handler_geometry_start(const wk_meta_t* meta, uint32_t part_id, void
     }
 }
 
-int wk_bbox_handler_coord(const wk_meta_t* meta, const double* coord, 
+int wk_bbox_handler_coord(const wk_meta_t* meta, const double* coord,
                           uint32_t coord_id, void* handler_data) {
     wk_bbox_handler_data_t* data = (wk_bbox_handler_data_t*) handler_data;
     data->xmin = MIN(coord[0], data->xmin);
@@ -145,7 +145,7 @@ void wk_bbox_handler_finalize(void* handler_data) {
     free(data);
 }
 
-SEXP wk_c_bbox_handler_new() {
+SEXP wk_c_bbox_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wk_bbox_handler_vector_start;
@@ -277,7 +277,7 @@ void wk_envelope_handler_deinitialize(void* handler_data) {
     }
 }
 
-SEXP wk_c_envelope_handler_new() {
+SEXP wk_c_envelope_handler_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &wk_envelope_handler_vector_start;

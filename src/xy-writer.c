@@ -285,7 +285,7 @@ void xy_writer_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_xy_writer_new() {
+SEXP wk_c_xy_writer_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->vector_start = &xy_writer_vector_start;

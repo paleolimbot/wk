@@ -11,7 +11,7 @@
 #define SFC_WRITER_GEOM_LENGTH SFC_MAX_RECURSION_DEPTH + 2
 #define SFC_INITIAL_SIZE_IF_UNKNOWN 32
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b)) 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct {
     // output vector list()
@@ -21,7 +21,7 @@ typedef struct {
     // keep track of recursion level and number of parts seen in a geometry
     size_t recursion_level;
     R_xlen_t part_id[SFC_WRITER_GEOM_LENGTH];
-    
+
     // the current coordinate sequence and information about
     // where we are in the coordinate sequence
     SEXP coord_seq;
@@ -55,7 +55,7 @@ typedef struct {
     R_xlen_t feat_id;
 } sfc_writer_t;
 
-sfc_writer_t* sfc_writer_new() {
+sfc_writer_t* sfc_writer_new(void) {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
     if (writer == NULL) {
         return NULL; // # nocov
@@ -116,7 +116,7 @@ static inline int sfc_double_all_na_or_nan(int n_values, const double* values) {
 }
 
 // this is intended to replicate NA_crs_
-SEXP sfc_na_crs() {
+SEXP sfc_na_crs(void) {
     const char* crs_names[] = {"input", "wkt", ""};
     SEXP crs = PROTECT(Rf_mkNamed(VECSXP, crs_names));
     SEXP crs_input = PROTECT(Rf_allocVector(STRSXP, 1));
@@ -247,7 +247,7 @@ void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* 
 
     // update empty count
     writer->n_empty += size == 0;
-    
+
     // update dimensions
     sfc_writer_update_dimensions(writer, meta, size);
 
@@ -279,7 +279,7 @@ SEXP sfc_writer_alloc_coord_seq(uint32_t size_hint, int coord_size) {
     if (size_hint == WK_SIZE_UNKNOWN) {
         size_hint = SFC_INITIAL_SIZE_IF_UNKNOWN;
     }
-    
+
     return Rf_allocMatrix(REALSXP, size_hint, coord_size);
 }
 
@@ -287,15 +287,15 @@ SEXP sfc_writer_realloc_coord_seq(SEXP coord_seq, uint32_t new_size) {
     uint32_t current_size = Rf_nrows(coord_seq);
     int coord_size = Rf_ncols(coord_seq);
 
-    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, coord_size));        
-    
+    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, new_size, coord_size));
+
     double* old_values = REAL(coord_seq);
     double* new_values = REAL(new_coord_seq);
 
     for (int j = 0; j < coord_size; j++) {
         memcpy(
             new_values + (j * new_size),
-            old_values + (j * current_size), 
+            old_values + (j * current_size),
             sizeof(double) * current_size
         );
     }
@@ -314,15 +314,15 @@ SEXP sfc_writer_finalize_coord_seq(SEXP coord_seq, uint32_t final_size) {
     uint32_t current_size = Rf_nrows(coord_seq);
     int coord_size = Rf_ncols(coord_seq);
 
-    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, final_size, coord_size));        
-    
+    SEXP new_coord_seq = PROTECT(Rf_allocMatrix(REALSXP, final_size, coord_size));
+
     double* old_values = REAL(coord_seq);
     double* new_values = REAL(new_coord_seq);
 
     for (int j = 0; j < coord_size; j++) {
         memcpy(
             new_values + (j * final_size),
-            old_values + (j * current_size), 
+            old_values + (j * current_size),
             sizeof(double) * final_size
         );
     }
@@ -346,7 +346,7 @@ SEXP sfc_writer_alloc_geom(uint32_t size_hint) {
 
 SEXP sfc_writer_realloc_geom(SEXP geom, R_xlen_t new_size) {
     R_xlen_t current_size = Rf_xlength(geom);
-    
+
     SEXP new_geom = PROTECT(Rf_allocVector(VECSXP, new_size));
     for (R_xlen_t i = 0; i < current_size; i++) {
         SET_VECTOR_ELT(new_geom, i, VECTOR_ELT(geom, i));
@@ -546,7 +546,7 @@ int sfc_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     // This point might be EMPTY, in which case it will cause the ranges to be all NaN
-    if ((meta->geometry_type != WK_POINT) || 
+    if ((meta->geometry_type != WK_POINT) ||
         (!sfc_double_all_na_or_nan(writer->coord_size, coord))) {
         sfc_writer_update_ranges(writer, meta, coord);
     }
@@ -589,7 +589,7 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
     if (ring_id >= container_len) {
         SEXP new_geom = PROTECT(
             sfc_writer_realloc_geom(
-                writer->geom[writer->recursion_level - 1], 
+                writer->geom[writer->recursion_level - 1],
                 container_len * 1.5 + 1
             )
         );
@@ -608,7 +608,7 @@ int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, 
 
 int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
-    
+
     // ignore end of POINT nested in MULTIPOINT
     if ((meta->geometry_type == WK_POINT) && sfc_writer_is_nesting_multipoint(writer)) {
         return WK_CONTINUE;
@@ -640,14 +640,14 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         if (writer->part_id[writer->recursion_level] < Rf_xlength(writer->geom[writer->recursion_level])) {
             geom = PROTECT(
                 sfc_writer_finalize_geom(
-                    writer->geom[writer->recursion_level], 
+                    writer->geom[writer->recursion_level],
                     writer->part_id[writer->recursion_level]
                 )
             );
         } else {
             geom = PROTECT(writer->geom[writer->recursion_level]);
         }
-        
+
         // R_ReleaseObject() is called on `geom` in finalize() or
         // when it is replaced in geometry_start()
         break;
@@ -673,7 +673,7 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         if (part_id >= container_len) {
             SEXP new_geom = PROTECT(
                 sfc_writer_realloc_geom(
-                    writer->geom[writer->recursion_level - 1], 
+                    writer->geom[writer->recursion_level - 1],
                     container_len * 1.5 + 1
                 )
             );
@@ -810,7 +810,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         Rf_setAttrib(writer->sfc, Rf_install("m_range"), m_range);
         UNPROTECT(1);
     }
-    
+
     // attr(sfc, "crs")
     // this should be handled in R; however, inserting a placeholder here
     // because the print() method for sfc will error otherwise
@@ -864,7 +864,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
 
         const char* type_names[] = {
             "POINT", "LINESTRING", "POLYGON",
-             "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", 
+             "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON",
              "GEOMETRYCOLLECTION"
         };
 
@@ -911,7 +911,7 @@ void sfc_writer_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_sfc_writer_new() {
+SEXP wk_c_sfc_writer_new(void) {
     wk_handler_t* handler = wk_handler_create();
 
     handler->finalizer = &sfc_writer_finalize;
