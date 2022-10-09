@@ -26,6 +26,7 @@
   or M values unless they are actually needed (#131, #154).
 * Added example WKT for all geometry types and dimensions plus helper
   `wk_example()` to access them and set various properties (#155).
+* Fixes warnings when compiling with `-Wstrict-prototypes` (#157, #158).
 
 # wk 0.6.0
 
