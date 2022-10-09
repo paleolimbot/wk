@@ -29,7 +29,12 @@ A function that returns a \code{data.frame} with columns \code{from} and \code{t
 when called with a \code{handleable} and the feature count.
 }
 \description{
-Chunking strategies
+It is often impractical, inefficient, or impossible to perform
+an operation on a vector of geometries with all the geometries loaded
+into memory at the same time. These functions help generalize the
+pattern of split-apply-combine to one or more handlers recycled along a
+common length. These functions are designed for developers rather than users
+and should be considered experimental.
 }
 \examples{
 feat <- c(as_wkt(xy(1:4, 1:4)), wkt("LINESTRING (1 1, 2 2)"))

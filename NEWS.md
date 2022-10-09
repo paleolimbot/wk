@@ -27,6 +27,8 @@
 * Added example WKT for all geometry types and dimensions plus helper
   `wk_example()` to access them and set various properties (#155).
 * Fixes warnings when compiling with `-Wstrict-prototypes` (#157, #158).
+* Removed `wk_chunk_map_feature()` in favour of using chunking strategies
+  directly (#132, #159).
 
 # wk 0.6.0
 
