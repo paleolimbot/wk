@@ -94,24 +94,24 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_debug</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> initialize (dirty = 0  -&gt; 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffe067f2ac0&gt; =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_start (1): &lt;0x7ffe067f2ac0&gt;  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffe067f27a0&gt; =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       coord (1): &lt;0x7ffe067f27a0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffbea10d00&gt; =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_start (1): &lt;0x7fffbea10d00&gt;  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffbea109e0&gt; =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       coord (1): &lt;0x7fffbea109e0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_end (1): &lt;0x7ffe067f2ac0&gt;  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vector_end: &lt;0x7ffe067f2ac0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_end (1): &lt;0x7fffbea10d00&gt;  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vector_end: &lt;0x7fffbea10d00&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> deinitialize</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span><span class="fu"><a href="wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (1 1)"</span><span class="op">)</span>, <span class="fu">wk_debug_filter</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> initialize (dirty = 0  -&gt; 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffe067f4ed0&gt; =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_start (1): &lt;0x7ffe067f4ed0&gt;  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffe067f4bb0&gt; =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       coord (1): &lt;0x7ffe067f4bb0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffbea13110&gt; =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_start (1): &lt;0x7fffbea13110&gt;  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffbea12df0&gt; =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       coord (1): &lt;0x7fffbea12df0&gt; (1.000000 1.000000)  =&gt; WK_CONTINUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_end (1): &lt;0x7ffe067f4ed0&gt;  =&gt; WK_CONTINUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vector_end: &lt;0x7ffe067f4ed0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   feature_end (1): &lt;0x7fffbea13110&gt;  =&gt; WK_CONTINUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vector_end: &lt;0x7fffbea13110&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> deinitialize</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span></span></span>
