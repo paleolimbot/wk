@@ -47,6 +47,11 @@ wk_vertices <- function(handleable, ...) {
 #' @rdname wk_vertices
 #' @export
 wk_coords <- function(handleable, ...) {
+  UseMethod("wk_coords")
+}
+
+#' @export
+wk_coords.default <- function(handleable, ...) {
   result <- wk_handle(
     handleable,
     wk_vertex_filter(xy_writer(), add_details = TRUE),
@@ -64,5 +69,27 @@ wk_vertex_filter <- function(handler, add_details = FALSE) {
   new_wk_handler(
     .Call("wk_c_vertex_filter_new", as_wk_handler(handler), as.logical(add_details)[1]),
     "wk_vertex_filter"
+  )
+}
+
+#' @export
+wk_coords.wk_xy <- function(handleable, ...) {
+  feature_id <- seq_along(handleable)
+  not_empty <- !is.na(handleable)
+
+  if (!all(not_empty)) {
+    handleable <- handleable[not_empty]
+    feature_id <- feature_id[not_empty]
+  }
+
+  new_data_frame(
+    c(
+      list(
+        feature_id = feature_id,
+        part_id = feature_id,
+        ring_id = rep_len(0L, length(feature_id))
+      ),
+      unclass(handleable)
+    )
   )
 }
