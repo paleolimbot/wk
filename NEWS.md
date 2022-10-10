@@ -29,6 +29,7 @@
 * Fixes warnings when compiling with `-Wstrict-prototypes` (#157, #158).
 * Removed `wk_chunk_map_feature()` in favour of using chunking strategies
   directly (#132, #159).
+* Optimized `wk_coords()` for `xy()` objects (#138, #160).
 
 # wk 0.6.0
 

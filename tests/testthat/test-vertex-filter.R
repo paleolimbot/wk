@@ -136,3 +136,11 @@ test_that("wk_vertices() communicates correct size and type", {
     list(geometry_type = 1L, size = NA_real_, has_z = FALSE, has_m = FALSE)
   )
 })
+
+test_that("optimized wk_coords() for xy() works", {
+  xys <- xy(1:5, 6:10)
+  expect_identical(wk_coords(xys), wk_coords.default(xys))
+
+  xys_with_empty <- c(xys, xy(NA, NA))
+  expect_identical(wk_coords(xys_with_empty), wk_coords.default(xys_with_empty))
+})
