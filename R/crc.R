@@ -92,3 +92,43 @@ format.wk_crc <- function(x, ...) {
   names(result) <- c("x", "y", "r")
   new_wk_crc(result, crs = wk_crs_output(x, replacement))
 }
+
+
+#' Circle accessors
+#'
+#' @param x A [crc()] vector
+#'
+#' @return Components of the [crc()] vector
+#' @export
+#'
+#' @examples
+#' x <- crc(1, 2, r = 3)
+#' crc_x(x)
+#' crc_y(x)
+#' crc_r(x)
+#' crc_center(x)
+#'
+crc_x <- function(x) {
+  unclass(as_crc(x))$x
+}
+
+#' @rdname crc_x
+#' @export
+crc_y <- function(x) {
+  unclass(as_crc(x))$y
+}
+
+#' @rdname crc_x
+#' @export
+crc_center <- function(x) {
+  x <- as_crc(x)
+  crs <- wk_crs(x)
+  x <- unclass(x)
+  xy(x$x, x$y, crs = crs)
+}
+
+#' @rdname crc_x
+#' @export
+crc_r <- function(x) {
+  unclass(as_crc(x))$r
+}

@@ -199,3 +199,11 @@ test_that("as_xy() works for geodesic objects", {
   expect_identical(as_xy(wkt("POINT (0 1)", geodesic = TRUE)), xy(0, 1))
   expect_identical(as_xy(as_wkb(wkt("POINT (0 1)", geodesic = TRUE))), xy(0, 1))
 })
+
+test_that("xy_(xyzm)() return the correct components", {
+  x <- xyz(1:5, 6:10, 11:15)
+  expect_identical(xy_x(x), as.double(1:5))
+  expect_identical(xy_y(x), as.double(6:10))
+  expect_identical(xy_z(x), as.double(11:15))
+  expect_null(xy_m(x))
+})

@@ -100,3 +100,132 @@ format.wk_rct <- function(x, ...) {
     crs = wk_crs_output(x, replacement)
   )
 }
+
+#' Rectangle accessors and operators
+#'
+#' @param x,y [rct()] vectors
+#'
+#' @return
+#'   - `rct_xmin()`, `rct_xmax()`, `rct_ymin()`, and `rct_ymax()` return
+#'     the components of the [rct()].
+#' @export
+#'
+#' @examples
+#' x <- rct(0, 0, 10, 10)
+#' y <- rct(5, 5, 15, 15)
+#'
+#' rct_xmin(x)
+#' rct_ymin(x)
+#' rct_xmax(x)
+#' rct_ymax(x)
+#' rct_height(x)
+#' rct_width(x)
+#' rct_intersects(x, y)
+#' rct_intersection(x, y)
+#' rct_contains(x, y)
+#' rct_contains(x, rct(4, 4, 6, 6))
+#'
+rct_xmin <- function(x) {
+  x <- as_rct(x)
+  unclass(x)$xmin
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_ymin <- function(x) {
+  x <- as_rct(x)
+  unclass(x)$ymin
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_xmax <- function(x) {
+  x <- as_rct(x)
+  unclass(x)$xmax
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_ymax <- function(x) {
+  x <- as_rct(x)
+  unclass(x)$ymax
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_width <- function(x) {
+  x <- as_rct(x)
+  x <- unclass(x)
+  x$xmax - x$xmin
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_height <- function(x) {
+  x <- as_rct(x)
+  x <- unclass(x)
+  x$ymax - x$ymin
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_intersects <- function(x, y) {
+  x <- as_rct(x)
+  y <- as_rct(y)
+  wk_crs_output(x, y)
+
+  x <- unclass(x)
+  y <- unclass(y)
+
+  limits <- list(
+    xmin = pmax(x$xmin, y$xmin),
+    xmax = pmin(x$xmax, y$xmax),
+    ymin = pmax(x$ymin, y$ymin),
+    ymax = pmin(x$ymax, y$ymax)
+  )
+
+  (limits$xmax >= limits$xmin) & (limits$ymax >= limits$ymin)
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_contains <- function(x, y) {
+  x <- as_rct(x)
+  y <- wk_envelope(y)
+  wk_crs_output(x, y)
+
+  x <- unclass(x)
+  y <- unclass(y)
+
+  (y$xmin >= x$xmin) &
+    (y$xmax <= x$xmax) &
+    (y$ymin >= x$ymin) &
+    (y$ymax <= x$ymax)
+}
+
+#' @rdname rct_xmin
+#' @export
+rct_intersection <- function(x, y) {
+  x <- as_rct(x)
+  y <- as_rct(y)
+  crs <- wk_crs_output(x, y)
+
+  x <- unclass(x)
+  y <- unclass(y)
+
+  limits <- list(
+    xmin = pmax(x$xmin, y$xmin),
+    ymin = pmax(x$ymin, y$ymin),
+    xmax = pmin(x$xmax, y$xmax),
+    ymax = pmin(x$ymax, y$ymax)
+  )
+
+  any_na <- Reduce("|", lapply(limits, is.na))
+  not_valid <- any_na | !((limits$xmax >= limits$xmin) & (limits$ymax >= limits$ymin))
+  limits$xmin[not_valid] <- NA_real_
+  limits$xmax[not_valid] <- NA_real_
+  limits$ymin[not_valid] <- NA_real_
+  limits$ymax[not_valid] <- NA_real_
+
+  new_wk_rct(limits, crs = crs)
+}

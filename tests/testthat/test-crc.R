@@ -59,3 +59,11 @@ test_that("crc() propagates CRS", {
   x[1] <- wk_set_crs(x, 1234L)
   expect_identical(wk_crs(x), 1234)
 })
+
+test_that("crc() accessors return the correct components", {
+  x <- crc(1, 2, r = 3)
+  expect_identical(crc_x(x), 1)
+  expect_identical(crc_y(x), 2)
+  expect_identical(crc_r(x), 3)
+  expect_identical(crc_center(x), xy(1, 2))
+})

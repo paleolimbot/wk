@@ -308,3 +308,40 @@ format.wk_xyzm <- function(x, ...) {
   names(result) <- names(unclass(x))
   structure(result, class = class(x), crs = wk_crs_output(x, replacement))
 }
+
+
+#' XY vector extractors
+#'
+#' @param x An [xy()] vector
+#'
+#' @return Components of the [xy()] vector or NULL if the dimension is missing
+#' @export
+#'
+#' @examples
+#' x <- xyz(1:5, 6:10, 11:15)
+#' xy_x(x)
+#' xy_y(x)
+#' xy_z(x)
+#' xy_m(x)
+#'
+xy_x <- function(x) {
+  unclass(as_xy(x))$x
+}
+
+#' @rdname xy_x
+#' @export
+xy_y <- function(x) {
+  unclass(as_xy(x))$y
+}
+
+#' @rdname xy_x
+#' @export
+xy_z <- function(x) {
+  unclass(as_xy(x))$z
+}
+
+#' @rdname xy_x
+#' @export
+xy_m <- function(x) {
+  unclass(as_xy(x))$m
+}
