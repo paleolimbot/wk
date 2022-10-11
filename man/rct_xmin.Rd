@@ -46,4 +46,15 @@ Rectangle accessors and operators
 x <- rct(0, 0, 10, 10)
 y <- rct(5, 5, 15, 15)
 
+rct_xmin(x)
+rct_ymin(x)
+rct_xmax(x)
+rct_ymax(x)
+rct_height(x)
+rct_width(x)
+rct_intersects(x, y)
+rct_intersection(x, y)
+rct_contains(x, y)
+rct_contains(x, rct(4, 4, 6, 6))
+
 }
