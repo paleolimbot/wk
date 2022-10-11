@@ -25,6 +25,9 @@
     <loc>https://paleolimbot.github.io/wk/reference/crc.html</loc>
   </url>
   <url>
+    <loc>https://paleolimbot.github.io/wk/reference/crc_x.html</loc>
+  </url>
+  <url>
     <loc>https://paleolimbot.github.io/wk/reference/deprecated.html</loc>
   </url>
   <url>
@@ -80,6 +83,9 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/rct.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/rct_xmin.html</loc>
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/vctrs-methods.html</loc>
@@ -185,5 +191,8 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/xy.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/xy_x.html</loc>
   </url>
 </urlset>
