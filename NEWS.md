@@ -2,7 +2,7 @@
 
 * Remove legacy headers that are no longer used by any downstream package
   (#146).
-* `validate_wk_wkt()` now errors for an object that does not inheirt from
+* `validate_wk_wkt()` now errors for an object that does not inherit from
   'wk_wkt' (#123, #146).
 * Added `wk_crs_projjson()` to get a JSON representation of a CRS object.
   To make lookup possible based on shortcut-style CRS objects (e.g.,
