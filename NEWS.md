@@ -30,6 +30,12 @@
 * Removed `wk_chunk_map_feature()` in favour of using chunking strategies
   directly (#132, #159).
 * Optimized `wk_coords()` for `xy()` objects (#138, #160).
+* Added accessor methods for record-style vectors: `rct_xmin()`, `rct_xmax()`,
+  `rct_ymin()`, `rct_ymax()`, `rct_width()`, `rct_height()`, `crc_center()`,
+  `crc_x()`, `crc_y()`, `crc_r()`, `xy_x()`, `xy_y()`, `xy_z()`, and `xy_m()`
+  (#144, #161).
+* Added rectangle operators `rct_intersects()`, `rct_contains()`,
+  and `rct_intersection()` (#161).
 
 # wk 0.6.0
 
