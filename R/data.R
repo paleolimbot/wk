@@ -17,7 +17,7 @@
 #' Create example geometry objects
 #'
 #' @param which An example name. Valid example names are
-#'   - "nc"
+#'   - "nc" (data derived from the sf package)
 #'   - "point", "linestring", "polygon", "multipoint",
 #'     "multilinestring", "multipolygon", "geometrycollection"
 #'   - One of the above with the "_z", "_m", or "_zm" suffix.

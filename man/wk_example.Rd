@@ -16,7 +16,7 @@ wk_example_wkt
 \arguments{
 \item{which}{An example name. Valid example names are
 \itemize{
-\item "nc"
+\item "nc" (data derived from the sf package)
 \item "point", "linestring", "polygon", "multipoint",
 "multilinestring", "multipolygon", "geometrycollection"
 \item One of the above with the "_z", "_m", or "_zm" suffix.
