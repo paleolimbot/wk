@@ -1,4 +1,4 @@
-# wk (development version)
+# wk 0.7.0
 
 * Remove legacy headers that are no longer used by any downstream package
   (#146).
