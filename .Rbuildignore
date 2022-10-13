@@ -12,3 +12,4 @@
 ^data-raw$
 ^vignettes/articles$
 ^\.covrignore$
+^CRAN-SUBMISSION$
