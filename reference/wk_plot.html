@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,61 +63,61 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_plot</span><span class="op">(</span>
-  <span class="va">handleable</span>,
-  <span class="va">...</span>,
-  asp <span class="op">=</span> <span class="fl">1</span>,
-  bbox <span class="op">=</span> <span class="cn">NULL</span>,
-  xlab <span class="op">=</span> <span class="st">""</span>,
-  ylab <span class="op">=</span> <span class="st">""</span>,
-  rule <span class="op">=</span> <span class="st">"evenodd"</span>,
-  add <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">wk_plot</span><span class="op">(</span>
-  <span class="va">handleable</span>,
-  <span class="va">...</span>,
-  asp <span class="op">=</span> <span class="fl">1</span>,
-  bbox <span class="op">=</span> <span class="cn">NULL</span>,
-  xlab <span class="op">=</span> <span class="st">""</span>,
-  ylab <span class="op">=</span> <span class="st">""</span>,
-  rule <span class="op">=</span> <span class="st">"evenodd"</span>,
-  add <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkt</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">...</span>,
-  asp <span class="op">=</span> <span class="fl">1</span>,
-  bbox <span class="op">=</span> <span class="cn">NULL</span>,
-  xlab <span class="op">=</span> <span class="st">""</span>,
-  ylab <span class="op">=</span> <span class="st">""</span>,
-  rule <span class="op">=</span> <span class="st">"evenodd"</span>,
-  add <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkb</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">...</span>,
-  asp <span class="op">=</span> <span class="fl">1</span>,
-  bbox <span class="op">=</span> <span class="cn">NULL</span>,
-  xlab <span class="op">=</span> <span class="st">""</span>,
-  ylab <span class="op">=</span> <span class="st">""</span>,
-  rule <span class="op">=</span> <span class="st">"evenodd"</span>,
-  add <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for wk_xy</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_rct</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_crc</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_plot</span><span class="op">(</span></span>
+<span>  <span class="va">handleable</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bbox <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  rule <span class="op">=</span> <span class="st">"evenodd"</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">wk_plot</span><span class="op">(</span></span>
+<span>  <span class="va">handleable</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bbox <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  rule <span class="op">=</span> <span class="st">"evenodd"</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkt</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bbox <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  rule <span class="op">=</span> <span class="st">"evenodd"</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkb</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bbox <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  rule <span class="op">=</span> <span class="st">"evenodd"</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_xy</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_rct</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_crc</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, asp <span class="op">=</span> <span class="fl">1</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">""</span>, add <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,34 +125,49 @@
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code><a href="wk_handle.html">wk_handle()</a></code> is defined.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to plotting functions for features: <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">graphics::points()</a></code>
 for point and multipoint geometries, <code><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">graphics::lines()</a></code> for linestring
 and multilinestring geometries, and <code><a href="https://rdrr.io/r/graphics/polypath.html" class="external-link">graphics::polypath()</a></code> for polygon
 and multipolygon geometries.</p></dd>
+
+
 <dt>asp, xlab, ylab</dt>
 <dd><p>Passed to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">graphics::plot()</a></code></p></dd>
+
+
 <dt>bbox</dt>
 <dd><p>The limits of the plot as a <code><a href="rct.html">rct()</a></code> or compatible object</p></dd>
+
+
 <dt>rule</dt>
 <dd><p>The rule to use for filling polygons (see <code><a href="https://rdrr.io/r/graphics/polypath.html" class="external-link">graphics::polypath()</a></code>)</p></dd>
+
+
 <dt>add</dt>
 <dd><p>Should a new plot be created, or should <code>handleable</code> be added to the
 existing plot?</p></dd>
+
+
 <dt>x</dt>
 <dd><p>A <code><a href="wkb.html">wkb()</a></code> or <code><a href="wkt.html">wkt()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The input, invisibly.</p>
+    
+
+<p>The input, invisibly.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="wk_plot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -167,7 +182,7 @@ existing plot?</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

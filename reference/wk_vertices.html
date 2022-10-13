@@ -20,7 +20,7 @@ as columns."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@ as columns."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -69,11 +69,11 @@ as columns.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wk_vertices</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_coords</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">wk_vertex_filter</span><span class="op">(</span><span class="va">handler</span>, add_details <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wk_vertices</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_coords</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_vertex_filter</span><span class="op">(</span><span class="va">handler</span>, add_details <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,17 +81,26 @@ as columns.</p>
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code><a href="wk_handle.html">wk_handle()</a></code> is defined.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to the <code><a href="wk_handle.html">wk_handle()</a></code> method.</p></dd>
+
+
 <dt>handler</dt>
 <dd><p>A <a href="wk_handle.html">wk_handler</a> object.</p></dd>
+
+
 <dt>add_details</dt>
 <dd><p>Use <code>TRUE</code> to add a "wk_details" attribute, which
 contains columns <code>feature_id</code>, <code>part_id</code>, and <code>ring_id</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <ul><li><p><code>wk_vertices()</code> extracts vertices and returns the in the same format as
+    
+
+<ul><li><p><code>wk_vertices()</code> extracts vertices and returns the in the same format as
 the handler</p></li>
 <li><p><code>wk_coords()</code> returns a data frame with columns columns <code>feature_id</code>
 (the index of the feature from whence it came), <code>part_id</code> (an arbitrary
@@ -102,14 +111,14 @@ polygons), and one column per coordinate (<code>x</code>, <code>y</code>, and/or
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">wk_vertices</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">wk_vertices</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[2]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT (0 0) POINT (1 1)</span>
-<span class="r-in"><span class="fu">wk_coords</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">wk_coords</span><span class="op">(</span><span class="fu"><a href="wkt.html">wkt</a></span><span class="op">(</span><span class="st">"LINESTRING (0 0, 1 1)"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   feature_id part_id ring_id x y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          1       1       0 0 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          1       1       0 1 1</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +133,7 @@ polygons), and one column per coordinate (<code>x</code>, <code>y</code>, and/or
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

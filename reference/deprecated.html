@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,13 +63,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wkb_translate_wkt</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">wkb_translate_wkb</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span>
-
-<span class="fu">wkt_translate_wkt</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">wkt_translate_wkb</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wkb_translate_wkt</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wkb_translate_wkb</span><span class="op">(</span><span class="va">wkb</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wkt_translate_wkt</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wkt_translate_wkb</span><span class="op">(</span><span class="va">wkt</span>, <span class="va">...</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,18 +77,29 @@
     <dl><dt>wkb</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="https://rdrr.io/r/base/raw.html" class="external-link">raw()</a></code> vectors, such as that
 returned by <code><a href="https://r-spatial.github.io/sf/reference/st_as_binary.html" class="external-link">sf::st_as_binary()</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Used to keep backward compatibility with previous
 versions of these functions.</p></dd>
+
+
 <dt>precision</dt>
 <dd><p>The rounding precision to use when writing
 (number of decimal places).</p></dd>
+
+
 <dt>trim</dt>
 <dd><p>Trim unnecessary zeroes in the output?</p></dd>
+
+
 <dt>endian</dt>
 <dd><p>Force the endian of the resulting WKB.</p></dd>
+
+
 <dt>wkt</dt>
 <dd><p>A character vector containing well-known text.</p></dd>
+
 </dl></div>
 
   </div>
@@ -103,7 +114,7 @@ versions of these functions.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

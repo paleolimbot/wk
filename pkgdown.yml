@@ -1,9 +1,9 @@
-pandoc: 2.7.3
-pkgdown: 2.0.1
+pandoc: 2.14.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   programming: programming.html
-last_built: 2022-01-03T12:30Z
+last_built: 2022-10-13T10:39Z
 urls:
   reference: https://paleolimbot.github.io/wk/reference
   article: https://paleolimbot.github.io/wk/articles

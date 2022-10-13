@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -58,9 +58,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0" id="wk-060">wk 0.6.0<a class="anchor" aria-label="anchor" href="#wk-060"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.0" id="wk-070">wk 0.7.0<small>2022-10-13</small><a class="anchor" aria-label="anchor" href="#wk-070"></a></h2>
+<ul><li>Remove legacy headers that are no longer used by any downstream package (<a href="https://github.com/paleolimbot/wk/issues/146" class="external-link">#146</a>).</li>
+<li>
+<code><a href="../reference/new_wk_wkt.html">validate_wk_wkt()</a></code> now errors for an object that does not inherit from ‘wk_wkt’ (<a href="https://github.com/paleolimbot/wk/issues/123" class="external-link">#123</a>, <a href="https://github.com/paleolimbot/wk/issues/146" class="external-link">#146</a>).</li>
+<li>Added <code><a href="../reference/wk_crs_proj_definition.html">wk_crs_projjson()</a></code> to get a JSON representation of a CRS object. To make lookup possible based on shortcut-style CRS objects (e.g., <code>"EPSG:4326"</code> or <code>4326</code>), added data objects <code>wk_proj_crs_view</code> and <code>wk_proj_crs_json</code> that contain cached versions of rendered PROJJSON based on the latest PROJ version (<a href="https://github.com/paleolimbot/wk/issues/147" class="external-link">#147</a>).</li>
+<li>Added a <code><a href="../reference/wk_crs_proj_definition.html">wk_crs_proj_definition()</a></code> method for <code><a href="../reference/wk_crs_inherit.html">wk_crs_inherit()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/136" class="external-link">#136</a>, <a href="https://github.com/paleolimbot/wk/issues/147" class="external-link">#147</a>).</li>
+<li>Conversion to sf now uses the <code><a href="../reference/wk_writer.html">sfc_writer()</a></code> for all wk classes, making conversions faster and fixing at least one issue with conversion of NA geometries to sf (<a href="https://github.com/paleolimbot/wk/issues/135" class="external-link">#135</a>).</li>
+<li>
+<code><a href="../reference/wk_plot.html">wk_plot()</a></code> now plots <code>NULL</code>/<code>NA</code> geometries and mixed geometry types more reliably (<a href="https://github.com/paleolimbot/wk/issues/142" class="external-link">#142</a>, <a href="https://github.com/paleolimbot/wk/issues/143" class="external-link">#143</a>, <a href="https://github.com/paleolimbot/wk/issues/149" class="external-link">#149</a>).</li>
+<li>Exported EMPTY geometries to well-known text now include dimension (e.g., <code>POINT Z EMPTY</code>) (<a href="https://github.com/paleolimbot/wk/issues/141" class="external-link">#141</a>, <a href="https://github.com/paleolimbot/wk/issues/150" class="external-link">#150</a>).</li>
+<li>Fixed bug where <code><a href="../reference/wk_linestring.html">wk_polygon()</a></code> doubled some points when the input contained closed rings (<a href="https://github.com/paleolimbot/wk/issues/134" class="external-link">#134</a>, <a href="https://github.com/paleolimbot/wk/issues/151" class="external-link">#151</a>).</li>
+<li>Fixed bug where <code><a href="../reference/wk_count.html">wk_count()</a></code> exposed uninitialized values for empty input (<a href="https://github.com/paleolimbot/wk/issues/139" class="external-link">#139</a>, <a href="https://github.com/paleolimbot/wk/issues/153" class="external-link">#153</a>).</li>
+<li>The <code><a href="../reference/wk_writer.html">xy_writer()</a></code> now opportunistically avoids allocating vectors for Z or M values unless they are actually needed (<a href="https://github.com/paleolimbot/wk/issues/131" class="external-link">#131</a>, <a href="https://github.com/paleolimbot/wk/issues/154" class="external-link">#154</a>).</li>
+<li>Added example WKT for all geometry types and dimensions plus helper <code><a href="../reference/wk_example.html">wk_example()</a></code> to access them and set various properties (<a href="https://github.com/paleolimbot/wk/issues/155" class="external-link">#155</a>).</li>
+<li>Fixes warnings when compiling with <code>-Wstrict-prototypes</code> (<a href="https://github.com/paleolimbot/wk/issues/157" class="external-link">#157</a>, <a href="https://github.com/paleolimbot/wk/issues/158" class="external-link">#158</a>).</li>
+<li>Removed <code>wk_chunk_map_feature()</code> in favour of using chunking strategies directly (<a href="https://github.com/paleolimbot/wk/issues/132" class="external-link">#132</a>, <a href="https://github.com/paleolimbot/wk/issues/159" class="external-link">#159</a>).</li>
+<li>Optimized <code><a href="../reference/wk_vertices.html">wk_coords()</a></code> for <code><a href="../reference/xy.html">xy()</a></code> objects (<a href="https://github.com/paleolimbot/wk/issues/138" class="external-link">#138</a>, <a href="https://github.com/paleolimbot/wk/issues/160" class="external-link">#160</a>).</li>
+<li>Added accessor methods for record-style vectors: <code><a href="../reference/rct_xmin.html">rct_xmin()</a></code>, <code><a href="../reference/rct_xmin.html">rct_xmax()</a></code>, <code><a href="../reference/rct_xmin.html">rct_ymin()</a></code>, <code><a href="../reference/rct_xmin.html">rct_ymax()</a></code>, <code><a href="../reference/rct_xmin.html">rct_width()</a></code>, <code><a href="../reference/rct_xmin.html">rct_height()</a></code>, <code><a href="../reference/crc_x.html">crc_center()</a></code>, <code><a href="../reference/crc_x.html">crc_x()</a></code>, <code><a href="../reference/crc_x.html">crc_y()</a></code>, <code><a href="../reference/crc_x.html">crc_r()</a></code>, <code><a href="../reference/xy_x.html">xy_x()</a></code>, <code><a href="../reference/xy_x.html">xy_y()</a></code>, <code><a href="../reference/xy_x.html">xy_z()</a></code>, and <code><a href="../reference/xy_x.html">xy_m()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/144" class="external-link">#144</a>, <a href="https://github.com/paleolimbot/wk/issues/161" class="external-link">#161</a>).</li>
+<li>Added rectangle operators <code><a href="../reference/rct_xmin.html">rct_intersects()</a></code>, <code><a href="../reference/rct_xmin.html">rct_contains()</a></code>, and <code><a href="../reference/rct_xmin.html">rct_intersection()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/161" class="external-link">#161</a>).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.0" id="wk-060">wk 0.6.0<small>2022-01-03</small><a class="anchor" aria-label="anchor" href="#wk-060"></a></h2>
 <ul><li>Fixed <code><a href="../reference/wk_trans_affine.html">wk_affine_rescale()</a></code> to apply the translate and scale operations in the correct order (<a href="https://github.com/paleolimbot/wk/issues/94" class="external-link">#94</a>).</li>
-<li>Add <code><a href="../reference/wk_handle_slice.html">wk_handle_slice()</a></code> and <code><a href="../reference/wk_chunk_map_feature.html">wk_chunk_map_feature()</a></code> to support a chunk + apply workflow when working with large vectors (<a href="https://github.com/paleolimbot/wk/issues/101" class="external-link">#101</a>, <a href="https://github.com/paleolimbot/wk/issues/107" class="external-link">#107</a>).</li>
+<li>Add <code><a href="../reference/wk_handle_slice.html">wk_handle_slice()</a></code> and <code>wk_chunk_map_feature()</code> to support a chunk + apply workflow when working with large vectors (<a href="https://github.com/paleolimbot/wk/issues/101" class="external-link">#101</a>, <a href="https://github.com/paleolimbot/wk/issues/107" class="external-link">#107</a>).</li>
 <li>C and R code was rewritten to avoid materializing ALTREP vectors (<a href="https://github.com/paleolimbot/wk/issues/103" class="external-link">#103</a>, <a href="https://github.com/paleolimbot/wk/issues/109" class="external-link">#109</a>).</li>
 <li>Added a <code><a href="../reference/wk_crs_proj_definition.html">wk_crs_proj_definition()</a></code> generic for foreign CRS objects (<a href="https://github.com/paleolimbot/wk/issues/110" class="external-link">#110</a>, <a href="https://github.com/paleolimbot/wk/issues/112" class="external-link">#112</a>).</li>
 <li>Added <code><a href="../reference/wk_crs_inherit.html">wk_crs_longlat()</a></code> helper to help promote authority-compliant CRS choices (<a href="https://github.com/paleolimbot/wk/issues/112" class="external-link">#112</a>).</li>
@@ -92,8 +113,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="wk-041">wk 0.4.1<small>2021-03-16</small><a class="anchor" aria-label="anchor" href="#wk-041"></a></h2>
-<ul><li>Fix LTO and MacOS 3.6.2 check errors (<a href="https://github.com/paleolimbot/wk/issues/61" class="external-link">#61</a>).</li>
-</ul></div>
+<ul><li>Fix LTO and MacOS 3.6.2 check errors (<a href="https://github.com/paleolimbot/wk/issues/61" class="external-link">#61</a>).</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.0" id="wk-040">wk 0.4.0<small>2021-03-06</small><a class="anchor" aria-label="anchor" href="#wk-040"></a></h2>
 <ul><li>Removed <code>wksxp()</code> in favour of improved <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code> support (<a href="https://github.com/paleolimbot/wk/issues/21" class="external-link">#21</a>).</li>
@@ -111,8 +131,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.4" id="wk-034">wk 0.3.4<small>2021-01-16</small><a class="anchor" aria-label="anchor" href="#wk-034"></a></h2>
-<ul><li>Fixed reference to <code>wkutils::plot.wk_wksxp()</code>, which no longer exists.</li>
-</ul></div>
+<ul><li>Fixed reference to <code>wkutils::plot.wk_wksxp()</code>, which no longer exists.</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.3" id="wk-033">wk 0.3.3<small>2020-10-13</small><a class="anchor" aria-label="anchor" href="#wk-033"></a></h2>
 <ul><li>Fixed WKB import of ZM geometries that do not use EWKB.</li>
@@ -128,8 +147,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.1" id="wk-031">wk 0.3.1<small>2020-07-21</small><a class="anchor" aria-label="anchor" href="#wk-031"></a></h2>
-<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul></div>
+<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li></ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -144,7 +162,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

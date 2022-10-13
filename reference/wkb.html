@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -63,53 +63,64 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wkb</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">parse_wkb</span><span class="op">(</span><span class="va">x</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">wk_platform_endian</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for character</span>
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkb</span>
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for blob</span>
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for WKB</span>
-<span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wkb</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">parse_wkb</span><span class="op">(</span><span class="va">x</span>, crs <span class="op">=</span> <span class="fu"><a href="wk_crs_inherit.html">wk_crs_auto</a></span><span class="op">(</span><span class="op">)</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_platform_endian</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for character</span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkb</span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for blob</span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for WKB</span></span>
+<span><span class="fu">as_wkb</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, crs <span class="op">=</span> <span class="cn">NULL</span>, geodesic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="https://rdrr.io/r/base/raw.html" class="external-link">raw()</a></code> vectors or <code>NULL</code>.</p></dd>
+
+
 <dt>crs</dt>
 <dd><p>A value to be propagated as the CRS for this vector.</p></dd>
+
+
 <dt>geodesic</dt>
 <dd><p><code>TRUE</code> if edges must be interpolated as geodesics when
 coordinates are spherical, <code>FALSE</code> otherwise.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Unused</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="new_wk_wkb.html">new_wk_wkb()</a></code></p>
+    
+
+<p>A <code><a href="new_wk_wkb.html">new_wk_wkb()</a></code></p>
+
+
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">as_wkb</span><span class="op">(</span><span class="st">"POINT (20 10)"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">as_wkb</span><span class="op">(</span><span class="st">"POINT (20 10)"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkb[1]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] &lt;POINT (20 10)&gt;</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +135,7 @@ coordinates are spherical, <code>FALSE</code> otherwise.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

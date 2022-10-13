@@ -22,7 +22,7 @@ all geometry types."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -31,7 +31,7 @@ all geometry types."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,33 +73,33 @@ all geometry types.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for sfc</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for sf</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">sfc_writer</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu">wkb_writer</span><span class="op">(</span>buffer_size <span class="op">=</span> <span class="fl">2048L</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span>
-
-<span class="fu">wkt_writer</span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">16L</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, generic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkt</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_wkb</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for wk_xy</span>
-<span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, generic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">xy_writer</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for sfc</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sf</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sfc_writer</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wkb_writer</span><span class="op">(</span>buffer_size <span class="op">=</span> <span class="fl">2048L</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wkt_writer</span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">16L</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, generic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkt</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, precision <span class="op">=</span> <span class="fl">16</span>, trim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_wkb</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for wk_xy</span></span>
+<span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span>, generic <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">xy_writer</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -107,25 +107,40 @@ all geometry types.</p>
     <dl><dt>handleable</dt>
 <dd><p>A geometry vector (e.g., <code><a href="wkb.html">wkb()</a></code>, <code><a href="wkt.html">wkt()</a></code>, <code><a href="xy.html">xy()</a></code>,
 <code><a href="rct.html">rct()</a></code>, or <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::st_sfc()</a></code>) for which <code><a href="wk_handle.html">wk_handle()</a></code> is defined.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Passed to the writer constructor.</p></dd>
+
+
 <dt>buffer_size</dt>
 <dd><p>Control the initial buffer size used when writing WKB.</p></dd>
+
+
 <dt>endian</dt>
 <dd><p>Use 1 for little endian, 0 for big endian, or NA for
 system endian.</p></dd>
+
+
 <dt>precision</dt>
 <dd><p>If <code>trim</code> is <code>TRUE</code>, the total number of significant digits to keep
 for each result or the number of digits after the decimal place otherwise.</p></dd>
+
+
 <dt>trim</dt>
 <dd><p>Use <code>FALSE</code> to keep trailing zeroes after the decimal place.</p></dd>
+
+
 <dt>generic</dt>
 <dd><p>Use <code>TRUE</code> to obtain a writer that can write all geometry
 types.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <a href="wk_handle.html">wk_handler</a>.</p>
+    
+
+<p>A <a href="wk_handle.html">wk_handler</a>.</p>
     </div>
 
   </div>
@@ -140,7 +155,7 @@ types.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
