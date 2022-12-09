@@ -1,7 +1,5 @@
 
-This release adds a number of features but also fixes `-Wstrict-prototypes`
-errors as requested by the CRAN team. This should also fix downstream
-strict prototype warnings in the s2 and geos packages.
+This release fixes a CRAN check warning for wk and also for dependency s2.
 
 ## Test environments
 
