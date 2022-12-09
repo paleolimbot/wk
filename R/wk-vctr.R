@@ -106,7 +106,7 @@ rep_len.wk_vctr <- function(x, ...) {
 #' @export
 as.data.frame.wk_vctr <- function(x, ..., optional = FALSE) {
   if (!optional) {
-    NextMethod()
+    stop(sprintf("cannot coerce object of tyoe '%s' to data.frame", class()))
   } else {
     new_data_frame(list(x))
   }
