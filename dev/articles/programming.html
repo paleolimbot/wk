@@ -89,8 +89,29 @@
 
     
     
-<p>At the heart of the wk philosophy is the concept of a <strong>handler</strong>, whose job it is to respond to bits of geometric information as they are iterated over by the <strong>reader</strong>. These bits of information have a very specific structure and order such that the messages can be guaranteed to be backward-compatible for all time (for each version of the API). This means that the <strong>reader</strong> can focus on iterating over the data structure and <strong>handlers</strong> can focus on computing a value (usually) based on the geometries. The advantage of this system is that readers and handlers can be mixed and matched so that handlers can be used with many data structures! As an example, the wk package itself uses readers and handlers to power validation of and conversion among <code><a href="../reference/wkt.html">wkt()</a></code>, <code><a href="../reference/wkb.html">wkb()</a></code>, <code><a href="../reference/xy.html">xy()</a></code>, and <code><a href="../reference/rct.html">rct()</a></code> classes.</p>
-<p>The wk API works with a <strong>vector</strong> of <strong>features</strong>: readers iterate over such vectors and handlers compute a value based on some or all of the features in the vector. Each <strong>feature</strong> can be <code>NULL</code> or contain exactly one <strong>geometry</strong> (although this geometry can be a collection or multi-geometry which can contain a tree of other geometries). A good way to visualize the structure, order, and type of messages passed to a <strong>handler</strong> is to use the <code><a href="../reference/wk_debug.html">wk_debug_filter()</a></code> on some well-known text (WKT):</p>
+<p>At the heart of the wk philosophy is the concept of a
+<strong>handler</strong>, whose job it is to respond to bits of
+geometric information as they are iterated over by the
+<strong>reader</strong>. These bits of information have a very specific
+structure and order such that the messages can be guaranteed to be
+backward-compatible for all time (for each version of the API). This
+means that the <strong>reader</strong> can focus on iterating over the
+data structure and <strong>handlers</strong> can focus on computing a
+value (usually) based on the geometries. The advantage of this system is
+that readers and handlers can be mixed and matched so that handlers can
+be used with many data structures! As an example, the wk package itself
+uses readers and handlers to power validation of and conversion among
+<code><a href="../reference/wkt.html">wkt()</a></code>, <code><a href="../reference/wkb.html">wkb()</a></code>, <code><a href="../reference/xy.html">xy()</a></code>, and
+<code><a href="../reference/rct.html">rct()</a></code> classes.</p>
+<p>The wk API works with a <strong>vector</strong> of
+<strong>features</strong>: readers iterate over such vectors and
+handlers compute a value based on some or all of the features in the
+vector. Each <strong>feature</strong> can be <code>NULL</code> or
+contain exactly one <strong>geometry</strong> (although this geometry
+can be a collection or multi-geometry which can contain a tree of other
+geometries). A good way to visualize the structure, order, and type of
+messages passed to a <strong>handler</strong> is to use the
+<code><a href="../reference/wk_debug.html">wk_debug_filter()</a></code> on some well-known text (WKT):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/wk/">wk</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span></span>
@@ -98,58 +119,82 @@
 <span>  <span class="fu"><a href="../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffcd4f68450&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffd1d3f4100&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (2): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffcd4f68130&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffcd4f68130&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (2): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffd1d3f3f90&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd1d3f3f90&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (2): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (3): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffcd4f68130&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffcd4f67e00&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;         coord (1): &lt;0x7ffcd4f67e00&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (2): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (3): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffd1d3f3f90&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffd1d3f3e30&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;         coord (1): &lt;0x7ffd1d3f3e30&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (3): &lt;0x7ffcd4f68450&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffcd4f68450&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (3): &lt;0x7ffd1d3f4100&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd1d3f4100&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
-<p>The concept of a <strong>vector</strong> was inspired by the <code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org" class="external-link">vctrs</a> framework. The concept of a <strong>feature</strong> draws from the implementations of the simple features specification in most databases and the support in R for “missing” values, which are not quite the same as an EMPTY geometry (in the same way that <code>NaN</code> and <code>NA</code> can be distinguished in R). The concept of a <strong>geometry</strong> is very much tied to (and was inspired by) the definition of a geometry in the (E)WKB, (E)WKT, and TWKB format specifications such that most of the information provided by these formats is passed along to handlers if it is available.</p>
+<p>The concept of a <strong>vector</strong> was inspired by the
+<code><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">sf::sfc()</a></code> data type and draws heavily from the <a href="https://vctrs.r-lib.org" class="external-link">vctrs</a> framework. The concept of a
+<strong>feature</strong> draws from the implementations of the simple
+features specification in most databases and the support in R for
+“missing” values, which are not quite the same as an EMPTY geometry (in
+the same way that <code>NaN</code> and <code>NA</code> can be
+distinguished in R). The concept of a <strong>geometry</strong> is very
+much tied to (and was inspired by) the definition of a geometry in the
+(E)WKB, (E)WKT, and TWKB format specifications such that most of the
+information provided by these formats is passed along to handlers if it
+is available.</p>
 <div class="section level2">
 <h2 id="r-infrastructure">R infrastructure<a class="anchor" aria-label="anchor" href="#r-infrastructure"></a>
 </h2>
-<p>The <code><a href="../reference/wk_handle.html">wk_handle()</a></code> function is an S3 generic for which methods are defined for <code><a href="../reference/wkb.html">wkb()</a></code>, <code><a href="../reference/wkt.html">wkt()</a></code>, <code><a href="../reference/xy.html">xy()</a></code>, <code><a href="../reference/rct.html">rct()</a></code>, and could be implemented for any number of in-memory and on-disk forms. When writing a new <strong>reader</strong>, this is the method you’re defining for your data type. While you don’t technically have to do implement the <code><a href="../reference/wk_handle.html">wk_handle()</a></code> generic, doing so makes functions that use <strong>handlers</strong> work for your data type without having to know anything about your type/package! For example, the <code><a href="../reference/wk_debug.html">wk_debug()</a></code> function uses this under the hood to support multiple input types with one line of code.</p>
+<p>The <code><a href="../reference/wk_handle.html">wk_handle()</a></code> function is an S3 generic for which
+methods are defined for <code><a href="../reference/wkb.html">wkb()</a></code>, <code><a href="../reference/wkt.html">wkt()</a></code>,
+<code><a href="../reference/xy.html">xy()</a></code>, <code><a href="../reference/rct.html">rct()</a></code>, and could be implemented for any
+number of in-memory and on-disk forms. When writing a new
+<strong>reader</strong>, this is the method you’re defining for your
+data type. While you don’t technically have to do implement the
+<code><a href="../reference/wk_handle.html">wk_handle()</a></code> generic, doing so makes functions that use
+<strong>handlers</strong> work for your data type without having to know
+anything about your type/package! For example, the
+<code><a href="../reference/wk_debug.html">wk_debug()</a></code> function uses this under the hood to support
+multiple input types with one line of code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffcd4f66040&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffcd4f66040&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffcd4f65d20&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffcd4f65d20&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffd1d3f16d0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd1d3f16d0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffd1d3f1560&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd1d3f1560&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffcd4f66040&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffcd4f66040&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd1d3f16d0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd1d3f16d0&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffcd4f687e0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffcd4f687e0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffcd4f68730&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffcd4f68730&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffd1d3f3e70&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd1d3f3e70&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffd1d3f3dc0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd1d3f3dc0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffcd4f687e0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffcd4f687e0&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd1d3f3e70&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd1d3f3e70&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-handler-in-c">A handler in C++<a class="anchor" aria-label="anchor" href="#a-handler-in-c"></a>
 </h2>
-<p>As an example, I’ll write a handler that computes the 2D bounding box of its input (assuming Euclidean space). One way to go about this is to use the C++ extension of the C API. The approach is probably familiar: keep a running tally of the greatest and least values so far, updating every time information about a new coordinate is available.</p>
+<p>As an example, I’ll write a handler that computes the 2D bounding box
+of its input (assuming Euclidean space). One way to go about this is to
+use the C++ extension of the C API. The approach is probably familiar:
+keep a running tally of the greatest and least values so far, updating
+every time information about a new coordinate is available.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
@@ -184,15 +229,22 @@
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>sexp cpp_bbox_handler_new<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> WKHandlerFactory<span class="op">&lt;</span>BBoxHandler<span class="op">&gt;::</span>create_xptr<span class="op">(</span><span class="kw">new</span> BBoxHandler<span class="op">());</span></span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>In this handler, we only care about two types of events: the appearance of a coordinate and the end of the vector. In the wk API, the <code>vector_end()</code> method is where the return value is computed. We need a tiny bit more code to generate the handler in the form it can be used in R. This guarantees that other functions know that the object you’ve returned from C++ is a pointer to a wk handler.</p>
+<p>In this handler, we only care about two types of events: the
+appearance of a coordinate and the end of the vector. In the wk API, the
+<code>vector_end()</code> method is where the return value is computed.
+We need a tiny bit more code to generate the handler in the form it can
+be used in R. This guarantees that other functions know that the object
+you’ve returned from C++ is a pointer to a wk handler.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bbox_handler</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/wk_handle.html">new_wk_handler</a></span><span class="op">(</span><span class="fu">cpp_bbox_handler_new</span><span class="op">(</span><span class="op">)</span>, <span class="st">"bbox_wk_handler"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x563d1d6d0f20&gt;</span></span></code></pre></div>
-<p>Once you have the object in R, you can use it with wk’s <code>handle_*()</code> functions such as <code>handle_wkt()</code> or <code>handle_wkb()</code>:</p>
+<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x55835af75740&gt;</span></span></code></pre></div>
+<p>Once you have the object in R, you can use it with wk’s
+<code>handle_*()</code> functions such as <code>handle_wkt()</code> or
+<code>handle_wkb()</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"POINT (0 1)"</span>, <span class="st">"GEOMETRYCOLLECTION (POINT (2 3))"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -204,7 +256,8 @@
 <div class="section level2">
 <h2 id="lifecycle-of-a-c-handler">Lifecycle of a C++ handler<a class="anchor" aria-label="anchor" href="#lifecycle-of-a-c-handler"></a>
 </h2>
-<p>The most important thing about a <code>wk_handler</code> is that, once created, it can only be used once:</p>
+<p>The most important thing about a <code>wk_handler</code> is that,
+once created, it can only be used once:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handler</span> <span class="op">&lt;-</span> <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span></span>
@@ -212,7 +265,9 @@
 <span><span class="co">#&gt;  Inf  Inf -Inf -Inf</span></span>
 <span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: Can't re-use this wk_handler</span></span></code></pre></div>
-<p>If you need to program with user-supplied handlers, you can pass a function wherever a <code>wk_handler</code> was expected (the reader will call the function to obtain the fresh handler).</p>
+<p>If you need to program with user-supplied handlers, you can pass a
+function wherever a <code>wk_handler</code> was expected (the reader
+will call the function to obtain the fresh handler).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handler</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span></span>
@@ -221,19 +276,40 @@
 <span><span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">handler</span><span class="op">)</span></span>
 <span><span class="co">#&gt; xmin ymin xmax ymax </span></span>
 <span><span class="co">#&gt;  Inf  Inf -Inf -Inf</span></span></code></pre></div>
-<p>When writing a handler, it is also important to consider cleaning up the resources you allocate. With a C++ handler some of this is taken care of for you because the deleter for the object is called at some point after the object is garbage collected. This is taken care of in the magical <code>WKHandlerFactory&lt;T&gt;::create_xptr(new T())</code>, which registers the deleter and catches any exceptions you may have thrown so that the your handling functions are safe to call from C. The default deleter will clean up any class members you’ve declared which is sufficient for most handlers you might want to write.</p>
-<p>One situation in which you will specifically not want to rely on the deleter is a handler that writes to a file: because you have no control over <em>when</em> the deleter will run, you may reserve file access for longer than you intend. In these situations, you should open the file in <code>vector_start()</code> and clean it up in <code>deinitialize()</code>, which is guaranteed to run if <code>vector_start()</code> is called.</p>
+<p>When writing a handler, it is also important to consider cleaning up
+the resources you allocate. With a C++ handler some of this is taken
+care of for you because the deleter for the object is called at some
+point after the object is garbage collected. This is taken care of in
+the magical
+<code>WKHandlerFactory&lt;T&gt;::create_xptr(new T())</code>, which
+registers the deleter and catches any exceptions you may have thrown so
+that the your handling functions are safe to call from C. The default
+deleter will clean up any class members you’ve declared which is
+sufficient for most handlers you might want to write.</p>
+<p>One situation in which you will specifically not want to rely on the
+deleter is a handler that writes to a file: because you have no control
+over <em>when</em> the deleter will run, you may reserve file access for
+longer than you intend. In these situations, you should open the file in
+<code>vector_start()</code> and clean it up in
+<code>deinitialize()</code>, which is guaranteed to run if
+<code>vector_start()</code> is called.</p>
 <p>A few more things to keep in mind when writing handlers:</p>
 <ul>
 <li>
-<code>vector_start()</code> may not run at all (e.g., if a handler object is created but never used).</li>
-<li>You can and should throw exceptions to signify an error unless the method is marked <code>noexcept</code> (the deleter, <code>deinitialize()</code>, and <code>error()</code>).</li>
+<code>vector_start()</code> may not run at all (e.g., if a handler
+object is created but never used).</li>
+<li>You can and should throw exceptions to signify an error unless the
+method is marked <code>noexcept</code> (the deleter,
+<code>deinitialize()</code>, and <code>error()</code>).</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="a-handler-in-c-1">A handler in C<a class="anchor" aria-label="anchor" href="#a-handler-in-c-1"></a>
 </h2>
-<p>Depending on your background and the other libraries with which you are working, it may be easier or faster to write a handler in C. The below example is a direct translation of the C++ bounding box handler from above.</p>
+<p>Depending on your background and the other libraries with which you
+are working, it may be easier or faster to write a handler in C. The
+below example is a direct translation of the C++ bounding box handler
+from above.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
@@ -291,7 +367,9 @@
 <span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_create_xptr<span class="op">(</span>handler<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
 <span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>We need the same infrastructure on the R end (<code><a href="../reference/wk_handle.html">new_wk_handler()</a></code>) to make sure read functions understand that the value is a pointer to a freshly created handler:</p>
+<p>We need the same infrastructure on the R end
+(<code><a href="../reference/wk_handle.html">new_wk_handler()</a></code>) to make sure read functions understand
+that the value is a pointer to a freshly created handler:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bbox_handler_c</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/wk_handle.html">new_wk_handler</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/CallExternal.html" class="external-link">.Call</a></span><span class="op">(</span><span class="st">"c_bbox_handler_new"</span><span class="op">)</span><span class="op">)</span></span>
@@ -307,13 +385,35 @@
 <div class="section level2">
 <h2 id="lifecycle-of-a-c-handler-1">Lifecycle of a C handler<a class="anchor" aria-label="anchor" href="#lifecycle-of-a-c-handler-1"></a>
 </h2>
-<p>The notes above about the lifecycle of a handler written in C++ apply to a handler written in C except that for the C handler you will have to explicitly <code>free()</code> anything you <code>malloc()</code>ed. In the above example, the <code>finalize()</code> method was used to free the <code>BboxHandlerData_t</code>. Another common pattern is to allocate an R object in <code>vector_start()</code> (because this is where you have information about how may items are in the vector that is about to be read). This pattern of creating objects isn’t well-supported by the <code>PROTECT()</code>/<code>UNPROTECT()</code> pattern and is better-suited to <code>R_PreserveObject()</code> and <code>R_ReleaseObject()</code>. You can also use the fact that <code>VECSXP</code> vectors protect their elements to keep your R allocations from being garbage-collected while the handler is running.</p>
-<p>Note that you can and should use the R API within your functions! This includes using <code>Rf_error()</code>, <code>Rf_allocVector()</code> and all the other functions that might <code>longjmp</code>: any reader calling handler functions through the wk C++ headers are designed with this in mind.</p>
+<p>The notes above about the lifecycle of a handler written in C++ apply
+to a handler written in C except that for the C handler you will have to
+explicitly <code>free()</code> anything you <code>malloc()</code>ed. In
+the above example, the <code>finalize()</code> method was used to free
+the <code>BboxHandlerData_t</code>. Another common pattern is to
+allocate an R object in <code>vector_start()</code> (because this is
+where you have information about how may items are in the vector that is
+about to be read). This pattern of creating objects isn’t well-supported
+by the <code>PROTECT()</code>/<code>UNPROTECT()</code> pattern and is
+better-suited to <code>R_PreserveObject()</code> and
+<code>R_ReleaseObject()</code>. You can also use the fact that
+<code>VECSXP</code> vectors protect their elements to keep your R
+allocations from being garbage-collected while the handler is
+running.</p>
+<p>Note that you can and should use the R API within your functions!
+This includes using <code>Rf_error()</code>,
+<code>Rf_allocVector()</code> and all the other functions that might
+<code>longjmp</code>: any reader calling handler functions through the
+wk C++ headers are designed with this in mind.</p>
 </div>
 <div class="section level2">
 <h2 id="a-reader-in-c">A reader in C++<a class="anchor" aria-label="anchor" href="#a-reader-in-c"></a>
 </h2>
-<p>The wk API was optimized for the simplicity of writing handlers much more than readers (after all, there are many more things one can <em>do</em> with geometry than there are ways to store it). This means that writing readers can be finicky! As an example, I’ll demonstrate a reader that iterates over a data frame of coordinates (e.g., <code>data.frame(x = c(1, 2, 3), y = c(4, 5, 6))</code>) as points.</p>
+<p>The wk API was optimized for the simplicity of writing handlers much
+more than readers (after all, there are many more things one can
+<em>do</em> with geometry than there are ways to store it). This means
+that writing readers can be finicky! As an example, I’ll demonstrate a
+reader that iterates over a data frame of coordinates (e.g.,
+<code>data.frame(x = c(1, 2, 3), y = c(4, 5, 6))</code>) as points.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-reader-cpp11.hpp"</span></span>
@@ -358,28 +458,63 @@
 <span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> handler<span class="op">.</span>vector_end<span class="op">(&amp;</span>vector_meta<span class="op">);</span></span>
 <span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>The first thing you might notice is the <code>HANDLE_CONTINUE_OR_BREAK()</code> macro. You may have noticed that the handler functions we wrote all return <code>WK_CONTINUE</code>. Sometimes it’s <em>really nice</em> when you’re writing a handler to be able to tell the reader to stop! One example is the <code>wk_format_handler()</code>, which only needs the first few coordinates to spit out a reasonable summary. When iterating over features that could be gigabytes in size this saves a lot of time and several important handlers need this for the framework to do its magic. It does, however, make writing readers a lot harder.</p>
-<p>You might wonder why I didn’t just use exceptions to implement this feature in the C++ wrapper since they would simplify the code a great deal. The initial version of the API did this and was <em>really really really slow</em> for handlers that returned early. If you have a better idea of how to make this work, I’m all ears. In practice, having a macro that does an early <code>return</code>, a <code>continue</code>, or a <code><a href="https://rdrr.io/r/base/Control.html" class="external-link">break</a></code> keeps the code implementing the readers from getting out of hand.</p>
-<p>The second C++-specific item is the <code>WKHandlerXPtr</code> wrapper around the handler. Under the hood the handler is one of R’s <code>externalptr</code> objects that points to a <code>wk_handler_t</code> struct. The wrapper makes sure that the handler is “fresh”, that it is actually an <code>externalptr</code>, and makes sure that any R errors resulting from its methods are converted to C++ exceptions (using <code>cpp11:safe()</code>).</p>
-<p>On the R side there is usually a thin wrapper to validate arguments. If your object has a class you should implement this as <code>wk_handle.your_class_name()</code> so that handler functions like the ones we created above can accept your geometry class as input! It is also important to use <code><a href="../reference/wk_handle.html">as_wk_handler()</a></code> on the <code>handler</code> argument as it applies consistent rules for generating handlers everywhere (e.g., the function trick described above).</p>
+<p>The first thing you might notice is the
+<code>HANDLE_CONTINUE_OR_BREAK()</code> macro. You may have noticed that
+the handler functions we wrote all return <code>WK_CONTINUE</code>.
+Sometimes it’s <em>really nice</em> when you’re writing a handler to be
+able to tell the reader to stop! One example is the
+<code>wk_format_handler()</code>, which only needs the first few
+coordinates to spit out a reasonable summary. When iterating over
+features that could be gigabytes in size this saves a lot of time and
+several important handlers need this for the framework to do its magic.
+It does, however, make writing readers a lot harder.</p>
+<p>You might wonder why I didn’t just use exceptions to implement this
+feature in the C++ wrapper since they would simplify the code a great
+deal. The initial version of the API did this and was <em>really really
+really slow</em> for handlers that returned early. If you have a better
+idea of how to make this work, I’m all ears. In practice, having a macro
+that does an early <code>return</code>, a <code>continue</code>, or a
+<code><a href="https://rdrr.io/r/base/Control.html" class="external-link">break</a></code> keeps the code implementing the readers from getting
+out of hand.</p>
+<p>The second C++-specific item is the <code>WKHandlerXPtr</code>
+wrapper around the handler. Under the hood the handler is one of R’s
+<code>externalptr</code> objects that points to a
+<code>wk_handler_t</code> struct. The wrapper makes sure that the
+handler is “fresh”, that it is actually an <code>externalptr</code>, and
+makes sure that any R errors resulting from its methods are converted to
+C++ exceptions (using <code>cpp11:safe()</code>).</p>
+<p>On the R side there is usually a thin wrapper to validate arguments.
+If your object has a class you should implement this as
+<code>wk_handle.your_class_name()</code> so that handler functions like
+the ones we created above can accept your geometry class as input! It is
+also important to use <code><a href="../reference/wk_handle.html">as_wk_handler()</a></code> on the
+<code>handler</code> argument as it applies consistent rules for
+generating handlers everywhere (e.g., the function trick described
+above).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handle_xy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">handler</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">input</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></span>
 <span>  <span class="va">input</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></span>
 <span>  <span class="fu">cpp_handle_xy</span><span class="op">(</span><span class="va">input</span>, <span class="fu"><a href="../reference/wk_handle.html">as_wk_handler</a></span><span class="op">(</span><span class="va">handler</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>From here, you can test! A good first handler to try is the <code><a href="../reference/wk_writer.html">wkt_writer()</a></code>, which is sensitive to mistakes in the reader and is unlikely to crash.</p>
+<p>From here, you can test! A good first handler to try is the
+<code><a href="../reference/wk_writer.html">wkt_writer()</a></code>, which is sensitive to mistakes in the reader
+and is unlikely to crash.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu">handle_xy</span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="../reference/wk_writer.html">wkt_writer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;wk_wkt[3]&gt;</span></span>
 <span><span class="co">#&gt; [1] POINT (1 2) POINT (2 3) POINT (3 4)</span></span></code></pre></div>
-<p>Another useful handler is the <code><a href="../reference/wk_debug.html">wk_debug_filter()</a></code>, which will give more detailed information about each call of a handler method.</p>
+<p>Another useful handler is the <code><a href="../reference/wk_debug.html">wk_debug_filter()</a></code>, which
+will give more detailed information about each call of a handler
+method.</p>
 </div>
 <div class="section level2">
 <h2 id="a-reader-in-c-1">A reader in C<a class="anchor" aria-label="anchor" href="#a-reader-in-c-1"></a>
 </h2>
-<p>The above reader without the help of C++ and cpp11 looks similar, except we need some help from wk’s C API to fill out a couple of details.</p>
+<p>The above reader without the help of C++ and cpp11 looks similar,
+except we need some help from wk’s C API to fill out a couple of
+details.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
@@ -424,8 +559,20 @@
 <span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>SEXP c_handle_xy<span class="op">(</span>SEXP input<span class="op">,</span> SEXP handler_xptr<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_run_xptr<span class="op">(&amp;</span>c_handle_xy_impl<span class="op">,</span> input<span class="op">,</span> handler_xptr<span class="op">);</span></span>
 <span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>The main oddity here is that we need to use <code>wk_handler_run_xptr()</code> to run a handler. This function performs a similar task as the <code>WKHandlerXPtr</code> wrapper in C++. Notably, it makes sure that the handler’s <code>finalize()</code> method gets called <em>no matter what</em>. This pattern was inspired by the <a href="https://www.tidyverse.org/blog/2019/05/resource-cleanup-in-c-and-the-r-api/" class="external-link">excellent blog post on this topic by Gábor Csárdi and Lionel Henry</a>. It does mean that you will need an “inner” function with signature <code>(SEXP, wk_handler_t*)</code> (e.g., <code>c_handle_xy_impl()</code>), and an “outer” method that calls <code>wk_handler_run_xptr()</code>.</p>
-<p>The wrapper on the R side is much the same, except you may want to perform more checks since these are comparatively harder to write using R’s C API.</p>
+<p>The main oddity here is that we need to use
+<code>wk_handler_run_xptr()</code> to run a handler. This function
+performs a similar task as the <code>WKHandlerXPtr</code> wrapper in
+C++. Notably, it makes sure that the handler’s <code>finalize()</code>
+method gets called <em>no matter what</em>. This pattern was inspired by
+the <a href="https://www.tidyverse.org/blog/2019/05/resource-cleanup-in-c-and-the-r-api/" class="external-link">excellent
+blog post on this topic by Gábor Csárdi and Lionel Henry</a>. It does
+mean that you will need an “inner” function with signature
+<code>(SEXP, wk_handler_t*)</code> (e.g.,
+<code>c_handle_xy_impl()</code>), and an “outer” method that calls
+<code>wk_handler_run_xptr()</code>.</p>
+<p>The wrapper on the R side is much the same, except you may want to
+perform more checks since these are comparatively harder to write using
+R’s C API.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handle_xy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">handler</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">input</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></span>
@@ -440,7 +587,15 @@
 <div class="section level2">
 <h2 id="filters">Filters<a class="anchor" aria-label="anchor" href="#filters"></a>
 </h2>
-<p>There is no reason that an object can’t be both a reader and a handler. This idea was one of the motivating ideas behind developing wk: the ability to write composable transformations that allocate as little memory as possible. For many transformations, this is as little as one coordinate! As an example, we’ll create a filter that bumps coordinates by a fixed offset. I’ll demonstrate this in C++ because it is considerably easier to get the details right (if you want to write one of these in C you can copy/paste the identity handler source code from this package’s src directory as a starting point).</p>
+<p>There is no reason that an object can’t be both a reader and a
+handler. This idea was one of the motivating ideas behind developing wk:
+the ability to write composable transformations that allocate as little
+memory as possible. For many transformations, this is as little as one
+coordinate! As an example, we’ll create a filter that bumps coordinates
+by a fixed offset. I’ll demonstrate this in C++ because it is
+considerably easier to get the details right (if you want to write one
+of these in C you can copy/paste the identity handler source code from
+this package’s src directory as a starting point).</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-filter-cpp11.hpp"</span></span>
@@ -479,7 +634,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;wk_wkt[1]&gt;</span></span>
 <span><span class="co">#&gt; [1] POINT (2 -6)</span></span></code></pre></div>
-<p>While a filter might be <em>cool</em>, it also needs some R infrastructure to make it useful for a user that doesn’t care about readers, filters, and handlers. For example, the <code><a href="../reference/wk_identity.html">wk_identity()</a></code> function uses some infrastructure to ensure that the output type matches the input type:</p>
+<p>While a filter might be <em>cool</em>, it also needs some R
+infrastructure to make it useful for a user that doesn’t care about
+readers, filters, and handlers. For example, the
+<code><a href="../reference/wk_identity.html">wk_identity()</a></code> function uses some infrastructure to ensure
+that the output type matches the input type:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/wk_identity.html">wk_identity</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (1 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;wk_wkt[1]&gt;</span></span>
@@ -487,7 +646,8 @@
 <span><span class="fu"><a href="../reference/wk_identity.html">wk_identity</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (1 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;wk_wkb[1]&gt;</span></span>
 <span><span class="co">#&gt; [1] &lt;POINT (1 1)&gt;</span></span></code></pre></div>
-<p>When writing an R wrapper around a filter, you will probably want to use the following pattern:</p>
+<p>When writing an R wrapper around a filter, you will probably want to
+use the following pattern:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bump</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">UseMethod</a></span><span class="op">(</span><span class="st">"bump"</span><span class="op">)</span></span>
@@ -498,10 +658,21 @@
 <span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/wk_identity.html">wk_restore</a></span><span class="op">(</span><span class="va">handleable</span>, <span class="va">result</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="../reference/wk_crs.html">wk_set_crs</a></span><span class="op">(</span><span class="va">result</span>, <span class="fu"><a href="../reference/wk_crs.html">wk_crs</a></span><span class="op">(</span><span class="va">handleable</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>There’s a lot packed into that three-line default method. First, we use the <code><a href="../reference/wk_writer.html">wk_writer()</a></code> generic to pick a handler that generates the object based on <code>handleable</code>. This is defined for most objects that can be used with <code>wk_handler()</code> to return the same type of object as the input. Second, we use <code><a href="../reference/wk_handle.html">wk_handle()</a></code> to generate the result. Next, we call <code><a href="../reference/wk_identity.html">wk_restore()</a></code>, which usually returns <code>result</code> but for data frames and sf objects attempts to replace the old geometry column with the transformed version. Finally, because we don’t change the CRS in our filter, we can reset the CRS of the result to match that of the input. This will make your filter work with many types of geometric objects!</p>
+<p>There’s a lot packed into that three-line default method. First, we
+use the <code><a href="../reference/wk_writer.html">wk_writer()</a></code> generic to pick a handler that
+generates the object based on <code>handleable</code>. This is defined
+for most objects that can be used with <code>wk_handler()</code> to
+return the same type of object as the input. Second, we use
+<code><a href="../reference/wk_handle.html">wk_handle()</a></code> to generate the result. Next, we call
+<code><a href="../reference/wk_identity.html">wk_restore()</a></code>, which usually returns <code>result</code> but
+for data frames and sf objects attempts to replace the old geometry
+column with the transformed version. Finally, because we don’t change
+the CRS in our filter, we can reset the CRS of the result to match that
+of the input. This will make your filter work with many types of
+geometric objects!</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1; sf_use_s2() is TRUE</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</span></span>
 <span><span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shape/nc.shp"</span>, package <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="va">nc</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      xmin      ymin      xmax      ymax </span></span>
@@ -528,7 +699,10 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 90 more rows, 4 more variables: BIR79 &lt;dbl&gt;, SID79 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   NWBIR79 &lt;dbl&gt;, geometry &lt;MULTIPOLYGON [°]&gt;, and abbreviated variable name</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ¹​CRESS_ID</span></span></span></code></pre></div>
-<p>The wrapper method should probably always be an S3 generic. This lets you define faster implementations for simple objects like <code><a href="../reference/xy.html">xy()</a></code> and/or <code><a href="../reference/rct.html">rct()</a></code> where the base-R implementation is much faster.</p>
+<p>The wrapper method should probably always be an S3 generic. This lets
+you define faster implementations for simple objects like
+<code><a href="../reference/xy.html">xy()</a></code> and/or <code><a href="../reference/rct.html">rct()</a></code> where the base-R
+implementation is much faster.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bump.wk_xy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">handleable</span><span class="op">)</span></span>
@@ -541,7 +715,11 @@
 <div class="section level2">
 <h2 id="transforms">Transforms<a class="anchor" aria-label="anchor" href="#transforms"></a>
 </h2>
-<p>The bump operation we just wrote is an example of a common type of filter: a coordinate transform. Transforms get used in all sorts of places in the spatial/geometry world and have their own type that makes it slightly less verbose to create them and easier for them to be used in other ways.</p>
+<p>The bump operation we just wrote is an example of a common type of
+filter: a coordinate transform. Transforms get used in all sorts of
+places in the spatial/geometry world and have their own type that makes
+it slightly less verbose to create them and easier for them to be used
+in other ways.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
@@ -584,7 +762,8 @@
 <span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_trans_create_xptr<span class="op">(</span>trans<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
 <span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>We need some R infrastructure to run these just like the C handlers:</p>
+<p>We need some R infrastructure to run these just like the C
+handlers:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bump_trans</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/wk_trans_inverse.html">new_wk_trans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/CallExternal.html" class="external-link">.Call</a></span><span class="op">(</span><span class="st">"bump_trans_new"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -597,12 +776,27 @@
 <span><span class="fu">bump</span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 0)"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="fl">13</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;wk_wkt[1]&gt;</span></span>
 <span><span class="co">#&gt; [1] POINT (12 13)</span></span></code></pre></div>
-<p>The rules are still evolving since this is a new feature but at the very least you should never throw exceptions or error in your transform function (instead return <code>WK_ABORT</code> and error in <code>vector_end()</code>).</p>
+<p>The rules are still evolving since this is a new feature but at the
+very least you should never throw exceptions or error in your transform
+function (instead return <code>WK_ABORT</code> and error in
+<code>vector_end()</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
 </h2>
-<p>The main issue with performance in wk handlers is that there are a <em>lot</em> of function calls. I haven’t found a place where this matters when writing C code, but when writing C++ some additional wrapper code is used to isolate the C and C++ frames so that exceptions aren’t thrown from C frames and <code>longjmp</code>s generated by the R API don’t jump over C++ object deleters. A quick test suggests that for readers and filters written in C++ this overhead is about 1 second per 1 million handler method calls; for handlers this overhead is more like 1 second per 7 million handler method calls. For both, it’s likely that whatever you are doing in C++ will be the limiting factor in your handler, but for very simple filters/readers you might consider rewriting your handler in C for performance. Future versions of wk will hopefully eliminate this issue!</p>
+<p>The main issue with performance in wk handlers is that there are a
+<em>lot</em> of function calls. I haven’t found a place where this
+matters when writing C code, but when writing C++ some additional
+wrapper code is used to isolate the C and C++ frames so that exceptions
+aren’t thrown from C frames and <code>longjmp</code>s generated by the R
+API don’t jump over C++ object deleters. A quick test suggests that for
+readers and filters written in C++ this overhead is about 1 second per 1
+million handler method calls; for handlers this overhead is more like 1
+second per 7 million handler method calls. For both, it’s likely that
+whatever you are doing in C++ will be the limiting factor in your
+handler, but for very simple filters/readers you might consider
+rewriting your handler in C for performance. Future versions of wk will
+hopefully eliminate this issue!</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cpp_void_handler</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/wk_handle.html">new_wk_handler</a></span><span class="op">(</span><span class="fu">cpp_void_handler_new</span><span class="op">(</span><span class="op">)</span>, <span class="st">"cpp_void_handler"</span><span class="op">)</span></span>
@@ -623,10 +817,10 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
 <span><span class="co">#&gt;   expression                                                     min   median</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                                                <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:tm&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler())                        63.7µs   65.9µs</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handler())                      257.9µs  260.3µs</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))    82.5µs   85.7µs</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))    419µs  422.5µs</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler())                        68.6µs     71µs</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handler())                      289.9µs    292µs</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_filter(wk_void_handler()))    87.4µs   90.6µs</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_filter(wk_void_handler()))  418.4µs  423.1µs</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: `itr/sec` &lt;dbl&gt;, mem_alloc &lt;bch:byt&gt;, `gc/sec` &lt;dbl&gt;</span></span></span></code></pre></div>
 </div>
   </div>
