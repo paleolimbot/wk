@@ -1,5 +1,8 @@
 # wk (development version)
 
+* Fix implicit reliance on error `as.data.frame.default()`,
+  which no longer occurs in r-devel (#166).
+
 # wk 0.7.0
 
 * Remove legacy headers that are no longer used by any downstream package
