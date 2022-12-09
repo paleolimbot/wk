@@ -9,11 +9,7 @@ SEXP wk_c_handler_void_new(void) {
 }
 
 SEXP wk_c_handler_addr(SEXP xptr) {
-  SEXP buffer = PROTECT(Rf_allocVector(RAWSXP, 256));
-  sprintf((char*) RAW(buffer), "%p", (void*) R_ExternalPtrAddr(xptr));
-
-  SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
-  SET_STRING_ELT(out, 0, Rf_mkChar((char*) RAW(buffer)));
-  UNPROTECT(2);
-  return out;
+  char buffer[256];
+  snprintf(buffer, 256, "%p", (void*) R_ExternalPtrAddr(xptr));
+  return Rf_mkString(buffer);
 }
