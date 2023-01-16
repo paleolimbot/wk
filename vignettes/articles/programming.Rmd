@@ -114,7 +114,7 @@ wk_handle(wkt(), handler)
 wk_handle(wkt(), handler)
 ```
 
-When writing a handler, it is also important to consider cleaning up the resources you allocate. With a C++ handler some of this is taken care of for you because the deleter for the object is called at some point after the object is garbage collected. This is taken care of in the magical `WKHandlerFactory<T>::create_xptr(new T())`, which registers the deleter and catches any exceptions you may have thrown so that the your handling functions are safe to call from C. The default deleter will clean up any class members you've declared which is sufficient for most handlers you might want to write. 
+When writing a handler, it is also important to consider cleaning up the resources you allocate. With a C++ handler some of this is taken care of for you because the deleter for the object is called at some point after the object is garbage collected. This is taken care of in the magical `WKHandlerFactory<T>::create_xptr(new T())`, which registers the deleter and catches any exceptions you may have thrown so that your handling functions are safe to call from C. The default deleter will clean up any class members you've declared which is sufficient for most handlers you might want to write. 
 
 One situation in which you will specifically not want to rely on the deleter is a handler that writes to a file: because you have no control over *when* the deleter will run, you may reserve file access for longer than you intend. In these situations, you should open the file in `vector_start()` and clean it up in `deinitialize()`, which is guaranteed to run if `vector_start()` is called.
 
@@ -202,7 +202,7 @@ wk_handle(
 
 ## Lifecycle of a C handler
 
-The notes above about the lifecycle of a handler written in C++ apply to a handler written in C except that for the C handler you will have to explicitly `free()` anything you `malloc()`ed. In the above example, the `finalize()` method was used to free the `BboxHandlerData_t`. Another common pattern is to allocate an R object in `vector_start()` (because this is where you have information about how may items are in the vector that is about to be read). This pattern of creating objects isn't well-supported by the `PROTECT()`/`UNPROTECT()` pattern and is better-suited to `R_PreserveObject()` and `R_ReleaseObject()`. You can also use the fact that `VECSXP` vectors protect their elements to keep your R allocations from being garbage-collected while the handler is running.
+The notes above about the lifecycle of a handler written in C++ apply to a handler written in C except that for the C handler you will have to explicitly `free()` anything you `malloc()`ed. In the above example, the `finalize()` method was used to free the `BboxHandlerData_t`. Another common pattern is to allocate an R object in `vector_start()` (because this is where you have information about how many items are in the vector that is about to be read). This pattern of creating objects isn't well-supported by the `PROTECT()`/`UNPROTECT()` pattern and is better-suited to `R_PreserveObject()` and `R_ReleaseObject()`. You can also use the fact that `VECSXP` vectors protect their elements to keep your R allocations from being garbage-collected while the handler is running.
 
 Note that you can and should use the R API within your functions! This includes using `Rf_error()`, `Rf_allocVector()` and all the other functions that might `longjmp`: any reader calling handler functions through the wk C++ headers are designed with this in mind.
 
