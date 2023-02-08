@@ -92,7 +92,7 @@ public:
     return WK_CONTINUE;
   }
 
-  virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feature_id) {
     out.str("");
     this->stack.clear();
     return WK_CONTINUE;
@@ -200,7 +200,7 @@ public:
     return WK_CONTINUE;
   }
 
-  int feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  int feature_end(const wk_vector_meta_t* meta, R_xlen_t feature_id) {
     current_item = this->out.str();
     this->resultAppend(current_item);
     return WK_CONTINUE;
@@ -234,9 +234,9 @@ public:
     current_coords(0),
     max_coords(max_coords) {}
 
-  int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+  int feature_start(const wk_vector_meta_t* meta, R_xlen_t feature_id) {
     this->current_coords = 0;
-    return WKTWriterHandler::feature_start(meta, feat_id);
+    return WKTWriterHandler::feature_start(meta, feature_id);
   }
 
   int null_feature() {
