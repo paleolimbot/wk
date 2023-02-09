@@ -104,15 +104,15 @@ public:
   }
 
   int geometry_start(const wk_meta_t* meta, uint32_t part_id) {
-    if ((part_id != 0) && (this->stack.size() > 0)) {
+    if ((part_id != 0) && !this->stack.empty()) {
       out << ", ";
     }
 
-    if ((meta->srid != WK_SRID_NONE) && (this->stack.size() == 0)) {
+    if ((meta->srid != WK_SRID_NONE) && this->stack.empty()) {
       out << "SRID=" << meta->srid << ";";
     }
 
-    if ((this->stack.size() == 0) || this->isNestingCollection()) {
+    if (this->stack.empty() || this->isNestingCollection()) {
         switch (meta->geometry_type) {
         case WK_POINT:
             out << "POINT ";

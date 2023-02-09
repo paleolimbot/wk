@@ -381,7 +381,7 @@ private:
   }
 
   static std::string quote(std::string input) {
-    if (input.size() == 0) {
+    if (input.empty()) {
       return "end of input";
     } else {
       std::stringstream stream;
