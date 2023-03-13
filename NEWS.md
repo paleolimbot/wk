@@ -1,5 +1,7 @@
 # wk (development version)
 
+* Fix use-after-free warnings.
+
 # wk 0.7.1
 
 * Fix implicit reliance on error `as.data.frame.default()`,
