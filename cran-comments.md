@@ -1,5 +1,5 @@
 
-This release fixes a CRAN check warning for wk and also for dependency s2.
+This release fixes a CRAN check warning for wk about use-after-free.
 
 ## Test environments
 
