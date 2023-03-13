@@ -212,7 +212,7 @@ SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id) {
   if (linestring_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(linestring_filter);
-    Rf_error("Can't run a wk_handler with api_version '%d'", linestring_filter->next->api_version); // # nocov
+    Rf_error("Invalid API version in linestring_filter"); // # nocov
   }
 
   linestring_filter->coord_id = 0;

@@ -225,7 +225,7 @@ SEXP wk_c_collection_filter_new(SEXP handler_xptr, SEXP geometry_type, SEXP feat
   if (collection_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(collection_filter); // # nocov
-    Rf_error("Can't run a wk_handler with api_version '%d'", collection_filter->next->api_version); // # nocov
+    Rf_error("Invalid API version in collection_filter"); // # nocov
   }
 
   collection_filter->geometry_type_out = geometry_type_int;

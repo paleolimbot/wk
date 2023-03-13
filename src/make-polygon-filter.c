@@ -282,7 +282,7 @@ SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
   if (polygon_filter->next->api_version != 1) {
     wk_handler_destroy(handler); // # nocov
     free(polygon_filter); // # nocov
-    Rf_error("Can't run a wk_handler with api_version '%d'", polygon_filter->next->api_version); // # nocov
+    Rf_error("Invalid API version in polygon_filter"); // # nocov
   }
 
   polygon_filter->coord_id = 0;
