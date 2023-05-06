@@ -34,3 +34,9 @@ recycle_common <- function(...) {
 is_vector_class <- function(x) {
   identical(class(x[integer(0)]), class(x))
 }
+
+# This helps when comparing with sf package objects, which tend to use
+# NA rather than NaN.
+expect_equal_ignore_na_nan <- function(actual, expected) {
+  testthat::expect_true(all.equal(actual, expected))
+}

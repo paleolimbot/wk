@@ -371,7 +371,7 @@ test_that("grd_cell_xy() works for grd_rct()", {
   empty <- grd_rct(matrix(nrow = 0, ncol = 0))
   expect_identical(
     grd_cell_xy(empty, 0, 0),
-    xy(NA, NA)
+    xy(NaN, NaN)
   )
 
   grid <- grd(nx = 3, ny = 2)
@@ -397,7 +397,7 @@ test_that("grd_cell_xy() works for grd_xy()", {
   empty <- grd_xy(matrix(nrow = 0, ncol = 0))
   expect_identical(
     grd_cell_xy(empty, 0, 0),
-    xy(NA, NA)
+    xy(NaN, NaN)
   )
 
   grid <- grd(nx = 3, ny = 2, type = "centers")
