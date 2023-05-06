@@ -1,5 +1,7 @@
 # wk (development version)
 
+* Fix tests for updated waldo package (#178).
+
 # wk 0.7.2
 
 * Fix use-after-free warnings.
