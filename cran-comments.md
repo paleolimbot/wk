@@ -1,5 +1,5 @@
 
-This release fixes a CRAN check warning for wk about use-after-free.
+This release fixes a CRAN check warning for wk for the updated waldo package.
 
 ## Test environments
 
