@@ -1,4 +1,4 @@
-# wk (development version)
+# wk 0.7.3
 
 * Fix tests for updated waldo package (#178).
 
