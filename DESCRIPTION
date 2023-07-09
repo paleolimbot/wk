@@ -37,7 +37,8 @@ Suggests:
     vctrs (>= 0.3.0),
     sf,
     tibble,
-    readr
+    readr,
+    dplyr
 URL: https://paleolimbot.github.io/wk/, https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
 Config/testthat/edition: 3
