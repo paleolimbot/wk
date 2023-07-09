@@ -120,5 +120,5 @@ test_that("vec_equal(wkb) works", {
   expect_equal(vec_proxy_equal.wk_wkb(x), raw_x)
   expect_equal(vctrs::vec_equal(x, x), c(TRUE, TRUE, TRUE))
   expect_equal(vctrs::vec_equal(x[1], x[2]), FALSE)
-  testthat::expect_no_error(dplyr::group_by(data.frame(x), x))
+  expect_no_error(dplyr::group_by(data.frame(x), x))
 })
