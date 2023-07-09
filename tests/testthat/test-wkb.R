@@ -108,3 +108,17 @@ test_that("examples as wkb roundtrip", {
     )
   }
 })
+
+test_that("vec_equal(wkb) works", {
+  x <- as_wkb(wkt(c("POINT (1 1)", "POINT (2 2)", "POINT (3 3)")))
+  raw_x <- c(
+    "0101000000000000000000f03f000000000000f03f",
+    "010100000000000000000000400000000000000040",
+    "010100000000000000000008400000000000000840"
+  )
+
+  expect_equal(vec_proxy_equal.wk_wkb(x), raw_x)
+  expect_equal(vctrs::vec_equal(x, x), c(TRUE, TRUE, TRUE))
+  expect_equal(vctrs::vec_equal(x[1], x[2]), FALSE)
+  testthat::expect_no_error(dplyr::group_by(data.frame(x), x))
+})
