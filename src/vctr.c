@@ -45,7 +45,7 @@ static R_xlen_t wk_max_length(const SEXP geom) {
 static void wk_bin_to_hex(char* restrict dst, const unsigned char* restrict src, const R_xlen_t n) {
   static const char hex[16] = "0123456789abcdef";
 
-  for (R_xlen_t i = 0; i < n; ++i) {
+  for (R_xlen_t i = 0; i < n; i++) {
       const unsigned char byte = src[i];
       dst[2 * i] = hex[(byte >> 4) & 0xf];
       dst[2 * i + 1] = hex[byte & 0xf];
@@ -65,7 +65,7 @@ SEXP wk_c_wkb_to_hex(const SEXP geom) {
     Rf_error("Failed to alloc buffer"); // # nocov
   }
 
-  for (R_xlen_t i = 0; i < size; ++i) {
+  for (R_xlen_t i = 0; i < size; i++) {
     if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
 
     const SEXP item = VECTOR_ELT(geom, i);
@@ -76,7 +76,7 @@ SEXP wk_c_wkb_to_hex(const SEXP geom) {
       continue;
     }
 
-    wk_bin_to_hex(buf, RAW_RO(item), item_len);
+    wk_bin_to_hex(buf, RAW(item), item_len);
     SET_STRING_ELT(result, i, Rf_mkChar(buf));
   }
 
