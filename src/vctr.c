@@ -42,7 +42,7 @@ static R_xlen_t wk_max_length(const SEXP geom) {
   return max;
 }
 
-static void wk_bin_to_hex(char* restrict dst, const unsigned char* restrict src, const R_xlen_t n) {
+static void wk_bin_to_hex(char* dst, const unsigned char* src, const R_xlen_t n) {
   static const char hex[16] = "0123456789abcdef";
 
   for (R_xlen_t i = 0; i < n; i++) {
