@@ -62,10 +62,6 @@ SEXP wk_c_wkb_to_hex(const SEXP geom) {
   SEXP buf_shelter = PROTECT(Rf_allocVector(RAWSXP, buf_size));
   char* buf = (char*)RAW(buf_shelter);
 
-  if (buf == NULL) {
-    Rf_error("Failed to alloc buffer"); // # nocov
-  }
-
   for (R_xlen_t i = 0; i < size; i++) {
     if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
 
