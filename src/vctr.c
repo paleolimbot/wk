@@ -35,7 +35,7 @@ static R_xlen_t wk_max_length(const SEXP geom) {
   const R_xlen_t size = Rf_xlength(geom);
   R_xlen_t max = 0;
 
-  for (R_xlen_t i = 0; i < size; ++i) {
+  for (R_xlen_t i = 0; i < size; i++) {
     max = MAX(max, Rf_xlength(VECTOR_ELT(geom, i)));
   }
 
@@ -46,9 +46,9 @@ static void wk_bin_to_hex(char* dst, const unsigned char* src, const R_xlen_t n)
   static const char hex[16] = "0123456789abcdef";
 
   for (R_xlen_t i = 0; i < n; i++) {
-      const unsigned char byte = src[i];
-      dst[2 * i] = hex[(byte >> 4) & 0xf];
-      dst[2 * i + 1] = hex[byte & 0xf];
+    const unsigned char byte = src[i];
+    dst[2 * i] = hex[(byte >> 4) & 0xf];
+    dst[2 * i + 1] = hex[byte & 0xf];
   }
 
   dst[2 * n] = '\0';
