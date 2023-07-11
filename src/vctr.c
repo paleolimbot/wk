@@ -72,7 +72,7 @@ SEXP wk_c_wkb_to_hex(const SEXP geom) {
     const SEXP item = VECTOR_ELT(geom, i);
     const R_xlen_t item_len = Rf_xlength(item);
 
-    if (item_len == 0) {
+    if (item == R_NilValue) {
       SET_STRING_ELT(result, i, NA_STRING);
       continue;
     }
