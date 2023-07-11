@@ -109,6 +109,21 @@ test_that("examples as wkb roundtrip", {
   }
 })
 
+test_that("wk_c_wkb_to_hex works", {
+  list_of_raw <- list(as.raw(0:255), raw(0), NULL)
+  expect_identical(
+    .Call(wk_c_wkb_to_hex, list_of_raw),
+    c(paste(sprintf("%02x", 0:255), collapse = ""), "", NA_character_)
+  )
+
+  expect_error(.Call(wk_c_wkb_to_hex, list(list())))
+  expect_error(.Call(wk_c_wkb_to_hex, list(logical())))
+  expect_error(.Call(wk_c_wkb_to_hex, list(integer())))
+  expect_error(.Call(wk_c_wkb_to_hex, list(double())))
+  expect_error(.Call(wk_c_wkb_to_hex, list(complex())))
+  expect_error(.Call(wk_c_wkb_to_hex, list(character())))
+})
+
 test_that("vec_equal(wkb) works", {
   points <- wkt(c("POINT (1 1)", "POINT (2 2)", "POINT (3 3)"))
 
