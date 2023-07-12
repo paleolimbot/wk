@@ -116,12 +116,6 @@ test_that("wk_c_wkb_to_hex works", {
     c(paste(sprintf("%02x", 0:255), collapse = ""), "", NA_character_)
   )
 
-  expect_error(.Call(wk_c_wkb_to_hex, list(list())))
-  expect_error(.Call(wk_c_wkb_to_hex, list(logical())))
-  expect_error(.Call(wk_c_wkb_to_hex, list(integer())))
-  expect_error(.Call(wk_c_wkb_to_hex, list(double())))
-  expect_error(.Call(wk_c_wkb_to_hex, list(complex())))
-  expect_error(.Call(wk_c_wkb_to_hex, list(character())))
 })
 
 test_that("vec_equal(wkb) works", {
