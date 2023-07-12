@@ -14,7 +14,7 @@ vec_proxy.wk_wkb <- function(x, ...) {
 }
 
 vec_proxy_equal.wk_wkb <- function(x, ...) {
-  .Call(wk_c_wkb_to_hex, x)
+  wkb_to_hex(x)
 }
 
 vec_restore.wk_wkb <- function(x, to, ...) {
