@@ -108,3 +108,65 @@ test_that("examples as wkb roundtrip", {
     )
   }
 })
+
+test_that("wk_c_wkb_to_hex works", {
+  list_of_raw <- list(as.raw(0:255), raw(0), NULL)
+  expect_identical(
+    .Call(wk_c_wkb_to_hex, list_of_raw),
+    c(paste(sprintf("%02x", 0:255), collapse = ""), "", NA_character_)
+  )
+})
+
+test_that("wkb_to_hex works", {
+  features <- wkt(c("POINT (0 0)", "LINESTRING (1 1, 2 2)", "POLYGON EMPTY", NA))
+
+  # little endian
+  wkb_little <- wk_handle(features, wkb_writer(endian = 1))
+  hex_little <- c(
+    "010100000000000000000000000000000000000000",
+    "010200000002000000000000000000f03f000000000000f03f00000000000000400000000000000040",
+    "010300000000000000",
+    NA_character_
+  )
+
+  expect_equal(wkb_to_hex(wkb_little), hex_little)
+
+  # big endian
+  wkb_big <- wk_handle(features, wkb_writer(endian = 0))
+  hex_big <- c(
+    "000000000100000000000000000000000000000000",
+    "0000000002000000023ff00000000000003ff000000000000040000000000000004000000000000000",
+    "000000000300000000",
+    NA_character_
+  )
+
+  expect_equal(wkb_to_hex(wkb_big), hex_big)
+})
+
+test_that("vec_equal(wkb) works", {
+  points <- wkt(c("POINT (1 1)", "POINT (2 2)", "POINT (3 3)"))
+
+  # little endian
+  wkb_little <- wk_handle(points, wkb_writer(endian = 1))
+  hex_little <- c(
+    "0101000000000000000000f03f000000000000f03f",
+    "010100000000000000000000400000000000000040",
+    "010100000000000000000008400000000000000840"
+  )
+
+  expect_equal(vctrs::vec_proxy_equal(wkb_little), hex_little)
+  expect_equal(vctrs::vec_equal(wkb_little, wkb_little), c(TRUE, TRUE, TRUE))
+  expect_equal(vctrs::vec_equal(wkb_little[1], wkb_little[2]), FALSE)
+
+  # big endian
+  wkb_big <- wk_handle(points, wkb_writer(endian = 0))
+  hex_big <- c(
+    "00000000013ff00000000000003ff0000000000000",
+    "000000000140000000000000004000000000000000",
+    "000000000140080000000000004008000000000000"
+  )
+
+  expect_equal(vctrs::vec_proxy_equal(wkb_big), hex_big)
+  expect_equal(vctrs::vec_equal(wkb_big, wkb_big), c(TRUE, TRUE, TRUE))
+  expect_equal(vctrs::vec_equal(wkb_big[1], wkb_big[2]), FALSE)
+})

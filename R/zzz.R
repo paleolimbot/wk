@@ -30,6 +30,9 @@
   s3_register("sf::st_bbox", "wk_grd")
   s3_register("sf::st_crs", "wk_grd")
   s3_register("sf::st_crs<-", "wk_grd")
+
+  # wkb vec_proxy_equal
+  s3_register("vctrs::vec_proxy_equal", "wk_wkb")
 }
 
 .onUnload <- function (libpath) {
