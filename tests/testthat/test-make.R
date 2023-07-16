@@ -352,7 +352,7 @@ test_that("wk_collection() works with sfc", {
     )
   )
 
-  # test cast from gh wk#183
+  # test case from gh #182
   multipoint_sfc <- sf::st_sfc(
     sf::st_multipoint(matrix(runif(10, -90, 90), ncol = 2))
   )
