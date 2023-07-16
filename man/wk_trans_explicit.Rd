@@ -25,5 +25,5 @@ trans <- wk_trans_explicit(xy(1:5, 1:5))
 wk_transform(rep(xy(0, 0), 5), trans)
 }
 \seealso{
-\link{wk_coords} which has a replacement version  "\verb{wk_coords<-}" for in-place modification
+\link{wk_coords} which has a replacement version  "\verb{wk_coords<-}"
 }

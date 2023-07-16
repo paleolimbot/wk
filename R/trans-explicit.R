@@ -11,7 +11,7 @@
 #'
 #' @export
 #'
-#' @seealso [wk_coords] which has a replacement version  "`wk_coords<-`" for in-place modification
+#' @seealso [wk_coords] which has a replacement version  "`wk_coords<-`"
 #' @examples
 #' trans <- wk_trans_explicit(xy(1:5, 1:5))
 #' wk_transform(rep(xy(0, 0), 5), trans)
@@ -33,6 +33,7 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
 #' @aliases "wk_coords<-"
 #' @param object handleable to be modified by replacing coordinates with those in `value`
 #' @param value handleable whose coordinates will be used to update `object`
+#' @inheritParams wk_trans_set
 #' @export
 #' @examples
 #' # wk_coords replacement function
@@ -41,6 +42,6 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
 #' wk_coords(y) <- cbind(5:1, 0:4)
 #' wk_coords(x) <- y[5:1]
 "wk_coords<-" <-
-  function(object, value) {
-    wk_transform(object, wk_trans_explicit(value))
+  function(object, value, use_z = NA, use_m = NA) {
+    wk_transform(object, wk_trans_explicit(value, use_z = use_z, use_m = use_m))
   }

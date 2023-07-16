@@ -8,7 +8,7 @@
 \alias{wk_vertex_filter}
 \title{Extract vertices}
 \usage{
-wk_coords(object) <- value
+wk_coords(object, use_z = NA, use_m = NA) <- value
 
 wk_vertices(handleable, ...)
 
@@ -20,6 +20,10 @@ wk_vertex_filter(handler, add_details = FALSE)
 \item{object}{handleable to be modified by replacing coordinates with those in \code{value}}
 
 \item{value}{handleable whose coordinates will be used to update \code{object}}
+
+\item{use_z, use_m}{Used to declare the output type. Use \code{TRUE} to
+ensure the output has that dimension, \code{FALSE} to ensure it does not,
+and \code{NA} to leave the dimension unchanged.}
 
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
