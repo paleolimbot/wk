@@ -1,5 +1,7 @@
 # wk (development version)
 
+* New function `wk_trans_explicit()` migrated from crs2crs. 
+
 # wk 0.7.3
 
 * Fix tests for updated waldo package (#178).
