@@ -11,10 +11,10 @@
 #'
 #' @export
 #'
+#' @seealso [wk_coords] which has a replacement version  "`wk_coords<-`" for in-place modification
 #' @examples
-#' trans <- wk_trans_explicit(wk::xy(1:5, 1:5))
-#' wk::wk_transform(rep(wk::xy(0, 0), 5), trans)
-#'
+#' trans <- wk_trans_explicit(xy(1:5, 1:5))
+#' wk_transform(rep(xy(0, 0), 5), trans)
 wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
   value <- wk::as_xy(value)
   value <- wk::as_xy(value, dims = c("x", "y", "z", "m"))
@@ -23,3 +23,24 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
     "wk_trans_explicit"
   )
 }
+
+#' @details
+#'
+#' 'wk_coords<-' is a replacement-function version of 'wk_coords'. Using the engine of
+#' [wk_trans_explicit] the coordinates of an object can be transformed in a generic way.
+#'
+#' @rdname wk_vertices
+#' @aliases "wk_coords<-"
+#' @param object handleable to be modified by replacing coordinates with those in `value`
+#' @param value handleable whose coordinates will be used to update `object`
+#' @export
+#' @examples
+#' # wk_coords replacement function
+#' x <- xy(1:5, 1:5)
+#' y <- as_wkt(x)
+#' wk_coords(y) <- cbind(5:1, 0:4)
+#' wk_coords(x) <- y[5:1]
+"wk_coords<-" <-
+  function(object, value) {
+    wk_transform(object, wk_trans_explicit(value))
+  }

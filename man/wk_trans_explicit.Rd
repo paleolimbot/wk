@@ -21,7 +21,9 @@ transforms using R functions and system calls that are impossible or impractical
 to implement at the C level.
 }
 \examples{
-trans <- wk_trans_explicit(wk::xy(1:5, 1:5))
-wk::wk_transform(rep(wk::xy(0, 0), 5), trans)
-
+trans <- wk_trans_explicit(xy(1:5, 1:5))
+wk_transform(rep(xy(0, 0), 5), trans)
+}
+\seealso{
+\link{wk_coords} which has a replacement version  "\verb{wk_coords<-}" for in-place modification
 }
