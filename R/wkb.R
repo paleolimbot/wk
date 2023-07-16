@@ -148,3 +148,19 @@ format.wk_wkb <- function(x, ...) {
 as.character.wk_wkb <- function(x, ...) {
   format(x, ...)
 }
+
+
+#' Convert well-known binary to hex
+#'
+#' @param x A [wkb()] vector
+#'
+#' @return A hex encoded [wkb()] vector
+#' @export
+#'
+#' @examples
+#' x <- as_wkb(xyz(1:5, 6:10, 11:15))
+#' wkb_to_hex(x)
+#'
+wkb_to_hex <- function(x) {
+  .Call(wk_c_wkb_to_hex, as_wkb(x))
+}

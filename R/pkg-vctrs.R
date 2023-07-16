@@ -13,6 +13,10 @@ vec_proxy.wk_wkb <- function(x, ...) {
   unclass(x)
 }
 
+vec_proxy_equal.wk_wkb <- function(x, ...) {
+  wkb_to_hex(x)
+}
+
 vec_restore.wk_wkb <- function(x, to, ...) {
   crs_out <- attr(to, "crs", exact = TRUE) %||% attr(x, "crs", exact = TRUE)
   geodesic_out <- attr(to, "geodesic", exact = TRUE) %||% attr(x, "geodesic", exact = TRUE)
