@@ -23,6 +23,7 @@ SEXP wk_c_linestring_filter_new(SEXP handler_xptr, SEXP feature_id);
 SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id);
 SEXP wk_c_meta_handler_new(void);
 SEXP wk_c_vector_meta_handler_new(void);
+SEXP wk_c_orient_filter_new(SEXP handler_xptr, SEXP direction);
 SEXP wk_c_problems_handler_new(void);
 SEXP wk_c_sfc_writer_new(void);
 SEXP wk_c_trans_affine_new(SEXP trans_matrix);
@@ -59,6 +60,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"wk_c_polygon_filter_new", (DL_FUNC) &wk_c_polygon_filter_new, 3},
   {"wk_c_meta_handler_new", (DL_FUNC) &wk_c_meta_handler_new, 0},
   {"wk_c_vector_meta_handler_new", (DL_FUNC) &wk_c_vector_meta_handler_new, 0},
+  {"wk_c_orient_filter_new", (DL_FUNC) &wk_c_orient_filter_new, 2},
   {"wk_c_problems_handler_new", (DL_FUNC) &wk_c_problems_handler_new, 0},
   {"wk_c_sfc_writer_new", (DL_FUNC) &wk_c_sfc_writer_new, 0},
   {"wk_c_trans_affine_new", (DL_FUNC) &wk_c_trans_affine_new, 1},
