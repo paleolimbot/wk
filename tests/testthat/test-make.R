@@ -291,6 +291,8 @@ test_that("wk_collection_filter() errors for handlers that return WK_ABORT_FEATU
 })
 
 test_that("wk_collection() works with sfc", {
+  skip_if_not_installed("sf")
+  
   points_xy <- xy(1:64, 1:64)
   points_sfc <- wk_handle(
     points_xy,
