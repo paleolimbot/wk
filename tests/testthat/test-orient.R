@@ -75,7 +75,7 @@ test_that("wk_orient() skips non-polygons", {
 
   expect_identical(
     wk_orient(
-      xyzm(1:10, 11:20, -1, -2),
+      xyzm(1:10, 11:20, -1, -2)
     ),
     xyzm(1:10, 11:20, -1, -2)
   )
