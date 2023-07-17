@@ -110,6 +110,9 @@ int wk_collection_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
   collection_filter_t* collection_filter = (collection_filter_t*) handler_data;
   int result;
 
+  // ensure collection_filter->part_id == 0 for is_new_feature & part_id == WK_PART_ID_NONE
+  int inc_part_id = !collection_filter->is_new_feature && part_id == WK_PART_ID_NONE;
+
   if (collection_filter->is_new_feature) {
     if (collection_filter->feature_id_out >= 0) {
       HANDLE_OR_RETURN(wk_collection_end(collection_filter));
@@ -126,7 +129,7 @@ int wk_collection_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
 
   if (part_id == WK_PART_ID_NONE) {
     part_id = collection_filter->part_id;
-    collection_filter->part_id++;
+    collection_filter->part_id += inc_part_id;
   }
 
   return collection_filter->next->geometry_start(meta, part_id, collection_filter->next->handler_data);
