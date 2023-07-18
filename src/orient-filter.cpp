@@ -32,6 +32,7 @@ public:
   }
 
   virtual int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
+    is_polygon_ring = false;
     return next->feature_start(meta, feat_id, next->handler_data);
   }
 
