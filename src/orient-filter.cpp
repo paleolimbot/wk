@@ -104,7 +104,7 @@ private:
   const Direction direction;
   bool is_polygon_ring;
   std::vector<double> coords;
-  uint n_dim;
+  uint32_t n_dim;
 
   double signed_area() const {
     if (coords.size() < n_dim * 3) {
