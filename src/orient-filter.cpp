@@ -141,5 +141,5 @@ extern "C" SEXP wk_c_orient_filter_new(SEXP handler_xptr, SEXP direction) {
   Direction direction_enum = static_cast<Direction>(INTEGER(direction)[0]);
   wk_handler_t* next = static_cast<wk_handler_t*>(R_ExternalPtrAddr(handler_xptr));
 
-  return WKHandlerFactory<OrientFilter>::create_xptr(new OrientFilter(next, direction_enum));
+  return WKHandlerFactory<OrientFilter>::create_xptr(new OrientFilter(next, direction_enum), handler_xptr);
 }
