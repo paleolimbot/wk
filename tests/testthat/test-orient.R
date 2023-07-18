@@ -115,3 +115,28 @@ test_that("wk_orient() skips zero-area polygons", {
     wkt("POLYGON ((1 1, 2 2, 3 3, 1 1))")
   )
 })
+
+test_that("wk_orient() handles invalid polygons", {
+  # invalid polygon, no coordinates
+  expect_identical(
+    wk_handle(
+      wkt("POLYGON (EMPTY)"),
+      # wkt writer will throw here
+      wk_orient_filter(
+        wkb_writer()
+      )
+    ),
+    wk_handle(
+      wkt("POLYGON (EMPTY)"),
+      wkb_writer()
+    )
+  )
+
+  # invalid polygon, no area
+  expect_identical(
+    wk_orient(
+      wkt("POLYGON ((0 0, 1 1))")
+    ),
+    wkt("POLYGON ((0 0, 1 1))")
+  )
+})

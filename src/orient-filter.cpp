@@ -111,6 +111,10 @@ private:
   int n_dim;
 
   double signed_area() const {
+    if (coords.size() < n_dim * 3) {
+      return 0.0;
+    }
+
     double area = 0.0;
     auto x0 = coords[0];
 
