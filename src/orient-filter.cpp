@@ -11,8 +11,8 @@ enum class Direction {
 };
 
 static int meta_coord_dim(uint32_t flags) {
-  auto has_z = (flags & WK_FLAG_HAS_Z) != 0;
-  auto has_m = (flags & WK_FLAG_HAS_M) != 0;
+  bool has_z = (flags & WK_FLAG_HAS_Z) != 0;
+  bool has_m = (flags & WK_FLAG_HAS_M) != 0;
   return 2 + has_z + has_m;
 }
 
@@ -26,7 +26,7 @@ public:
   }
 
   virtual int vector_start(const wk_vector_meta_t* meta) {
-    coords.reserve(1 << 8);
+    coords.reserve(256);
 
     return next->vector_start(meta, next->handler_data);
   }
@@ -66,22 +66,17 @@ public:
   virtual int ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id) {
     is_polygon_ring = false;
     int result;
+    size_t n_coords = coords.size() / n_dim;
 
     if (need_reorder(ring_id == 0)) {
       // reverse coords
-      uint32_t i = 0;
-      for (auto it = coords.cend(); it != coords.cbegin(); it -= n_dim) {
-        if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-        HANDLE_OR_RETURN(next->coord(meta, &(*it) - n_dim, i, next->handler_data));
-        i++;
+      for (uint32_t i = 0, j = n_coords - 1; i < n_coords; i++, j--) {
+        HANDLE_OR_RETURN(next->coord(meta, &coords[j * n_dim], i, next->handler_data));
       }
     } else {
       // original order
-      uint32_t i = 0;
-      for (auto it = coords.cbegin(); it != coords.cend(); it += n_dim) {
-        if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
-        HANDLE_OR_RETURN(next->coord(meta, &(*it), i, next->handler_data));
-        i++;
+      for (uint32_t i = 0; i < n_coords; i++) {
+        HANDLE_OR_RETURN(next->coord(meta, &coords[i * n_dim], i, next->handler_data));
       }
     }
 
@@ -109,7 +104,7 @@ private:
   const Direction direction;
   bool is_polygon_ring;
   std::vector<double> coords;
-  int n_dim;
+  uint n_dim;
 
   double signed_area() const {
     if (coords.size() < n_dim * 3) {
@@ -117,15 +112,15 @@ private:
     }
 
     double area = 0.0;
-    auto x0 = coords[0];
+    double x0 = coords[0];
 
     // shoelace formula
     // https://en.wikipedia.org/wiki/Shoelace_formula
     // x0 fixed at origin reduces overflow, removes wrap-around index logic
     for (uint32_t i = 1 * n_dim; i < coords.size() - n_dim; i += n_dim) {
-      auto x = coords[i] - x0;
-      auto ym = coords[i - n_dim + 1];
-      auto yp = coords[i + n_dim + 1];
+      double x = coords[i] - x0;
+      double ym = coords[i - n_dim + 1];
+      double yp = coords[i + n_dim + 1];
 
       area += x * (yp - ym);
     }
@@ -134,9 +129,9 @@ private:
   }
 
   bool need_reorder(bool is_outer_ring) const {
-    auto area = signed_area();
-    auto ring_is_ccw = ((area > 0) == is_outer_ring);
-    auto orient_ccw = direction == Direction::CounterClockwise;
+    double area = signed_area();
+    bool ring_is_ccw = ((area > 0) == is_outer_ring);
+    bool orient_ccw = direction == Direction::CounterClockwise;
 
     return area != 0 && ring_is_ccw != orient_ccw;
   }
