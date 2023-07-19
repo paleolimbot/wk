@@ -21,7 +21,9 @@ wk_orient <- function(handleable, ..., direction = wk_counterclockwise()) {
     wk_orient_filter(wk_writer(handleable), direction),
     ...
   )
-  wk_restore(handleable, result, ...)
+  result <- wk_restore(handleable, result, ...)
+  result <- wk_set_geodesic(result, wk_is_geodesic(handleable))
+  wk_set_crs(result, wk_crs(handleable))
 }
 
 #' @rdname wk_orient

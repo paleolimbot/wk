@@ -140,3 +140,21 @@ test_that("wk_orient() handles invalid polygons", {
     wkt("POLYGON ((0 0, 1 1))")
   )
 })
+
+test_that("wk_orient() preserves attributes", {
+  expect_identical(
+    wk_orient(
+      wkt("POLYGON ((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))", crs = wk_crs_longlat(), geodesic = TRUE),
+      direction = wk_clockwise()
+    ),
+    wkt("POLYGON ((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))", crs = wk_crs_longlat(), geodesic = TRUE)
+  )
+
+  expect_identical(
+    wk_orient(
+      wkt("POLYGON ((0 0, 0 0.5, 0.5 0.5, 0.5 0, 0 0))", crs = wk_crs_longlat(), geodesic = TRUE),
+      direction = wk_counterclockwise()
+    ),
+    wkt("POLYGON ((0 0, 0.5 0, 0.5 0.5, 0 0.5, 0 0))", crs = wk_crs_longlat(), geodesic = TRUE)
+  )
+})
