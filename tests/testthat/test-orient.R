@@ -82,6 +82,22 @@ test_that("wk_orient() skips non-polygons", {
 })
 
 test_that("wk_orient() skips empty geometries", {
+  # null feature
+  expect_identical(
+    wk_orient(
+      wkt(NA)
+    ),
+    wkt(NA)
+  )
+
+  # empty vector
+  expect_identical(
+    wk_orient(
+      wkt()
+    ),
+    wkt()
+  )
+
   expect_identical(
     wk_orient(
       wkt(c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY"))
