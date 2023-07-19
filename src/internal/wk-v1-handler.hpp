@@ -139,9 +139,9 @@ public:
     return handler;
   }
 
-  static SEXP create_xptr(HandlerType* handler_data) {
+  static SEXP create_xptr(HandlerType* handler_data, SEXP tag = R_NilValue, SEXP prot = R_NilValue) {
     wk_handler_t* handler = create(handler_data);
-    return wk_handler_create_xptr(handler, R_NilValue, R_NilValue);
+    return wk_handler_create_xptr(handler, tag, prot);
   }
 
 private:
