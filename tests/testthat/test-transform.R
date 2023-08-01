@@ -31,8 +31,10 @@ test_that("wk_transform() works", {
   ## explicit transformation
   cds <- wk_coords(geoms)[c("x", "y", "z", "m")]
   cds$x <- cds$x * 2
-  expect_identical(wk_transform(geoms, wk_trans_explicit(cds)),
-                   wk_transform(geoms, wk_affine_scale(scale_x = 2)))
+  expect_identical(
+    wk_transform(geoms, wk_trans_explicit(cds)),
+    wk_transform(geoms, wk_affine_scale(scale_x = 2))
+  )
 
 
   ## explicit transformation via replacement function
