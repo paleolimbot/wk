@@ -41,7 +41,6 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
 #' y <- as_wkt(x)
 #' wk_coords(y) <- cbind(5:1, 0:4)
 #' wk_coords(x) <- y[5:1]
-"wk_coords<-" <-
-  function(object, value, use_z = NA, use_m = NA) {
+"wk_coords<-" <- function(object, value, use_z = NA, use_m = NA) {
     wk_transform(object, wk_trans_explicit(value, use_z = use_z, use_m = use_m))
   }
