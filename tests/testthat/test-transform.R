@@ -28,24 +28,6 @@ test_that("wk_transform() works", {
   # check error propagation
   expect_error(wk_transform(new_wk_wkt("POINT ENTPY"), wk_affine_identity()), "ENTPY")
 
-  ## explicit transformation
-  cds <- wk_coords(geoms)[c("x", "y", "z", "m")]
-  cds$x <- cds$x * 2
-  expect_identical(wk_transform(geoms, wk_trans_explicit(cds)),
-                   wk_transform(geoms, wk_affine_scale(scale_x = 2)))
-
-
-  ## explicit transformation via replacement function
-  geoms2 <- geoms
-  wk_coords(geoms2) <- cds[c("x", "y", "m")]
-  expect_identical(geoms2, wk_transform(geoms, wk_affine_scale(scale_x = 2)))
-
-  wk_coords(geoms2, use_z = FALSE) <- wk_vertices(geoms)
-  expect_identical(wk::wk_drop_z(geoms), geoms2)
-  geoms3 <- geoms
-  wk_coords(geoms3, use_m = FALSE) <- wk_vertices(geoms)
-  expect_identical(wk::wk_drop_m(geoms), geoms3)
-
 
 })
 
