@@ -7,8 +7,9 @@
 wk_trans_explicit(value, use_z = NA, use_m = NA)
 }
 \arguments{
-\item{value}{A vector of coordinates as a \code{\link[=xy]{xy()}} used to replace each
-coordinate in the input in the order it is encountered.}
+\item{value}{An \code{\link[=xy]{xy()}}, \code{\link[=xyz]{xyz()}}, \code{\link[=xym]{xym()}}, or \code{\link[=xyzm]{xyzm()}} of coordinates
+used to replace values in the input. Use \code{NA} to keep the existing
+value.}
 
 \item{use_z, use_m}{Used to declare the output type. Use \code{TRUE} to
 ensure the output has that dimension, \code{FALSE} to ensure it does not,

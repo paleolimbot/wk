@@ -5,8 +5,6 @@
 #' transforms using R functions and system calls that are impossible or impractical
 #' to implement at the C level.
 #'
-#' @param value A vector of coordinates as a [wk::xy()] used to replace each
-#'   coordinate in the input in the order it is encountered.
 #' @inheritParams wk_trans_set
 #'
 #' @export
@@ -24,15 +22,14 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
   )
 }
 
+
 #' @details
 #'
 #' 'wk_coords<-' is a replacement-function version of 'wk_coords'. Using the engine of
 #' [wk_trans_explicit] the coordinates of an object can be transformed in a generic way.
 #'
 #' @rdname wk_vertices
-#' @aliases "wk_coords<-"
 #' @param object handleable to be modified by replacing coordinates with those in `value`
-#' @param value handleable whose coordinates will be used to update `object`
 #' @inheritParams wk_trans_set
 #' @export
 #' @examples
@@ -41,6 +38,6 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
 #' y <- as_wkt(x)
 #' wk_coords(y) <- cbind(5:1, 0:4)
 #' wk_coords(x) <- y[5:1]
-"wk_coords<-" <- function(object, value, use_z = NA, use_m = NA) {
+"wk_coords<-" <- function(object, use_z = NA, use_m = NA, value) {
     wk_transform(object, wk_trans_explicit(value, use_z = use_z, use_m = use_m))
   }

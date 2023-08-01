@@ -2,7 +2,6 @@
 % Please edit documentation in R/trans-explicit.R, R/vertex-filter.R
 \name{wk_coords<-}
 \alias{wk_coords<-}
-\alias{"wk_coords<-"}
 \alias{wk_vertices}
 \alias{wk_coords}
 \alias{wk_vertex_filter}
@@ -19,11 +18,13 @@ wk_vertex_filter(handler, add_details = FALSE)
 \arguments{
 \item{object}{handleable to be modified by replacing coordinates with those in \code{value}}
 
-\item{value}{handleable whose coordinates will be used to update \code{object}}
-
 \item{use_z, use_m}{Used to declare the output type. Use \code{TRUE} to
 ensure the output has that dimension, \code{FALSE} to ensure it does not,
 and \code{NA} to leave the dimension unchanged.}
+
+\item{value}{An \code{\link[=xy]{xy()}}, \code{\link[=xyz]{xyz()}}, \code{\link[=xym]{xym()}}, or \code{\link[=xyzm]{xyzm()}} of coordinates
+used to replace values in the input. Use \code{NA} to keep the existing
+value.}
 
 \item{handleable}{A geometry vector (e.g., \code{\link[=wkb]{wkb()}}, \code{\link[=wkt]{wkt()}}, \code{\link[=xy]{xy()}},
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
