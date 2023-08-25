@@ -283,6 +283,16 @@ test_that("wk_collection() works", {
   expect_error(wk_collection(new_wk_wkt("POINT ENTPY")), "EMPTY")
 })
 
+test_that("wk_collection() propagates attributes", {
+  expect_identical(
+    wk_collection(
+      wkt("LINESTRING ZM (0 0 0 0, 1 0 0 0)", crs = 1234, geodesic = TRUE),
+      wk_geometry_type("multilinestring")
+    ),
+    wkt("MULTILINESTRING ZM ((0 0 0 0, 1 0 0 0))", crs = 1234, geodesic = TRUE)
+  )
+})
+
 test_that("wk_collection_filter() errors for handlers that return WK_ABORT_FEATURE", {
   expect_error(
     wk_handle(wkt("POINT (0 1)"), wk_collection_filter(wk_meta_handler())),
@@ -292,7 +302,7 @@ test_that("wk_collection_filter() errors for handlers that return WK_ABORT_FEATU
 
 test_that("wk_collection() works with sfc", {
   skip_if_not_installed("sf")
-  
+
   points_xy <- xy(1:64, 1:64)
   points_sfc <- wk_handle(
     points_xy,
