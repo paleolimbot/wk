@@ -81,7 +81,7 @@ support each one.
 
 ## C API
 
-The distributed nature of the wk framework is powered by a [\~100-line
+The distributed nature of the wk framework is powered by a [~100-line
 header](https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h)
 describing the types of information that parsers typically encounter
 when reading geometries and the order in which that information is
@@ -95,12 +95,12 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: <Unknown type / 0>[1] <0x16dd25e18> => WK_CONTINUE
-#>   feature_start (1): <0x16dd25e18>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x16dd25d20> => WK_CONTINUE
-#>       coord (1): <0x16dd25d20> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x16dd25d20> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x16dd25e18>
+#> vector_start: <Unknown type / 0>[1] <0x16d75aac0> => WK_CONTINUE
+#>   feature_start (1): <0x16d75aac0>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x16d75a950> => WK_CONTINUE
+#>       coord (1): <0x16d75a950> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16d75a950> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16d75aac0>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
@@ -117,16 +117,16 @@ wk_debug(
   wkt_format_handler(max_coords = 2)
 )
 #> initialize (dirty = 0  -> 1)
-#> vector_start: LINESTRING B[1] <0x16dd28df0> => WK_CONTINUE
-#>   feature_start (1): <0x16dd28df0>  => WK_CONTINUE
-#>     geometry_start (<none>): LINESTRING[3] <0x16dd28d50> => WK_CONTINUE
-#>       coord (1): <0x16dd28d50> (1.000000 1.000000)  => WK_CONTINUE
-#>       coord (2): <0x16dd28d50> (2.000000 2.000000)  => WK_ABORT_FEATURE
-#> vector_end: <0x16dd28df0>
+#> vector_start: LINESTRING B[1] <0x16d75dac8> => WK_CONTINUE
+#>   feature_start (1): <0x16d75dac8>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x16d75da10> => WK_CONTINUE
+#>       coord (1): <0x16d75da10> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x16d75da10> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x16d75dac8>
 #> deinitialize
 #> [1] "LINESTRING (1 1, 2 2..."
 ```
 
 ## Lightweight
 
-The wk package has zero dependencies and compiles in \~10 seconds.
+The wk package has zero dependencies and compiles in ~10 seconds.

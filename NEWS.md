@@ -11,7 +11,6 @@
   of coordinates (@mdsumner, #187). 
 * New function `wk_trans_explicit()` migrated from crs2crs (@mdsumner, #187).
 
-
 # wk 0.7.3
 
 * Fix tests for updated waldo package (#178).
