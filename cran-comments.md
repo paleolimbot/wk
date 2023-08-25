@@ -1,9 +1,9 @@
 
-This release fixes a CRAN check warning for wk for the updated waldo package.
+This release features several releases and bugfixes.
 
 ## Test environments
 
-* local (MacOS, R 4.2.0)
+* local (MacOS, R 4.3.1)
 * GitHub Actions (ubuntu-20.04): release, devel
 * GitHub Actions (windows): release
 * Github Actions (macOS): release
