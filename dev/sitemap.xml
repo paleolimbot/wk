@@ -151,6 +151,9 @@
     <loc>https://paleolimbot.github.io/wk/reference/wk_meta.html</loc>
   </url>
   <url>
+    <loc>https://paleolimbot.github.io/wk/reference/wk_orient.html</loc>
+  </url>
+  <url>
     <loc>https://paleolimbot.github.io/wk/reference/wk_plot.html</loc>
   </url>
   <url>
@@ -164,6 +167,9 @@
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/wk_trans_affine.html</loc>
+  </url>
+  <url>
+    <loc>https://paleolimbot.github.io/wk/reference/wk_trans_explicit.html</loc>
   </url>
   <url>
     <loc>https://paleolimbot.github.io/wk/reference/wk_trans_inverse.html</loc>
