@@ -1,3 +1,4 @@
+
 #' Transform using explicit coordinate values
 #'
 #' A [wk_trans][wk::wk_transform] implementation that replaces coordinate values
@@ -9,7 +10,7 @@
 #'
 #' @export
 #'
-#' @seealso [wk_coords] which has a replacement version  "`wk_coords<-`"
+#' @seealso [wk_coords()] which has a replacement version  "`wk_coords<-`"
 #' @examples
 #' trans <- wk_trans_explicit(xy(1:5, 1:5))
 #' wk_transform(rep(xy(0, 0), 5), trans)
@@ -21,23 +22,3 @@ wk_trans_explicit <- function(value, use_z = NA, use_m = NA) {
     "wk_trans_explicit"
   )
 }
-
-
-#' @details
-#'
-#' 'wk_coords<-' is a replacement-function version of 'wk_coords'. Using the engine of
-#' [wk_trans_explicit] the coordinates of an object can be transformed in a generic way.
-#'
-#' @rdname wk_vertices
-#' @param object handleable to be modified by replacing coordinates with those in `value`
-#' @inheritParams wk_trans_set
-#' @export
-#' @examples
-#' # wk_coords replacement function
-#' x <- xy(1:5, 1:5)
-#' y <- as_wkt(x)
-#' wk_coords(y) <- cbind(5:1, 0:4)
-#' wk_coords(x) <- y[5:1]
-"wk_coords<-" <- function(object, use_z = NA, use_m = NA, value) {
-    wk_transform(object, wk_trans_explicit(value, use_z = use_z, use_m = use_m))
-  }

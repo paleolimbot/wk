@@ -1,8 +1,8 @@
 # wk (development version)
 
-* New replacement-function mode for `wk_coords<-()` for in-place modification of coordinates. 
-
-* New function `wk_trans_explicit()` migrated from crs2crs. 
+* New replacement-function mode for `wk_coords<-()` for in-place modification
+  of coordinates (@mdsumner, #187). 
+* New function `wk_trans_explicit()` migrated from crs2crs (@mdsumner, #187).
 
 
 # wk 0.7.3

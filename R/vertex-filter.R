@@ -6,9 +6,14 @@
 #' format as the input, `wk_coords()` returns a data frame with coordinates
 #' as columns.
 #'
+#' `wk_coords<-` is the replacement-function version of 'wk_coords'.
+#' Using the engine of [wk_trans_explicit()] the coordinates of an object
+#' can be transformed in a generic way using R functions as needed.
+#'
 #' @inheritParams wk_handle
 #' @param add_details Use `TRUE` to add a "wk_details" attribute, which
 #'   contains columns `feature_id`, `part_id`, and `ring_id`.
+#' @inheritParams wk_trans_set
 #'
 #' @return
 #'   - `wk_vertices()` extracts vertices and returns the in the same format as
@@ -23,6 +28,14 @@
 #' @examples
 #' wk_vertices(wkt("LINESTRING (0 0, 1 1)"))
 #' wk_coords(wkt("LINESTRING (0 0, 1 1)"))
+#'
+#' # wk_coords() replacement function
+#' x <- xy(1:5, 1:5)
+#' y <- as_wkt(x)
+#' wk_coords(y) <- cbind(5:1, 0:4)
+#' wk_coords(x) <- y[5:1]
+#' y
+#' x
 #'
 wk_vertices <- function(handleable, ...) {
   # the results of this handler are not necessarily the same length as the input,
@@ -61,6 +74,12 @@ wk_coords.default <- function(handleable, ...) {
   details <- attr(result, "wk_details", exact = TRUE)
   attr(result, "wk_details") <- NULL
   new_data_frame(c(details, unclass(result)))
+}
+
+#' @rdname wk_vertices
+#' @export
+`wk_coords<-` <- function(handleable, use_z = NA, use_m = NA, value) {
+  wk_transform(handleable, wk_trans_explicit(value, use_z = use_z, use_m = use_m))
 }
 
 #' @rdname wk_vertices
