@@ -20,7 +20,7 @@ as columns."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -73,6 +73,8 @@ as columns.</p>
 <span></span>
 <span><span class="fu">wk_coords</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">wk_coords</span><span class="op">(</span><span class="va">handleable</span>, use_z <span class="op">=</span> <span class="cn">NA</span>, use_m <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
 <span><span class="fu">wk_vertex_filter</span><span class="op">(</span><span class="va">handler</span>, add_details <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,6 +87,18 @@ as columns.</p>
 
 <dt>...</dt>
 <dd><p>Passed to the <code><a href="wk_handle.html">wk_handle()</a></code> method.</p></dd>
+
+
+<dt>use_z, use_m</dt>
+<dd><p>Used to declare the output type. Use <code>TRUE</code> to
+ensure the output has that dimension, <code>FALSE</code> to ensure it does not,
+and <code>NA</code> to leave the dimension unchanged.</p></dd>
+
+
+<dt>value</dt>
+<dd><p>An <code><a href="xy.html">xy()</a></code>, <code><a href="xy.html">xyz()</a></code>, <code><a href="xy.html">xym()</a></code>, or <code><a href="xy.html">xyzm()</a></code> of coordinates
+used to replace values in the input. Use <code>NA</code> to keep the existing
+value.</p></dd>
 
 
 <dt>handler</dt>
@@ -108,6 +122,12 @@ integer identifying the point, line, or polygon from whence it came),
 <code>ring_id</code> (an arbitrary integer identifying individual rings within
 polygons), and one column per coordinate (<code>x</code>, <code>y</code>, and/or <code>z</code> and/or <code>m</code>).</p></li>
 </ul></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p><code>wk_coords&lt;-</code> is the replacement-function version of 'wk_coords'.
+Using the engine of <code><a href="wk_trans_explicit.html">wk_trans_explicit()</a></code> the coordinates of an object
+can be transformed in a generic way using R functions as needed.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -118,6 +138,18 @@ polygons), and one column per coordinate (<code>x</code>, <code>y</code>, and/or
 <span class="r-out co"><span class="r-pr">#&gt;</span>   feature_id part_id ring_id x y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          1       1       0 0 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          1       1       0 1 1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># wk_coords() replacement function</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="xy.html">xy</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">wk_coords</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">wk_coords</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">y</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">y</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[5]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT (5 0) POINT (4 1) POINT (3 2) POINT (2 3) POINT (1 4)</span>
+<span class="r-in"><span><span class="va">x</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xy[5]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] (1 4) (2 3) (3 2) (4 1) (5 0)</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

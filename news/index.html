@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -57,6 +57,15 @@
       <small>Source: <a href="https://github.com/paleolimbot/wk/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.8.0" id="wk-080">wk 0.8.0<small>2023-08-25</small><a class="anchor" aria-label="anchor" href="#wk-080"></a></h2>
+<ul><li>Added <code><a href="../reference/wkb_to_hex.html">wkb_to_hex()</a></code> (<a href="https://github.com/anthonynorth" class="external-link">@anthonynorth</a>, <a href="https://github.com/paleolimbot/wk/issues/183" class="external-link">#183</a>).</li>
+<li>Implemented <code><a href="https://vctrs.r-lib.org/reference/vec_proxy_equal.html" class="external-link">vctrs::vec_proxy_equal()</a></code> for <code><a href="../reference/wkb.html">wkb()</a></code> vctrs (<a href="https://github.com/anthonynorth" class="external-link">@anthonynorth</a>, <a href="https://github.com/paleolimbot/wk/issues/183" class="external-link">#183</a>).</li>
+<li>Fixed <code><a href="../reference/wk_writer.html">sfc_writer()</a></code>, which had returned NULL for some inputs (e.g., via <code><a href="../reference/wk_linestring.html">wk_collection()</a></code>) (<a href="https://github.com/anthonynorth" class="external-link">@anthonynorth</a>, <a href="https://github.com/paleolimbot/wk/issues/182" class="external-link">#182</a>, <a href="https://github.com/paleolimbot/wk/issues/186" class="external-link">#186</a>).</li>
+<li>Added <code><a href="../reference/wk_orient.html">wk_clockwise()</a></code> and <code><a href="../reference/wk_orient.html">wk_counterclockwise()</a></code> to re-wind polygon rings (<a href="https://github.com/anthonynorth" class="external-link">@anthonynorth</a>, <a href="https://github.com/paleolimbot/wk/issues/188" class="external-link">#188</a>).</li>
+<li>New replacement-function mode for <code>wk_coords&lt;-()</code> for in-place modification of coordinates (<a href="https://github.com/mdsumner" class="external-link">@mdsumner</a>, <a href="https://github.com/paleolimbot/wk/issues/187" class="external-link">#187</a>).</li>
+<li>New function <code><a href="../reference/wk_trans_explicit.html">wk_trans_explicit()</a></code> migrated from crs2crs (<a href="https://github.com/mdsumner" class="external-link">@mdsumner</a>, <a href="https://github.com/paleolimbot/wk/issues/187" class="external-link">#187</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.3" id="wk-073">wk 0.7.3<small>2023-05-06</small><a class="anchor" aria-label="anchor" href="#wk-073"></a></h2>
 <ul><li>Fix tests for updated waldo package (<a href="https://github.com/paleolimbot/wk/issues/178" class="external-link">#178</a>).</li>
