@@ -1,5 +1,17 @@
 # wk (development version)
 
+* Added `wkb_to_hex()` (@anthonynorth, #183).
+* Implemented `vctrs::vec_proxy_equal()` for `wkb()` vctrs
+  (@anthonynorth, #183).
+* Fixed `sfc_writer()`, which had returned NULL for some inputs
+  (e.g., via `wk_collection()`) (@anthonynorth, #182, #186).
+* Added `wk_clockwise()` and `wk_counterclockwise()` to re-wind polygon rings
+  (@anthonynorth, #188).
+* New replacement-function mode for `wk_coords<-()` for in-place modification
+  of coordinates (@mdsumner, #187). 
+* New function `wk_trans_explicit()` migrated from crs2crs (@mdsumner, #187).
+
+
 # wk 0.7.3
 
 * Fix tests for updated waldo package (#178).

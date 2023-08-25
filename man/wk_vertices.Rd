@@ -3,12 +3,15 @@
 \name{wk_vertices}
 \alias{wk_vertices}
 \alias{wk_coords}
+\alias{wk_coords<-}
 \alias{wk_vertex_filter}
 \title{Extract vertices}
 \usage{
 wk_vertices(handleable, ...)
 
 wk_coords(handleable, ...)
+
+wk_coords(handleable, use_z = NA, use_m = NA) <- value
 
 wk_vertex_filter(handler, add_details = FALSE)
 }
@@ -17,6 +20,14 @@ wk_vertex_filter(handler, add_details = FALSE)
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{...}{Passed to the \code{\link[=wk_handle]{wk_handle()}} method.}
+
+\item{use_z, use_m}{Used to declare the output type. Use \code{TRUE} to
+ensure the output has that dimension, \code{FALSE} to ensure it does not,
+and \code{NA} to leave the dimension unchanged.}
+
+\item{value}{An \code{\link[=xy]{xy()}}, \code{\link[=xyz]{xyz()}}, \code{\link[=xym]{xym()}}, or \code{\link[=xyzm]{xyzm()}} of coordinates
+used to replace values in the input. Use \code{NA} to keep the existing
+value.}
 
 \item{handler}{A \link[=wk_handle]{wk_handler} object.}
 
@@ -40,8 +51,21 @@ Whereas \code{wk_vertices()} returns a vector of coordinates as in the same
 format as the input, \code{wk_coords()} returns a data frame with coordinates
 as columns.
 }
+\details{
+\verb{wk_coords<-} is the replacement-function version of 'wk_coords'.
+Using the engine of \code{\link[=wk_trans_explicit]{wk_trans_explicit()}} the coordinates of an object
+can be transformed in a generic way using R functions as needed.
+}
 \examples{
 wk_vertices(wkt("LINESTRING (0 0, 1 1)"))
 wk_coords(wkt("LINESTRING (0 0, 1 1)"))
+
+# wk_coords() replacement function
+x <- xy(1:5, 1:5)
+y <- as_wkt(x)
+wk_coords(y) <- cbind(5:1, 0:4)
+wk_coords(x) <- y[5:1]
+y
+x
 
 }

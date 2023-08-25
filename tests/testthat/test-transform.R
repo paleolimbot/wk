@@ -27,6 +27,8 @@ test_that("wk_transform() works", {
 
   # check error propagation
   expect_error(wk_transform(new_wk_wkt("POINT ENTPY"), wk_affine_identity()), "ENTPY")
+
+
 })
 
 test_that("wk_transform_filter() errors when the recursion limit is too high", {
