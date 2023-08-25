@@ -19,7 +19,7 @@ typedef struct {
     // container list() geometries
     SEXP geom[SFC_WRITER_GEOM_LENGTH];
     // keep track of recursion level and number of parts seen in a geometry
-    size_t recursion_level;
+    int64_t recursion_level;
     R_xlen_t part_id[SFC_WRITER_GEOM_LENGTH];
 
     // the current coordinate sequence and information about
@@ -450,8 +450,11 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     // ignore start of POINT nested in MULTIPOINT
-    if (sfc_writer_is_nesting_multipoint(writer)) {
+    int nesting_multipoint = sfc_writer_is_nesting_multipoint(writer);
+    if (meta->geometry_type == WK_POINT && nesting_multipoint) {
         return WK_CONTINUE;
+    } else if (nesting_multipoint) {
+        Rf_error("Expected geometry type nested within MULTIPOINT to be a POINT");
     }
 
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
@@ -572,7 +575,11 @@ int sfc_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_
 
 int sfc_writer_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
+
     writer->recursion_level--;
+    if (writer->recursion_level < 0) {
+        Rf_error("Recursion level underflowed"); // # nocov
+    }
 
     SEXP geom;
     if (writer->coord_id < Rf_nrows(writer->coord_seq)) {
@@ -610,11 +617,15 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     sfc_writer_t* writer = (sfc_writer_t*) handler_data;
 
     // ignore end of POINT nested in MULTIPOINT
-    if ((meta->geometry_type == WK_POINT) && sfc_writer_is_nesting_multipoint(writer)) {
+    int nesting_multipoint = sfc_writer_is_nesting_multipoint(writer);
+    if ((meta->geometry_type == WK_POINT) && nesting_multipoint) {
         return WK_CONTINUE;
     }
 
     writer->recursion_level--;
+    if (writer->recursion_level < 0) {
+        Rf_error("Recursion level underflowed"); // # nocov
+    }
 
     SEXP geom;
     switch(meta->geometry_type) {
