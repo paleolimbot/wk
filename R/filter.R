@@ -14,7 +14,8 @@
 wk_identity <- function(handleable, ...) {
   result <- wk_handle(handleable, wk_identity_filter(wk_writer(handleable)), ...)
   result <- wk_restore(handleable, result, ...)
-  wk_set_crs(result, wk_crs(handleable))
+  result <- wk_set_crs(result, wk_crs(handleable))
+  wk_set_geodesic(result, wk_is_geodesic(handleable))
 }
 
 #' @rdname wk_identity

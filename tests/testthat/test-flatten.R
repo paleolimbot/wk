@@ -23,6 +23,15 @@ test_that("wk_flatten() works", {
   expect_identical(xy_copy, c(xy(1:1025, 1), xy(0, 0)))
 })
 
+test_that("wk_flatten() propagates attributes", {
+  expect_identical(
+    wk_flatten(
+      wkt("LINESTRING ZM (0 0 0 0, 1 0 0 0)", crs = 1234, geodesic = TRUE)
+    ),
+    wkt("LINESTRING ZM (0 0 0 0, 1 0 0 0)", crs = 1234, geodesic = TRUE)
+  )
+})
+
 test_that("wk_flatten() works for polygons", {
   expect_identical(
     wk_flatten(wkt("POLYGON ((0 0, 0 1, 1 0, 0 0))")),
