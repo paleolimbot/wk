@@ -128,8 +128,8 @@ int wk_collection_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
   }
 
   if (part_id == WK_PART_ID_NONE) {
-    part_id = collection_filter->part_id;
     collection_filter->part_id += inc_part_id;
+    part_id = collection_filter->part_id;
   }
 
   return collection_filter->next->geometry_start(meta, part_id, collection_filter->next->handler_data);
