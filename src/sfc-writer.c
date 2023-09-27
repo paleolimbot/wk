@@ -866,8 +866,8 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     Rf_setAttrib(writer->sfc, R_ClassSymbol, class);
     UNPROTECT(1);
 
-    // attr(sfc, "classes") (only for all empty)
-    if (Rf_xlength(writer->sfc) == writer->n_empty) {
+    // attr(sfc, "classes") (only for sfc_GEOMETRY)
+    if (writer->geometry_type == WK_GEOMETRY) {
         int n_geometry_types = 0;
         for (int i = 0; i < 7; i++) {
             if (1 & (writer->all_geometry_types >> i)) n_geometry_types++;
