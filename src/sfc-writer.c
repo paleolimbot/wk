@@ -866,27 +866,17 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
     Rf_setAttrib(writer->sfc, R_ClassSymbol, class);
     UNPROTECT(1);
 
-    // attr(sfc, "classes") (only for all empty)
-    if (Rf_xlength(writer->sfc) == writer->n_empty) {
-        int n_geometry_types = 0;
-        for (int i = 0; i < 7; i++) {
-            if (1 & (writer->all_geometry_types >> i)) n_geometry_types++;
+    // attr(sfc, "classes") (only for sfc_GEOMETRY)
+    // This is class(x[[i]])[[2]] for each sfg in the output sfc
+    R_xlen_t out_length = Rf_xlength(writer->sfc);
+    if (writer->geometry_type == WK_GEOMETRY || out_length == 0) {
+        SEXP classes = PROTECT(Rf_allocVector(STRSXP, out_length));
+        for (R_xlen_t i = 0; i < out_length; i++) {
+            SEXP item = VECTOR_ELT(writer->sfc, i);
+            SEXP cls = Rf_getAttrib(item, R_ClassSymbol);
+            SET_STRING_ELT(classes, i, STRING_ELT(cls, 1));
         }
 
-        const char* type_names[] = {
-            "POINT", "LINESTRING", "POLYGON",
-             "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON",
-             "GEOMETRYCOLLECTION"
-        };
-
-        SEXP classes = PROTECT(Rf_allocVector(STRSXP, n_geometry_types));
-        int classes_index = 0;
-        for (int i = 0; i < 7; i++) {
-            if (1 & (writer->all_geometry_types >> i)) {
-                SET_STRING_ELT(classes, classes_index, Rf_mkChar(type_names[i]));
-                classes_index++;
-            }
-        }
         Rf_setAttrib(writer->sfc, Rf_install("classes"), classes);
         UNPROTECT(1);
     }
