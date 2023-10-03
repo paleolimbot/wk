@@ -14,6 +14,9 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct {
+    // Flag to promote all simple geometries to multi
+    int promote_multi;
+
     // output vector list()
     SEXP sfc;
     // container list() geometries
@@ -55,11 +58,13 @@ typedef struct {
     R_xlen_t feat_id;
 } sfc_writer_t;
 
-sfc_writer_t* sfc_writer_new(void) {
+sfc_writer_t* sfc_writer_new(int promote_multi) {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
     if (writer == NULL) {
         return NULL; // # nocov
     }
+
+    writer->promote_multi = promote_multi;
 
     writer->sfc = R_NilValue;
     for (int i = 0; i < SFC_WRITER_GEOM_LENGTH; i++) {
@@ -678,6 +683,10 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     // if we're above a top-level geometry, this geometry needs to be added to the parent
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
+        // First check if we need to promote the geometry to multi
+        if (writer->promote_multi) {
+            Rf_error("Not implemented: promote multi");
+        }
 
         // may need to reallocate the container
         R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
@@ -912,7 +921,9 @@ void sfc_writer_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_sfc_writer_new(void) {
+SEXP wk_c_sfc_writer_new(SEXP promote_multi_sexp) {
+    int promote_multi = LOGICAL(promote_multi_sexp)[0];
+
     wk_handler_t* handler = wk_handler_create();
 
     handler->finalizer = &sfc_writer_finalize;
@@ -927,7 +938,7 @@ SEXP wk_c_sfc_writer_new(void) {
     handler->vector_end = &sfc_writer_vector_end;
     handler->deinitialize = &sfc_writer_deinitialize;
 
-    handler->handler_data = sfc_writer_new();
+    handler->handler_data = sfc_writer_new(promote_multi);
     if (handler->handler_data == NULL) {
         wk_handler_destroy(handler); // # nocov
         Rf_error("Failed to alloc handler data"); // # nocov

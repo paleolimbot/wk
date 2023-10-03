@@ -17,6 +17,9 @@
 #' @param generic Use `TRUE` to obtain a writer that can write all geometry
 #'   types.
 #' @param buffer_size Control the initial buffer size used when writing WKB.
+#' @param promote_multi Use TRUE to promote all simple geometries to a multi
+#'   type when reading to sfc. This is useful to increase the likelihood that
+#'   the sfc will contain a single geometry type.
 #' @param ... Passed to the writer constructor.
 #'
 #' @return A [wk_handler][wk_handle].

@@ -25,7 +25,7 @@ SEXP wk_c_meta_handler_new(void);
 SEXP wk_c_vector_meta_handler_new(void);
 SEXP wk_c_orient_filter_new(SEXP handler_xptr, SEXP direction);
 SEXP wk_c_problems_handler_new(void);
-SEXP wk_c_sfc_writer_new(void);
+SEXP wk_c_sfc_writer_new(SEXP promote_multi_sexp);
 SEXP wk_c_trans_affine_new(SEXP trans_matrix);
 SEXP wk_c_trans_affine_as_matrix(SEXP trans_xptr);
 SEXP wk_c_trans_explicit_new(SEXP xy, SEXP use_z, SEXP use_m);
@@ -63,7 +63,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"wk_c_vector_meta_handler_new", (DL_FUNC) &wk_c_vector_meta_handler_new, 0},
   {"wk_c_orient_filter_new", (DL_FUNC) &wk_c_orient_filter_new, 2},
   {"wk_c_problems_handler_new", (DL_FUNC) &wk_c_problems_handler_new, 0},
-  {"wk_c_sfc_writer_new", (DL_FUNC) &wk_c_sfc_writer_new, 0},
+  {"wk_c_sfc_writer_new", (DL_FUNC) &wk_c_sfc_writer_new, 1},
   {"wk_c_trans_affine_new", (DL_FUNC) &wk_c_trans_affine_new, 1},
   {"wk_c_trans_affine_as_matrix", (DL_FUNC) &wk_c_trans_affine_as_matrix, 1},
   {"wk_c_trans_explicit_new", (DL_FUNC) &wk_c_trans_explicit_new, 3},
