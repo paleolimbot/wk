@@ -183,8 +183,6 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
 }
 
 SEXP sfc_writer_promote_multi(SEXP item, int geometry_type, uint32_t flags, uint32_t size) {
-    SEXP result = R_NilValue;
-
     int coord_size;
     if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
         coord_size = 4;
@@ -197,19 +195,21 @@ SEXP sfc_writer_promote_multi(SEXP item, int geometry_type, uint32_t flags, uint
     switch (geometry_type) {
     case WK_POINT: {
         if (size > 0) {
-            result = PROTECT(Rf_allocMatrix(REALSXP, 1, coord_size));
+            SEXP result = PROTECT(Rf_allocMatrix(REALSXP, 1, coord_size));
             memcpy(REAL(result), REAL(item), coord_size * sizeof(double));
+            UNPROTECT(1);
+            return result;
         } else {
-            result = PROTECT(Rf_allocMatrix(REALSXP, 0, coord_size));
+            return Rf_allocMatrix(REALSXP, 0, coord_size);
         }
     }
     case WK_LINESTRING:
-        result = PROTECT(Rf_allocVector(VECSXP, 1));
+    case WK_POLYGON: {
+        SEXP result = PROTECT(Rf_allocVector(VECSXP, 1));
         SET_VECTOR_ELT(result, 0, item);
-
-    case WK_POLYGON:
-        result = PROTECT(Rf_allocVector(VECSXP, 1));
-        SET_VECTOR_ELT(result, 0, item);
+        UNPROTECT(1);
+        return result;
+    }
 
     default:
         return item;
@@ -507,7 +507,7 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
 
     // there isn't quite enough information here yet for points, which can
     // be considered empty if coordinates are NA
-    if ((writer->recursion_level == 0) && (meta->geometry_type != WK_POINT)) {
+    if ((writer->recursion_level == 0) && (meta->geometry_type != WK_POINT) && !writer->promote_multi) {
         sfc_writer_update_vector_attributes(writer, meta, meta->geometry_type, meta->size);
     } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
         Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
