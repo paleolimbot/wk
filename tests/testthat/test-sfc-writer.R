@@ -145,6 +145,21 @@ test_that("sfc_writer() works with promote_multi = TRUE", {
   )
 
   expect_identical(
+    wk_handle(as_wkb("POINT Z (1 1 2)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2), ncol = 3)))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT M (1 1 2)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2), ncol = 3), dim = "XYM"))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT ZM (1 1 2 3)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2, 3), ncol = 4)))
+  )
+
+  expect_identical(
     wk_handle(as_wkb("LINESTRING (1 2, 3 4)"), sfc_writer(promote_multi = TRUE)),
     sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(3, 4)))))
   )
