@@ -205,10 +205,15 @@ SEXP sfc_writer_promote_multi(SEXP item, int geometry_type, uint32_t flags, uint
     }
     case WK_LINESTRING:
     case WK_POLYGON: {
-        SEXP result = PROTECT(Rf_allocVector(VECSXP, 1));
-        SET_VECTOR_ELT(result, 0, item);
-        UNPROTECT(1);
-        return result;
+        if (size > 0) {
+            SEXP result = PROTECT(Rf_allocVector(VECSXP, 1));
+            Rf_setAttrib(item, R_ClassSymbol, R_NilValue);
+            SET_VECTOR_ELT(result, 0, item);
+            UNPROTECT(1);
+            return result;
+        } else {
+            return Rf_allocVector(VECSXP, 0);
+        }
     }
 
     default:

@@ -130,37 +130,37 @@ test_that("sfc_writer() works with promote_multi = TRUE", {
           "GEOMETRYCOLLECTION EMPTY"
         )
       ),
-      sfc_writer()
+      sfc_writer(promote_multi = TRUE)
     ),
     sf::st_sfc(
-      sf::st_point(), sf::st_linestring(), sf::st_polygon(),
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
       sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
       sf::st_geometrycollection()
     )
   )
 
   expect_identical(
-    wk_handle(as_wkb("POINT (1 1)"), sfc_writer()),
-    sf::st_sfc(sf::st_point(c(1, 1)))
+    wk_handle(as_wkb("POINT (1 1)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1), ncol = 2)))
   )
 
   expect_identical(
-    wk_handle(as_wkb("LINESTRING (1 2, 3 4)"), sfc_writer()),
-    sf::st_sfc(sf::st_linestring(rbind(c(1, 2), c(3, 4))))
+    wk_handle(as_wkb("LINESTRING (1 2, 3 4)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(3, 4)))))
   )
 
   expect_identical(
-    wk_handle(as_wkb("POLYGON ((0 0, 0 1, 1 0, 0 0))"), sfc_writer()),
-    sf::st_sfc(sf::st_polygon(list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0)))))
+    wk_handle(as_wkb("POLYGON ((0 0, 0 1, 1 0, 0 0))"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipolygon(list(list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0))))))
   )
 
   expect_identical(
-    wk_handle(as_wkb("MULTIPOINT ((1 2), (3 4))"), sfc_writer()),
+    wk_handle(as_wkb("MULTIPOINT ((1 2), (3 4))"), sfc_writer(promote_multi = TRUE)),
     sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(3, 4))))
   )
 
   expect_identical(
-    wk_handle(as_wkb("MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))"), sfc_writer()),
+    wk_handle(as_wkb("MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))"), sfc_writer(promote_multi = TRUE)),
     sf::st_sfc(
       sf::st_multilinestring(
         list(rbind(c(1, 1), c(2, 2)), rbind(c(2, 2), c(3, 4)))
@@ -171,7 +171,7 @@ test_that("sfc_writer() works with promote_multi = TRUE", {
   expect_identical(
     wk_handle(
       as_wkb("MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))"),
-      sfc_writer()
+      sfc_writer(promote_multi = TRUE)
     ),
     sf::st_sfc(
       sf::st_multipolygon(
@@ -184,7 +184,10 @@ test_that("sfc_writer() works with promote_multi = TRUE", {
   )
 
   expect_identical(
-    wk_handle(as_wkb("GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"), sfc_writer()),
+    wk_handle(
+      as_wkb("GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"),
+      sfc_writer(promote_multi = TRUE)
+    ),
     sf::st_sfc(
       sf::st_geometrycollection(
         list(
