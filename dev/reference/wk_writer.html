@@ -79,7 +79,7 @@ all geometry types.</p>
 <span><span class="co"># S3 method for sf</span></span>
 <span><span class="fu">wk_writer</span><span class="op">(</span><span class="va">handleable</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sfc_writer</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">sfc_writer</span><span class="op">(</span>promote_multi <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">wkb_writer</span><span class="op">(</span>buffer_size <span class="op">=</span> <span class="fl">2048L</span>, endian <span class="op">=</span> <span class="cn">NA_integer_</span><span class="op">)</span></span>
 <span></span>
@@ -111,6 +111,12 @@ all geometry types.</p>
 
 <dt>...</dt>
 <dd><p>Passed to the writer constructor.</p></dd>
+
+
+<dt>promote_multi</dt>
+<dd><p>Use TRUE to promote all simple geometries to a multi
+type when reading to sfc. This is useful to increase the likelihood that
+the sfc will contain a single geometry type.</p></dd>
 
 
 <dt>buffer_size</dt>
