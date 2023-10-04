@@ -14,6 +14,9 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct {
+    // Flag to promote all simple geometries to multi
+    int promote_multi;
+
     // output vector list()
     SEXP sfc;
     // container list() geometries
@@ -55,11 +58,13 @@ typedef struct {
     R_xlen_t feat_id;
 } sfc_writer_t;
 
-sfc_writer_t* sfc_writer_new(void) {
+sfc_writer_t* sfc_writer_new(int promote_multi) {
     sfc_writer_t* writer = (sfc_writer_t*) malloc(sizeof(sfc_writer_t));
     if (writer == NULL) {
         return NULL; // # nocov
     }
+
+    writer->promote_multi = promote_multi;
 
     writer->sfc = R_NilValue;
     for (int i = 0; i < SFC_WRITER_GEOM_LENGTH; i++) {
@@ -177,23 +182,62 @@ SEXP sfc_writer_empty_sfg(int geometry_type, uint32_t flags) {
     return result;
 }
 
-void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk_meta_t* meta) {
+SEXP sfc_writer_promote_multi(SEXP item, int geometry_type, uint32_t flags, uint32_t size) {
+    int coord_size;
+    if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
+        coord_size = 4;
+    } else if ((flags & WK_FLAG_HAS_Z) || (flags & WK_FLAG_HAS_M)) {
+        coord_size = 3;
+    } else {
+        coord_size = 2;
+    }
+
+    switch (geometry_type) {
+    case WK_POINT: {
+        if (size > 0) {
+            SEXP result = PROTECT(Rf_allocMatrix(REALSXP, 1, coord_size));
+            memcpy(REAL(result), REAL(item), coord_size * sizeof(double));
+            UNPROTECT(1);
+            return result;
+        } else {
+            return Rf_allocMatrix(REALSXP, 0, coord_size);
+        }
+    }
+    case WK_LINESTRING:
+    case WK_POLYGON: {
+        if (size > 0) {
+            SEXP result = PROTECT(Rf_allocVector(VECSXP, 1));
+            Rf_setAttrib(item, R_ClassSymbol, R_NilValue);
+            SET_VECTOR_ELT(result, 0, item);
+            UNPROTECT(1);
+            return result;
+        } else {
+            return Rf_allocVector(VECSXP, 0);
+        }
+    }
+
+    default:
+        return item;
+    }
+}
+
+void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, int geometry_type, uint32_t flags) {
     if (writer->recursion_level == 0 || sfc_writer_is_nesting_geometrycollection(writer)) {
         // in the form XY(ZM), GEOM_TYPE, sfg
         SEXP class = PROTECT(Rf_allocVector(STRSXP, 3));
         SET_STRING_ELT(class, 2, Rf_mkChar("sfg"));
 
-        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        if ((flags & WK_FLAG_HAS_Z) && (flags & WK_FLAG_HAS_M)) {
             SET_STRING_ELT(class, 0, Rf_mkChar("XYZM"));
-        } else if (meta->flags & WK_FLAG_HAS_Z) {
+        } else if (flags & WK_FLAG_HAS_Z) {
             SET_STRING_ELT(class, 0, Rf_mkChar("XYZ"));
-        } else if (meta->flags & WK_FLAG_HAS_M) {
+        } else if (flags & WK_FLAG_HAS_M) {
             SET_STRING_ELT(class, 0, Rf_mkChar("XYM"));
         } else {
             SET_STRING_ELT(class, 0, Rf_mkChar("XY"));
         }
 
-        switch (meta->geometry_type) {
+        switch (geometry_type) {
         case WK_POINT:
             SET_STRING_ELT(class, 1, Rf_mkChar("POINT"));
             break;
@@ -216,7 +260,7 @@ void sfc_writer_maybe_add_class_to_sfg(sfc_writer_t* writer, SEXP item, const wk
             SET_STRING_ELT(class, 1, Rf_mkChar("GEOMETRYCOLLECTION"));
             break;
         default:
-            Rf_error("Can't generate class 'sfg' for geometry type '%d'", meta->geometry_type); // # nocov
+            Rf_error("Can't generate class 'sfg' for geometry type '%d'", geometry_type); // # nocov
         }
 
         Rf_setAttrib(item, R_ClassSymbol, class);
@@ -234,14 +278,15 @@ void sfc_writer_update_dimensions(sfc_writer_t* writer, const wk_meta_t* meta, u
     }
 }
 
-void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta, uint32_t size) {
+void sfc_writer_update_vector_attributes(sfc_writer_t* writer, const wk_meta_t* meta,
+                                         int geometry_type, uint32_t size) {
     // all geometry types specifically matters for when everything is EMPTY
-    writer->all_geometry_types = writer->all_geometry_types | (1 << (meta->geometry_type - 1));
+    writer->all_geometry_types = writer->all_geometry_types | (1 << (geometry_type - 1));
 
     // these matter even for EMPTY
     if (writer->geometry_type == SFC_GEOMETRY_TYPE_NOT_YET_DEFINED) {
-        writer->geometry_type = meta->geometry_type;
-    } else if (writer->geometry_type != meta->geometry_type) {
+        writer->geometry_type = geometry_type;
+    } else if (writer->geometry_type != geometry_type) {
         writer->geometry_type = WK_GEOMETRY;
     }
 
@@ -467,8 +512,8 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
 
     // there isn't quite enough information here yet for points, which can
     // be considered empty if coordinates are NA
-    if ((writer->recursion_level == 0) && (meta->geometry_type != WK_POINT)) {
-        sfc_writer_update_vector_attributes(writer, meta, meta->size);
+    if ((writer->recursion_level == 0) && (meta->geometry_type != WK_POINT) && !writer->promote_multi) {
+        sfc_writer_update_vector_attributes(writer, meta, meta->geometry_type, meta->size);
     } else if ((writer->recursion_level < 0) || (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
         Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
     }
@@ -488,7 +533,8 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
             }
         }
 
-        sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
+        sfc_writer_maybe_add_class_to_sfg(
+            writer, writer->coord_seq, meta->geometry_type, meta->flags);
         R_PreserveObject(writer->coord_seq);
         UNPROTECT(1);
         writer->coord_id = 0;
@@ -499,7 +545,8 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         if (writer->coord_seq != R_NilValue) R_ReleaseObject(writer->coord_seq);
         writer->coord_seq = PROTECT(sfc_writer_alloc_coord_seq(meta->size, writer->coord_size));
 
-        sfc_writer_maybe_add_class_to_sfg(writer, writer->coord_seq, meta);
+        sfc_writer_maybe_add_class_to_sfg(
+            writer, writer->coord_seq, meta->geometry_type, meta->flags);
         R_PreserveObject(writer->coord_seq);
         UNPROTECT(1);
         writer->coord_id = 0;
@@ -514,7 +561,7 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* han
         }
 
         writer->geom[writer->recursion_level] = PROTECT(sfc_writer_alloc_geom(meta->size));
-        sfc_writer_maybe_add_class_to_sfg(writer, writer->geom[writer->recursion_level], meta);
+        sfc_writer_maybe_add_class_to_sfg(writer, writer->geom[writer->recursion_level], meta->geometry_type, meta->flags);
         R_PreserveObject(writer->geom[writer->recursion_level]);
         UNPROTECT(1);
         writer->part_id[writer->recursion_level] = 0;
@@ -678,7 +725,6 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
     // if we're above a top-level geometry, this geometry needs to be added to the parent
     // otherwise, it needs to be added to sfc
     if (writer->recursion_level > 0) {
-
         // may need to reallocate the container
         R_xlen_t container_len = Rf_xlength(writer->geom[writer->recursion_level - 1]);
         if (part_id >= container_len) {
@@ -702,9 +748,37 @@ int sfc_writer_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handl
         // We didn't update this earlier because we didn't know if the point was
         // empty yet or not!
         int all_na = sfc_double_all_na_or_nan(writer->coord_size, REAL(geom));
-        sfc_writer_update_vector_attributes(writer, meta, meta->size && !all_na);
 
-        sfc_writer_sfc_append(writer, geom);
+        // Promote geometry to multi if necessary
+        if (writer->promote_multi) {
+            SEXP item_to_append = PROTECT(
+                sfc_writer_promote_multi(geom, WK_POINT, meta->flags, meta->size && !all_na));
+
+            sfc_writer_maybe_add_class_to_sfg(
+                writer, item_to_append, WK_MULTIPOINT, meta->flags);
+            sfc_writer_update_vector_attributes(
+                        writer, meta, WK_MULTIPOINT, meta->size && !all_na);
+
+            sfc_writer_sfc_append(writer, item_to_append);
+            UNPROTECT(1);
+        } else {
+            sfc_writer_update_vector_attributes(
+                        writer, meta, WK_POINT, meta->size && !all_na);
+            sfc_writer_sfc_append(writer, geom);
+        }
+    } else if (writer->promote_multi) {
+        SEXP item_to_append = PROTECT(
+            sfc_writer_promote_multi(geom, meta->geometry_type, meta->flags, meta->size));
+
+        int geometry_type_to_append = meta->geometry_type <= WK_POLYGON ?
+            meta->geometry_type + 3L : meta->geometry_type;
+        sfc_writer_maybe_add_class_to_sfg(
+            writer, item_to_append, geometry_type_to_append, meta->flags);
+        sfc_writer_update_vector_attributes(
+                    writer, meta, geometry_type_to_append, meta->size);
+
+        sfc_writer_sfc_append(writer, item_to_append);
+        UNPROTECT(1);
     } else {
         sfc_writer_sfc_append(writer, geom);
     }
@@ -741,7 +815,7 @@ SEXP sfc_writer_vector_end(const wk_vector_meta_t* vector_meta, void* handler_da
         meta.size = 0;
         writer->recursion_level = 0;
         SEXP empty = PROTECT(sfc_writer_empty_sfg(meta.geometry_type, meta.flags));
-        sfc_writer_maybe_add_class_to_sfg(writer, empty, &meta);
+        sfc_writer_maybe_add_class_to_sfg(writer, empty, meta.geometry_type, meta.flags);
 
         for (R_xlen_t i = 0; i < Rf_xlength(writer->sfc); i++) {
             if (VECTOR_ELT(writer->sfc, i) == R_NilValue) {
@@ -912,7 +986,9 @@ void sfc_writer_finalize(void* handler_data) {
     }
 }
 
-SEXP wk_c_sfc_writer_new(void) {
+SEXP wk_c_sfc_writer_new(SEXP promote_multi_sexp) {
+    int promote_multi = LOGICAL(promote_multi_sexp)[0];
+
     wk_handler_t* handler = wk_handler_create();
 
     handler->finalizer = &sfc_writer_finalize;
@@ -927,7 +1003,7 @@ SEXP wk_c_sfc_writer_new(void) {
     handler->vector_end = &sfc_writer_vector_end;
     handler->deinitialize = &sfc_writer_deinitialize;
 
-    handler->handler_data = sfc_writer_new();
+    handler->handler_data = sfc_writer_new(promote_multi);
     if (handler->handler_data == NULL) {
         wk_handler_destroy(handler); // # nocov
         Rf_error("Failed to alloc handler data"); // # nocov

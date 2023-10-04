@@ -99,6 +99,121 @@ test_that("sfc_writer() works with fixed-length input", {
   )
 })
 
+test_that("sfc_writer() works with promote_multi = TRUE", {
+  skip_if_not_installed("sf")
+
+  # empties (equal because of NaN/NA difference for POINT)
+  expect_equal_ignore_na_nan(
+    wk_handle(
+      as_wkb(
+        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+          "GEOMETRYCOLLECTION EMPTY"
+        )
+      ),
+      sfc_writer(promote_multi = TRUE)
+    ),
+    sf::st_sfc(
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_geometrycollection()
+    )
+  )
+
+  # subtely different for WKT, since a point will fire zero coordinates
+  # whereas for WKB it will fire (NaN, NaN)
+  expect_equal_ignore_na_nan(
+    wk_handle(
+      as_wkt(
+        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
+          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
+          "GEOMETRYCOLLECTION EMPTY"
+        )
+      ),
+      sfc_writer(promote_multi = TRUE)
+    ),
+    sf::st_sfc(
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
+      sf::st_geometrycollection()
+    )
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT (1 1)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1), ncol = 2)))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT Z (1 1 2)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2), ncol = 3)))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT M (1 1 2)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2), ncol = 3), dim = "XYM"))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POINT ZM (1 1 2 3)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(matrix(c(1, 1, 2, 3), ncol = 4)))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("LINESTRING (1 2, 3 4)"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multilinestring(list(rbind(c(1, 2), c(3, 4)))))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("POLYGON ((0 0, 0 1, 1 0, 0 0))"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipolygon(list(list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0))))))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("MULTIPOINT ((1 2), (3 4))"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(sf::st_multipoint(rbind(c(1, 2), c(3, 4))))
+  )
+
+  expect_identical(
+    wk_handle(as_wkb("MULTILINESTRING ((1 1, 2 2), (2 2, 3 4))"), sfc_writer(promote_multi = TRUE)),
+    sf::st_sfc(
+      sf::st_multilinestring(
+        list(rbind(c(1, 1), c(2, 2)), rbind(c(2, 2), c(3, 4)))
+      )
+    )
+  )
+
+  expect_identical(
+    wk_handle(
+      as_wkb("MULTIPOLYGON (((0 0, 0 1, 1 0, 0 0)), ((0 0, 0 -2, -1 0, 0 0)))"),
+      sfc_writer(promote_multi = TRUE)
+    ),
+    sf::st_sfc(
+      sf::st_multipolygon(
+        list(
+          list(rbind(c(0, 0), c(0, 1), c(1, 0), c(0, 0))),
+          list(rbind(c(0, 0), c(0, -2), c(-1, 0), c(0, 0)))
+        )
+      )
+    )
+  )
+
+  expect_identical(
+    wk_handle(
+      as_wkb("GEOMETRYCOLLECTION (POINT (1 1), LINESTRING (1 1, 2 2))"),
+      sfc_writer(promote_multi = TRUE)
+    ),
+    sf::st_sfc(
+      sf::st_geometrycollection(
+        list(
+          sf::st_point(c(1, 1)),
+          sf::st_linestring(rbind(c(1, 1), c(2, 2)))
+        )
+      )
+    )
+  )
+})
+
 test_that("nested points are treated the same as top-level points", {
   skip_if_not_installed("sf")
 

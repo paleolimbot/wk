@@ -19,7 +19,7 @@
 
 \method{wk_writer}{sf}(handleable, ...)
 
-sfc_writer()
+sfc_writer(promote_multi = FALSE)
 
 wkb_writer(buffer_size = 2048L, endian = NA_integer_)
 
@@ -42,6 +42,10 @@ xy_writer()
 \code{\link[=rct]{rct()}}, or \code{\link[sf:sfc]{sf::st_sfc()}}) for which \code{\link[=wk_handle]{wk_handle()}} is defined.}
 
 \item{...}{Passed to the writer constructor.}
+
+\item{promote_multi}{Use TRUE to promote all simple geometries to a multi
+type when reading to sfc. This is useful to increase the likelihood that
+the sfc will contain a single geometry type.}
 
 \item{buffer_size}{Control the initial buffer size used when writing WKB.}
 
