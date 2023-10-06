@@ -32,6 +32,9 @@
 #'     Note that coordinate values may not have been rounded; the grid
 #'     size only refers to the level of detail with which they should
 #'     be interpreted.
+#'   - `is_empty`: `TRUE` if there is at least one non-empty coordinate.
+#'     For the purposes of this value, a non-empty coordinate is one that
+#'     contains at least one value that is not `NA` or `NaN`.
 #'
 #' @export
 #'
