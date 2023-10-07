@@ -8,7 +8,7 @@ db_file <- file.path("data-raw/proj.db")
 if (!file.exists(db_file)) {
   # download PROJ
   if (!dir.exists("data-raw/proj-9.1.0")) {
-    source_url <- "https://download.osgeo.org/proj/proj-9.1.0.tar.gz"
+    source_url <- "https://download.osgeo.org/proj/proj-9.3.0.tar.gz"
     curl::curl_download(source_url, "data-raw/proj-source.tar.gz")
     untar("data-raw/proj-source.tar.gz", exdir = "data-raw")
   }
