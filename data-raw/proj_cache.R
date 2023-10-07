@@ -82,4 +82,5 @@ wk_proj_crs_wkt2 <- as.data.frame(bind_cols(crs_codes, tibble(wkt2 = wkt2)))
 
 usethis::use_data(wk_proj_crs_view, overwrite = TRUE)
 usethis::use_data(wk_proj_crs_json, overwrite = TRUE)
-usethis::use_data(wk_proj_crs_wkt2, overwrite = TRUE)
+# Not just now
+# usethis::use_data(wk_proj_crs_wkt2, overwrite = TRUE)
