@@ -1,26 +1,28 @@
 
 test_that("wk_meta() works", {
   expect_identical(
-    wk_meta(wkt(c("POINT (1 2)", NA))),
+    wk_meta(wkt(c("POINT (1 2)", "POINT EMPTY", NA))),
     data.frame(
-      geometry_type = c(1L, NA_integer_),
-      size = c(NA_integer_, NA_integer_),
-      has_z = c(FALSE, NA),
-      has_m = c(FALSE, NA),
-      srid = c(NA_integer_, NA_integer_),
-      precision = c(0, NA_integer_)
+      geometry_type = c(1L, 1L, NA_integer_),
+      size = c(NA_integer_, 0L, NA_integer_),
+      has_z = c(FALSE, FALSE, NA),
+      has_m = c(FALSE, FALSE, NA),
+      srid = c(NA_integer_, NA_integer_, NA_integer_),
+      precision = c(0, 0, NA_integer_),
+      is_empty = c(FALSE, TRUE, NA)
     )
   )
 
   expect_identical(
-    wk_meta(as_wkb(c("POINT (1 2)", NA))),
+    wk_meta(as_wkb(c("POINT (1 2)", "POINT EMPTY", NA))),
     data.frame(
-      geometry_type = c(1L, NA_integer_),
-      size = c(1L, NA_integer_),
-      has_z = c(FALSE, NA),
-      has_m = c(FALSE, NA),
-      srid = c(NA_integer_, NA_integer_),
-      precision = c(0, NA_integer_)
+      geometry_type = c(1L, 1L, NA_integer_),
+      size = c(1L, 1L, NA_integer_),
+      has_z = c(FALSE, FALSE, NA),
+      has_m = c(FALSE, FALSE, NA),
+      srid = c(NA_integer_, NA_integer_, NA_integer_),
+      precision = c(0, 0, NA_integer_),
+      is_empty = c(FALSE, TRUE, NA)
     )
   )
 
@@ -32,7 +34,8 @@ test_that("wk_meta() works", {
       has_z = c(FALSE, NA),
       has_m = c(FALSE, NA),
       srid = c(1234L, NA_integer_),
-      precision = c(0, NA_integer_)
+      precision = c(0, NA_integer_),
+      is_empty = c(FALSE, NA)
     )
   )
 })
