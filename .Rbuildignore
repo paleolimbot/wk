@@ -13,3 +13,4 @@
 ^vignettes/articles$
 ^\.covrignore$
 ^CRAN-SUBMISSION$
+^\.clang-format$

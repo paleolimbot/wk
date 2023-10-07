@@ -1,15 +1,15 @@
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
-#include "wk-v1.h"
 #include "altrep.h"
+#include "wk-v1.h"
 
-#define HANDLE_OR_RETURN(expr)                                 \
-    result = expr;                                             \
-    if (result == WK_ABORT_FEATURE) { \
-      Rf_error("wk_polygon_filter() does not support WK_ABORT_FEATURE"); \
-    } \
-    if (result != WK_CONTINUE) return result
+#define HANDLE_OR_RETURN(expr)                                         \
+  result = expr;                                                       \
+  if (result == WK_ABORT_FEATURE) {                                    \
+    Rf_error("wk_polygon_filter() does not support WK_ABORT_FEATURE"); \
+  }                                                                    \
+  if (result != WK_CONTINUE) return result
 
 typedef struct {
   wk_handler_t* next;
@@ -39,8 +39,11 @@ typedef struct {
 static inline int wk_polygon_start(polygon_filter_t* polygon_filter) {
   int result;
   polygon_filter->feature_id_out++;
-  HANDLE_OR_RETURN(polygon_filter->next->feature_start(&(polygon_filter->vector_meta), polygon_filter->feature_id_out, polygon_filter->next->handler_data));
-  HANDLE_OR_RETURN(polygon_filter->next->geometry_start(&(polygon_filter->meta), WK_PART_ID_NONE, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->feature_start(
+      &(polygon_filter->vector_meta), polygon_filter->feature_id_out,
+      polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->geometry_start(
+      &(polygon_filter->meta), WK_PART_ID_NONE, polygon_filter->next->handler_data));
   polygon_filter->ring_id = -1;
   return WK_CONTINUE;
 }
@@ -51,7 +54,9 @@ static inline int wk_ring_start(polygon_filter_t* polygon_filter) {
   memcpy(polygon_filter->first_coord, polygon_filter->last_coord, 4 * sizeof(double));
 
   polygon_filter->ring_id++;
-  HANDLE_OR_RETURN(polygon_filter->next->ring_start(&(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->ring_start(
+      &(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id,
+      polygon_filter->next->handler_data));
   polygon_filter->coord_id = 0;
   return WK_CONTINUE;
 }
@@ -61,31 +66,39 @@ static inline int wk_ring_end(polygon_filter_t* polygon_filter) {
 
   // close the loop if necessary
   for (int i = 0; i < polygon_filter->last_coord_size; i++) {
-      if (polygon_filter->last_coord[i] != polygon_filter->first_coord[i]) {
-        HANDLE_OR_RETURN(polygon_filter->next->coord(&(polygon_filter->meta), polygon_filter->first_coord, polygon_filter->coord_id, polygon_filter->next->handler_data));
-        break;
-      }
+    if (polygon_filter->last_coord[i] != polygon_filter->first_coord[i]) {
+      HANDLE_OR_RETURN(polygon_filter->next->coord(
+          &(polygon_filter->meta), polygon_filter->first_coord, polygon_filter->coord_id,
+          polygon_filter->next->handler_data));
+      break;
+    }
   }
 
-  HANDLE_OR_RETURN(polygon_filter->next->ring_end(&(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->ring_end(
+      &(polygon_filter->meta), WK_SIZE_UNKNOWN, polygon_filter->ring_id,
+      polygon_filter->next->handler_data));
   return WK_CONTINUE;
 }
 
 static inline int wk_polygon_end(polygon_filter_t* polygon_filter) {
   int result;
-  HANDLE_OR_RETURN(polygon_filter->next->geometry_end(&(polygon_filter->meta), WK_PART_ID_NONE, polygon_filter->next->handler_data));
-  HANDLE_OR_RETURN(polygon_filter->next->feature_end(&(polygon_filter->vector_meta), polygon_filter->feature_id_out, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->geometry_end(
+      &(polygon_filter->meta), WK_PART_ID_NONE, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->feature_end(&(polygon_filter->vector_meta),
+                                                     polygon_filter->feature_id_out,
+                                                     polygon_filter->next->handler_data));
   return WK_CONTINUE;
 }
 
 void wk_polygon_filter_initialize(int* dirty, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
   *dirty = 1;
-  polygon_filter->next->initialize(&polygon_filter->next->dirty, polygon_filter->next->handler_data);
+  polygon_filter->next->initialize(&polygon_filter->next->dirty,
+                                   polygon_filter->next->handler_data);
 }
 
 int wk_polygon_filter_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
 
   polygon_filter->feature_id = -1;
   polygon_filter->feature_id_out = -1;
@@ -94,11 +107,13 @@ int wk_polygon_filter_vector_start(const wk_vector_meta_t* meta, void* handler_d
   polygon_filter->vector_meta.size = WK_VECTOR_SIZE_UNKNOWN;
   WK_META_RESET(polygon_filter->meta, WK_POLYGON);
 
-  return polygon_filter->next->vector_start(&(polygon_filter->vector_meta), polygon_filter->next->handler_data);
+  return polygon_filter->next->vector_start(&(polygon_filter->vector_meta),
+                                            polygon_filter->next->handler_data);
 }
 
-int wk_polygon_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+int wk_polygon_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id,
+                                    void* handler_data) {
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
 
   polygon_filter->feature_id++;
   R_xlen_t spec_i = polygon_filter->feature_id % polygon_filter->n_feature_id_spec;
@@ -120,14 +135,16 @@ int wk_polygon_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_
   int ring_id_spec_changed = ring_id_spec != polygon_filter->last_ring_id_spec;
   polygon_filter->last_ring_id_spec = ring_id_spec;
 
-  polygon_filter->is_new_feature = feature_id_spec_changed || (polygon_filter->feature_id == 0);
+  polygon_filter->is_new_feature =
+      feature_id_spec_changed || (polygon_filter->feature_id == 0);
   polygon_filter->is_new_ring = polygon_filter->is_new_feature || ring_id_spec_changed;
 
   return WK_CONTINUE;
 }
 
-int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id,
+                            void* handler_data) {
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
   int result;
 
   // maybe need to close the ring before starting a new feature/ring
@@ -138,11 +155,11 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   // We always need to keep a copy of the last coordinate because we
   // need to check for closed rings and the ring end method gets called
   // at the *next* coordinate where there's a new feature.
-  polygon_filter->last_coord_size = 2 +
-    ((meta->flags & WK_FLAG_HAS_Z) != 0) +
-    ((meta->flags & WK_FLAG_HAS_M) != 0);
+  polygon_filter->last_coord_size =
+      2 + ((meta->flags & WK_FLAG_HAS_Z) != 0) + ((meta->flags & WK_FLAG_HAS_M) != 0);
   memset(polygon_filter->last_coord, 0, 4 * sizeof(double));
-  memcpy(polygon_filter->last_coord, coord, polygon_filter->last_coord_size * sizeof(double));
+  memcpy(polygon_filter->last_coord, coord,
+         polygon_filter->last_coord_size * sizeof(double));
 
   if (polygon_filter->is_new_feature) {
     if (polygon_filter->feature_id > 0) {
@@ -159,11 +176,13 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
   } else {
     // check dimensions against current meta because handlers make the assumption
     // that all coordinates passed have the same dimension for a single geometry
-    int diff_z = (polygon_filter->meta.flags & WK_FLAG_HAS_Z) ^ (meta->flags & WK_FLAG_HAS_Z);
-    int diff_m = (polygon_filter->meta.flags & WK_FLAG_HAS_M) ^ (meta->flags & WK_FLAG_HAS_M);
+    int diff_z =
+        (polygon_filter->meta.flags & WK_FLAG_HAS_Z) ^ (meta->flags & WK_FLAG_HAS_Z);
+    int diff_m =
+        (polygon_filter->meta.flags & WK_FLAG_HAS_M) ^ (meta->flags & WK_FLAG_HAS_M);
     int diff_srid = polygon_filter->meta.srid != meta->srid;
     if (diff_z || diff_m || diff_srid) {
-        Rf_error("Can't create polygon using geometries with differing dimensions or SRID");
+      Rf_error("Can't create polygon using geometries with differing dimensions or SRID");
     }
   }
 
@@ -172,13 +191,15 @@ int wk_polygon_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t
     polygon_filter->is_new_ring = 0;
   }
 
-  HANDLE_OR_RETURN(polygon_filter->next->coord(&(polygon_filter->meta), coord, polygon_filter->coord_id, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(polygon_filter->next->coord(&(polygon_filter->meta), coord,
+                                               polygon_filter->coord_id,
+                                               polygon_filter->next->handler_data));
   polygon_filter->coord_id++;
   return WK_CONTINUE;
 }
 
 SEXP wk_polygon_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
 
   // if there weren't any features we need to start one
   int result = WK_CONTINUE;
@@ -197,47 +218,52 @@ SEXP wk_polygon_filter_vector_end(const wk_vector_meta_t* meta, void* handler_da
     }
   }
 
-  return polygon_filter->next->vector_end(&(polygon_filter->vector_meta), polygon_filter->next->handler_data);
+  return polygon_filter->next->vector_end(&(polygon_filter->vector_meta),
+                                          polygon_filter->next->handler_data);
 }
 
-int wk_polygon_filter_feature_null(void* handler_data) {
+int wk_polygon_filter_feature_null(void* handler_data) { return WK_CONTINUE; }
+
+int wk_polygon_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id,
+                                  void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_polygon_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_polygon_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
+                                     void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_polygon_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+int wk_polygon_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id,
+                                   void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_polygon_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+int wk_polygon_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id,
+                                 void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_polygon_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  return WK_CONTINUE;
-}
-
-int wk_polygon_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+int wk_polygon_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id,
+                               void* handler_data) {
   return WK_CONTINUE;
 }
 
 int wk_polygon_filter_error(const char* message, void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
   int result;
-  HANDLE_OR_RETURN(polygon_filter->next->error(message, polygon_filter->next->handler_data));
+  HANDLE_OR_RETURN(
+      polygon_filter->next->error(message, polygon_filter->next->handler_data));
   return WK_CONTINUE;
 }
 
 void wk_polygon_filter_deinitialize(void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
   polygon_filter->next->deinitialize(polygon_filter->next->handler_data);
 }
 
 void wk_polygon_filter_finalize(void* handler_data) {
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) handler_data;
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)handler_data;
   if (polygon_filter != NULL) {
     free(polygon_filter);
   }
@@ -272,17 +298,17 @@ SEXP wk_c_polygon_filter_new(SEXP handler_xptr, SEXP feature_id, SEXP ring_id) {
   handler->deinitialize = &wk_polygon_filter_deinitialize;
   handler->finalizer = &wk_polygon_filter_finalize;
 
-  polygon_filter_t* polygon_filter = (polygon_filter_t*) malloc(sizeof(polygon_filter_t));
+  polygon_filter_t* polygon_filter = (polygon_filter_t*)malloc(sizeof(polygon_filter_t));
   if (polygon_filter == NULL) {
-    wk_handler_destroy(handler); // # nocov
-    Rf_error("Failed to alloc handler data"); // # nocov
+    wk_handler_destroy(handler);               // # nocov
+    Rf_error("Failed to alloc handler data");  // # nocov
   }
 
-  polygon_filter->next = (wk_handler_t*) R_ExternalPtrAddr(handler_xptr);
+  polygon_filter->next = (wk_handler_t*)R_ExternalPtrAddr(handler_xptr);
   if (polygon_filter->next->api_version != 1) {
-    wk_handler_destroy(handler); // # nocov
-    free(polygon_filter); // # nocov
-    Rf_error("Invalid API version in polygon_filter"); // # nocov
+    wk_handler_destroy(handler);                        // # nocov
+    free(polygon_filter);                               // # nocov
+    Rf_error("Invalid API version in polygon_filter");  // # nocov
   }
 
   polygon_filter->coord_id = 0;

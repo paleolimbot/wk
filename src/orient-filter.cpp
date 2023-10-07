@@ -1,14 +1,11 @@
-#include "internal/wk-v1-handler.hpp"
 #include <vector>
+#include "internal/wk-v1-handler.hpp"
 
-#define HANDLE_OR_RETURN(expr)                                 \
-  result = expr;                                               \
+#define HANDLE_OR_RETURN(expr) \
+  result = expr;               \
   if (result != WK_CONTINUE) return result
 
-enum class Direction {
-  Clockwise = -1,
-  CounterClockwise = 1
-};
+enum class Direction { Clockwise = -1, CounterClockwise = 1 };
 
 static int meta_coord_dim(uint32_t flags) {
   bool has_z = (flags & WK_FLAG_HAS_Z) != 0;
@@ -16,9 +13,10 @@ static int meta_coord_dim(uint32_t flags) {
   return 2 + has_z + has_m;
 }
 
-class OrientFilter: public WKVoidHandler {
-public:
-  OrientFilter(wk_handler_t* next, Direction direction): next(next), direction(direction) {}
+class OrientFilter : public WKVoidHandler {
+ public:
+  OrientFilter(wk_handler_t* next, Direction direction)
+      : next(next), direction(direction) {}
 
   void initialize(int* dirty) {
     WKVoidHandler::initialize(dirty);
@@ -36,9 +34,7 @@ public:
     return next->feature_start(meta, feat_id, next->handler_data);
   }
 
-  int null_feature() {
-    return next->null_feature(next->handler_data);
-  }
+  int null_feature() { return next->null_feature(next->handler_data); }
 
   int geometry_start(const wk_meta_t* meta, uint32_t part_id) {
     n_dim = meta_coord_dim(meta->flags);
@@ -95,11 +91,9 @@ public:
     return next->vector_end(meta, next->handler_data);
   }
 
-  void deinitialize() {
-    return next->deinitialize(next->handler_data);
-  }
+  void deinitialize() { return next->deinitialize(next->handler_data); }
 
-private:
+ private:
   wk_handler_t* next;
   const Direction direction;
   bool is_polygon_ring;
@@ -141,5 +135,6 @@ extern "C" SEXP wk_c_orient_filter_new(SEXP handler_xptr, SEXP direction) {
   Direction direction_enum = static_cast<Direction>(INTEGER(direction)[0]);
   wk_handler_t* next = static_cast<wk_handler_t*>(R_ExternalPtrAddr(handler_xptr));
 
-  return WKHandlerFactory<OrientFilter>::create_xptr(new OrientFilter(next, direction_enum), handler_xptr);
+  return WKHandlerFactory<OrientFilter>::create_xptr(
+      new OrientFilter(next, direction_enum), handler_xptr);
 }
