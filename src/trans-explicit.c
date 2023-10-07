@@ -9,8 +9,9 @@ typedef struct {
   R_xlen_t n;
 } wk_trans_explicit_t;
 
-int wk_trans_explicit_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data) {
-  wk_trans_explicit_t* data = (wk_trans_explicit_t*) trans_data;
+int wk_trans_explicit_trans(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out,
+                            void* trans_data) {
+  wk_trans_explicit_t* data = (wk_trans_explicit_t*)trans_data;
   data->i++;
   R_xlen_t set_id = data->i % data->n;
   double set;
@@ -25,13 +26,11 @@ int wk_trans_explicit_trans(R_xlen_t feature_id, const double* xyzm_in, double* 
   return WK_CONTINUE;
 }
 
-void wk_trans_explicit_finalize(void* trans_data) {
-  free(trans_data);
-}
+void wk_trans_explicit_finalize(void* trans_data) { free(trans_data); }
 
 SEXP wk_c_trans_explicit_new(SEXP xy, SEXP use_z, SEXP use_m) {
   if (Rf_xlength(xy) != 4 || TYPEOF(xy) != VECSXP) {
-    Rf_error("`xy` must be an xyzm() object"); // # nocov
+    Rf_error("`xy` must be an xyzm() object");  // # nocov
   }
 
   // prepare data for C struct / validate args
@@ -48,10 +47,10 @@ SEXP wk_c_trans_explicit_new(SEXP xy, SEXP use_z, SEXP use_m) {
   trans->trans = &wk_trans_explicit_trans;
   trans->finalizer = &wk_trans_explicit_finalize;
 
-  wk_trans_explicit_t* data = (wk_trans_explicit_t*) malloc(sizeof(wk_trans_explicit_t));
+  wk_trans_explicit_t* data = (wk_trans_explicit_t*)malloc(sizeof(wk_trans_explicit_t));
   if (data == NULL) {
-    free(trans); // # nocov
-    Rf_error("Failed to alloc wk_trans_explicit_t"); // # nocov
+    free(trans);                                      // # nocov
+    Rf_error("Failed to alloc wk_trans_explicit_t");  // # nocov
   }
 
   trans->use_z = use_z_int;

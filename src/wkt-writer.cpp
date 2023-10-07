@@ -1,11 +1,11 @@
 
-#include "internal/wk-v1-handler.hpp"
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include "internal/wk-v1-handler.hpp"
 
-class WKTWriterHandler: public WKVoidHandler {
-public:
+class WKTWriterHandler : public WKVoidHandler {
+ public:
   SEXP result;
   std::stringstream out;
   std::string current_item;
@@ -25,12 +25,12 @@ public:
 
   void resultInit(R_xlen_t size) {
     SEXP new_result = PROTECT(Rf_allocVector(STRSXP, size));
-      if (this->result != R_NilValue) {
-        R_ReleaseObject(this->result);
-      }
-      this->result = new_result;
-      R_PreserveObject(this->result);
-      UNPROTECT(1);
+    if (this->result != R_NilValue) {
+      R_ReleaseObject(this->result);
+    }
+    this->result = new_result;
+    R_PreserveObject(this->result);
+    UNPROTECT(1);
   }
 
   void resultEnsureSize() {
@@ -79,7 +79,7 @@ public:
 
   bool isNestingCollection() {
     return !this->stack.empty() &&
-      (this->stack.back().geometry_type == WK_GEOMETRYCOLLECTION);
+           (this->stack.back().geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
   int vector_start(const wk_vector_meta_t* meta) {
@@ -113,42 +113,42 @@ public:
     }
 
     if (this->stack.empty() || this->isNestingCollection()) {
-        switch (meta->geometry_type) {
+      switch (meta->geometry_type) {
         case WK_POINT:
-            out << "POINT ";
-            break;
+          out << "POINT ";
+          break;
         case WK_LINESTRING:
-            out << "LINESTRING ";
-            break;
+          out << "LINESTRING ";
+          break;
         case WK_POLYGON:
-            out << "POLYGON ";
-            break;
+          out << "POLYGON ";
+          break;
         case WK_MULTIPOINT:
-            out << "MULTIPOINT ";
-            break;
+          out << "MULTIPOINT ";
+          break;
         case WK_MULTILINESTRING:
-            out << "MULTILINESTRING ";
-            break;
+          out << "MULTILINESTRING ";
+          break;
         case WK_MULTIPOLYGON:
-            out << "MULTIPOLYGON ";
-            break;
+          out << "MULTIPOLYGON ";
+          break;
         case WK_GEOMETRYCOLLECTION:
-            out << "GEOMETRYCOLLECTION ";
-            break;
+          out << "GEOMETRYCOLLECTION ";
+          break;
 
         default:
-            std::stringstream err;
-            err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
-            return this->error(err.str().c_str());
-        }
+          std::stringstream err;
+          err << "Can't write geometry type '" << meta->geometry_type << "' as WKT";
+          return this->error(err.str().c_str());
+      }
 
-        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-            out << "ZM ";
-        } else if ((meta->flags & WK_FLAG_HAS_Z)) {
-            out << "Z ";
-        } else if ((meta->flags & WK_FLAG_HAS_M)) {
-            out << "M ";
-        }
+      if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        out << "ZM ";
+      } else if ((meta->flags & WK_FLAG_HAS_Z)) {
+        out << "Z ";
+      } else if ((meta->flags & WK_FLAG_HAS_M)) {
+        out << "M ";
+      }
     }
 
     if (meta->size == 0) {
@@ -177,9 +177,9 @@ public:
 
     out << coord[0] << " " << coord[1];
     if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
-        out << " " << coord[2] << " " << coord[3];
+      out << " " << coord[2] << " " << coord[3];
     } else if ((meta->flags & WK_FLAG_HAS_Z) || (meta->flags & WK_FLAG_HAS_M)) {
-        out << " " << coord[2];
+      out << " " << coord[2];
     }
 
     return WK_CONTINUE;
@@ -227,12 +227,10 @@ public:
   }
 };
 
-class WKTFormatHandler: public WKTWriterHandler {
-public:
-  WKTFormatHandler(int precision, bool trim, int max_coords):
-    WKTWriterHandler(precision, trim),
-    current_coords(0),
-    max_coords(max_coords) {}
+class WKTFormatHandler : public WKTWriterHandler {
+ public:
+  WKTFormatHandler(int precision, bool trim, int max_coords)
+      : WKTWriterHandler(precision, trim), current_coords(0), max_coords(max_coords) {}
 
   int feature_start(const wk_vector_meta_t* meta, R_xlen_t feature_id) {
     this->current_coords = 0;
@@ -271,7 +269,7 @@ public:
     return this->result;
   }
 
-private:
+ private:
   int current_coords;
   int max_coords;
 };
@@ -279,12 +277,15 @@ private:
 extern "C" SEXP wk_c_wkt_writer(SEXP precision_sexp, SEXP trim_sexp) {
   int precision = INTEGER(precision_sexp)[0];
   int trim = LOGICAL(trim_sexp)[0];
-  return WKHandlerFactory<WKTWriterHandler>::create_xptr(new WKTWriterHandler(precision, trim));
+  return WKHandlerFactory<WKTWriterHandler>::create_xptr(
+      new WKTWriterHandler(precision, trim));
 }
 
-extern "C" SEXP wk_c_wkt_formatter(SEXP precision_sexp, SEXP trim_sexp, SEXP max_coords_sexp) {
+extern "C" SEXP wk_c_wkt_formatter(SEXP precision_sexp, SEXP trim_sexp,
+                                   SEXP max_coords_sexp) {
   int precision = INTEGER(precision_sexp)[0];
   int trim = LOGICAL(trim_sexp)[0];
   int max_coords = INTEGER(max_coords_sexp)[0];
-  return WKHandlerFactory<WKTFormatHandler>::create_xptr(new WKTFormatHandler(precision, trim, max_coords));
+  return WKHandlerFactory<WKTFormatHandler>::create_xptr(
+      new WKTFormatHandler(precision, trim, max_coords));
 }

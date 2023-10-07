@@ -4,27 +4,29 @@
 #include <Rinternals.h>
 #include "wk-v1.h"
 
-#define FASTFLOAT_ASSERT(x) { if (!(x)) Rf_error("fastfloat assert failed"); }
+#define FASTFLOAT_ASSERT(x)                        \
+  {                                                \
+    if (!(x)) Rf_error("fastfloat assert failed"); \
+  }
 #include "internal/buffered-reader.hpp"
 
-#define HANDLE_OR_RETURN(expr)                                 \
-  result = expr;                                               \
+#define HANDLE_OR_RETURN(expr) \
+  result = expr;               \
   if (result != WK_CONTINUE) return result
 
-#define HANDLE_CONTINUE_OR_BREAK(expr)                         \
-  result = expr;                                               \
-  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break
-
+#define HANDLE_CONTINUE_OR_BREAK(expr) \
+  result = expr;                       \
+  if (result == WK_ABORT_FEATURE)      \
+    continue;                          \
+  else if (result == WK_ABORT)         \
+  break
 
 // The BufferedWKTParser is the BufferedParser subclass with methods specific
 // to well-known text. It doesn't know about any particular output format.
 template <class SourceType>
-class BufferedWKTParser: public BufferedParser<SourceType, 4096> {
-public:
-
-  BufferedWKTParser() {
-    this->setSeparators(" \r\n\t,();=");
-  }
+class BufferedWKTParser : public BufferedParser<SourceType, 4096> {
+ public:
+  BufferedWKTParser() { this->setSeparators(" \r\n\t,();="); }
 
   void assertGeometryMeta(wk_meta_t* meta) {
     std::string geometry_type = this->assertWord();
@@ -56,26 +58,24 @@ public:
   int geometry_typeFromString(std::string geometry_type) {
     if (geometry_type == "POINT") {
       return WK_POINT;
-    } else if(geometry_type == "LINESTRING") {
+    } else if (geometry_type == "LINESTRING") {
       return WK_LINESTRING;
-    } else if(geometry_type == "POLYGON") {
+    } else if (geometry_type == "POLYGON") {
       return WK_POLYGON;
-    } else if(geometry_type == "MULTIPOINT") {
+    } else if (geometry_type == "MULTIPOINT") {
       return WK_MULTIPOINT;
-    } else if(geometry_type == "MULTILINESTRING") {
+    } else if (geometry_type == "MULTILINESTRING") {
       return WK_MULTILINESTRING;
-    } else if(geometry_type == "MULTIPOLYGON") {
+    } else if (geometry_type == "MULTIPOLYGON") {
       return WK_MULTIPOLYGON;
-    } else if(geometry_type == "GEOMETRYCOLLECTION") {
+    } else if (geometry_type == "GEOMETRYCOLLECTION") {
       return WK_GEOMETRYCOLLECTION;
     } else {
       this->errorBefore("geometry type or 'SRID='", geometry_type);
     }
   }
 
-  bool isEMPTY() {
-    return this->peekUntilSep() == "EMPTY";
-  }
+  bool isEMPTY() { return this->peekUntilSep() == "EMPTY"; }
 
   bool assertEMPTYOrOpen() {
     if (this->isLetter()) {
@@ -94,27 +94,26 @@ public:
   }
 };
 
-
 // The BufferedWKTReader knows about wk_handler_t and does all the "driving". The
 // entry point is readFeature(), which does not throw (but may longjmp).
 // The BufferedWKTReader is carefully designed to (1) avoid any virtual method calls
 // (via templating) and (2) to avoid using any C++ objects with non-trivial destructors.
 // The non-trivial destructors bit is important because handler methods can and do longjmp
-// when used in R. The object itself does not have a non-trivial destructor and it's expected
-// that the scope in which it is declared uses the proper unwind-protection such that the
-// object and its members are deleted.
+// when used in R. The object itself does not have a non-trivial destructor and it's
+// expected that the scope in which it is declared uses the proper unwind-protection such
+// that the object and its members are deleted.
 template <class SourceType, typename handler_t>
 class BufferedWKTReader {
-public:
-
-  BufferedWKTReader(handler_t* handler): handler(handler) {
+ public:
+  BufferedWKTReader(handler_t* handler) : handler(handler) {
     memset(this->error_message, 0, sizeof(this->error_message));
   }
 
   int readFeature(wk_vector_meta_t* meta, int64_t feat_id, SourceType* source) {
     try {
       int result;
-      HANDLE_OR_RETURN(this->handler->feature_start(meta, feat_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(
+          this->handler->feature_start(meta, feat_id, this->handler->handler_data));
 
       if (source == nullptr) {
         HANDLE_OR_RETURN(this->handler->null_feature(this->handler->handler_data));
@@ -134,48 +133,47 @@ public:
     return this->handler->error(this->error_message, this->handler->handler_data);
   }
 
-protected:
-
+ protected:
   int readGeometryWithType(uint32_t part_id) {
     wk_meta_t meta;
     WK_META_RESET(meta, WK_GEOMETRY);
     s.assertGeometryMeta(&meta);
 
     int result;
-    HANDLE_OR_RETURN(this->handler->geometry_start(&meta, part_id, this->handler->handler_data));
+    HANDLE_OR_RETURN(
+        this->handler->geometry_start(&meta, part_id, this->handler->handler_data));
 
     switch (meta.geometry_type) {
+      case WK_POINT:
+        HANDLE_OR_RETURN(this->readPoint(&meta));
+        break;
 
-    case WK_POINT:
-      HANDLE_OR_RETURN(this->readPoint(&meta));
-      break;
+      case WK_LINESTRING:
+        HANDLE_OR_RETURN(this->readLineString(&meta));
+        break;
 
-    case WK_LINESTRING:
-      HANDLE_OR_RETURN(this->readLineString(&meta));
-      break;
+      case WK_POLYGON:
+        HANDLE_OR_RETURN(this->readPolygon(&meta));
+        break;
 
-    case WK_POLYGON:
-      HANDLE_OR_RETURN(this->readPolygon(&meta));
-      break;
+      case WK_MULTIPOINT:
+        HANDLE_OR_RETURN(this->readMultiPoint(&meta));
+        break;
 
-    case WK_MULTIPOINT:
-      HANDLE_OR_RETURN(this->readMultiPoint(&meta));
-      break;
+      case WK_MULTILINESTRING:
+        HANDLE_OR_RETURN(this->readMultiLineString(&meta));
+        break;
 
-    case WK_MULTILINESTRING:
-      HANDLE_OR_RETURN(this->readMultiLineString(&meta));
-      break;
+      case WK_MULTIPOLYGON:
+        HANDLE_OR_RETURN(this->readMultiPolygon(&meta));
+        break;
 
-    case WK_MULTIPOLYGON:
-      HANDLE_OR_RETURN(this->readMultiPolygon(&meta));
-      break;
+      case WK_GEOMETRYCOLLECTION:
+        HANDLE_OR_RETURN(this->readGeometryCollection(&meta));
+        break;
 
-    case WK_GEOMETRYCOLLECTION:
-      HANDLE_OR_RETURN(this->readGeometryCollection(&meta));
-      break;
-
-    default:
-      throw std::runtime_error("Unknown geometry type"); // # nocov
+      default:
+        throw std::runtime_error("Unknown geometry type");  // # nocov
     }
 
     return this->handler->geometry_end(&meta, part_id, this->handler->handler_data);
@@ -191,13 +189,9 @@ protected:
     return WK_CONTINUE;
   }
 
-  int readLineString(const wk_meta_t* meta) {
-    return this->readCoordinates(meta);
-  }
+  int readLineString(const wk_meta_t* meta) { return this->readCoordinates(meta); }
 
-  int readPolygon(const wk_meta_t* meta)  {
-    return this->readLinearRings(meta);
-  }
+  int readPolygon(const wk_meta_t* meta) { return this->readLinearRings(meta); }
 
   int readMultiPoint(const wk_meta_t* meta) {
     if (s.assertEMPTYOrOpen()) {
@@ -209,28 +203,32 @@ protected:
     uint32_t part_id = 0;
     int result;
 
-    if (s.isNumber()) { // (0 0, 1 1)
+    if (s.isNumber()) {  // (0 0, 1 1)
       do {
         this->readChildMeta(meta, &childMeta);
 
-        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
+        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id,
+                                                       this->handler->handler_data));
 
         if (s.isEMPTY()) {
           s.assertWord();
         } else {
           HANDLE_OR_RETURN(this->readPointCoordinate(&childMeta));
         }
-        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
+        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id,
+                                                     this->handler->handler_data));
 
         part_id++;
       } while (s.assertOneOf(",)") != ')');
 
-    } else { // ((0 0), (1 1))
+    } else {  // ((0 0), (1 1))
       do {
         this->readChildMeta(meta, &childMeta);
-        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
+        HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id,
+                                                       this->handler->handler_data));
         HANDLE_OR_RETURN(this->readPoint(&childMeta));
-        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
+        HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id,
+                                                     this->handler->handler_data));
         part_id++;
       } while (s.assertOneOf(",)") != ')');
     }
@@ -250,9 +248,11 @@ protected:
 
     do {
       this->readChildMeta(meta, &childMeta);
-      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id,
+                                                     this->handler->handler_data));
       HANDLE_OR_RETURN(this->readLineString(&childMeta));
-      HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(
+          this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
 
       part_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -272,9 +272,11 @@ protected:
 
     do {
       this->readChildMeta(meta, &childMeta);
-      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(this->handler->geometry_start(&childMeta, part_id,
+                                                     this->handler->handler_data));
       HANDLE_OR_RETURN(this->readPolygon(&childMeta));
-      HANDLE_OR_RETURN(this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(
+          this->handler->geometry_end(&childMeta, part_id, this->handler->handler_data));
       part_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -306,9 +308,11 @@ protected:
     int result;
 
     do {
-      HANDLE_OR_RETURN(this->handler->ring_start(meta, WK_SIZE_UNKNOWN, ring_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(this->handler->ring_start(meta, WK_SIZE_UNKNOWN, ring_id,
+                                                 this->handler->handler_data));
       HANDLE_OR_RETURN(this->readCoordinates(meta));
-      HANDLE_OR_RETURN(this->handler->ring_end(meta, WK_SIZE_UNKNOWN, ring_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(this->handler->ring_end(meta, WK_SIZE_UNKNOWN, ring_id,
+                                               this->handler->handler_data));
       ring_id++;
     } while (s.assertOneOf(",)") != ')');
 
@@ -347,7 +351,8 @@ protected:
 
     do {
       this->readCoordinate(coord, coordSize);
-      HANDLE_OR_RETURN(handler->coord(meta, coord, coord_id, this->handler->handler_data));
+      HANDLE_OR_RETURN(
+          handler->coord(meta, coord, coord_id, this->handler->handler_data));
 
       coord_id++;
     } while (s.assertOneOf(",)") != ')');
@@ -374,16 +379,15 @@ protected:
     }
   }
 
-private:
+ private:
   handler_t* handler;
   BufferedWKTParser<SourceType> s;
   char error_message[8096];
 };
 
-
 template <class T>
 void finalize_cpp_xptr(SEXP xptr) {
-  T* ptr = (T*) R_ExternalPtrAddr(xptr);
+  T* ptr = (T*)R_ExternalPtrAddr(xptr);
   if (ptr != nullptr) {
     delete ptr;
   }
@@ -411,7 +415,7 @@ SEXP wkt_read_wkt(SEXP data, wk_handler_t* handler) {
   // (so longjmp in this stack is OK).
   SimpleBufferSource source;
   BufferedWKTReader<SimpleBufferSource, wk_handler_t> reader(handler);
-  
+
   int result = handler->vector_start(&global_meta, handler->handler_data);
   if (result != WK_ABORT) {
     R_xlen_t n_features = Rf_xlength(wkt_sexp);

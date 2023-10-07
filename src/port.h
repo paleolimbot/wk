@@ -1,7 +1,7 @@
 
 // Endian tools -----------------------------
 
-#include <Rconfig.h> // for WORDS_BIGENDIAN
+#include <Rconfig.h>  // for WORDS_BIGENDIAN
 
 // IS_LITTLE_ENDIAN, IS_BIG_ENDIAN
 #if defined(WORDS_BIGENDIAN)
@@ -55,20 +55,14 @@ static inline uint16_t bswap_16(uint16_t x) {
 }
 #define bswap_16(x) bswap_16(x)
 static inline uint32_t bswap_32(uint32_t x) {
-  return (((x & 0xFF) << 24) |
-          ((x & 0xFF00) << 8) |
-          ((x & 0xFF0000) >> 8) |
+  return (((x & 0xFF) << 24) | ((x & 0xFF00) << 8) | ((x & 0xFF0000) >> 8) |
           ((x & 0xFF000000) >> 24));
 }
 #define bswap_32(x) bswap_32(x)
 static inline uint64_t bswap_64(uint64_t x) {
-  return (((x & 0xFFULL) << 56) |
-          ((x & 0xFF00ULL) << 40) |
-          ((x & 0xFF0000ULL) << 24) |
-          ((x & 0xFF000000ULL) << 8) |
-          ((x & 0xFF00000000ULL) >> 8) |
-          ((x & 0xFF0000000000ULL) >> 24) |
-          ((x & 0xFF000000000000ULL) >> 40) |
+  return (((x & 0xFFULL) << 56) | ((x & 0xFF00ULL) << 40) | ((x & 0xFF0000ULL) << 24) |
+          ((x & 0xFF000000ULL) << 8) | ((x & 0xFF00000000ULL) >> 8) |
+          ((x & 0xFF0000000000ULL) >> 24) | ((x & 0xFF000000000000ULL) >> 40) |
           ((x & 0xFF00000000000000ULL) >> 56));
 }
 #define bswap_64(x) bswap_64(x)

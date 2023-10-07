@@ -10,6 +10,6 @@ SEXP wk_c_handler_void_new(void) {
 
 SEXP wk_c_handler_addr(SEXP xptr) {
   char buffer[256];
-  snprintf(buffer, 256, "%p", (void*) R_ExternalPtrAddr(xptr));
+  snprintf(buffer, 256, "%p", (void*)R_ExternalPtrAddr(xptr));
   return Rf_mkString(buffer);
 }

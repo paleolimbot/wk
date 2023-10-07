@@ -4,8 +4,8 @@
 #include <Rinternals.h>
 #include "wk-v1.h"
 
-#define HANDLE_OR_RETURN(expr)                                 \
-  result = expr;                                               \
+#define HANDLE_OR_RETURN(expr) \
+  result = expr;               \
   if (result != WK_CONTINUE) return result
 
 typedef struct {
@@ -22,7 +22,8 @@ typedef struct {
   R_xlen_t coord_id;
 } vertex_filter_t;
 
-static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter, R_xlen_t initial_size) {
+static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter,
+                                                 R_xlen_t initial_size) {
   if (!vertex_filter->add_details) {
     return;
   }
@@ -36,7 +37,7 @@ static inline void wk_vertex_filter_init_details(vertex_filter_t* vertex_filter,
   vertex_filter->ring_id = -1;
 
   if (vertex_filter->details != R_NilValue) {
-    R_ReleaseObject(vertex_filter->details); // # nocov
+    R_ReleaseObject(vertex_filter->details);  // # nocov
   }
 
   const char* names[] = {"feature_id", "part_id", "ring_id", ""};
@@ -62,7 +63,8 @@ static inline void wk_vertex_filter_append_details(vertex_filter_t* vertex_filte
     R_xlen_t new_size = vertex_filter->details_size * 2 + 1;
     for (int i = 0; i < 3; i++) {
       SEXP new_item = PROTECT(Rf_allocVector(INTSXP, new_size));
-      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)), vertex_filter->details_size * sizeof(int));
+      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)),
+             vertex_filter->details_size * sizeof(int));
       SET_VECTOR_ELT(vertex_filter->details, i, new_item);
       vertex_filter->details_ptr[i] = INTEGER(new_item);
       UNPROTECT(1);
@@ -85,7 +87,8 @@ static inline void wk_vertex_filter_finalize_details(vertex_filter_t* vertex_fil
   if (vertex_filter->coord_id != vertex_filter->details_size) {
     for (int i = 0; i < 3; i++) {
       SEXP new_item = PROTECT(Rf_allocVector(INTSXP, vertex_filter->coord_id));
-      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)), vertex_filter->coord_id * sizeof(int));
+      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)),
+             vertex_filter->coord_id * sizeof(int));
       SET_VECTOR_ELT(vertex_filter->details, i, new_item);
       UNPROTECT(1);
     }
@@ -95,13 +98,14 @@ static inline void wk_vertex_filter_finalize_details(vertex_filter_t* vertex_fil
 }
 
 void wk_vertex_filter_initialize(int* dirty, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   *dirty = 1;
-  vertex_filter->next->initialize(&vertex_filter->next->dirty, vertex_filter->next->handler_data);
+  vertex_filter->next->initialize(&vertex_filter->next->dirty,
+                                  vertex_filter->next->handler_data);
 }
 
 int wk_vertex_filter_vector_start(const wk_vector_meta_t* meta, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
 
   vertex_filter->coord_id = 0;
 
@@ -113,26 +117,30 @@ int wk_vertex_filter_vector_start(const wk_vector_meta_t* meta, void* handler_da
 
   wk_vertex_filter_init_details(vertex_filter, vertex_filter->vector_meta.size);
 
-  return vertex_filter->next->vector_start(&(vertex_filter->vector_meta), vertex_filter->next->handler_data);
+  return vertex_filter->next->vector_start(&(vertex_filter->vector_meta),
+                                           vertex_filter->next->handler_data);
 }
 
-int wk_vertex_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+int wk_vertex_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id,
+                                   void* handler_data) {
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   vertex_filter->feature_id++;
   return WK_CONTINUE;
 }
 
 int wk_vertex_filter_feature_null(void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   return vertex_filter->next->null_feature(vertex_filter->next->handler_data);
 }
 
-int wk_vertex_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id, void* handler_data) {
+int wk_vertex_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id,
+                                 void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+int wk_vertex_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
+                                    void* handler_data) {
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
 
   vertex_filter->part_id++;
 
@@ -144,37 +152,49 @@ int wk_vertex_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id, voi
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id, void* handler_data) {
+int wk_vertex_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id,
+                                  void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+int wk_vertex_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ring_id,
+                                void* handler_data) {
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   vertex_filter->ring_id++;
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id, void* handler_data) {
+int wk_vertex_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring_id,
+                              void* handler_data) {
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
-  
+int wk_vertex_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_id,
+                           void* handler_data) {
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
+
   int result;
   wk_vertex_filter_append_details(vertex_filter);
-  HANDLE_OR_RETURN(vertex_filter->next->feature_start(&(vertex_filter->vector_meta), vertex_filter->coord_id, vertex_filter->next->handler_data));
-  HANDLE_OR_RETURN(vertex_filter->next->geometry_start(&(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
-  HANDLE_OR_RETURN(vertex_filter->next->coord(&(vertex_filter->meta), coord, 0, vertex_filter->next->handler_data));
-  HANDLE_OR_RETURN(vertex_filter->next->geometry_end(&(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
-  HANDLE_OR_RETURN(vertex_filter->next->feature_end(&(vertex_filter->vector_meta), vertex_filter->coord_id, vertex_filter->next->handler_data));
+  HANDLE_OR_RETURN(vertex_filter->next->feature_start(&(vertex_filter->vector_meta),
+                                                      vertex_filter->coord_id,
+                                                      vertex_filter->next->handler_data));
+  HANDLE_OR_RETURN(vertex_filter->next->geometry_start(
+      &(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
+  HANDLE_OR_RETURN(vertex_filter->next->coord(&(vertex_filter->meta), coord, 0,
+                                              vertex_filter->next->handler_data));
+  HANDLE_OR_RETURN(vertex_filter->next->geometry_end(
+      &(vertex_filter->meta), WK_PART_ID_NONE, vertex_filter->next->handler_data));
+  HANDLE_OR_RETURN(vertex_filter->next->feature_end(&(vertex_filter->vector_meta),
+                                                    vertex_filter->coord_id,
+                                                    vertex_filter->next->handler_data));
 
   return WK_CONTINUE;
 }
 
 SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
-  SEXP result = PROTECT(vertex_filter->next->vector_end(&(vertex_filter->vector_meta), vertex_filter->next->handler_data));
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
+  SEXP result = PROTECT(vertex_filter->next->vector_end(
+      &(vertex_filter->vector_meta), vertex_filter->next->handler_data));
   if (result != R_NilValue) {
     wk_vertex_filter_finalize_details(vertex_filter);
     Rf_setAttrib(result, Rf_install("wk_details"), vertex_filter->details);
@@ -184,12 +204,12 @@ SEXP wk_vertex_filter_vector_end(const wk_vector_meta_t* meta, void* handler_dat
 }
 
 int wk_vertex_filter_error(const char* message, void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   return vertex_filter->next->error(message, vertex_filter->next->handler_data);
 }
 
 void wk_vertex_filter_deinitialize(void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   if (vertex_filter->details != R_NilValue) {
     R_ReleaseObject(vertex_filter->details);
     vertex_filter->details = R_NilValue;
@@ -198,7 +218,7 @@ void wk_vertex_filter_deinitialize(void* handler_data) {
 }
 
 void wk_vertex_filter_finalize(void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) handler_data;
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
   if (vertex_filter != NULL) {
     // finalizer for vertex_filter->next is run by the externalptr finalizer
     // and should not be called here
@@ -230,15 +250,16 @@ SEXP wk_c_vertex_filter_new(SEXP handler_xptr, SEXP add_details) {
   handler->deinitialize = &wk_vertex_filter_deinitialize;
   handler->finalizer = &wk_vertex_filter_finalize;
 
-  vertex_filter_t* vertex_filter = (vertex_filter_t*) malloc(sizeof(vertex_filter_t));
+  vertex_filter_t* vertex_filter = (vertex_filter_t*)malloc(sizeof(vertex_filter_t));
   if (vertex_filter == NULL) {
-    wk_handler_destroy(handler); // # nocov
-    Rf_error("Failed to alloc handler data"); // # nocov
+    wk_handler_destroy(handler);               // # nocov
+    Rf_error("Failed to alloc handler data");  // # nocov
   }
 
   vertex_filter->next = R_ExternalPtrAddr(handler_xptr);
   if (vertex_filter->next->api_version != 1) {
-    Rf_error("Can't run a wk_handler with api_version '%d'", vertex_filter->next->api_version); // # nocov
+    Rf_error("Can't run a wk_handler with api_version '%d'",
+             vertex_filter->next->api_version);  // # nocov
   }
 
   WK_VECTOR_META_RESET(vertex_filter->vector_meta, WK_GEOMETRY);
