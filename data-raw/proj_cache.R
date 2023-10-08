@@ -8,7 +8,7 @@ db_file <- file.path("data-raw/proj.db")
 if (!file.exists(db_file)) {
   # download PROJ
   if (!dir.exists("data-raw/proj-9.1.0")) {
-    source_url <- "https://download.osgeo.org/proj/proj-9.1.0.tar.gz"
+    source_url <- "https://download.osgeo.org/proj/proj-9.3.0.tar.gz"
     curl::curl_download(source_url, "data-raw/proj-source.tar.gz")
     untar("data-raw/proj-source.tar.gz", exdir = "data-raw")
   }
@@ -82,4 +82,5 @@ wk_proj_crs_wkt2 <- as.data.frame(bind_cols(crs_codes, tibble(wkt2 = wkt2)))
 
 usethis::use_data(wk_proj_crs_view, overwrite = TRUE)
 usethis::use_data(wk_proj_crs_json, overwrite = TRUE)
-usethis::use_data(wk_proj_crs_wkt2, overwrite = TRUE)
+# Not just now
+# usethis::use_data(wk_proj_crs_wkt2, overwrite = TRUE)

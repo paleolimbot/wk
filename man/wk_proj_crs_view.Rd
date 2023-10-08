@@ -6,9 +6,9 @@
 \alias{wk_proj_crs_json}
 \title{Common CRS Representations}
 \format{
-An object of class \code{data.frame} with 13096 rows and 7 columns.
+An object of class \code{data.frame} with 13387 rows and 7 columns.
 
-An object of class \code{data.frame} with 13096 rows and 3 columns.
+An object of class \code{data.frame} with 13387 rows and 3 columns.
 }
 \usage{
 wk_proj_crs_view
