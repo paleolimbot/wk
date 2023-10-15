@@ -17,7 +17,7 @@ test_that("wk_meta() works", {
     wk_meta(as_wkb(c("POINT (1 2)", "POINT EMPTY", NA))),
     data.frame(
       geometry_type = c(1L, 1L, NA_integer_),
-      size = c(1L, 1L, NA_integer_),
+      size = c(1L, 0L, NA_integer_),
       has_z = c(FALSE, FALSE, NA),
       has_m = c(FALSE, FALSE, NA),
       srid = c(NA_integer_, NA_integer_, NA_integer_),

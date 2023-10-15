@@ -70,7 +70,7 @@ test_that("conversion from sf to wkb works", {
   expect_s3_class(as_wkb(sfc), "wk_wkb")
   expect_identical(
     as.character(as_wkt(as_wkb(sfc))),
-    c("POINT (nan nan)", "POINT (0 1)")
+    c("POINT EMPTY", "POINT (0 1)")
   )
   expect_identical(wk_crs(as_wkb(sfc)), sf::st_crs(sfc))
 
@@ -84,7 +84,7 @@ test_that("conversion from sf to wkb works", {
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
   expect_identical(
     as.character(as_wkt(as_wkb(sf))),
-    c("POINT (nan nan)", "POINT (0 1)")
+    c("POINT EMPTY", "POINT (0 1)")
   )
   expect_identical(wk_crs(as_wkb(sf)), sf::st_crs(sf))
 })

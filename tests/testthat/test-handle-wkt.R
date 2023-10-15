@@ -172,7 +172,7 @@ test_that("wkt_translate_wkb() works on NA", {
 test_that("wkt_translate_wkb() works on empty points", {
   expect_identical(
     wkb_translate_wkt(wkt_translate_wkb("POINT EMPTY")),
-    "POINT (nan nan)"
+    "POINT EMPTY"
   )
 })
 
