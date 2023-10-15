@@ -103,8 +103,8 @@ test_that("as_wkb() propagates geodesic", {
 test_that("examples as wkb roundtrip", {
   for (which in names(wk_example_wkt)) {
     expect_identical(
-      wk_handle(as_wkb(wk_example(!!which, crs = NULL)), wkb_writer()),
-      as_wkb(wk_example(!!which, crs = NULL))
+      wk_handle(as_wkb(wk_example(!!which, crs = NULL)), wkt_writer()),
+      wk_example(!!which, crs = NULL)
     )
   }
 })
