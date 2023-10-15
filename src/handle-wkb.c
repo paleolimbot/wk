@@ -39,8 +39,8 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id);
 int wkb_read_endian(wkb_reader_t* reader, unsigned char* value);
 int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta);
 int wkb_read_uint(wkb_reader_t* reader, uint32_t* value);
-int wkb_read_point_coordinate(wkb_reader_t* reader, const wk_meta_t* meta,
-                              uint32_t part_id, int n_dim);
+int wkb_read_point_coordinate(wkb_reader_t* reader, wk_meta_t* meta, uint32_t part_id,
+                              int n_dim);
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords,
                          int n_dim);
 void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
@@ -219,8 +219,8 @@ int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta) {
   return WK_CONTINUE;
 }
 
-int wkb_read_point_coordinate(wkb_reader_t* reader, const wk_meta_t* meta,
-                              uint32_t part_id, int n_dim) {
+int wkb_read_point_coordinate(wkb_reader_t* reader, wk_meta_t* meta, uint32_t part_id,
+                              int n_dim) {
   double coord[4];
   int result;
 
@@ -244,10 +244,21 @@ int wkb_read_point_coordinate(wkb_reader_t* reader, const wk_meta_t* meta,
     }
   }
 
+  // Emit non-empty at first indication that we have a finite coord
+  for (int j = 0; j < n_dim; j++) {
+    if (!ISNA(coord[j]) && !ISNAN(coord[j])) {
+      HANDLE_OR_RETURN(
+          reader->handler->geometry_start(meta, part_id, reader->handler->handler_data));
+      HANDLE_OR_RETURN(
+          reader->handler->coord(meta, coord, 0, reader->handler->handler_data));
+      return WK_CONTINUE;
+    }
+  }
+
+  // Otherwise, emit EMPTY
+  meta->size = 0;
   HANDLE_OR_RETURN(
       reader->handler->geometry_start(meta, part_id, reader->handler->handler_data));
-
-  HANDLE_OR_RETURN(reader->handler->coord(meta, coord, 0, reader->handler->handler_data));
 
   return WK_CONTINUE;
 }
