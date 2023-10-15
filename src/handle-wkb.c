@@ -39,6 +39,8 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id);
 int wkb_read_endian(wkb_reader_t* reader, unsigned char* value);
 int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta);
 int wkb_read_uint(wkb_reader_t* reader, uint32_t* value);
+int wkb_read_point_coordinate(wkb_reader_t* reader, const wk_meta_t* meta,
+                              uint32_t part_id, int n_dim);
 int wkb_read_coordinates(wkb_reader_t* reader, const wk_meta_t* meta, uint32_t n_coords,
                          int n_dim);
 void wkb_read_set_errorf(wkb_reader_t* reader, const char* error_buf, ...);
@@ -110,11 +112,16 @@ int wkb_read_geometry(wkb_reader_t* reader, uint32_t part_id) {
   int n_dim =
       2 + ((meta.flags & WK_FLAG_HAS_Z) != 0) + ((meta.flags & WK_FLAG_HAS_M) != 0);
 
-  HANDLE_OR_RETURN(
-      reader->handler->geometry_start(&meta, part_id, reader->handler->handler_data));
+  // POINT could be size 0, but we don't know until we've read the entire coordinate
+  if (meta.geometry_type != WK_POINT) {
+    HANDLE_OR_RETURN(
+        reader->handler->geometry_start(&meta, part_id, reader->handler->handler_data));
+  }
 
   switch (meta.geometry_type) {
     case WK_POINT:
+      HANDLE_OR_RETURN(wkb_read_point_coordinate(reader, &meta, part_id, n_dim));
+      break;
     case WK_LINESTRING:
       HANDLE_OR_RETURN(wkb_read_coordinates(reader, &meta, meta.size, n_dim));
       break;
@@ -208,6 +215,39 @@ int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta) {
   } else {
     HANDLE_OR_RETURN(wkb_read_uint(reader, &(meta->size)));
   }
+
+  return WK_CONTINUE;
+}
+
+int wkb_read_point_coordinate(wkb_reader_t* reader, const wk_meta_t* meta,
+                              uint32_t part_id, int n_dim) {
+  double coord[4];
+  int result;
+
+  if (reader->swap_endian) {
+    uint64_t swappable, swapped;
+    HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint64_t) * n_dim));
+    for (int j = 0; j < n_dim; j++) {
+      memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
+      reader->offset += sizeof(double);
+
+      swapped = bswap_64(swappable);
+      memcpy(coord + j, &swapped, sizeof(double));
+    }
+  } else {
+    uint64_t swappable;
+    HANDLE_OR_RETURN(wkb_read_check_buffer(reader, sizeof(uint64_t) * n_dim));
+    for (int j = 0; j < n_dim; j++) {
+      memcpy(&swappable, reader->buffer + reader->offset, sizeof(uint64_t));
+      reader->offset += sizeof(double);
+      memcpy(coord + j, &swappable, sizeof(double));
+    }
+  }
+
+  HANDLE_OR_RETURN(
+      reader->handler->geometry_start(meta, part_id, reader->handler->handler_data));
+
+  HANDLE_OR_RETURN(reader->handler->coord(meta, coord, 0, reader->handler->handler_data));
 
   return WK_CONTINUE;
 }
