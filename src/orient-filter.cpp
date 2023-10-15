@@ -55,7 +55,7 @@ class OrientFilter : public WKVoidHandler {
     }
 
     // defer handler coord until ring_end
-    coords.insert(coords.cend(), coord, coord + n_dim);
+    coords.insert(coords.end(), coord, coord + n_dim);
     return WK_CONTINUE;
   }
 
