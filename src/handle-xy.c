@@ -47,6 +47,7 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
     wk_meta_t meta;
     WK_META_RESET(meta, WK_POINT);
     meta.flags = vector_meta.flags | WK_FLAG_HAS_BOUNDS;
+    meta.size = 1;
 
     for (R_xlen_t i = 0; i < n_features; i++) {
       if (((i + 1) % 1000) == 0) R_CheckUserInterrupt();
@@ -71,24 +72,18 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
         meta.bounds_min[j] = data_ptr[j][data_ptr_i];
         meta.bounds_max[j] = data_ptr[j][data_ptr_i];
 
-        if (!ISNAN(coord[j])) {
-          coord_empty = 0;
-        }
+        coord_empty = coord_empty && ISNAN(coord[j]);
       }
 
       if (coord_empty) {
-        meta.size = 0;
+        HANDLE_CONTINUE_OR_BREAK(handler->null_feature(handler->handler_data));
       } else {
-        meta.size = 1;
-      }
-
-      HANDLE_CONTINUE_OR_BREAK(
-          handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
-      if (!coord_empty) {
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
         HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 0, handler->handler_data));
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
       }
-      HANDLE_CONTINUE_OR_BREAK(
-          handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
 
       if (handler->feature_end(&vector_meta, i, handler->handler_data) == WK_ABORT) {
         break;
