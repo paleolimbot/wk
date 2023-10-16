@@ -1,5 +1,30 @@
 # wk (development version)
 
+## Breaking changes
+
+- The common well-known binary representation of POINT EMPTY (i.e.,
+  POINT (nan nan)) is now handled as POINT EMPTY allowing empty points
+  to roundtrip through `wkb()` vectors (#196, #204).
+- `xy(NA, NA)` is now read as a null feature instead of POINT EMPTY. This
+  preserves the invariant that null features can also be identified using
+  `is.na()` (#205).
+  
+## Bugfixes and improvements
+
+- `wk_meta()` now contains a new column `is_empty`, which is `TRUE`
+  for any feature that contains at least one non-empty coordinate. This allows
+  more efficient detection of features with zero coordinates (#197, #199).
+- Updated PROJ data to use the latest pull of the database packaged with
+  PROJ 9.3.0 (#201).
+- The wk package now compiles once again on gcc 4.8 (#203, #206).
+- Fixed `sfc_writer()` to correctly attach the `classes` attribute to
+  sfc output with mixed geometry types (#195).
+- Function `sfc_writer()` now has an argument `promote_multi` to write any
+  input as the MULTI variant. This makes it more likely that an input vector
+  will be read as a single geometry type (#198).
+- The `wk_collection_filter()` now correctly increments the `part_id` when
+  calling the child handler (@brownag, #194).
+
 # wk 0.8.0
 
 * Added `wkb_to_hex()` (@anthonynorth, #183).
