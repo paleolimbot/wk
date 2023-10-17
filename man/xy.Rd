@@ -60,4 +60,8 @@ xyz(1:5, 1:5, 10)
 xym(1:5, 1:5, 10)
 xyzm(1:5, 1:5, 10, 12)
 
+# NA, NA maps to a null/na feature; NaN, NaN maps to EMPTY
+as_wkt(xy(NaN, NaN))
+as_wkt(xy(NA, NA))
+
 }
