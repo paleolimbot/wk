@@ -2,11 +2,11 @@
 test_that("wk_vertices() works", {
   expect_identical(
     wk_vertices(wkt(c("POINT (0 0)", "POINT (1 1)", NA))),
-    wkt(c("POINT (0 0)", "POINT (1 1)", NA))
+    wkt(c("POINT (0 0)", "POINT (1 1)"))
   )
   expect_identical(
     wk_vertices(wkt(c("LINESTRING (0 0, 1 1)", NA))),
-    wkt(c("POINT (0 0)", "POINT (1 1)", NA))
+    wkt(c("POINT (0 0)", "POINT (1 1)"))
   )
   expect_error(wk_vertices(new_wk_wkt("POINT ENTPY")), "ENTPY")
 

@@ -128,11 +128,6 @@ int wk_vertex_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_i
   return WK_CONTINUE;
 }
 
-int wk_vertex_filter_feature_null(void* handler_data) {
-  vertex_filter_t* vertex_filter = (vertex_filter_t*)handler_data;
-  return vertex_filter->next->null_feature(vertex_filter->next->handler_data);
-}
-
 int wk_vertex_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id,
                                  void* handler_data) {
   return WK_CONTINUE;
@@ -234,7 +229,6 @@ SEXP wk_c_vertex_filter_new(SEXP handler_xptr, SEXP add_details) {
   handler->vector_end = &wk_vertex_filter_vector_end;
 
   handler->feature_start = &wk_vertex_filter_feature_start;
-  handler->null_feature = &wk_vertex_filter_feature_null;
   handler->feature_end = &wk_vertex_filter_feature_end;
 
   handler->geometry_start = &wk_vertex_filter_geometry_start;
