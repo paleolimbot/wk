@@ -9,7 +9,7 @@ test_that("xy_writer() works", {
 
   expect_identical(
     wk_handle(empties, xy_writer()),
-    rep(xy(NA, NA), length(empties))
+    rep(xy(NaN, NaN), length(empties))
   )
 
   expect_identical(
@@ -73,24 +73,23 @@ test_that("xy_writer() fills unused dimensions with NA", {
 })
 
 test_that("xy_writer() can roundtrip point examples", {
-  # NA point doesn't roundtrip
   expect_identical(
     wk_handle(wk_example_wkt$point, xy_writer()),
-    xy(c(30, NA, NA), c(10, NA, NA))
+    xy(c(30, NaN, NA), c(10, NaN, NA))
   )
 
   expect_identical(
     wk_handle(wk_example_wkt$point_z, xy_writer()),
-    xyz(c(30, NA, NA), c(10, NA, NA), c(40, NA, NA))
+    xyz(c(30, NaN, NA), c(10, NaN, NA), c(40, NaN, NA))
   )
 
   expect_identical(
     wk_handle(wk_example_wkt$point_m, xy_writer()),
-    xym(c(30, NA, NA), c(10, NA, NA), c(300, NA, NA))
+    xym(c(30, NaN, NA), c(10, NaN, NA), c(300, NaN, NA))
   )
 
   expect_identical(
     wk_handle(wk_example_wkt$point_zm, xy_writer()),
-    xyzm(c(30, NA, NA), c(10, NA, NA), c(40, NA, NA), c(300, NA, NA))
+    xyzm(c(30, NaN, NA), c(10, NaN, NA), c(40, NaN, NA), c(300, NaN, NA))
   )
 })
