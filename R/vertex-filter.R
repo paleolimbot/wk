@@ -94,7 +94,7 @@ wk_vertex_filter <- function(handler, add_details = FALSE) {
 #' @export
 wk_coords.wk_xy <- function(handleable, ...) {
   feature_id <- seq_along(handleable)
-  not_empty <- !is.na(handleable)
+  not_empty <- !Reduce("&", lapply(unclass(handleable), is.nan))
 
   if (!all(not_empty)) {
     handleable <- handleable[not_empty]

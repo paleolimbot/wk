@@ -141,6 +141,9 @@ test_that("optimized wk_coords() for xy() works", {
   xys <- xy(1:5, 6:10)
   expect_identical(wk_coords(xys), wk_coords.default(xys))
 
-  xys_with_empty <- c(xys, xy(NaN, NaN))
-  expect_identical(wk_coords(xys_with_empty), wk_coords.default(xys_with_empty))
+  xys_with_empty_and_null <- c(xys, xy(NA, NA), xy(NaN, NaN))
+  expect_identical(
+    wk_coords(xys_with_empty_and_null),
+    wk_coords.default(xys_with_empty_and_null)
+  )
 })

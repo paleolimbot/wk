@@ -309,6 +309,13 @@ format.wk_xyzm <- function(x, ...) {
   structure(result, class = class(x), crs = wk_crs_output(x, replacement))
 }
 
+#' @export
+is.na.wk_rcrd <- function(x, ...) {
+  is_na <- Reduce("&", lapply(unclass(x), is.na))
+  is_nan <- Reduce("&", lapply(unclass(x), is.nan))
+  is_na & !is_nan
+}
+
 
 #' XY vector extractors
 #'
