@@ -263,7 +263,8 @@ st_as_sfc.wk_xy <- function(x, ...) {
 }
 
 st_as_sf.wk_xy <- function(x, ...) {
-  if ((length(x) > 0) && all(!is.na(x))) {
+  is_na_or_nan <- Reduce("&", lapply(unclass(x), is.na))
+  if ((length(x) > 0) && all(!is_na_or_nan)) {
     sf::st_as_sf(as.data.frame(x), coords = xy_dims(x), crs = sf_crs_from_wk(x))
   } else {
     sf::st_as_sf(

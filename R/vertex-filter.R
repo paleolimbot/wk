@@ -95,8 +95,7 @@ wk_vertex_filter <- function(handler, add_details = FALSE) {
 wk_coords.wk_xy <- function(handleable, ...) {
   feature_id <- seq_along(handleable)
   is_na <- Reduce("&", lapply(unclass(handleable), is.na))
-  is_nan <- Reduce("&", lapply(unclass(handleable), is.nan))
-  has_coord <- !is_na & !is_nan
+  has_coord <- !is_na
 
   if (!all(has_coord)) {
     handleable <- handleable[has_coord]
