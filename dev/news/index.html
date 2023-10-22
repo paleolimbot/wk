@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.8.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.9.0.9000</span>
       </span>
     </div>
 
@@ -59,8 +59,11 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="wk-development-version">wk (development version)<a class="anchor" aria-label="anchor" href="#wk-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.9.0" id="wk-090">wk 0.9.0<small>2023-10-22</small><a class="anchor" aria-label="anchor" href="#wk-090"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-9-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-9-0"></a></h3>
 <ul><li>The common well-known binary representation of POINT EMPTY (i.e., POINT (nan nan)) is now handled as POINT EMPTY allowing empty points to roundtrip through <code><a href="../reference/wkb.html">wkb()</a></code> vectors (<a href="https://github.com/paleolimbot/wk/issues/196" class="external-link">#196</a>, <a href="https://github.com/paleolimbot/wk/issues/204" class="external-link">#204</a>).</li>
 <li>
 <code>xy(NA, NA)</code> is now read as a null feature instead of POINT EMPTY. This preserves the invariant that null features can also be identified using <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
@@ -68,7 +71,7 @@
 <code>xy(NaN, NaN)</code> is now read as POINT EMPTY and <code>is.na(xy(NaN, NaN))</code> now returns <code>FALSE</code>. This means that both EMPTY and null points can roundtrip through <code><a href="../reference/xy.html">xy()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bugfixes-and-improvements-development-version">Bugfixes and improvements<a class="anchor" aria-label="anchor" href="#bugfixes-and-improvements-development-version"></a></h3>
+<h3 id="bugfixes-and-improvements-0-9-0">Bugfixes and improvements<a class="anchor" aria-label="anchor" href="#bugfixes-and-improvements-0-9-0"></a></h3>
 <ul><li>
 <code><a href="../reference/wk_meta.html">wk_meta()</a></code> now contains a new column <code>is_empty</code>, which is <code>TRUE</code> for any feature that contains at least one non-empty coordinate. This allows more efficient detection of features with zero coordinates (<a href="https://github.com/paleolimbot/wk/issues/197" class="external-link">#197</a>, <a href="https://github.com/paleolimbot/wk/issues/199" class="external-link">#199</a>).</li>
 <li>Updated PROJ data to use the latest pull of the database packaged with PROJ 9.3.0 (<a href="https://github.com/paleolimbot/wk/issues/201" class="external-link">#201</a>).</li>
