@@ -314,7 +314,7 @@ format.wk_xyzm <- function(x, ...) {
 }
 
 #' @export
-is.na.wk_rcrd <- function(x, ...) {
+is.na.wk_xy <- function(x, ...) {
   is_na <- Reduce("&", lapply(unclass(x), is.na))
   is_nan <- Reduce("&", lapply(unclass(x), is.nan))
   is_na & !is_nan
