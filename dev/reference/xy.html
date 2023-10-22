@@ -134,6 +134,14 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_xyzm[5]&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] ZM (1 1 10 12) ZM (2 2 10 12) ZM (3 3 10 12) ZM (4 4 10 12) ZM (5 5 10 12)</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># NA, NA maps to a null/na feature; NaN, NaN maps to EMPTY</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="fu">xy</span><span class="op">(</span><span class="cn">NaN</span>, <span class="cn">NaN</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] POINT EMPTY</span>
+<span class="r-in"><span><span class="fu"><a href="wkt.html">as_wkt</a></span><span class="op">(</span><span class="fu">xy</span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;wk_wkt[1]&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] &lt;null feature&gt;</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
