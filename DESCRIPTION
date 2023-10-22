@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.9.0
+Version: 0.9.0.9000
 Authors@R:
     c(
       person(given = "Dewey",
