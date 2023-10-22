@@ -8,6 +8,9 @@
 - `xy(NA, NA)` is now read as a null feature instead of POINT EMPTY. This
   preserves the invariant that null features can also be identified using
   `is.na()` (#205).
+- `xy(NaN, NaN)` is now read as POINT EMPTY and `is.na(xy(NaN, NaN))`
+  now returns `FALSE`. This means that both EMPTY and null points can roundtrip
+  through `xy()` (#205).
   
 ## Bugfixes and improvements
 
