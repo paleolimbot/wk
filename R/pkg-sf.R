@@ -163,6 +163,9 @@ as_xy.sfc <- function(x, ...) {
     coords <- sf::st_coordinates(x)
     dims <- colnames(coords)
     dimnames(coords) <- NULL
+    if (anyNA(coords)) {
+      coords[is.na(coords)] <- NaN
+    }
 
     if (identical(dims, c("X", "Y"))) {
       new_wk_xy(

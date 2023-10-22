@@ -94,10 +94,10 @@ test_that("conversion from sf to xy works", {
 
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)))
   expect_s3_class(as_xy(sfc), "wk_xy")
-  expect_identical(as_xy(sfc), xy(c(NA, 0), c(NA, 1)))
+  expect_identical(as_xy(sfc), xy(c(NaN, 0), c(NaN, 1)))
 
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
-  expect_identical(as_xy(sf), xy(c(NA, 0), c(NA, 1)))
+  expect_identical(as_xy(sf), xy(c(NaN, 0), c(NaN, 1)))
 
   expect_identical(as_xy(sf::st_sfc()), xy(crs = NULL))
   expect_identical(
