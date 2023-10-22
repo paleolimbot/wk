@@ -64,6 +64,8 @@
 <ul><li>The common well-known binary representation of POINT EMPTY (i.e., POINT (nan nan)) is now handled as POINT EMPTY allowing empty points to roundtrip through <code><a href="../reference/wkb.html">wkb()</a></code> vectors (<a href="https://github.com/paleolimbot/wk/issues/196" class="external-link">#196</a>, <a href="https://github.com/paleolimbot/wk/issues/204" class="external-link">#204</a>).</li>
 <li>
 <code>xy(NA, NA)</code> is now read as a null feature instead of POINT EMPTY. This preserves the invariant that null features can also be identified using <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
+<li>
+<code>xy(NaN, NaN)</code> is now read as POINT EMPTY and <code>is.na(xy(NaN, NaN))</code> now returns <code>FALSE</code>. This means that both EMPTY and null points can roundtrip through <code><a href="../reference/xy.html">xy()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bugfixes-and-improvements-development-version">Bugfixes and improvements<a class="anchor" aria-label="anchor" href="#bugfixes-and-improvements-development-version"></a></h3>
