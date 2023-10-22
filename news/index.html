@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -57,6 +57,27 @@
       <small>Source: <a href="https://github.com/paleolimbot/wk/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.9.0" id="wk-090">wk 0.9.0<small>2023-10-22</small><a class="anchor" aria-label="anchor" href="#wk-090"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-9-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-9-0"></a></h3>
+<ul><li>The common well-known binary representation of POINT EMPTY (i.e., POINT (nan nan)) is now handled as POINT EMPTY allowing empty points to roundtrip through <code><a href="../reference/wkb.html">wkb()</a></code> vectors (<a href="https://github.com/paleolimbot/wk/issues/196" class="external-link">#196</a>, <a href="https://github.com/paleolimbot/wk/issues/204" class="external-link">#204</a>).</li>
+<li>
+<code>xy(NA, NA)</code> is now read as a null feature instead of POINT EMPTY. This preserves the invariant that null features can also be identified using <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
+<li>
+<code>xy(NaN, NaN)</code> is now read as POINT EMPTY and <code>is.na(xy(NaN, NaN))</code> now returns <code>FALSE</code>. This means that both EMPTY and null points can roundtrip through <code><a href="../reference/xy.html">xy()</a></code> (<a href="https://github.com/paleolimbot/wk/issues/205" class="external-link">#205</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bugfixes-and-improvements-0-9-0">Bugfixes and improvements<a class="anchor" aria-label="anchor" href="#bugfixes-and-improvements-0-9-0"></a></h3>
+<ul><li>
+<code><a href="../reference/wk_meta.html">wk_meta()</a></code> now contains a new column <code>is_empty</code>, which is <code>TRUE</code> for any feature that contains at least one non-empty coordinate. This allows more efficient detection of features with zero coordinates (<a href="https://github.com/paleolimbot/wk/issues/197" class="external-link">#197</a>, <a href="https://github.com/paleolimbot/wk/issues/199" class="external-link">#199</a>).</li>
+<li>Updated PROJ data to use the latest pull of the database packaged with PROJ 9.3.0 (<a href="https://github.com/paleolimbot/wk/issues/201" class="external-link">#201</a>).</li>
+<li>The wk package now compiles once again on gcc 4.8 (<a href="https://github.com/paleolimbot/wk/issues/203" class="external-link">#203</a>, <a href="https://github.com/paleolimbot/wk/issues/206" class="external-link">#206</a>).</li>
+<li>Fixed <code><a href="../reference/wk_writer.html">sfc_writer()</a></code> to correctly attach the <code>classes</code> attribute to sfc output with mixed geometry types (<a href="https://github.com/paleolimbot/wk/issues/195" class="external-link">#195</a>).</li>
+<li>Function <code><a href="../reference/wk_writer.html">sfc_writer()</a></code> now has an argument <code>promote_multi</code> to write any input as the MULTI variant. This makes it more likely that an input vector will be read as a single geometry type (<a href="https://github.com/paleolimbot/wk/issues/198" class="external-link">#198</a>).</li>
+<li>The <code><a href="../reference/wk_linestring.html">wk_collection_filter()</a></code> now correctly increments the <code>part_id</code> when calling the child handler (<a href="https://github.com/brownag" class="external-link">@brownag</a>, <a href="https://github.com/paleolimbot/wk/issues/194" class="external-link">#194</a>).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.0" id="wk-080">wk 0.8.0<small>2023-08-25</small><a class="anchor" aria-label="anchor" href="#wk-080"></a></h2>
 <ul><li>Added <code><a href="../reference/wkb_to_hex.html">wkb_to_hex()</a></code> (<a href="https://github.com/anthonynorth" class="external-link">@anthonynorth</a>, <a href="https://github.com/paleolimbot/wk/issues/183" class="external-link">#183</a>).</li>

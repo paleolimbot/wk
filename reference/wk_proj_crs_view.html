@@ -19,7 +19,7 @@ coordinate reference systems."><!-- mathjax --><script src="https://cdnjs.cloudf
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">wk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -74,27 +74,27 @@ coordinate reference systems.</p>
 
     <div id="format">
     <h2>Format</h2>
-    <p>An object of class <code>data.frame</code> with 13096 rows and 7 columns.</p>
-<p>An object of class <code>data.frame</code> with 13096 rows and 3 columns.</p>
+    <p>An object of class <code>data.frame</code> with 13387 rows and 7 columns.</p>
+<p>An object of class <code>data.frame</code> with 13387 rows and 3 columns.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">wk_proj_crs_view</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      table_name auth_name  code                                     name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 projected_crs      EPSG  2000 Anguilla 1957 / British West Indies Grid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  vertical_crs      EPSG 20000                           SVD2006 height</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  compound_crs      EPSG 20001                  ETRS89 + SVD2006 height</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 projected_crs      EPSG 20002                               MWC18 Grid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  compound_crs      EPSG 20003                  MWC18 Grid + ODN height</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 projected_crs      EPSG 20004       Pulkovo 1995 / Gauss-Kruger zone 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        type description deprecated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 projected        &lt;NA&gt;          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  vertical        &lt;NA&gt;          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  compound        &lt;NA&gt;          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 projected        &lt;NA&gt;          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  compound        &lt;NA&gt;          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 projected        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      table_name auth_name  code                                   name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  vertical_crs      EPSG 10150          MSL UK &amp; Ireland VORF08 depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  vertical_crs      EPSG 10151           CD UK &amp; Ireland VORF08 depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  compound_crs      EPSG 10156 ETRS89 + MSL UK &amp; Ireland VORF08 depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  compound_crs      EPSG 10157  ETRS89 + CD UK &amp; Ireland VORF08 depth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  geodetic_crs      EPSG 10158                               S34J-IRF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 projected_crs      EPSG 10160    S34J reconstruction east-orientated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            type description deprecated</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      vertical        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      vertical        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      compound        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      compound        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 geographic 2D        &lt;NA&gt;          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     projected        &lt;NA&gt;          0</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">wk_proj_crs_json</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "auth_name" "code"      "projjson" </span>
 <span class="r-in"><span></span></span>
