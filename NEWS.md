@@ -1,4 +1,4 @@
-# wk (development version)
+# wk 0.9.0
 
 ## Breaking changes
 
