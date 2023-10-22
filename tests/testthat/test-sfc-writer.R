@@ -5,27 +5,7 @@ test_that("sfc_writer() works with fixed-length input", {
   # zero-length
   expect_identical(wk_handle(wkb(), sfc_writer()), sf::st_sfc())
 
-  # empties (equal because of NaN/NA difference for POINT)
-  expect_equal_ignore_na_nan(
-    wk_handle(
-      as_wkb(
-        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
-          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
-          "GEOMETRYCOLLECTION EMPTY"
-        )
-      ),
-      sfc_writer()
-    ),
-    sf::st_sfc(
-      sf::st_point(), sf::st_linestring(), sf::st_polygon(),
-      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
-      sf::st_geometrycollection()
-    )
-  )
-
-  # subtely different for WKT, since a point will fire zero coordinates
-  # whereas for WKB it will fire (NaN, NaN)
-  expect_equal_ignore_na_nan(
+  expect_identical(
     wk_handle(
       as_wkt(
         c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
@@ -102,27 +82,7 @@ test_that("sfc_writer() works with fixed-length input", {
 test_that("sfc_writer() works with promote_multi = TRUE", {
   skip_if_not_installed("sf")
 
-  # empties (equal because of NaN/NA difference for POINT)
-  expect_equal_ignore_na_nan(
-    wk_handle(
-      as_wkb(
-        c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
-          "MULTIPOINT EMPTY", "MULTILINESTRING EMPTY", "MULTIPOLYGON EMPTY",
-          "GEOMETRYCOLLECTION EMPTY"
-        )
-      ),
-      sfc_writer(promote_multi = TRUE)
-    ),
-    sf::st_sfc(
-      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
-      sf::st_multipoint(), sf::st_multilinestring(), sf::st_multipolygon(),
-      sf::st_geometrycollection()
-    )
-  )
-
-  # subtely different for WKT, since a point will fire zero coordinates
-  # whereas for WKB it will fire (NaN, NaN)
-  expect_equal_ignore_na_nan(
+  expect_identical(
     wk_handle(
       as_wkt(
         c("POINT EMPTY", "LINESTRING EMPTY", "POLYGON EMPTY",
@@ -240,7 +200,7 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
   )
 
   for (i in seq_along(all_types)) {
-    expect_equal_ignore_na_nan(
+    expect_identical(
       wk_handle(c(all_types[i], wkb(list(NULL))), sfc_writer()),
       wk_handle(c(all_types[i], all_types[i]), sfc_writer())
     )
@@ -270,7 +230,7 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
 
   for (i in seq_along(all_types)) {
     vec <- wk_handle(c(all_types_non_empty[i], wkb(list(NULL))), sfc_writer())
-    expect_equal_ignore_na_nan(vec[[2]], wk_handle(all_types[i], sfc_writer())[[1]])
+    expect_identical(vec[[2]], wk_handle(all_types[i], sfc_writer())[[1]])
     expect_s3_class(vec, paste0("sfc_", types[i]))
   }
 
@@ -284,7 +244,7 @@ test_that("sfc_writer() turns NULLs into EMPTY", {
   )
 
   for (i in seq_along(all_types)) {
-    expect_equal_ignore_na_nan(
+    expect_identical(
       wk_handle(c(zm_types[i], wkb(list(NULL))), sfc_writer()),
       wk_handle(c(zm_types[i], zm_types_empty[i]), sfc_writer())
     )

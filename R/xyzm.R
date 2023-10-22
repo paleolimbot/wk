@@ -15,6 +15,10 @@
 #' xym(1:5, 1:5, 10)
 #' xyzm(1:5, 1:5, 10, 12)
 #'
+#' # NA, NA maps to a null/na feature; NaN, NaN maps to EMPTY
+#' as_wkt(xy(NaN, NaN))
+#' as_wkt(xy(NA, NA))
+#'
 xy <- function(x = double(), y = double(), crs = wk_crs_auto()) {
   vec <- new_wk_xy(recycle_common(x = as.double(x), y = as.double(y)), crs = wk_crs_auto_value(x, crs))
   validate_wk_xy(vec)
@@ -307,6 +311,13 @@ format.wk_xyzm <- function(x, ...) {
 
   names(result) <- names(unclass(x))
   structure(result, class = class(x), crs = wk_crs_output(x, replacement))
+}
+
+#' @export
+is.na.wk_xy <- function(x, ...) {
+  is_na <- Reduce("&", lapply(unclass(x), is.na))
+  is_nan <- Reduce("&", lapply(unclass(x), is.nan))
+  is_na & !is_nan
 }
 
 

@@ -182,6 +182,13 @@ test_that("subset-assign works for wk_xy", {
   expect_identical(x[2], xyzm(11, 21, NA, NA))
 })
 
+test_that("is.na() returns FALSE for EMPTY xy()", {
+  expect_identical(
+    is.na(as_xy(wkt(c("POINT EMPTY", NA, "POINT (0 1)")))),
+    c(FALSE, TRUE, FALSE)
+  )
+})
+
 test_that("xy() propagates CRS", {
   x <- xy(1, 2)
   wk_crs(x) <- 1234

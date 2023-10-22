@@ -66,29 +66,32 @@ SEXP wk_read_xy(SEXP data, wk_handler_t* handler) {
 #endif
 
       int coord_empty = 1;
+      int coord_null = 1;
       for (int j = 0; j < coord_size; j++) {
         coord[j] = data_ptr[j][data_ptr_i];
         meta.bounds_min[j] = data_ptr[j][data_ptr_i];
         meta.bounds_max[j] = data_ptr[j][data_ptr_i];
 
-        if (!ISNAN(coord[j])) {
-          coord_empty = 0;
-        }
+        coord_null = coord_null && ISNA(coord[j]);
+        coord_empty = coord_empty && ISNAN(coord[j]);
       }
 
-      if (coord_empty) {
+      if (coord_null) {
+        HANDLE_CONTINUE_OR_BREAK(handler->null_feature(handler->handler_data));
+      } else if (coord_empty) {
         meta.size = 0;
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
       } else {
         meta.size = 1;
-      }
-
-      HANDLE_CONTINUE_OR_BREAK(
-          handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
-      if (!coord_empty) {
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_start(&meta, WK_PART_ID_NONE, handler->handler_data));
         HANDLE_CONTINUE_OR_BREAK(handler->coord(&meta, coord, 0, handler->handler_data));
+        HANDLE_CONTINUE_OR_BREAK(
+            handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
       }
-      HANDLE_CONTINUE_OR_BREAK(
-          handler->geometry_end(&meta, WK_PART_ID_NONE, handler->handler_data));
 
       if (handler->feature_end(&vector_meta, i, handler->handler_data) == WK_ABORT) {
         break;

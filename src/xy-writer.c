@@ -82,7 +82,7 @@ static inline void xy_writer_append_empty(xy_writer_t* writer) {
 
   for (int i = 0; i < 4; i++) {
     if (writer->result_ptr[i]) {
-      writer->result_ptr[i][writer->feat_id] = NA_REAL;
+      writer->result_ptr[i][writer->feat_id] = R_NaN;
     }
   }
   writer->feat_id++;
@@ -133,6 +133,17 @@ int xy_writer_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id,
   data->has_coord = 0;
   xy_writer_append_empty(data);
   return WK_CONTINUE;
+}
+
+int xy_writer_null_feature(void* handler_data) {
+  xy_writer_t* data = (xy_writer_t*)handler_data;
+  for (int i = 0; i < 4; i++) {
+    if (data->result_ptr[i]) {
+      data->result_ptr[i][data->feat_id - 1] = NA_REAL;
+    }
+  }
+
+  return WK_ABORT_FEATURE;
 }
 
 int xy_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id,
@@ -289,6 +300,7 @@ SEXP wk_c_xy_writer_new(void) {
 
   handler->vector_start = &xy_writer_vector_start;
   handler->feature_start = &xy_writer_feature_start;
+  handler->null_feature = &xy_writer_null_feature;
   handler->geometry_start = &xy_writer_geometry_start;
   handler->coord = &xy_writer_coord;
   handler->vector_end = &xy_writer_vector_end;

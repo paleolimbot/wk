@@ -94,13 +94,16 @@ test_that("conversion from sf to xy works", {
 
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)))
   expect_s3_class(as_xy(sfc), "wk_xy")
-  expect_identical(as_xy(sfc), xy(c(NA, 0), c(NA, 1)))
+  expect_identical(as_xy(sfc), xy(c(NaN, 0), c(NaN, 1)))
 
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
-  expect_identical(as_xy(sf), xy(c(NA, 0), c(NA, 1)))
+  expect_identical(as_xy(sf), xy(c(NaN, 0), c(NaN, 1)))
 
   expect_identical(as_xy(sf::st_sfc()), xy(crs = NULL))
-  expect_identical(as_xy(sf::st_sfc(sf::st_linestring())), xy(NA, NA, crs = sf::NA_crs_))
+  expect_identical(
+    as_xy(sf::st_sfc(sf::st_linestring())),
+    xy(NaN, NaN, crs = sf::NA_crs_)
+  )
 
   # check all dimensions
   expect_identical(as_xy(sf::st_sfc(sf::st_point(c(1, 2, 3, 4), dim = "XYZM"))), xyzm(1, 2, 3, 4))
@@ -119,24 +122,27 @@ test_that("conversion from bbox to rct works", {
 test_that("conversion to sf works", {
   skip_if_not_installed("sf")
 
-  # Use NaN/NaN instead of NA/NA because Waldo cares about this comparison
   sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), NULL, crs = 4326)
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
   wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
   wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
 
-  expect_equal_ignore_na_nan(sf::st_as_sf(wkb), sf)
-  expect_equal_ignore_na_nan(sf::st_as_sfc(wkb), sfc)
+  expect_equal(sf::st_as_sf(wkb), sf)
+  expect_equal(sf::st_as_sfc(wkb), sfc)
   expect_equal(sf::st_as_sf(wkt), sf)
   expect_equal(sf::st_as_sfc(wkt), sfc)
 
   # xy
-  expect_equal_ignore_na_nan(
+  expect_equal(
     sf::st_as_sf(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)),
     sf
   )
-  expect_equal_ignore_na_nan(
+  expect_equal(
     sf::st_as_sfc(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)),
+    sfc
+  )
+  expect_equal(
+    sf::st_as_sfc(xy(c(NaN, 0, NA), c(NaN, 1, NA), crs = 4326)),
     sfc
   )
 
