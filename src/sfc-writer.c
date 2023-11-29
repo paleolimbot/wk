@@ -519,7 +519,8 @@ int sfc_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id,
     sfc_writer_update_vector_attributes(writer, meta, meta->geometry_type, meta->size);
   } else if ((writer->recursion_level < 0) ||
              (writer->recursion_level >= SFC_MAX_RECURSION_DEPTH)) {
-    Rf_error("Invalid recursion depth whilst parsing 'sfg': %d", writer->recursion_level);
+    Rf_error("Invalid recursion depth whilst parsing 'sfg': %d",
+             (int)writer->recursion_level);
   }
 
   // if POINT, LINESTRING, or MULTIPOINT

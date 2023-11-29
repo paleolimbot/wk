@@ -155,8 +155,8 @@ int xy_writer_geometry_start(const wk_meta_t* meta, uint32_t part_id,
   if (meta->size != 0 && meta->geometry_type != WK_POINT &&
       meta->geometry_type != WK_MULTIPOINT &&
       meta->geometry_type != WK_GEOMETRYCOLLECTION) {
-    Rf_error("[%d] Can't convert geometry with type '%d' to coordinate",
-             data->feat_id + 1, meta->geometry_type);
+    Rf_error("[%ld] Can't convert geometry with type '%d' to coordinate",
+             (long)data->feat_id + 1, (int)meta->geometry_type);
   }
 
   // keep track of zm flags to possibly trim output
@@ -187,7 +187,7 @@ int xy_writer_coord(const wk_meta_t* meta, const double* coord, uint32_t coord_i
   xy_writer_t* data = (xy_writer_t*)handler_data;
 
   if (data->has_coord) {
-    Rf_error("[%d] Feature contains more than one coordinate.", data->feat_id);
+    Rf_error("[%ld] Feature contains more than one coordinate.", (long)data->feat_id);
   } else {
     data->has_coord = 1;
   }
