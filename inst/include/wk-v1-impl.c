@@ -39,7 +39,7 @@ int wk_default_handler_coord(const wk_meta_t* meta, const double* coord, uint32_
 }
 
 int wk_default_handler_error(const char* message, void* handler_data) {
-  Rf_error(message);
+  Rf_error("%s", message);
   return WK_ABORT;
 }
 
