@@ -34,7 +34,7 @@ void wk_debug_filter_print_vector_meta(const wk_vector_meta_t* meta) {
       Rprintf("GEOMETRYCOLLECTION");
       break;
     default:
-      Rprintf("<Unknown type / %d>", meta->geometry_type);
+      Rprintf("<Unknown type / %d>", (int)meta->geometry_type);
       break;
   }
 
@@ -50,7 +50,7 @@ void wk_debug_filter_print_vector_meta(const wk_vector_meta_t* meta) {
     if (meta->size == 0) {
       Rprintf("[EMPTY]");
     } else {
-      Rprintf("[%d]", meta->size);
+      Rprintf("[%d]", (int)meta->size);
     }
   } else {
     Rprintf("[UNKNOWN]");
@@ -83,7 +83,7 @@ void wk_debug_filter_print_meta(const wk_meta_t* meta) {
       Rprintf("GEOMETRYCOLLECTION");
       break;
     default:
-      Rprintf("<Unknown type / %d>", meta->geometry_type);
+      Rprintf("<Unknown type / %d>", (int)meta->geometry_type);
       break;
   }
 
@@ -102,7 +102,7 @@ void wk_debug_filter_print_meta(const wk_meta_t* meta) {
     if (meta->size == 0) {
       Rprintf("[EMPTY]");
     } else {
-      Rprintf("[%d]", meta->size);
+      Rprintf("[%d]", (int)meta->size);
     }
   } else {
     Rprintf("[UNKNOWN]");
@@ -137,7 +137,7 @@ void wk_debug_filter_print_result(int result) {
       Rprintf(" => WK_ABORT\n");
       break;
     default:
-      Rprintf(" => [uknown %d]\n", result);
+      Rprintf(" => [uknown %d]\n", (int)result);
       break;
   }
 }
@@ -146,7 +146,7 @@ void wk_debug_filter_initialize(int* dirty, void* handler_data) {
   debug_filter_t* debug_filter = (debug_filter_t*)handler_data;
   *dirty = 1;
   wk_debug_filter_reset(debug_filter, 0);
-  Rprintf("initialize (dirty = %d ", debug_filter->next->dirty);
+  Rprintf("initialize (dirty = %d ", (int)debug_filter->next->dirty);
   debug_filter->next->initialize(&debug_filter->next->dirty,
                                  debug_filter->next->handler_data);
   Rprintf(" -> %d)\n", *dirty);
@@ -169,7 +169,7 @@ SEXP wk_debug_filter_vector_end(const wk_vector_meta_t* meta, void* handler_data
 
   wk_debug_filter_dedent(debug_filter);
   // indenting here is more confusing than helpful
-  Rprintf("vector_end: <%p>\n", meta);
+  Rprintf("vector_end: <%p>\n", (void*)meta);
   return debug_filter->next->vector_end(meta, debug_filter->next->handler_data);
   ;
 }
@@ -179,7 +179,7 @@ int wk_debug_filter_feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id
   debug_filter_t* debug_filter = (debug_filter_t*)handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("feature_start (%d): <%p> ", feat_id + 1, meta);
+  Rprintf("feature_start (%d): <%p> ", (int)feat_id + 1, (void*)meta);
   int result =
       debug_filter->next->feature_start(meta, feat_id, debug_filter->next->handler_data);
   wk_debug_filter_print_result(result);
@@ -204,7 +204,7 @@ int wk_debug_filter_feature_end(const wk_vector_meta_t* meta, R_xlen_t feat_id,
 
   wk_debug_filter_dedent(debug_filter);
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("feature_end (%d): <%p> ", feat_id + 1, meta);
+  Rprintf("feature_end (%d): <%p> ", (int)feat_id + 1, (void*)meta);
   int result =
       debug_filter->next->feature_end(meta, feat_id, debug_filter->next->handler_data);
   wk_debug_filter_print_result(result);
@@ -217,9 +217,9 @@ int wk_debug_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
 
   wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
-    Rprintf("geometry_start (<none>): ", part_id + 1);
+    Rprintf("geometry_start (<none>): ", (int)part_id + 1);
   } else {
-    Rprintf("geometry_start (%d): ", part_id + 1);
+    Rprintf("geometry_start (%d): ", (int)part_id + 1);
   }
 
   wk_debug_filter_print_meta(meta);
@@ -239,9 +239,9 @@ int wk_debug_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id,
   wk_debug_filter_dedent(debug_filter);
   wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
-    Rprintf("geometry_end (<none>) ", part_id + 1);
+    Rprintf("geometry_end (<none>) ", (int)part_id + 1);
   } else {
-    Rprintf("geometry_end (%d) ", part_id + 1);
+    Rprintf("geometry_end (%d) ", (int)part_id + 1);
   }
 
   int result =
@@ -256,9 +256,9 @@ int wk_debug_filter_ring_start(const wk_meta_t* meta, uint32_t size, uint32_t ri
 
   wk_debug_filter_print_indent(debug_filter);
   if (size != WK_SIZE_UNKNOWN) {
-    Rprintf("ring_start[%d] (%d): <%p> ", size, ring_id + 1, meta);
+    Rprintf("ring_start[%d] (%d): <%p> ", (int)size, (int)ring_id + 1, (void*)meta);
   } else {
-    Rprintf("ring_start (%d): <%p> ", ring_id + 1, meta);
+    Rprintf("ring_start (%d): <%p> ", (int)ring_id + 1, (void*)meta);
   }
   wk_debug_filter_indent(debug_filter);
 
@@ -275,9 +275,9 @@ int wk_debug_filter_ring_end(const wk_meta_t* meta, uint32_t size, uint32_t ring
   wk_debug_filter_dedent(debug_filter);
   wk_debug_filter_print_indent(debug_filter);
   if (size != WK_SIZE_UNKNOWN) {
-    Rprintf("ring_end[%d] (%d): <%p> ", size, ring_id + 1, meta);
+    Rprintf("ring_end[%d] (%d): <%p> ", (int)size, (int)ring_id + 1, (void*)meta);
   } else {
-    Rprintf("ring_end (%d): <%p> ", ring_id + 1, meta);
+    Rprintf("ring_end (%d): <%p> ", (int)ring_id + 1, (void*)meta);
   }
 
   int result =
