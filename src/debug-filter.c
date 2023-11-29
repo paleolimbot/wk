@@ -217,7 +217,7 @@ int wk_debug_filter_geometry_start(const wk_meta_t* meta, uint32_t part_id,
 
   wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
-    Rprintf("geometry_start (<none>): ", (int)part_id + 1);
+    Rprintf("geometry_start (<none>): ");
   } else {
     Rprintf("geometry_start (%d): ", (int)part_id + 1);
   }
@@ -239,7 +239,7 @@ int wk_debug_filter_geometry_end(const wk_meta_t* meta, uint32_t part_id,
   wk_debug_filter_dedent(debug_filter);
   wk_debug_filter_print_indent(debug_filter);
   if (part_id == WK_PART_ID_NONE) {
-    Rprintf("geometry_end (<none>) ", (int)part_id + 1);
+    Rprintf("geometry_end (<none>) ");
   } else {
     Rprintf("geometry_end (%d) ", (int)part_id + 1);
   }
@@ -291,7 +291,7 @@ int wk_debug_filter_coord(const wk_meta_t* meta, const double* coord, uint32_t c
   debug_filter_t* debug_filter = (debug_filter_t*)handler_data;
 
   wk_debug_filter_print_indent(debug_filter);
-  Rprintf("coord (%d): <%p> (%f %f", coord_id + 1, meta, coord[0], coord[1]);
+  Rprintf("coord (%d): <%p> (%f %f", (int)coord_id + 1, (void*)meta, coord[0], coord[1]);
   if (meta->flags & WK_FLAG_HAS_Z || meta->flags & WK_FLAG_HAS_M)
     Rprintf(" %f", coord[2]);
   if (meta->flags & WK_FLAG_HAS_Z && meta->flags & WK_FLAG_HAS_M)
