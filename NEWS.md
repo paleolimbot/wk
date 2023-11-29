@@ -1,5 +1,7 @@
 # wk (development version)
 
+- Fix format strings/arguments for R-devel (#209).
+
 # wk 0.9.0
 
 ## Breaking changes

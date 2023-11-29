@@ -1,5 +1,5 @@
 
-This release features several releases and bugfixes.
+This release fixes warnings as shown on the package check page.
 
 ## Test environments
 
