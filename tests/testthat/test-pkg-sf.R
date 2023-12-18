@@ -360,3 +360,16 @@ test_that("st_crs<-() methods are defined for wk objects", {
     sf::st_crs("OGC:CRS84")
   )
 })
+
+test_that("wk_crs() works for bbox", {
+  skip_if_not_installed("sf")
+
+  bbox_na <- sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 1, ymax = 1))
+  expect_identical(wk_crs(bbox_na), sf::NA_crs_)
+  
+  bbox_crs84 <- sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 1, ymax = 1), crs = "OGC:CRS84")
+  expect_identical(wk_crs(bbox_crs84), sf::st_crs("OGC:CRS84"))
+
+  expect_identical(wk_set_crs(bbox_na, "OGC:CRS84"), bbox_crs84)
+  expect_identical(wk_set_crs(bbox_crs84, NA), bbox_na)
+})
