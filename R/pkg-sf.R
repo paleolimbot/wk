@@ -108,6 +108,17 @@ wk_crs.sfg <- function(x) {
 }
 
 #' @export
+wk_crs.bbox <- function(x) {
+  sf::st_crs(x)
+}
+
+#' @export
+wk_set_crs.bbox <- function(x, crs) {
+  sf::st_crs(x) <- sf::st_crs(crs)
+  x
+}
+
+#' @export
 as_wkb.sfc <- function(x, ...) {
   wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
 }
