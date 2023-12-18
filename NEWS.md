@@ -1,5 +1,7 @@
 # wk (development version)
 
+- Add `wk_crs()` and `wk_set_crs()` methods for `bbox` (#213)
+
 # wk 0.9.1
 
 - Fix format strings/arguments for R-devel (#209).
@@ -17,7 +19,7 @@
 - `xy(NaN, NaN)` is now read as POINT EMPTY and `is.na(xy(NaN, NaN))`
   now returns `FALSE`. This means that both EMPTY and null points can roundtrip
   through `xy()` (#205).
-  
+
 ## Bugfixes and improvements
 
 - `wk_meta()` now contains a new column `is_empty`, which is `TRUE`
@@ -44,7 +46,7 @@
 * Added `wk_clockwise()` and `wk_counterclockwise()` to re-wind polygon rings
   (@anthonynorth, #188).
 * New replacement-function mode for `wk_coords<-()` for in-place modification
-  of coordinates (@mdsumner, #187). 
+  of coordinates (@mdsumner, #187).
 * New function `wk_trans_explicit()` migrated from crs2crs (@mdsumner, #187).
 
 # wk 0.7.3
@@ -159,7 +161,7 @@
   the the common pattern of transforming coordinates. These
   structs can be created by other packages; however, the
   `wk_trans_affine()` and `wk_trans_set()` transforms are
-  also built using this feature. These are run using the 
+  also built using this feature. These are run using the
   new `wk_transform()` function and power the new
   `wk_set_z()`, `wk_set_m()`, `wk_drop_z()`, `wk_drop_m()`,
   functions (#87, #88, #89).
@@ -170,13 +172,13 @@
 
 # wk 0.4.0
 
-* Removed `wksxp()` in favour of improved `sf::st_sfc()` support 
+* Removed `wksxp()` in favour of improved `sf::st_sfc()` support
   (#21).
-* Rewrite existing readers, writers, and handlers, using 
+* Rewrite existing readers, writers, and handlers, using
   a new C API (#13).
 * Use new C API in favour of header-only approach for all
   wk functions (#19, #22).
-* Use cpp11 to manage safe use of callables that may longjmp 
+* Use cpp11 to manage safe use of callables that may longjmp
   from C++.
 * Vector classes now propagate `attr(, "crs")`, and check
   that operations that involve more than one vector have
@@ -191,7 +193,7 @@
 * Added a 2D cartesian bounding box handler (`wk_bbox()`) (#42).
 * Refactored unit tests reflecting use of the new API and
   for improved test coverage (#44, #45, #46).
-* Added `wk_meta()`, `wk_vector_meta()`, and `wk_count()` to 
+* Added `wk_meta()`, `wk_vector_meta()`, and `wk_count()` to
   inspect properties of vectors (#53).
 * Modified all internal handlers such that they work with vectors
   of unknown length (#54).
