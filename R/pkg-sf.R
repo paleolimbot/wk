@@ -138,7 +138,7 @@ wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE
 #' @export
 wk_crs_projjson.crs <- function(crs) {
   json <- crs$ProjJson
-  if (is.null(json)) {
+  if (is.null(json) || is.na(json[1])) {
     # i.e., GDAL is not >= 3.1.0
     NextMethod()
   } else {

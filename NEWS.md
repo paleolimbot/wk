@@ -1,5 +1,7 @@
 # wk (development version)
 
+- Fix `wk_crs_projjson()` for `crs` with GDAL < 3.1 (#212, #214)
+
 # wk 0.9.1
 
 - Fix format strings/arguments for R-devel (#209).
