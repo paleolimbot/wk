@@ -48,3 +48,73 @@ test_that("wk_transform_filter() errors when the recursion limit is too high", {
     "Too many recursive levels"
   )
 })
+
+test_that("wk_trans uses meta flags consistently", {
+  # from paleolimbot/wk#216
+  # NOTE: using wk_trans_set() because it exposes use_z and use_m parameters
+  #   we could equivalently use wk_trans_explicit()
+  
+  expect_identical(
+    wk_transform(
+      xy(1, 1),
+      wk_trans_set(xy(1, 1), use_z = TRUE)
+    ),
+    xyz(1, 1, NaN)
+  )
+
+  expect_identical(
+    wk_transform(
+      xy(1, 1),
+      wk_trans_set(xy(1, 1), use_m = TRUE)
+    ),
+    xym(1, 1, NaN)
+  )
+
+  expect_identical(
+    wk_transform(
+      xy(1, 1),
+      wk_trans_set(xy(1, 1), use_z = TRUE, use_m = TRUE)
+    ),
+    xyzm(1, 1, NaN, NaN)
+  )
+
+  expect_identical(
+    wk_transform(
+      xym(1, 1, 1),
+      wk_trans_set(xy(1, 1), use_z = TRUE)
+    ),
+    xyzm(1, 1, NaN, 1)
+  )
+
+  expect_identical(
+    wk_transform(
+      xyz(1, 1, 1),
+      wk_trans_set(xy(1, 1), use_m = TRUE)
+    ),
+    xyzm(1, 1, 1, NaN)
+  )
+
+  expect_identical(
+    wk_transform(
+      xyzm(1, 1, 1, 1),
+      wk_trans_set(xy(1, 1), use_z = TRUE)
+    ),
+    xyzm(1, 1, 1, 1)
+  )
+
+  expect_identical(
+    wk_transform(
+      xyzm(1, 1, 1, 1),
+      wk_trans_set(xy(1, 1), use_m = TRUE)
+    ),
+    xyzm(1, 1, 1, 1)
+  )
+
+  expect_identical(
+    wk_transform(
+      xyzm(1, 1, 1, 1),
+      wk_trans_set(xy(1, 1), use_z = TRUE, use_m = TRUE)
+    ),
+    xyzm(1, 1, 1, 1)
+  )
+})
