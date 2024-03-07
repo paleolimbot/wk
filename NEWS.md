@@ -1,6 +1,7 @@
 # wk (development version)
 
 - Add `wk_crs()` and `wk_set_crs()` methods for `bbox` (#213)
+- Fix wk_trans inconsistent meta flags handling (#217)
 
 # wk 0.9.1
 
