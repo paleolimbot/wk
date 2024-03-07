@@ -119,23 +119,23 @@ messages passed to a <strong>handler</strong> is to use the
 <span>  <span class="fu"><a href="../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7fffa39aabb0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffd8bddf680&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (2): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffa39aaa40&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7fffa39aaa40&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (2): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffd8bddf510&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd8bddf510&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (2): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (3): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7fffa39aaa40&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7fffa39aa8e0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;         coord (1): &lt;0x7fffa39aa8e0&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (2): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (3): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffd8bddf510&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffd8bddf3b0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;         coord (1): &lt;0x7ffd8bddf3b0&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (3): &lt;0x7fffa39aabb0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7fffa39aabb0&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (3): &lt;0x7ffd8bddf680&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd8bddf680&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the
@@ -166,24 +166,24 @@ multiple input types with one line of code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffa39a82d0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffa39a82d0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffa39a8160&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7fffa39a8160&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffd8bddcda0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd8bddcda0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffd8bddcc30&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd8bddcc30&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffa39a82d0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7fffa39a82d0&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd8bddcda0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd8bddcda0&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffa39aaa70&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffa39aaa70&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7fffa39aa9c0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7fffa39aa9c0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffd8bddf540&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffd8bddf540&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffd8bddf490&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7ffd8bddf490&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffa39aaa70&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7fffa39aaa70&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffd8bddf540&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7ffd8bddf540&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
@@ -195,40 +195,40 @@ of its input (assuming Euclidean space). One way to go about this is to
 use the C++ extension of the C API. The approach is probably familiar:
 keep a running tally of the greatest and least values so far, updating
 every time information about a new coordinate is available.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> writable <span class="op">=</span> cpp11<span class="op">::</span>writable<span class="op">;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-handler-cpp11.hpp"</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BBoxHandler<span class="op">:</span> <span class="kw">public</span> WKVoidHandler <span class="op">{</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  BBoxHandler<span class="op">():</span> xmin<span class="op">(</span>R_PosInf<span class="op">),</span> ymin<span class="op">(</span>R_PosInf<span class="op">),</span> xmax<span class="op">(</span>R_NegInf<span class="op">),</span> ymax<span class="op">(</span>R_NegInf<span class="op">)</span> <span class="op">{}</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> coord<span class="op">(</span><span class="at">const</span> <span class="dt">wk_meta_t</span><span class="op">*</span> meta<span class="op">,</span> <span class="at">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> <span class="dt">uint32_t</span> coord_id<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>xmin <span class="op">=</span> <span class="bu">std::</span>min<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>xmin<span class="op">);</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>ymin <span class="op">=</span> <span class="bu">std::</span>min<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>ymin<span class="op">);</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>xmax <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>xmax<span class="op">);</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>ymax <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>ymax<span class="op">);</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> WK_CONTINUE<span class="op">;</span> </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  SEXP vector_end<span class="op">(</span><span class="at">const</span> <span class="dt">wk_vector_meta_t</span><span class="op">*</span> meta<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    writable<span class="op">::</span>doubles output <span class="op">=</span> <span class="op">{</span><span class="kw">this</span><span class="op">-&gt;</span>xmin<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>ymin<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>xmax<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>ymax<span class="op">};</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    output<span class="op">.</span>names<span class="op">()</span> <span class="op">=</span> <span class="op">{</span><span class="st">"xmin"</span><span class="op">,</span> <span class="st">"ymin"</span><span class="op">,</span> <span class="st">"xmax"</span><span class="op">,</span> <span class="st">"ymax"</span><span class="op">};</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output<span class="op">;</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> xmin<span class="op">,</span> ymin<span class="op">,</span> xmax<span class="op">,</span> ymax<span class="op">;</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>sexp cpp_bbox_handler_new<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> WKHandlerFactory<span class="op">&lt;</span>BBoxHandler<span class="op">&gt;::</span>create_xptr<span class="op">(</span><span class="kw">new</span> BBoxHandler<span class="op">());</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="kw">namespace</span> writable <span class="op">=</span> cpp11<span class="op">::</span>writable<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-handler-cpp11.hpp"</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="kw">class</span> BBoxHandler<span class="op">:</span> <span class="kw">public</span> WKVoidHandler <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  BBoxHandler<span class="op">():</span> xmin<span class="op">(</span>R_PosInf<span class="op">),</span> ymin<span class="op">(</span>R_PosInf<span class="op">),</span> xmax<span class="op">(</span>R_NegInf<span class="op">),</span> ymax<span class="op">(</span>R_NegInf<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  </span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="dt">int</span> coord<span class="op">(</span><span class="at">const</span> <span class="dt">wk_meta_t</span><span class="op">*</span> meta<span class="op">,</span> <span class="at">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> <span class="dt">uint32_t</span> coord_id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>xmin <span class="op">=</span> <span class="bu">std::</span>min<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>xmin<span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>ymin <span class="op">=</span> <span class="bu">std::</span>min<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>ymin<span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>xmax <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>xmax<span class="op">);</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>ymax <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> <span class="kw">this</span><span class="op">-&gt;</span>ymax<span class="op">);</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>    <span class="cf">return</span> WK_CONTINUE<span class="op">;</span> </span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  </span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  SEXP vector_end<span class="op">(</span><span class="at">const</span> <span class="dt">wk_vector_meta_t</span><span class="op">*</span> meta<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    writable<span class="op">::</span>doubles output <span class="op">=</span> <span class="op">{</span><span class="kw">this</span><span class="op">-&gt;</span>xmin<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>ymin<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>xmax<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>ymax<span class="op">};</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>    output<span class="op">.</span>names<span class="op">()</span> <span class="op">=</span> <span class="op">{</span><span class="st">"xmin"</span><span class="op">,</span> <span class="st">"ymin"</span><span class="op">,</span> <span class="st">"xmax"</span><span class="op">,</span> <span class="st">"ymax"</span><span class="op">};</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>    <span class="cf">return</span> output<span class="op">;</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>  </span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="dt">double</span> xmin<span class="op">,</span> ymin<span class="op">,</span> xmax<span class="op">,</span> ymax<span class="op">;</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>sexp cpp_bbox_handler_new<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  <span class="cf">return</span> WKHandlerFactory<span class="op">&lt;</span>BBoxHandler<span class="op">&gt;::</span>create_xptr<span class="op">(</span><span class="kw">new</span> BBoxHandler<span class="op">());</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>In this handler, we only care about two types of events: the
 appearance of a coordinate and the end of the vector. In the wk API, the
 <code>vector_end()</code> method is where the return value is computed.
@@ -241,7 +241,7 @@ you’ve returned from C++ is a pointer to a wk handler.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x55fb4adadf70&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x55ab3e337ae0&gt;</span></span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s
 <code>handle_*()</code> functions such as <code>handle_wkt()</code> or
 <code>handle_wkb()</code>:</p>
@@ -310,63 +310,63 @@ method is marked <code>noexcept</code> (the deleter,
 are working, it may be easier or faster to write a handler in C. The
 below example is a direct translation of the C++ bounding box handler
 from above.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MIN(a, b) (((a) &lt; (b)) ? (a) : (b))</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#define MAX(a, b) (((a) &gt; (b)) ? (a) : (b)) </span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> xmin<span class="op">,</span> ymin<span class="op">,</span> xmax<span class="op">,</span> ymax<span class="op">;</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> bbox_handler_data_t<span class="op">;</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> bbox_handler_coord<span class="op">(</span><span class="dt">const</span> wk_meta_t<span class="op">*</span> meta<span class="op">,</span> <span class="dt">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> </span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">uint32_t</span> coord_id<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmin <span class="op">=</span> MIN<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> data<span class="op">-&gt;</span>xmin<span class="op">);</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymin <span class="op">=</span> MIN<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> data<span class="op">-&gt;</span>ymin<span class="op">);</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmax <span class="op">=</span> MAX<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> data<span class="op">-&gt;</span>xmax<span class="op">);</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymax <span class="op">=</span> MAX<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> data<span class="op">-&gt;</span>ymax<span class="op">);</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> WK_CONTINUE<span class="op">;</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>SEXP bbox_handler_vector_end<span class="op">(</span><span class="dt">const</span> wk_vector_meta_t<span class="op">*</span> meta<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">char</span><span class="op">*</span> names<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="st">"xmin"</span><span class="op">,</span> <span class="st">"ymin"</span><span class="op">,</span> <span class="st">"xmax"</span><span class="op">,</span> <span class="st">"ymax"</span><span class="op">,</span> <span class="st">""</span><span class="op">};</span></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  SEXP output <span class="op">=</span> PROTECT<span class="op">(</span>Rf_mkNamed<span class="op">(</span>REALSXP<span class="op">,</span> names<span class="op">));</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>xmin<span class="op">;</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>ymin<span class="op">;</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>xmax<span class="op">;</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>ymax<span class="op">;</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> output<span class="op">;</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bbox_handler_finalize<span class="op">(</span><span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    free<span class="op">(</span>data<span class="op">);</span></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>SEXP c_bbox_handler_new<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  wk_handler_t<span class="op">*</span> handler <span class="op">=</span> wk_handler_create<span class="op">();</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>  handler<span class="op">-&gt;</span>coord <span class="op">=</span> <span class="op">&amp;</span>bbox_handler_coord<span class="op">;</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>  handler<span class="op">-&gt;</span>vector_end <span class="op">=</span> <span class="op">&amp;</span>bbox_handler_vector_end<span class="op">;</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>bbox_handler_data_t<span class="op">));</span></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmin <span class="op">=</span> R_PosInf<span class="op">;</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymin <span class="op">=</span> R_PosInf<span class="op">;</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmax <span class="op">=</span> R_NegInf<span class="op">;</span></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymax <span class="op">=</span> R_NegInf<span class="op">;</span></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>  handler<span class="op">-&gt;</span>handler_data <span class="op">=</span> data<span class="op">;</span></span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_create_xptr<span class="op">(</span>handler<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="pp">#define MIN</span><span class="op">(</span><span class="pp">a</span><span class="op">,</span><span class="pp"> b</span><span class="op">)</span><span class="pp"> </span><span class="op">(((</span><span class="pp">a</span><span class="op">)</span><span class="pp"> </span><span class="op">&lt;</span><span class="pp"> </span><span class="op">(</span><span class="pp">b</span><span class="op">))</span><span class="pp"> </span><span class="op">?</span><span class="pp"> </span><span class="op">(</span><span class="pp">a</span><span class="op">)</span><span class="pp"> </span><span class="op">:</span><span class="pp"> </span><span class="op">(</span><span class="pp">b</span><span class="op">))</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="pp">#define MAX</span><span class="op">(</span><span class="pp">a</span><span class="op">,</span><span class="pp"> b</span><span class="op">)</span><span class="pp"> </span><span class="op">(((</span><span class="pp">a</span><span class="op">)</span><span class="pp"> </span><span class="op">&gt;</span><span class="pp"> </span><span class="op">(</span><span class="pp">b</span><span class="op">))</span><span class="pp"> </span><span class="op">?</span><span class="pp"> </span><span class="op">(</span><span class="pp">a</span><span class="op">)</span><span class="pp"> </span><span class="op">:</span><span class="pp"> </span><span class="op">(</span><span class="pp">b</span><span class="op">))</span><span class="pp"> </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  <span class="dt">double</span> xmin<span class="op">,</span> ymin<span class="op">,</span> xmax<span class="op">,</span> ymax<span class="op">;</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="op">}</span> bbox_handler_data_t<span class="op">;</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="dt">int</span> bbox_handler_coord<span class="op">(</span><span class="dt">const</span> wk_meta_t<span class="op">*</span> meta<span class="op">,</span> <span class="dt">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> </span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>                        <span class="dt">uint32_t</span> coord_id<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmin <span class="op">=</span> MIN<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> data<span class="op">-&gt;</span>xmin<span class="op">);</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymin <span class="op">=</span> MIN<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> data<span class="op">-&gt;</span>ymin<span class="op">);</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmax <span class="op">=</span> MAX<span class="op">(</span>coord<span class="op">[</span><span class="dv">0</span><span class="op">],</span> data<span class="op">-&gt;</span>xmax<span class="op">);</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymax <span class="op">=</span> MAX<span class="op">(</span>coord<span class="op">[</span><span class="dv">1</span><span class="op">],</span> data<span class="op">-&gt;</span>ymax<span class="op">);</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  <span class="cf">return</span> WK_CONTINUE<span class="op">;</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>SEXP bbox_handler_vector_end<span class="op">(</span><span class="dt">const</span> wk_vector_meta_t<span class="op">*</span> meta<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>  </span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>  <span class="dt">const</span> <span class="dt">char</span><span class="op">*</span> names<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="st">"xmin"</span><span class="op">,</span> <span class="st">"ymin"</span><span class="op">,</span> <span class="st">"xmax"</span><span class="op">,</span> <span class="st">"ymax"</span><span class="op">,</span> <span class="st">""</span><span class="op">};</span></span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>  SEXP output <span class="op">=</span> PROTECT<span class="op">(</span>Rf_mkNamed<span class="op">(</span>REALSXP<span class="op">,</span> names<span class="op">));</span></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>xmin<span class="op">;</span></span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>ymin<span class="op">;</span></span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>xmax<span class="op">;</span></span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>  REAL<span class="op">(</span>output<span class="op">)[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> data<span class="op">-&gt;</span>ymax<span class="op">;</span></span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>  </span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>  UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a>  <span class="cf">return</span> output<span class="op">;</span></span>
+<span id="cb8-36"><a href="#cb8-36" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-37"><a href="#cb8-37" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" tabindex="-1"></a><span class="dt">void</span> bbox_handler_finalize<span class="op">(</span><span class="dt">void</span><span class="op">*</span> handler_data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-39"><a href="#cb8-39" tabindex="-1"></a>    bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> handler_data<span class="op">;</span></span>
+<span id="cb8-40"><a href="#cb8-40" tabindex="-1"></a>    free<span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb8-41"><a href="#cb8-41" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-42"><a href="#cb8-42" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" tabindex="-1"></a>SEXP c_bbox_handler_new<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-44"><a href="#cb8-44" tabindex="-1"></a>  wk_handler_t<span class="op">*</span> handler <span class="op">=</span> wk_handler_create<span class="op">();</span></span>
+<span id="cb8-45"><a href="#cb8-45" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" tabindex="-1"></a>  handler<span class="op">-&gt;</span>coord <span class="op">=</span> <span class="op">&amp;</span>bbox_handler_coord<span class="op">;</span></span>
+<span id="cb8-47"><a href="#cb8-47" tabindex="-1"></a>  handler<span class="op">-&gt;</span>vector_end <span class="op">=</span> <span class="op">&amp;</span>bbox_handler_vector_end<span class="op">;</span></span>
+<span id="cb8-48"><a href="#cb8-48" tabindex="-1"></a>  </span>
+<span id="cb8-49"><a href="#cb8-49" tabindex="-1"></a>  bbox_handler_data_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bbox_handler_data_t<span class="op">*)</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>bbox_handler_data_t<span class="op">));</span></span>
+<span id="cb8-50"><a href="#cb8-50" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmin <span class="op">=</span> R_PosInf<span class="op">;</span></span>
+<span id="cb8-51"><a href="#cb8-51" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymin <span class="op">=</span> R_PosInf<span class="op">;</span></span>
+<span id="cb8-52"><a href="#cb8-52" tabindex="-1"></a>  data<span class="op">-&gt;</span>xmax <span class="op">=</span> R_NegInf<span class="op">;</span></span>
+<span id="cb8-53"><a href="#cb8-53" tabindex="-1"></a>  data<span class="op">-&gt;</span>ymax <span class="op">=</span> R_NegInf<span class="op">;</span></span>
+<span id="cb8-54"><a href="#cb8-54" tabindex="-1"></a>  handler<span class="op">-&gt;</span>handler_data <span class="op">=</span> data<span class="op">;</span></span>
+<span id="cb8-55"><a href="#cb8-55" tabindex="-1"></a>  </span>
+<span id="cb8-56"><a href="#cb8-56" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_create_xptr<span class="op">(</span>handler<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
+<span id="cb8-57"><a href="#cb8-57" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>We need the same infrastructure on the R end
 (<code><a href="../reference/wk_handle.html">new_wk_handler()</a></code>) to make sure read functions understand
 that the value is a pointer to a freshly created handler:</p>
@@ -414,50 +414,50 @@ more than readers (after all, there are many more things one can
 that writing readers can be finicky! As an example, I’ll demonstrate a
 reader that iterates over a data frame of coordinates (e.g.,
 <code>data.frame(x = c(1, 2, 3), y = c(4, 5, 6))</code>) as points.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-reader-cpp11.hpp"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define HANDLE_CONTINUE_OR_BREAK</span><span class="op">(</span>expr<span class="op">)</span><span class="pp">                         </span><span class="op">\</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  </span>result<span class="pp"> </span><span class="op">=</span><span class="pp"> </span>expr<span class="op">;</span><span class="pp">                                               </span><span class="op">\</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span>result<span class="pp"> </span><span class="op">==</span><span class="pp"> </span>WK_ABORT_FEATURE<span class="op">)</span><span class="pp"> </span><span class="cf">continue</span><span class="op">;</span><span class="pp"> </span><span class="cf">else</span><span class="pp"> </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span>result<span class="pp"> </span><span class="op">==</span><span class="pp"> </span>WK_ABORT<span class="op">)</span><span class="pp"> </span><span class="cf">break</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>sexp cpp_handle_xy<span class="op">(</span>data_frame input<span class="op">,</span> sexp handler_xptr<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  doubles x <span class="op">=</span> input<span class="op">[</span><span class="st">"x"</span><span class="op">];</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  cpp11<span class="op">::</span>doubles y <span class="op">=</span> input<span class="op">[</span><span class="st">"y"</span><span class="op">];</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">R_xlen_t</span> n_features <span class="op">=</span> x<span class="op">.</span>size<span class="op">();</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  WKHandlerXPtr handler<span class="op">(</span>handler_xptr<span class="op">);</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">wk_vector_meta_t</span> vector_meta<span class="op">;</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  WK_VECTOR_META_RESET<span class="op">(</span>vector_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  vector_meta<span class="op">.</span>size <span class="op">=</span> n_features<span class="op">;</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="dt">wk_meta_t</span> geometry_meta<span class="op">;</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  WK_META_RESET<span class="op">(</span>geometry_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  geometry_meta<span class="op">.</span>size <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  handler<span class="op">.</span>vector_start<span class="op">(&amp;</span>vector_meta<span class="op">);</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> result<span class="op">;</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">R_xlen_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n_features<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>feature_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">));</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>geometry_start<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">));</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> y<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>coord<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> coord<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>geometry_end<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">));</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>feature_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">));</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> handler<span class="op">.</span>vector_end<span class="op">(&amp;</span>vector_meta<span class="op">);</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-reader-cpp11.hpp"</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="pp">#define HANDLE_CONTINUE_OR_BREAK</span><span class="op">(</span>expr<span class="op">)</span><span class="pp">                         </span><span class="op">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="pp">  </span>result<span class="pp"> </span><span class="op">=</span><span class="pp"> </span>expr<span class="op">;</span><span class="pp">                                               </span><span class="op">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="pp">  </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span>result<span class="pp"> </span><span class="op">==</span><span class="pp"> </span>WK_ABORT_FEATURE<span class="op">)</span><span class="pp"> </span><span class="cf">continue</span><span class="op">;</span><span class="pp"> </span><span class="cf">else</span><span class="pp"> </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span>result<span class="pp"> </span><span class="op">==</span><span class="pp"> </span>WK_ABORT<span class="op">)</span><span class="pp"> </span><span class="cf">break</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>sexp cpp_handle_xy<span class="op">(</span>data_frame input<span class="op">,</span> sexp handler_xptr<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  doubles x <span class="op">=</span> input<span class="op">[</span><span class="st">"x"</span><span class="op">];</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  cpp11<span class="op">::</span>doubles y <span class="op">=</span> input<span class="op">[</span><span class="st">"y"</span><span class="op">];</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>  <span class="dt">R_xlen_t</span> n_features <span class="op">=</span> x<span class="op">.</span>size<span class="op">();</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>  WKHandlerXPtr handler<span class="op">(</span>handler_xptr<span class="op">);</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  </span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>  <span class="dt">wk_vector_meta_t</span> vector_meta<span class="op">;</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>  WK_VECTOR_META_RESET<span class="op">(</span>vector_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>  vector_meta<span class="op">.</span>size <span class="op">=</span> n_features<span class="op">;</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  <span class="dt">wk_meta_t</span> geometry_meta<span class="op">;</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  WK_META_RESET<span class="op">(</span>geometry_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>  geometry_meta<span class="op">.</span>size <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  handler<span class="op">.</span>vector_start<span class="op">(&amp;</span>vector_meta<span class="op">);</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>  <span class="dt">double</span> coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  <span class="dt">int</span> result<span class="op">;</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>  </span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">R_xlen_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n_features<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>feature_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">));</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>geometry_start<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">));</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> y<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>coord<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> coord<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>geometry_end<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">));</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">.</span>feature_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">));</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>  <span class="cf">return</span> handler<span class="op">.</span>vector_end<span class="op">(&amp;</span>vector_meta<span class="op">);</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The first thing you might notice is the
 <code>HANDLE_CONTINUE_OR_BREAK()</code> macro. You may have noticed that
 the handler functions we wrote all return <code>WK_CONTINUE</code>.
@@ -515,50 +515,50 @@ method.</p>
 <p>The above reader without the help of C++ and cpp11 looks similar,
 except we need some help from wk’s C API to fill out a couple of
 details.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#define HANDLE_CONTINUE_OR_BREAK(expr)                         \</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="pp">  result = expr;                                               \</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="pp">  if (result == WK_ABORT_FEATURE) continue; else if (result == WK_ABORT) break</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>SEXP c_handle_xy_impl<span class="op">(</span>SEXP input<span class="op">,</span> wk_handler_t<span class="op">*</span> handler<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span><span class="op">*</span> x <span class="op">=</span> REAL<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span><span class="op">*</span> y <span class="op">=</span> REAL<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">1</span><span class="op">));</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  R_xlen_t n_features <span class="op">=</span> Rf_xlength<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  wk_vector_meta_t vector_meta<span class="op">;</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  WK_VECTOR_META_RESET<span class="op">(</span>vector_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  vector_meta<span class="op">.</span>size <span class="op">=</span> n_features<span class="op">;</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  wk_meta_t geometry_meta<span class="op">;</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  WK_META_RESET<span class="op">(</span>geometry_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  geometry_meta<span class="op">.</span>size <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  handler<span class="op">-&gt;</span>vector_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">);</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> result<span class="op">;</span></span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span>R_xlen_t i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n_features<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>feature_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>geometry_start<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> y<span class="op">[</span>i<span class="op">];</span></span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>coord<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> coord<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>geometry_end<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>feature_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> handler<span class="op">-&gt;</span>vector_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">);</span></span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>SEXP c_handle_xy<span class="op">(</span>SEXP input<span class="op">,</span> SEXP handler_xptr<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_run_xptr<span class="op">(&amp;</span>c_handle_xy_impl<span class="op">,</span> input<span class="op">,</span> handler_xptr<span class="op">);</span></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="pp">#define HANDLE_CONTINUE_OR_BREAK</span><span class="op">(</span><span class="pp">expr</span><span class="op">)</span><span class="pp">                         </span><span class="op">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="pp">  result </span><span class="op">=</span><span class="pp"> expr</span><span class="op">;</span><span class="pp">                                               </span><span class="op">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="pp">  </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span><span class="pp">result </span><span class="op">==</span><span class="pp"> WK_ABORT_FEATURE</span><span class="op">)</span><span class="pp"> </span><span class="cf">continue</span><span class="op">;</span><span class="pp"> </span><span class="cf">else</span><span class="pp"> </span><span class="cf">if</span><span class="pp"> </span><span class="op">(</span><span class="pp">result </span><span class="op">==</span><span class="pp"> WK_ABORT</span><span class="op">)</span><span class="pp"> </span><span class="cf">break</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>SEXP c_handle_xy_impl<span class="op">(</span>SEXP input<span class="op">,</span> wk_handler_t<span class="op">*</span> handler<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>  <span class="dt">double</span><span class="op">*</span> x <span class="op">=</span> REAL<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  <span class="dt">double</span><span class="op">*</span> y <span class="op">=</span> REAL<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  R_xlen_t n_features <span class="op">=</span> Rf_xlength<span class="op">(</span>VECTOR_ELT<span class="op">(</span>input<span class="op">,</span> <span class="dv">0</span><span class="op">));</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  </span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  wk_vector_meta_t vector_meta<span class="op">;</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  WK_VECTOR_META_RESET<span class="op">(</span>vector_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>  vector_meta<span class="op">.</span>size <span class="op">=</span> n_features<span class="op">;</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>  wk_meta_t geometry_meta<span class="op">;</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>  WK_META_RESET<span class="op">(</span>geometry_meta<span class="op">,</span> WK_POINT<span class="op">);</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>  geometry_meta<span class="op">.</span>size <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>  handler<span class="op">-&gt;</span>vector_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">);</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>  <span class="dt">double</span> coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>  <span class="dt">int</span> result<span class="op">;</span></span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>  </span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>  <span class="cf">for</span> <span class="op">(</span>R_xlen_t i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n_features<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>feature_start<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>geometry_start<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>    coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> y<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>coord<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> coord<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a></span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>geometry_end<span class="op">(&amp;</span>geometry_meta<span class="op">,</span> WK_PART_ID_NONE<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>    HANDLE_CONTINUE_OR_BREAK<span class="op">(</span>handler<span class="op">-&gt;</span>feature_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> i<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">));</span></span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>  </span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a>  <span class="cf">return</span> handler<span class="op">-&gt;</span>vector_end<span class="op">(&amp;</span>vector_meta<span class="op">,</span> handler<span class="op">-&gt;</span>handler_data<span class="op">);</span></span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a>SEXP c_handle_xy<span class="op">(</span>SEXP input<span class="op">,</span> SEXP handler_xptr<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a>  <span class="cf">return</span> wk_handler_run_xptr<span class="op">(&amp;</span>c_handle_xy_impl<span class="op">,</span> input<span class="op">,</span> handler_xptr<span class="op">);</span></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>The main oddity here is that we need to use
 <code>wk_handler_run_xptr()</code> to run a handler. This function
 performs a similar task as the <code>WKHandlerXPtr</code> wrapper in
@@ -596,33 +596,33 @@ by a fixed offset. I’ll demonstrate this in C++ because it is
 considerably easier to get the details right (if you want to write one
 of these in C you can copy/paste the identity handler source code from
 this package’s src directory as a starting point).</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-filter-cpp11.hpp"</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BumpFilter<span class="op">:</span> <span class="kw">public</span> WKIdentityFilter <span class="op">{</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  BumpFilter<span class="op">(</span>sexp next<span class="op">,</span> <span class="dt">double</span> dx<span class="op">,</span> <span class="dt">double</span> dy<span class="op">):</span> </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    WKIdentityFilter<span class="op">(</span>next<span class="op">),</span> dx<span class="op">(</span>dx<span class="op">),</span> dy<span class="op">(</span>dy<span class="op">)</span> <span class="op">{}</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span> coord<span class="op">(</span><span class="at">const</span> <span class="dt">wk_meta_t</span><span class="op">*</span> meta<span class="op">,</span> <span class="at">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> <span class="dt">uint32_t</span> coord_id<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> <span class="kw">this</span><span class="op">-&gt;</span>dx<span class="op">;</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">+</span> <span class="kw">this</span><span class="op">-&gt;</span>dy<span class="op">;</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> WKIdentityFilter<span class="op">::</span>coord<span class="op">(</span>meta<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">,</span> coord_id<span class="op">);</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dx<span class="op">;</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dy<span class="op">;</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> new_coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>sexp cpp_bump_filter_new<span class="op">(</span>SEXP handler_xptr<span class="op">,</span> <span class="dt">double</span> dx<span class="op">,</span> <span class="dt">double</span> dy<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> WKHandlerFactory<span class="op">&lt;</span>BumpFilter<span class="op">&gt;::</span>create_xptr<span class="op">(</span><span class="kw">new</span> BumpFilter<span class="op">(</span>handler_xptr<span class="op">,</span> dx<span class="op">,</span> dy<span class="op">));</span></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">"cpp11.hpp"</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="kw">using</span> <span class="kw">namespace</span> cpp11<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk/experimental/wk-v1-filter-cpp11.hpp"</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="kw">class</span> BumpFilter<span class="op">:</span> <span class="kw">public</span> WKIdentityFilter <span class="op">{</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="kw">public</span><span class="op">:</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  BumpFilter<span class="op">(</span>sexp next<span class="op">,</span> <span class="dt">double</span> dx<span class="op">,</span> <span class="dt">double</span> dy<span class="op">):</span> </span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    WKIdentityFilter<span class="op">(</span>next<span class="op">),</span> dx<span class="op">(</span>dx<span class="op">),</span> dy<span class="op">(</span>dy<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  </span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>  <span class="dt">int</span> coord<span class="op">(</span><span class="at">const</span> <span class="dt">wk_meta_t</span><span class="op">*</span> meta<span class="op">,</span> <span class="at">const</span> <span class="dt">double</span><span class="op">*</span> coord<span class="op">,</span> <span class="dt">uint32_t</span> coord_id<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> coord<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> <span class="kw">this</span><span class="op">-&gt;</span>dx<span class="op">;</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> coord<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">+</span> <span class="kw">this</span><span class="op">-&gt;</span>dy<span class="op">;</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>    <span class="cf">return</span> WKIdentityFilter<span class="op">::</span>coord<span class="op">(</span>meta<span class="op">,</span> <span class="kw">this</span><span class="op">-&gt;</span>new_coord<span class="op">,</span> coord_id<span class="op">);</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>  </span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="kw">private</span><span class="op">:</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>  <span class="dt">double</span> dx<span class="op">;</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>  <span class="dt">double</span> dy<span class="op">;</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>  <span class="dt">double</span> new_coord<span class="op">[</span><span class="dv">4</span><span class="op">];</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">linking_to</span><span class="op">(</span><span class="at">wk</span><span class="op">)]]</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a><span class="op">[[</span><span class="at">cpp11</span><span class="op">::</span><span class="at">register</span><span class="op">]]</span></span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>sexp cpp_bump_filter_new<span class="op">(</span>SEXP handler_xptr<span class="op">,</span> <span class="dt">double</span> dx<span class="op">,</span> <span class="dt">double</span> dy<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>  <span class="cf">return</span> WKHandlerFactory<span class="op">&lt;</span>BumpFilter<span class="op">&gt;::</span>create_xptr<span class="op">(</span><span class="kw">new</span> BumpFilter<span class="op">(</span>handler_xptr<span class="op">,</span> dx<span class="op">,</span> dy<span class="op">));</span></span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bump_filter</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">handler</span>, <span class="va">dx</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">dy</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/wk_handle.html">new_wk_handler</a></span><span class="op">(</span><span class="fu">cpp_bump_filter_new</span><span class="op">(</span><span class="fu"><a href="../reference/wk_handle.html">as_wk_handler</a></span><span class="op">(</span><span class="va">handler</span><span class="op">)</span>, <span class="va">dx</span>, <span class="va">dy</span><span class="op">)</span>, <span class="st">"bump_filter"</span><span class="op">)</span></span>
@@ -720,48 +720,48 @@ filter: a coordinate transform. Transforms get used in all sorts of
 places in the spatial/geometry world and have their own type that makes
 it slightly less verbose to create them and easier for them to be used
 in other ways.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dx<span class="op">;</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dy<span class="op">;</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> bump_trans_t<span class="op">;</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> bump_trans_trans<span class="op">(</span>R_xlen_t feature_id<span class="op">,</span> <span class="dt">const</span> <span class="dt">double</span><span class="op">*</span> xyzm_in<span class="op">,</span> <span class="dt">double</span><span class="op">*</span> xyzm_out<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> trans_data<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  bump_trans_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bump_trans_t<span class="op">*)</span> trans_data<span class="op">;</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  xyzm_out<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> xyzm_in<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> data<span class="op">-&gt;</span>dx<span class="op">;</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  xyzm_out<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> xyzm_in<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">+</span> data<span class="op">-&gt;</span>dy<span class="op">;</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> WK_CONTINUE<span class="op">;</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bump_trans_finalizer<span class="op">(</span><span class="dt">void</span><span class="op">*</span> trans_data<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  free<span class="op">(</span>trans_data<span class="op">);</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>SEXP bump_trans_new<span class="op">(</span>SEXP xy<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dx <span class="op">=</span> REAL<span class="op">(</span>xy<span class="op">)[</span><span class="dv">0</span><span class="op">];</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">double</span> dy <span class="op">=</span> REAL<span class="op">(</span>xy<span class="op">)[</span><span class="dv">1</span><span class="op">];</span></span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  wk_trans_t<span class="op">*</span> trans <span class="op">=</span> wk_trans_create<span class="op">();</span></span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>  trans<span class="op">-&gt;</span>trans <span class="op">=</span> <span class="op">&amp;</span>bump_trans_trans<span class="op">;</span></span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  trans<span class="op">-&gt;</span>finalizer <span class="op">=</span> <span class="op">&amp;</span>bump_trans_finalizer<span class="op">;</span></span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>  bump_trans_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bump_trans_t<span class="op">*)</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>bump_trans_t<span class="op">));</span></span>
-<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>data <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>    free<span class="op">(</span>trans<span class="op">);</span></span>
-<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    Rf_error<span class="op">(</span><span class="st">"Failed to alloc bump_trans_t*"</span><span class="op">);</span></span>
-<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>dx <span class="op">=</span> dx<span class="op">;</span></span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>  data<span class="op">-&gt;</span>dy <span class="op">=</span> dy<span class="op">;</span></span>
-<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>  trans<span class="op">-&gt;</span>trans_data <span class="op">=</span> data<span class="op">;</span></span>
-<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> wk_trans_create_xptr<span class="op">(</span>trans<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
-<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1.h"</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="pp">#include </span><span class="im">"wk-v1-impl.c"</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>  <span class="dt">double</span> dx<span class="op">;</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>  <span class="dt">double</span> dy<span class="op">;</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="op">}</span> bump_trans_t<span class="op">;</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="dt">int</span> bump_trans_trans<span class="op">(</span>R_xlen_t feature_id<span class="op">,</span> <span class="dt">const</span> <span class="dt">double</span><span class="op">*</span> xyzm_in<span class="op">,</span> <span class="dt">double</span><span class="op">*</span> xyzm_out<span class="op">,</span> <span class="dt">void</span><span class="op">*</span> trans_data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>  bump_trans_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bump_trans_t<span class="op">*)</span> trans_data<span class="op">;</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>  xyzm_out<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> xyzm_in<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">+</span> data<span class="op">-&gt;</span>dx<span class="op">;</span></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>  xyzm_out<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> xyzm_in<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">+</span> data<span class="op">-&gt;</span>dy<span class="op">;</span></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>  <span class="cf">return</span> WK_CONTINUE<span class="op">;</span></span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a><span class="dt">void</span> bump_trans_finalizer<span class="op">(</span><span class="dt">void</span><span class="op">*</span> trans_data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>  free<span class="op">(</span>trans_data<span class="op">);</span></span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a></span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>SEXP bump_trans_new<span class="op">(</span>SEXP xy<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>  <span class="dt">double</span> dx <span class="op">=</span> REAL<span class="op">(</span>xy<span class="op">)[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>  <span class="dt">double</span> dy <span class="op">=</span> REAL<span class="op">(</span>xy<span class="op">)[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>  </span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>  wk_trans_t<span class="op">*</span> trans <span class="op">=</span> wk_trans_create<span class="op">();</span></span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>  trans<span class="op">-&gt;</span>trans <span class="op">=</span> <span class="op">&amp;</span>bump_trans_trans<span class="op">;</span></span>
+<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>  trans<span class="op">-&gt;</span>finalizer <span class="op">=</span> <span class="op">&amp;</span>bump_trans_finalizer<span class="op">;</span></span>
+<span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a>  </span>
+<span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a>  bump_trans_t<span class="op">*</span> data <span class="op">=</span> <span class="op">(</span>bump_trans_t<span class="op">*)</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>bump_trans_t<span class="op">));</span></span>
+<span id="cb21-32"><a href="#cb21-32" tabindex="-1"></a>  <span class="cf">if</span> <span class="op">(</span>data <span class="op">==</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-33"><a href="#cb21-33" tabindex="-1"></a>    free<span class="op">(</span>trans<span class="op">);</span></span>
+<span id="cb21-34"><a href="#cb21-34" tabindex="-1"></a>    Rf_error<span class="op">(</span><span class="st">"Failed to alloc bump_trans_t*"</span><span class="op">);</span></span>
+<span id="cb21-35"><a href="#cb21-35" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb21-36"><a href="#cb21-36" tabindex="-1"></a>  </span>
+<span id="cb21-37"><a href="#cb21-37" tabindex="-1"></a>  data<span class="op">-&gt;</span>dx <span class="op">=</span> dx<span class="op">;</span></span>
+<span id="cb21-38"><a href="#cb21-38" tabindex="-1"></a>  data<span class="op">-&gt;</span>dy <span class="op">=</span> dy<span class="op">;</span></span>
+<span id="cb21-39"><a href="#cb21-39" tabindex="-1"></a>  trans<span class="op">-&gt;</span>trans_data <span class="op">=</span> data<span class="op">;</span></span>
+<span id="cb21-40"><a href="#cb21-40" tabindex="-1"></a>  </span>
+<span id="cb21-41"><a href="#cb21-41" tabindex="-1"></a>  <span class="cf">return</span> wk_trans_create_xptr<span class="op">(</span>trans<span class="op">,</span> R_NilValue<span class="op">,</span> R_NilValue<span class="op">);</span></span>
+<span id="cb21-42"><a href="#cb21-42" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>We need some R infrastructure to run these just like the C
 handlers:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -817,10 +817,10 @@ hopefully eliminate this issue!</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
 <span><span class="co">#&gt;   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handle…  56.4µs  58.5µs    <span style="text-decoration: underline;">16</span>639.        0B     2.02</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handl…   418µs 420.7µs     <span style="text-decoration: underline;">2</span>293.        0B     2.03</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_fi…  73.2µs  76.1µs    <span style="text-decoration: underline;">12</span>820.        0B     6.20</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_f… 527.5µs 534.9µs     <span style="text-decoration: underline;">1</span>828.        0B     0</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handle…  43.7µs  45.7µs    <span style="text-decoration: underline;">21</span>251.        0B     4.25</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handl… 400.4µs 405.8µs     <span style="text-decoration: underline;">2</span>423.        0B     0   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_fi…  60.8µs  63.9µs    <span style="text-decoration: underline;">15</span>177.        0B     8.36</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_f… 510.6µs 518.8µs     <span style="text-decoration: underline;">1</span>890.        0B     0</span></span></code></pre></div>
 </div>
   </div>
 
