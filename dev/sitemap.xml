@@ -1,207 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://paleolimbot.github.io/wk/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/articles/programming.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/crc.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/crc_x.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/deprecated.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_cell.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_extract.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_snap_next.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_subset.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_summary.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_tile.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/grd_tile_template.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/handle_wkt_without_vector_size.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_crc.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_grd.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_rct.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_wkb.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_wkt.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/new_wk_xy.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/plot.wk_grd_xy.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/rct.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/rct_xmin.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/vctrs-methods.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk-package.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_bbox.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_chunk_strategy_single.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_count.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_crs.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_crs_equal.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_crs_inherit.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_crs_proj_definition.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_debug.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_example.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_flatten.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_format.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_handle.data.frame.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_handle.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_handle.wk_grd_xy.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_handle_slice.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_identity.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_is_geodesic.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_linestring.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_meta.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_orient.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_problems.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_proj_crs_view.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_set_z.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_trans_affine.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_trans_explicit.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_trans_inverse.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_transform.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_translate.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_vertices.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_void.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wk_writer.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wkb.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wkb_to_hex.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/wkt.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/xy.html</loc>
-  </url>
-  <url>
-    <loc>https://paleolimbot.github.io/wk/reference/xy_x.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://paleolimbot.github.io/wk/LICENSE-text.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/LICENSE.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/articles/index.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/articles/programming.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/authors.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/index.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/news/index.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/crc.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/crc_x.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/deprecated.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_cell.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_extract.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_snap_next.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_subset.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_summary.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_tile.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/grd_tile_template.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/handle_wkt_without_vector_size.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/index.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_crc.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_grd.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_rct.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_wkb.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_wkt.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/new_wk_xy.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/plot.wk_grd_xy.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/rct.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/rct_xmin.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/vctrs-methods.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk-package.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_bbox.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_chunk_strategy_single.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_count.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_crs.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_crs_equal.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_crs_inherit.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_crs_proj_definition.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_debug.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_example.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_flatten.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_format.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_handle.data.frame.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_handle.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_handle.wk_grd_xy.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_handle_slice.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_identity.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_is_geodesic.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_linestring.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_meta.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_orient.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_plot.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_problems.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_proj_crs_view.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_set_z.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_trans_affine.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_trans_explicit.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_trans_inverse.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_transform.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_translate.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_vertices.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_void.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wk_writer.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wkb.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wkb_to_hex.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/wkt.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/xy.html</loc></url>
+<url><loc>https://paleolimbot.github.io/wk/reference/xy_x.html</loc></url>
 </urlset>
+
