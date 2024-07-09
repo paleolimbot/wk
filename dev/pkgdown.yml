@@ -3,7 +3,7 @@ pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   articles/programming: programming.html
-last_built: 2024-07-09T05:25Z
+last_built: 2024-07-09T06:08Z
 urls:
   reference: https://paleolimbot.github.io/wk/reference
   article: https://paleolimbot.github.io/wk/articles
