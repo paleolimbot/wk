@@ -1,5 +1,6 @@
 
-This release fixes warnings as shown on the package check page.
+This release fixes several bugs and ensures the package can be built on
+Windows/arm.
 
 ## Test environments
 
