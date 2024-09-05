@@ -27,7 +27,7 @@ int wk_crc_handle_single(wk_handler_t* handler, const wk_meta_t* meta, double x,
   double angle;
 
   for (int i = 0; i < segs_per_circle; i++) {
-    angle = i / segs_per_circle * PI * 2.0;
+    angle = i / segs_per_circle * M_PI * 2.0;
     coord[0] = x + r * cos(angle);
     coord[1] = y + r * sin(angle);
     HANDLE_OR_RETURN(handler->coord(meta, coord, i, handler->handler_data));
@@ -35,7 +35,7 @@ int wk_crc_handle_single(wk_handler_t* handler, const wk_meta_t* meta, double x,
 
   // re-export the first coordinate (i = 0) identically
   // to ensure that the loops are closed with no floating-point error
-  angle = 0 / segs_per_circle * PI * 2.0;
+  angle = 0 / segs_per_circle * M_PI * 2.0;
   coord[0] = x + r * cos(angle);
   coord[1] = y + r * sin(angle);
   HANDLE_OR_RETURN(handler->coord(meta, coord, segs_per_circle, handler->handler_data));
