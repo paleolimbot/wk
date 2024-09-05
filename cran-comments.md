@@ -1,6 +1,6 @@
 
-This release fixes several bugs and ensures the package can be built on
-Windows/arm.
+This update fixes the compiled code such that it will compile with
+STRICT_R_HEADERS.
 
 ## Test environments
 
