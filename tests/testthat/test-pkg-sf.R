@@ -153,16 +153,17 @@ test_that("conversion to sf works", {
   # rct can only generate rectangles
   expect_equal(
     sf::st_as_sfc(rct(1, 2, 3, 4, crs = 4326)),
-    sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326))
+    structure(sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)),
+			  oriented = NULL)
   )
 
   expect_equal(
     sf::st_as_sf(rct(1, 2, 3, 4, crs = 4326)),
     sf::st_as_sf(
       data.frame(
-        geometry = sf::st_as_sfc(
+        geometry = structure(sf::st_as_sfc(
           sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)
-        )
+        ), oriented = NULL)
       )
     )
   )
