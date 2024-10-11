@@ -1,10 +1,9 @@
 
-This update fixes the compiled code such that it will compile with
-STRICT_R_HEADERS.
+This update fixes compatibility with sf 1.0-18.
 
 ## Test environments
 
-* local (MacOS, R 4.3.1)
+* local (MacOS, R 4.4.1)
 * GitHub Actions (ubuntu-20.04): release, devel
 * GitHub Actions (windows): release
 * Github Actions (macOS): release
