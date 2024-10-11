@@ -290,11 +290,15 @@ st_as_sf.wk_xy <- function(x, ...) {
 }
 
 st_as_sfc.wk_rct <- function(x, ...) {
-  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  out <- sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  attr(out, "oriented") <- TRUE
+  out
 }
 
 st_as_sfc.wk_crc <- function(x, ...) {
-  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  out <- sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
+  attr(out, "oriented") <- TRUE
+  out
 }
 
 st_as_sf.wk_rct <- function(x, ...) {

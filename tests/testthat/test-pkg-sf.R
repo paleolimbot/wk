@@ -151,21 +151,47 @@ test_that("conversion to sf works", {
   expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[2])
 
   # rct can only generate rectangles
-  expect_equal(
-    sf::st_as_sfc(rct(1, 2, 3, 4, crs = 4326)),
-    sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326))
-  )
+  # These are marked as "oriented" using the appropriate attribute of the
+  # sfc to match the behaviour in sf 1.0-18.
+  if (packageVersion("sf") >= "1.0.18") {
+    expect_equal(
+      sf::st_as_sfc(rct(1, 2, 3, 4, crs = 4326)),
+      sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326))
+    )
 
-  expect_equal(
-    sf::st_as_sf(rct(1, 2, 3, 4, crs = 4326)),
-    sf::st_as_sf(
-      data.frame(
-        geometry = sf::st_as_sfc(
-          sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)
+    expect_equal(
+      sf::st_as_sf(rct(1, 2, 3, 4, crs = 4326)),
+      sf::st_as_sf(
+        data.frame(
+          geometry = sf::st_as_sfc(
+            sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)
+          )
         )
       )
     )
-  )
+  } else {
+    expect_equal(
+      sf::st_as_sfc(rct(1, 2, 3, 4, crs = 4326)),
+      structure(
+        sf::st_as_sfc(sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)),
+        oriented = TRUE
+      )
+    )
+
+    expect_equal(
+      sf::st_as_sf(rct(1, 2, 3, 4, crs = 4326)),
+      sf::st_as_sf(
+        data.frame(
+          geometry = structure(
+            sf::st_as_sfc(
+              sf::st_bbox(c(xmin = 1, ymin = 2, xmax = 3, ymax = 4), crs =  4326)
+            ),
+            oriented = TRUE
+          )
+        )
+      )
+    )
+  }
 
   # crc only generates circles
   expect_equal(
@@ -366,7 +392,7 @@ test_that("wk_crs() works for bbox", {
 
   bbox_na <- sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 1, ymax = 1))
   expect_identical(wk_crs(bbox_na), sf::NA_crs_)
-  
+
   bbox_crs84 <- sf::st_bbox(c(xmin = 0, ymin = 0, xmax = 1, ymax = 1), crs = "OGC:CRS84")
   expect_identical(wk_crs(bbox_crs84), sf::st_crs("OGC:CRS84"))
 
