@@ -87,8 +87,10 @@ static inline void wk_vertex_filter_finalize_details(vertex_filter_t* vertex_fil
   if (vertex_filter->coord_id != vertex_filter->details_size) {
     for (int i = 0; i < 3; i++) {
       SEXP new_item = PROTECT(Rf_allocVector(INTSXP, vertex_filter->coord_id));
-      memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)),
-             vertex_filter->coord_id * sizeof(int));
+      if (vertex_filter->coord_id > 0) {
+        memcpy(INTEGER(new_item), INTEGER(VECTOR_ELT(vertex_filter->details, i)),
+               vertex_filter->coord_id * sizeof(int));
+      }
       SET_VECTOR_ELT(vertex_filter->details, i, new_item);
       UNPROTECT(1);
     }
