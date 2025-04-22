@@ -41,8 +41,13 @@ static inline SEXP wk_bbox_handler_realloc_result(SEXP result, R_xlen_t new_size
     size_cpy = new_size;
   }
 
+  if (!size_cpy) {
+    UNPROTECT(1);
+    return new_result;
+  }
+
   for (int i = 0; i < 4; i++) {
-    memcpy(REAL(VECTOR_ELT(new_result, i)), REAL(VECTOR_ELT(result, i)),
+    memcpy(REAL(VECTOR_ELT(new_result, i)), REAL_RO(VECTOR_ELT(result, i)),
            sizeof(double) * size_cpy);
   }
 
