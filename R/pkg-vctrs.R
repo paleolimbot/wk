@@ -832,6 +832,22 @@ vec_ptype2.wk_rct <- function(x, y, ...) {
   UseMethod("vec_ptype2.wk_rct", y) # nocov
 }
 
+#' @method vec_cast.wk_rct wk_rct
+#' @export
+vec_cast.wk_rct.wk_rct <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
+  x
+}
+
+#' @method vec_cast.wk_rct wk_wkb
+#' @export
+vec_cast.wk_rct.wk_wkb <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
+  as_wkb(x, ...)
+}
+
 #' @method vec_ptype2.wk_rct wk_rct
 #' @export
 vec_ptype2.wk_rct.wk_rct <- function(x, y, ..., x_arg = "x", y_arg = "y") {
@@ -903,6 +919,22 @@ vec_cast.wk_crc <- function(x, to, ...) {
 #' @export
 vec_cast.wk_crc.default <- function(x, to, ...) {
   vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @method vec_cast.wk_crc wk_crc
+#' @export
+vec_cast.wk_crc.wk_crc <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
+  x
+}
+
+#' @method vec_cast.wk_crc wk_wkb
+#' @export
+vec_cast.wk_crc.wk_wkb <- function(x, to, ...) {
+  wk_crs_output(x, to)
+  wk_is_geodesic_output(x, to)
+  as_wkb(x, ...)
 }
 
 #' @rdname vctrs-methods
