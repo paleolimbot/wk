@@ -1,6 +1,6 @@
 # wk (development version)
 
-- Sure package tests pass against forthcoming vctrs (#231).
+- Ensure package tests pass against forthcoming vctrs (#231).
 
 # wk 0.9.4
 
