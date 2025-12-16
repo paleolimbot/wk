@@ -80,7 +80,7 @@
       <h1 data-toc-skip>Programming with the wk C and C++ API</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/paleolimbot/wk/blob/master/vignettes/articles/programming.Rmd" class="external-link"><code>vignettes/articles/programming.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/paleolimbot/wk/blob/v0.9.4/vignettes/articles/programming.Rmd" class="external-link"><code>vignettes/articles/programming.Rmd</code></a></small>
       <div class="hidden name"><code>programming.Rmd</code></div>
 
     </div>
@@ -117,23 +117,23 @@ messages passed to a <strong>handler</strong> is to use the
 <span>  <span class="fu"><a href="../reference/wk_debug.html">wk_debug_filter</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7ffe9cc2f950&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[3] &lt;0x7fffe3a0ad40&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     null_feature  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (2): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffe9cc2f7e0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffe9cc2f7e0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (2): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffe3a0abd0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7fffe3a0abd0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (2): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (3): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7ffe9cc2f7e0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7ffe9cc2f6a0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;         coord (1): &lt;0x7ffe9cc2f6a0&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_end (2): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (3): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): GEOMETRYCOLLECTION[UNKNOWN] &lt;0x7fffe3a0abd0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       geometry_start (1): POINT[UNKNOWN] &lt;0x7fffe3a0aa90&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;         coord (1): &lt;0x7fffe3a0aa90&gt; (2.000000 3.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;       geometry_end (1)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (3): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffe9cc2f950&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (3): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7fffe3a0ad40&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>The concept of a <strong>vector</strong> was inspired by the
@@ -164,24 +164,24 @@ multiple input types with one line of code.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkt.html">wkt</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffe9cc2f950&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7ffe9cc2f7e0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffe9cc2f7e0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffe3a0ad40&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[UNKNOWN] &lt;0x7fffe3a0abd0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7fffe3a0abd0&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffe9cc2f950&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffe9cc2f950&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffe3a0ad40&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7fffe3a0ad40&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span>
 <span><span class="fu"><a href="../reference/wk_debug.html">wk_debug</a></span><span class="op">(</span><span class="fu"><a href="../reference/wkb.html">as_wkb</a></span><span class="op">(</span><span class="st">"POINT (0 1)"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; initialize (dirty = 0  -&gt; 1)</span></span>
-<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7ffe9cc320f0&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_start (1): &lt;0x7ffe9cc320f0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7ffe9cc32030&gt; =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;       coord (1): &lt;0x7ffe9cc32030&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_start: &lt;Unknown type / 0&gt;[1] &lt;0x7fffe3a0d4e0&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;   feature_start (1): &lt;0x7fffe3a0d4e0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;     geometry_start (&lt;none&gt;): POINT[1] &lt;0x7fffe3a0d420&gt; =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt;       coord (1): &lt;0x7fffe3a0d420&gt; (0.000000 1.000000)  =&gt; WK_CONTINUE</span></span>
 <span><span class="co">#&gt;     geometry_end (&lt;none&gt;)  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt;   feature_end (1): &lt;0x7ffe9cc320f0&gt;  =&gt; WK_CONTINUE</span></span>
-<span><span class="co">#&gt; vector_end: &lt;0x7ffe9cc320f0&gt;</span></span>
+<span><span class="co">#&gt;   feature_end (1): &lt;0x7fffe3a0d4e0&gt;  =&gt; WK_CONTINUE</span></span>
+<span><span class="co">#&gt; vector_end: &lt;0x7fffe3a0d4e0&gt;</span></span>
 <span><span class="co">#&gt; deinitialize</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
@@ -239,7 +239,7 @@ you’ve returned from C++ is a pointer to a wk handler.</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">bbox_handler</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x556b20d84140&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;bbox_wk_handler at 0x564579a7a5b0&gt;</span></span></code></pre></div>
 <p>Once you have the object in R, you can use it with wk’s
 <code>handle_*()</code> functions such as <code>handle_wkt()</code> or
 <code>handle_wkb()</code>:</p>
@@ -813,12 +813,12 @@ hopefully eliminate this issue!</p>
 <span>  <span class="fu"><a href="../reference/wk_handle.html">wk_handle</a></span><span class="op">(</span><span class="va">nc_wkb</span>, <span class="fu">cpp_identity_filter</span><span class="op">(</span><span class="fu"><a href="../reference/wk_void.html">wk_void_handler</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
-<span><span class="co">#&gt;   expression                             min median `itr/sec` mem_alloc `gc/sec`</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler…  79.3µs   83µs    <span style="text-decoration: underline;">11</span>659.        0B     6.13</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handle… 426.5µs  438µs     <span style="text-decoration: underline;">2</span>269.        0B     0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_fil… 113.1µs  119µs     <span style="text-decoration: underline;">8</span>203.        0B     8.47</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_fi… 565.4µs  580µs     <span style="text-decoration: underline;">1</span>710.        0B     2.01</span></span></code></pre></div>
+<span><span class="co">#&gt;   expression                            min  median `itr/sec` mem_alloc `gc/sec`</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;bch:expr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;bch&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:t&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;bch:byt&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> wk_handle(nc_wkb, wk_void_handler(…  79µs  82.7µs    <span style="text-decoration: underline;">11</span>651.        0B     6.16</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wk_handle(nc_wkb, cpp_void_handler… 435µs   448µs     <span style="text-decoration: underline;">2</span>219.        0B     0   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> wk_handle(nc_wkb, wk_identity_filt… 113µs 118.4µs     <span style="text-decoration: underline;">8</span>148.        0B     8.56</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> wk_handle(nc_wkb, cpp_identity_fil… 576µs 590.9µs     <span style="text-decoration: underline;">1</span>671.        0B     2.02</span></span></code></pre></div>
 </div>
   </div>
 
