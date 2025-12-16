@@ -50,11 +50,11 @@ static inline SEXP xy_writer_realloc_result(SEXP result, R_xlen_t new_size,
   }
 
   for (int i = 0; i < 4; i++) {
-    if (VECTOR_ELT(result, i) == R_NilValue) {
+    if (VECTOR_ELT(result, i) == R_NilValue || size_cpy == 0) {
       continue;
     }
 
-    memcpy(REAL(VECTOR_ELT(new_result, i)), REAL(VECTOR_ELT(result, i)),
+    memcpy(REAL(VECTOR_ELT(new_result, i)), REAL_RO(VECTOR_ELT(result, i)),
            sizeof(double) * size_cpy);
   }
 
