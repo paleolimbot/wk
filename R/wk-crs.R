@@ -185,6 +185,11 @@ wk_is_geodesic.wk_wkt <- function(x) {
 }
 
 #' @export
+wk_is_geodesic.wk_xy <- function(x) {
+  attr(x, "geodesic", exact = TRUE) %||% FALSE
+}
+
+#' @export
 wk_set_geodesic.default <- function(x, geodesic) {
   if (geodesic) {
     warning(
@@ -206,6 +211,12 @@ wk_set_geodesic.wk_wkb <- function(x, geodesic) {
 
 #' @export
 wk_set_geodesic.wk_wkt <- function(x, geodesic) {
+  attr(x, "geodesic") <- geodesic_attr(geodesic)
+  x
+}
+
+#' @export
+wk_set_geodesic.wk_xy <- function(x, geodesic) {
   attr(x, "geodesic") <- geodesic_attr(geodesic)
   x
 }

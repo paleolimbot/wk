@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.9.4
+Version: 0.9.4.9000
 Authors@R:
     c(
       person(given = "Dewey",
@@ -31,7 +31,7 @@ Description: Provides a minimal R and C++ API for parsing
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests:
     testthat (>= 3.0.0),
     vctrs (>= 0.3.0),

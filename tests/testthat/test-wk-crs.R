@@ -52,7 +52,10 @@ test_that("geodesic getting and setting works for wkt", {
 })
 
 test_that("geodesic setting gives a warning when this isn't supported", {
-  expect_warning(wk_set_geodesic(xy(), TRUE), "for object of class 'wk_xy'")
+  expect_warning(
+    wk_set_geodesic(structure(list(), class = "foofy"), TRUE),
+    "for object of class 'foofy'"
+  )
 })
 
 test_that("wk_geodesic_output() works", {
