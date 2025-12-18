@@ -1,9 +1,10 @@
 
-This update fixes compatibility with sf 1.0-18.
+This update fixes compatibility with forthcoming vctrs and fixes issues
+identified by CRAN checks related to zero-size memcpy calls.
 
 ## Test environments
 
-* local (MacOS, R 4.4.1)
+* local (MacOS, R 4.5.1)
 * GitHub Actions (ubuntu-20.04): release, devel
 * GitHub Actions (windows): release
 * Github Actions (macOS): release

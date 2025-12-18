@@ -1,6 +1,7 @@
 # wk (development version)
 
 - Ensure package tests pass against forthcoming vctrs (#231).
+- Avoid `memcpy()` calls for zero size copies (@MichaelChirico, #227, #228).
 
 # wk 0.9.4
 
