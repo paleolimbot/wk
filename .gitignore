@@ -3,3 +3,5 @@
 .DS_Store
 .vscode
 docs
+.cache/
+compile_commands.json
