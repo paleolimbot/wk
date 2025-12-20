@@ -302,12 +302,14 @@ void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
   }
 
   // if z or m coords are present, ranges are provided
-  SEXP z_range = Rf_getAttrib(x, Rf_install("z_range"));
+  SEXP z_range;
+  PROTECT(z_range = Rf_getAttrib(x, Rf_install("z_range")));
   if (z_range != R_NilValue) {
     vector_meta->flags |= WK_FLAG_HAS_Z;
   }
 
-  SEXP m_range = Rf_getAttrib(x, Rf_install("m_range"));
+  SEXP m_range;
+  PROTECT(m_range = Rf_getAttrib(x, Rf_install("m_range")));
   if (m_range != R_NilValue) {
     vector_meta->flags |= WK_FLAG_HAS_M;
   }
@@ -315,7 +317,8 @@ void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
   // sfc objects come with a cached bbox
   // This appears to always be xmin, ymin, xmax, ymax
   // when attached to an sfc object
-  SEXP bbox = Rf_getAttrib(x, Rf_install("bbox"));
+  SEXP bbox;
+  PROTECT(bbox = Rf_getAttrib(x, Rf_install("bbox")));
   if ((Rf_xlength(x) > 0) && (bbox != R_NilValue)) {
     vector_meta->bounds_min[0] = REAL(bbox)[0];
     vector_meta->bounds_min[1] = REAL(bbox)[1];
@@ -338,15 +341,20 @@ void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
     vector_meta->bounds_min[2] = REAL(m_range)[1];
     vector_meta->bounds_max[2] = REAL(m_range)[2];
   }
+  UNPROTECT(3);
 }
 
 double wk_sfc_precision(SEXP x) {
-  SEXP prec = Rf_getAttrib(x, Rf_install("precision"));
+  SEXP prec;
+  PROTECT(prec = Rf_getAttrib(x, Rf_install("precision")));
   if ((TYPEOF(prec) == INTSXP) && (Rf_length(prec) == 1)) {
+    UNPROTECT(1);
     return INTEGER(prec)[0];
   } else if ((TYPEOF(prec) == REALSXP) && (Rf_length(prec) == 1)) {
+    UNPROTECT(1);
     return REAL(prec)[0];
   } else {
+    UNPROTECT(1);
     return WK_PRECISION_NONE;
   }
 }
