@@ -1,5 +1,7 @@
 # wk (development version)
 
+- The sfc, WKB, and WKT readers accept TIN, POLYHEDRALSURFACE, and TRIANGLE,
+  reading the first two as MULTIPOLYGON and TRIANGLE as POLYGON (#236).
 - Ensure package tests pass against forthcoming vctrs (#231).
 - Avoid `memcpy()` calls for zero size copies (@MichaelChirico, #227, #228).
 

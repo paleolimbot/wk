@@ -151,3 +151,37 @@ test_that("wk_handle.sfc() handles malformed input", {
   bad_sfc[1] <- list(NULL)
   expect_identical(wk_handle.sfc(bad_sfc, wkt_writer()), wkt(NA))
 })
+
+test_that("wk_handle.sfc() reads TIN, TRIANGLE, and POLYHEDRALSURFACE", {
+  skip_if_not_installed("sf")
+
+  tin <- sf::st_as_sfc("TIN Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)), ((1 0 0, 1 1 0, 0 1 0, 1 0 0)))")
+  expect_identical(
+    wk_handle(tin, wkt_writer()),
+    wkt("MULTIPOLYGON Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)), ((1 0 0, 1 1 0, 0 1 0, 1 0 0)))")
+  )
+  expect_identical(wk_vector_meta(tin)$geometry_type, 6L)
+
+  triangle <- sf::st_as_sfc("TRIANGLE ((0 0, 1 0, 0 1, 0 0))")
+  expect_identical(
+    wk_handle(triangle, wkt_writer()),
+    wkt("POLYGON ((0 0, 1 0, 0 1, 0 0))")
+  )
+  expect_identical(wk_vector_meta(triangle)$geometry_type, 3L)
+
+  surface <- sf::st_as_sfc(
+    "POLYHEDRALSURFACE Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)))"
+  )
+  expect_identical(
+    wk_handle(surface, wkt_writer()),
+    wkt("MULTIPOLYGON Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)))")
+  )
+  expect_identical(wk_vector_meta(surface)$geometry_type, 6L)
+
+  # as a member of a collection
+  collection <- sf::st_sfc(sf::st_geometrycollection(list(triangle[[1]], sf::st_point(c(5, 5)))))
+  expect_identical(
+    wk_handle(collection, wkt_writer()),
+    wkt("GEOMETRYCOLLECTION (POLYGON ((0 0, 1 0, 0 1, 0 0)), POINT (5 5))")
+  )
+})

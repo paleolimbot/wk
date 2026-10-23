@@ -308,3 +308,35 @@ test_that("wkb reader can read 1000-3000 style WKB input", {
   expect_identical(wkb_translate_wkt(list(wkb_xym)), "POINT M (1 2 3)")
   expect_identical(wkb_translate_wkt(list(wkb_xyzm)), "POINT ZM (1 2 3 4)")
 })
+
+test_that("wk_handle.wk_wkb() reads TIN, Triangle, and PolyhedralSurface", {
+  # rewrite the type codes of MultiPolygon (6) and Polygon (3) WKB; little
+  # endian, so the low byte of each type is the byte after its endian flag
+  set_type <- function(x, offset, code) {
+    x[offset + seq_len(4)] <- writeBin(as.integer(code), raw(), size = 4, endian = "little")
+    x
+  }
+
+  multi <- unclass(as_wkb("MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))"))[[1]]
+  # outer type at bytes 2-5, first child type at bytes 11-14
+  tin <- set_type(set_type(multi, 1, 16), 10, 17)
+  surface <- set_type(multi, 1, 15)
+  triangle <- set_type(unclass(as_wkb("POLYGON ((0 0, 1 0, 0 1, 0 0))"))[[1]], 1, 17)
+
+  expect_identical(
+    wk_handle(wkb(list(tin, surface, triangle)), wkt_writer()),
+    wkt(c(
+      "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))",
+      "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)))",
+      "POLYGON ((0 0, 1 0, 0 1, 0 0))"
+    ))
+  )
+
+  # ISO Z codes (1016 and 1017)
+  multi_z <- unclass(as_wkb("MULTIPOLYGON Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)))"))[[1]]
+  tin_z <- set_type(set_type(multi_z, 1, 1016), 10, 1017)
+  expect_identical(
+    wk_handle(wkb(list(tin_z)), wkt_writer()),
+    wkt("MULTIPOLYGON Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)))")
+  )
+})
