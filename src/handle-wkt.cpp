@@ -70,6 +70,12 @@ class BufferedWKTParser : public BufferedParser<SourceType, 4096> {
       return WK_MULTIPOLYGON;
     } else if (geometry_type == "GEOMETRYCOLLECTION") {
       return WK_GEOMETRYCOLLECTION;
+    } else if (geometry_type == "TIN" || geometry_type == "POLYHEDRALSURFACE") {
+      // same layout as a MULTIPOLYGON; read as one (the type name is not kept)
+      return WK_MULTIPOLYGON;
+    } else if (geometry_type == "TRIANGLE") {
+      // same layout as a POLYGON; read as one (the type name is not kept)
+      return WK_POLYGON;
     } else {
       this->errorBefore("geometry type or 'SRID='", geometry_type);
     }

@@ -210,6 +210,15 @@ int wkb_read_geometry_type(wkb_reader_t* reader, wk_meta_t* meta) {
     meta->geometry_type = geometry_type;
   }
 
+  // PolyhedralSurface (15) and TIN (16) have the same layout as a MultiPolygon,
+  // and Triangle (17) the same as a Polygon; read them as such (the type
+  // name is not kept)
+  if (meta->geometry_type == 15 || meta->geometry_type == 16) {
+    meta->geometry_type = WK_MULTIPOLYGON;
+  } else if (meta->geometry_type == 17) {
+    meta->geometry_type = WK_POLYGON;
+  }
+
   if (meta->geometry_type == WK_POINT) {
     meta->size = 1;
   } else {

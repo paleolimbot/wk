@@ -335,3 +335,26 @@ test_that("wkt_translate_* can handle non-finite values", {
 test_that("wkt_translate_* doesn't segfault on other inputs", {
   expect_error(wkt_translate_wkt(as_wkb("POINT (30 10)")), "must be a character vector")
 })
+
+test_that("TIN, TRIANGLE, and POLYHEDRALSURFACE are parsed", {
+  translate <- function(x) unclass(wk_handle(wkt(x), wkt_writer()))
+
+  expect_identical(
+    translate("TIN (((0 0, 1 0, 0 1, 0 0)), ((1 0, 1 1, 0 1, 1 0)))"),
+    "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)), ((1 0, 1 1, 0 1, 1 0)))"
+  )
+  expect_identical(
+    translate("TIN Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)))"),
+    "MULTIPOLYGON Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)))"
+  )
+  expect_identical(
+    translate("TRIANGLE ((0 0, 1 0, 0 1, 0 0))"),
+    "POLYGON ((0 0, 1 0, 0 1, 0 0))"
+  )
+  expect_identical(
+    translate("POLYHEDRALSURFACE (((0 0, 0 1, 1 1, 1 0, 0 0)))"),
+    "MULTIPOLYGON (((0 0, 0 1, 1 1, 1 0, 0 0)))"
+  )
+  expect_identical(translate("SRID=4326;TIN EMPTY"), "SRID=4326;MULTIPOLYGON EMPTY")
+  expect_identical(translate("TRIANGLE EMPTY"), "POLYGON EMPTY")
+})

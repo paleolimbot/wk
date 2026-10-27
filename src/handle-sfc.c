@@ -92,6 +92,12 @@ int wk_sfc_read_sfg(SEXP x, wk_handler_t* handler, uint32_t part_id, double prec
     return wk_sfc_read_multipolygon(x, handler, &meta, part_id);
   } else if (Rf_inherits(x, "GEOMETRYCOLLECTION")) {
     return wk_sfc_read_geometrycollection(x, handler, &meta, part_id);
+  } else if (Rf_inherits(x, "TIN") || Rf_inherits(x, "POLYHEDRALSURFACE")) {
+    // same layout as a MULTIPOLYGON; read as one (the type name is not kept)
+    return wk_sfc_read_multipolygon(x, handler, &meta, part_id);
+  } else if (Rf_inherits(x, "TRIANGLE")) {
+    // same layout as a POLYGON; read as one (the type name is not kept)
+    return wk_sfc_read_polygon(x, handler, &meta, part_id);
   } else if (Rf_inherits(x, "sfg")) {
     Rf_error("Unsupported sfg type");
   } else {
@@ -297,6 +303,10 @@ void wk_update_vector_meta_from_sfc(SEXP x, wk_vector_meta_t* vector_meta) {
     vector_meta->geometry_type = WK_MULTIPOLYGON;
   } else if (Rf_inherits(x, "sfc_GEOMETRYCOLLECTION")) {
     vector_meta->geometry_type = WK_GEOMETRYCOLLECTION;
+  } else if (Rf_inherits(x, "sfc_TIN") || Rf_inherits(x, "sfc_POLYHEDRALSURFACE")) {
+    vector_meta->geometry_type = WK_MULTIPOLYGON;
+  } else if (Rf_inherits(x, "sfc_TRIANGLE")) {
+    vector_meta->geometry_type = WK_POLYGON;
   } else {
     vector_meta->geometry_type = WK_GEOMETRY;
   }
